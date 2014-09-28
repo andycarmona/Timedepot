@@ -1,0 +1,487 @@
+﻿@{
+    ViewBag.Title = "Reports";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeReports);
+
+        function initializeReports() {
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            //jQuery(".lnkCreateEditNoteCustomer").each(eachlnkCreateEditNoteCustomer);
+
+            //Create the tabs
+            jQuery("#tabs").tabs({ load: loadTab });
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#loadingHlpDialog01id").dialog({ autoOpen: false, modal: true });
+            //jQuery("#editcustomerdialoid").dialog({ autoOpen: false, modal: true });
+
+            //Load the forms used in the tabs
+            LoadCustomerList();
+            LoadInventoryList();
+            LoadVendorList();
+            LoadSalesOrderList();
+            LoadInvoiceList();
+            LoadPurchaseOrderList();
+            //SetTabIndex();
+            //SetBilling();
+
+            //The active tab
+            //debugger;
+            var szActiveTab = '@ViewBag.ActiveTab';
+            if (szActiveTab != "") {
+                jQuery("#tabs").tabs("option", "active", szActiveTab);
+            }
+        }
+        function loadTab(event, ui) {
+            //debugger;
+
+            //Use the required ui
+            if (ui.index == 1) {
+                //Create the buttons
+                jQuery(".divButtons a").button();
+            }
+        }
+        function LoadCustomerList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Customer List");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkCustomersList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salescontactSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function salescontactSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#salescontactdataid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationsales);
+
+        }
+        function eachlnknavigationsales(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectsalespage);
+            }
+        }
+        function clicklnkselectsalespage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoading01Dialog("Customer List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salescontactSuccess
+            });
+        }
+
+        function LoadInventoryList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Load Inventory");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkInventoryList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: inventorylistSuccess
+            });
+        }
+        function inventorylistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#inventorylistid").html(objRes);
+
+            //Hide load image
+            HideLoading01Dialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigation);
+
+        }
+        function eachlnknavigation(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectinventorypage);
+            }
+        }
+        function clicklnkselectinventorypage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoading01Dialog("Inventory List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: inventorylistSuccess
+            });
+        }
+        function LoadVendorList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Vendor List");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkVendorList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorlistSuccess
+            });
+        }
+        function vendorlistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#vendorlistid").html(objRes);
+
+            //Hide load image
+            HideLoading01Dialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationvendors);
+
+        }
+        function eachlnknavigationvendors(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectvendorpage);
+            }
+        }
+        function clicklnkselectvendorpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog("Vendor List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorlistSuccess
+            });
+        }
+        function LoadSalesOrderList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Sales Order List");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkSalesOrderList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesorderlistSuccess
+            });
+        }
+        function salesorderlistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#salesorderlistid").html(objRes);
+
+            //Hide load image
+            HideLoading01Dialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationsalesorder);
+
+        }
+        function eachlnknavigationsalesorder(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectsalesorderpage);
+            }
+        }
+        function clicklnkselectsalesorderpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoading01Dialog("Sales Order List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesorderlistSuccess
+            });
+        }
+        function LoadInvoiceList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Invoice List");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkInvoiceList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: invoicelistSuccess
+            });
+        }
+        function invoicelistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#invoicelstid").html(objRes);
+
+            //Hide load image
+            HideLoading01Dialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationinvoice);
+
+        }
+        function eachlnknavigationinvoice(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectinvoicepage);
+            }
+        }
+        function clicklnkselectinvoicepage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoading01Dialog("Invoice List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: invoicelistSuccess
+            });
+        }
+        function LoadPurchaseOrderList() {
+            //debugger;
+
+            //Display load image
+            ShowLoading01Dialog("Purchase Order List");
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkPurchaseOrderList").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: purchaseorderlistSuccess
+            });
+        }
+        function purchaseorderlistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#purchaseorderlistid").html(objRes);
+
+            //Hide load image
+            HideLoading01Dialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationpurchaseorder);
+
+        }
+        function eachlnknavigationpurchaseorder(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectpurchasepage);
+            }
+        }
+        function clicklnkselectpurchasepage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoading01Dialog("Purchase Order List");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: purchaseorderlistSuccess
+            });
+        }
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+<div>
+    <div id="tabs" style="margin: 0px auto;">
+        <ul>
+            <li><a href="#tabs-1">Customer List</a></li>
+            <li><a href="#tabs-2">Inventory List</a></li>
+            <li><a href="#tabs-3">Vendor List</a></li>
+            <li><a href="#tabs-4">Sales Order List</a></li>
+            <li><a href="#tabs-5">Invoice List</a></li>
+            <li><a href="#tabs-6">Purchase Order List</a></li>
+        </ul>
+        <div id="tabs-1">
+            <div id="salescontactdataid" style="padding: 5px;">
+                Customer List
+            </div>
+        </div>
+        <div id="tabs-2">
+            <div id="inventorylistid" style="padding: 5px;">
+                Inventory List
+            </div>
+        </div>
+        <div id="tabs-3">
+            <div id="vendorlistid" style="padding: 5px;">
+                Vendor List
+            </div>
+        </div>
+        <div id="tabs-4">
+            <div id="salesorderlistid" style="padding: 5px;">
+                Sales Order List
+            </div>
+        </div>
+        <div id="tabs-5">
+            <div id="invoicelstid" style="padding: 5px;">
+                Invoice List
+            </div>
+        </div>
+        <div id="tabs-6">
+            <div id="purchaseorderlistid" style="padding: 5px;">
+                Purchase Order List
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loadingHlpDialog01id">
+    <div class="viosbox" id="waitLoadingImage01" style="display: block; text-align: center; margin-top: 15px;">
+        <img alt="Loading" src="@Url.Content("~/Images/ajaxanim.gif")" />&nbsp;<span>Loading </span><span id="loadingtxtid"></span><span>...</span>
+    </div>
+</div>
+<div style="display: none">
+    @Html.ActionLink("Customer List", "CustomerList", "Customers", null, new { id = "lnkCustomersList" })
+    @Html.ActionLink("Inventory List", "InventoryList", "Inventory", null, new { id = "lnkInventoryList" })
+    @Html.ActionLink("Vendor List", "VendorList", "Vendors", null, new { id = "lnkVendorList" })
+    @Html.ActionLink("Sales Order List", "SalesOrderList", "SalesOrder", null, new { id = "lnkSalesOrderList" })
+    @Html.ActionLink("Invoice List", "InvoiceList", "Invoice", null, new { id = "lnkInvoiceList" })
+    @Html.ActionLink("Purchase Order List", "PurchaseOrderList", "PurchaseOrder", null, new { id = "lnkPurchaseOrderList" })
+</div>

@@ -1,0 +1,50 @@
+﻿@model TimelyDepotMVC.Models.Admin.aspnet_UsersInRoles
+
+@{
+    ViewBag.Title = "Delete";
+}
+@{
+    TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+    TimelyDepotMVC.Models.Admin.aspnet_Users userprofile = null;
+    TimelyDepotMVC.Models.Admin.aspnet_Roles webroles = null;
+    string szUserName = "";
+    string szRoleName = "";
+
+    userprofile = db01.aspnet_Users.Find(Model.UserId);
+    if (userprofile != null)
+    {
+        szUserName = userprofile.UserName;
+    }
+    webroles = db01.aspnet_Roles.Find(Model.RoleId);
+    if (webroles != null)
+    {
+        szRoleName = webroles.RoleName;
+    }
+
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>aspnet_UsersInRoles</legend>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <div>
+        UserId
+    </div>
+    <div>
+        @Html.DisplayFor(modelitem => Model.UserId)&nbsp;@szUserName
+    </div>
+    <div>
+        RoleId
+    </div>
+    <div>
+        @Html.DisplayFor(modelitem => Model.RoleId)&nbsp;@szRoleName
+    </div>
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

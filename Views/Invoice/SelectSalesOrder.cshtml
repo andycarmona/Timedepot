@@ -1,0 +1,100 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.SalesOrder>
+
+<div style="width: 80%; margin: 0px auto;">
+    @using (Html.BeginForm("SelectSalesOrder", "Invoice", null, FormMethod.Post, new { id = "searchsalesorderformid" }))
+    {
+        <div style="margin-bottom: 5px;">
+            <table>
+                <tr>
+                    <td>Search by Order No.</td>
+                    <td>
+                        <input id="searchSalesOrderNo" name="searchOrderNo" type="text" value="@ViewBag.SearchOrderNo" /></td>
+                    <td>Customer</td>
+                    <td>
+                        <input id="searchSOCustomer" name="searchCustomer" type="text" value="@ViewBag.SearchCustomer" /></td>
+                    <td>Email</td>
+                    <td>
+                        <input id="searchSOEmail" name="searchEmail" type="text" value="@ViewBag.SearchEmail" /></td>
+                    <td>
+                        <input id="btNavTimleyid" class="btNavTimley" type="submit" value="Search" />
+                        @Html.ActionLink("Reset", "SelectSalesOrder", "Invoice", null, new { id = "lnkResetSelectSOId", @class = "btNavTimley" })</td>
+                </tr>
+            </table>
+
+        </div>    
+    }
+</div>
+
+<table class="webgrid" style="width: 80%; margin: 0px auto;">
+    <tr class="webgrid-header">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.SalesOrderNo)
+        </th>
+        <th>Customer</th>
+        <th>email</th>
+        <th>
+            @Html.DisplayNameFor(model => model.SODate)
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.PaymentAmount)*@
+            Sales&nbsp;Amount
+        </th>
+    </tr>
+    @{
+        TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+        string szName = "";
+        string szEmail = "";
+    }
+
+    @foreach (var item in Model)
+    {
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row";
+        }
+        else
+        {
+            szClass = "webgrid-row-style";
+        }
+
+        szName = "";
+        szEmail = "";
+        TimelyDepotMVC.Controllers.SalesOrderController.GetCustomerEmail(db01, ref szName, ref szEmail, item.SalesOrderId);
+        
+        <tr class="@szClass">
+            <td class="lnkGenerateInvoice">
+                @Html.ActionLink("Select", "GenerateInvoice", new { id = item.SalesOrderId }, new { onclick = "return confirm('This order ship in full?');" })
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SalesOrderNo)
+            </td>
+            <td>@szName</td>
+            <td>@szEmail</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SODate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="6">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+        </td>
+        <td><input id="btDialogClose" class="btNavTimley" type="button" value="Close" /></td>
+    </tr>
+
+</table>
+

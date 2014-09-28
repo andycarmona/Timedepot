@@ -1,0 +1,484 @@
+﻿@model TimelyDepotMVC.Models.Admin.PurchaseOrders
+
+@{
+    ViewBag.Title = "Purchase Order";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    long telHlp = 0;
+    long faxHlp = 0;
+    string telfmt = "000-000-0000";
+    string szAddress = "";
+    string szCity = "";
+    string szState = "";
+    string szZip = "";
+    string szCountry = "";
+    string szTel = "";
+    string szFax = "";
+    string szWebSiteTrade = "";
+    string szEmailTrade = "";
+    string szTradeName = "";
+    string szAsiTrade = "";
+    string szSageTrade = "";
+    string szPpaiTrade = "";
+
+    string szVendorCompanyName = "";
+    string szVendorFirstName = "";
+    string szVendorLastName = "";
+    string szVendorTitle = "";
+    string szVendorAddress1 = "";
+    string szVendorAddress2 = "";
+    string szVendorAddress3 = "";
+    string szVendorCity = "";
+    string szVendorState = "";
+    string szVendorZip = "";
+    string szVendorCountry = "";
+    string szVendorFax = "";
+    string szVendorEmail = "";
+    string szVendorWebsite = "";
+    string szVendorTel1 = "";
+    string szVendorTel2 = "";
+    string szVendorTel = "";
+    string szVendorTel1Hlp = "";
+    string szVendorTel2Hlp = "";
+    string szVendorTelHlp = "";
+    string szShipDate = "";
+
+    DateTime dDate = Convert.ToDateTime(Model.PODate);
+    DateTime dShipDate = DateTime.Now;
+
+    if (Model.ShipDate == null)
+    {
+        dShipDate = DateTime.Now;
+        szShipDate = dShipDate.ToString("MM/dd/yyyy"); ;
+    }
+    else
+    {
+        dShipDate = Convert.ToDateTime(Model.ShipDate);
+        szShipDate = dShipDate.ToString("MM/dd/yyyy");
+    }
+
+
+    TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+
+    TimelyDepotMVC.Controllers.SalesOrderController.GetTradeData(db01, ref szAddress, ref szCity, ref szState, ref szZip, ref szCountry, ref szTel, ref szFax,
+        ref szWebSiteTrade, ref szEmailTrade, ref szTradeName, ref szAsiTrade, ref szSageTrade, ref szPpaiTrade, Convert.ToInt32(Model.TradeId));
+
+    if (string.IsNullOrEmpty(szTel))
+    {
+        szTel = "0";
+    }
+    telHlp = Convert.ToInt64(szTel);
+    if (string.IsNullOrEmpty(szFax))
+    {
+        szFax = "0";
+    }
+    faxHlp = Convert.ToInt64(szFax);
+
+    TimelyDepotMVC.Controllers.PurchaseOrderController.GetVendorData(db01, Model.VendorId, ref szVendorCompanyName, ref szVendorFirstName, ref szVendorLastName,
+        ref szVendorTitle, ref szVendorAddress1, ref szVendorAddress2, ref szVendorAddress3, ref szVendorCity, ref szVendorState, ref szVendorZip, ref szVendorCountry,
+        ref szVendorTel, ref szVendorFax, ref szVendorEmail, ref szVendorWebsite, ref szVendorTel1, ref szVendorTel2);
+    if (string.IsNullOrEmpty(szVendorTel1) || szVendorTel1 == "0" || szVendorTel1 == "0000000000")
+    {
+        szVendorTel1Hlp = string.Empty;
+    }
+    else
+    {
+        telHlp = Convert.ToInt64(szVendorTel1);
+        szVendorTel1Hlp = telHlp.ToString(telfmt);
+    }
+    if (string.IsNullOrEmpty(szVendorTel2) || szVendorTel2 == "0" || szVendorTel2 == "0000000000")
+    {
+        szVendorTel2Hlp = string.Empty;
+    }
+    else
+    {
+        telHlp = Convert.ToInt64(szVendorTel2);
+        szVendorTel2Hlp = telHlp.ToString(telfmt);
+    }
+    if (string.IsNullOrEmpty(szVendorTel) || szVendorTel == "0" || szVendorTel == "0000000000")
+    {
+        szVendorTelHlp = string.Empty;
+    }
+    else
+    {
+        telHlp = Convert.ToInt64(szVendorTel);
+        szVendorTelHlp = telHlp.ToString(telfmt);
+    }
+    
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.PurchaseOrderId)
+    @Html.HiddenFor(model => model.PODate)
+    @Html.HiddenFor(model => model.ShipDate)
+    @Html.HiddenFor(model => model.SalesOrderNo)
+    @Html.HiddenFor(model => model.TradeId)
+    @Html.HiddenFor(model => model.VendorId)
+
+    <div class="darkerline" style="padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 1em; padding-right: 1em; margin-top: 0.5em; margin-bottom: 0.5em;">
+        <div class="TEdiv">
+            <div class="cf">
+                <div class="right" style="width: 288px; padding: 0px 5px 0px 5px;">
+                    <div class="editor-label left" style="padding-right: 5px; font-weight: bold;">
+                        @Html.LabelFor(model => model.PurchaseOrderNo):
+                    </div>
+                    <div class="editor-field" style="padding-top: 5px; font-weight: bold;">
+                        @Html.DisplayFor(model => model.PurchaseOrderNo)
+                    </div>
+                    <div class="cf" style="margin-bottom: 5px;">
+                        <div class="editor-label left" style="padding-right: 5px;">
+                            Ref :
+                        </div>
+                        <div class="editor-field" style="padding-top: 5px;">
+                            @Html.DisplayFor(model => model.PurchaseOrderReference)
+                        </div>
+                    </div>
+                    <div class="cf" style="padding-right: 10px; border: 0px solid #FF9900;">
+                        <div class="left" style="padding-right: 5px;">Vendor No:</div>
+                        <div style="padding-top: 0px;">@Html.DisplayFor(model => model.VendorId)</div>
+                    </div>
+                    <div class="cf" style="padding-right: 10px; border: 0px solid #FF9900;">
+                        <div class="left" style="padding-right: 5px;">Order Date:</div>
+                        <div style="padding-top: 0px;">@Html.DisplayFor(model => model.PODate)</div>
+                    </div>
+                </div>
+                <div class="left" style="margin-right: 10em;">
+                    <div>
+                        @Html.DropDownList("tradeId", (IEnumerable<SelectListItem>)ViewBag.TradeList, "Select Trade", new { id = "tradeselectorId" })
+                        <div style="display: none;">
+                            <input id="tradeId" name="tradeId" type="text" />
+                        </div>
+                    </div>
+                    <div>@szEmailTrade</div>
+                    <div>@szCity,&nbsp;@szState&nbsp;@szZip</div>
+                    <div>Tel:&nbsp;@szTel</div>
+                    <div>Fax:&nbsp;@szFax</div>
+                </div>
+                <div class="left divh1" style="width: 500px; text-align: center"><span>@ViewBag.Title</span></div>
+            </div>
+        </div>
+        <div class="TEdiv">b</div>
+        <div class="TEdiv">c</div>
+        <div class="TEdiv">d</div>
+        <div class="TEdiv">e</div>
+
+
+    </div>
+    <div style="margin: 5px; text-align: center;">
+        <input class="btNavTimley" type="submit" value="Save" />&nbsp;<a href="#" class="btNavTimley">Email</a>&nbsp;@Html.ActionLink("Print (Pdf)", "POReport", "iTextReports", new { id = Model.PurchaseOrderId }, new { @class = "btNavTimley", target = "_blank" })&nbsp;@Html.ActionLink("Quit", "Index", null, new { @class = "btNavTimley" })
+    </div>
+    <div style="display: none;">
+        @Html.ActionLink("Get Purchase order detail", "GetPODetail", "PurchaseOrder", new { purchaseorderid = Model.PurchaseOrderId }, new { id = "getpodetailsid" })
+    </div>
+}
+<div id="selectvendorDialog">
+    Select vendor here
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(initializeEditPO);
+
+        function initializeEditPO() {
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers
+            jQuery("#getpodetailsid").click(clickgetpodetailsid);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#selectvendorDialog").dialog({ autoOpen: false, modal: true });
+
+            //Display the details
+            jQuery("#getpodetailsid").trigger('click');
+
+            //Set the datepicker
+            jQuery("#ShipDateHlp").datepicker({
+                dateFormat: "mm/dd/yy",
+                showOn: "button",
+                buttonImage: "/images/calendar.gif",
+                buttonImageOnly: true
+            });
+        }
+        function clickgetpodetailsid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get url
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: getdetailsSuccess
+            });
+        }
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function getdetailsSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#purchaseorderdetailid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
+            jQuery(".lkpodetailQty input").each(eachlksalesdetailQty);
+
+            //jQuery(".pagination ul li a").each(eachlnknavigationDetails);
+            //jQuery(".lnkUpdateDetail a").each(eachlnkUpdateDetail);
+            jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
+
+            jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
+
+        }
+        function eachlnkEditDetail(nPos, src) {
+            jQuery(src).click(clicklnkEditDetail);
+        }
+        function clicklnkEditDetail(src, arg) {
+            //debugger;
+
+            var szId = "";
+            var szQty = "";
+            var szPrice = "";
+            var szRef = "";
+            var szDesc = "";
+            var szSubitem = "";
+            var szMsg;
+            var nPos = -1;
+
+            var hRefHlp = src.target.href;
+            if (hRefHlp != "") {
+                szMsg = hRefHlp.split('/');
+                szId = szMsg[szMsg.length - 1];
+                nPos = szId.indexOf('?');
+                if (nPos != -1) {
+                    szId = szId.substring(0, nPos);
+                    szQty = jQuery("#qty_" + szId + " input").val();
+                    szPrice = jQuery("#price_" + szId + " input").val();
+                    szRef = jQuery("#ref_" + szId + " input").val();
+                    szDesc = jQuery("#desc_" + szId + " input").val();
+                    szSubitem = jQuery("#subitem_" + szId + " input").val();
+                    hRefHlp = hRefHlp + '&qty=' + szQty + '&price=' + szPrice + '&description=' + szDesc + '&subitem=' + szSubitem + '&reference=' + szRef;
+
+                    src.target.href = hRefHlp;
+                }
+            }
+        }
+        function eachlksalesdetailQty(nPos, src) {
+            jQuery(src).change(changesalesdetailQty);
+        }
+        function changesalesdetailQty(src, arg) {
+            //debugger;
+
+            var szId = src.target.parentNode.id;
+            if (szId != "") {
+                szId = szId.replace("qty_", "lnkid_");
+                //var objHlp = jQuery("#" + szId);
+                //jQuery("#" + szId).trigger('click');
+                //jQuery("#" + szId).click();
+            }
+        }
+        function eachlnkEditDetail(nPos, src) {
+            jQuery(src).click(clicklnkEditDetail);
+        }
+        function clicklnkAddSalesOrderDetail(src, arg) {
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //debugger;
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function adddetailSuccess(response, status) {
+            //debugger;
+
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#selectvendorDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons 
+            jQuery(".btNavTimley").button();
+            jQuery(".btnSubmitSearch").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
+            jQuery(".lnkResetId a").click(clicklnkResetId);
+            jQuery("#searchsubitemid").submit(submitsearchsubitemid);
+
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Purchase Order Detail";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#selectvendorDialog").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#selectvendorDialog").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#selectvendorDialog").dialog("open");
+        }
+        function clickbtDialogClose(src, arg) {
+            jQuery("#selectvendorDialog").dialog("close");
+        }
+        function eachlnknavigationAddDetail(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnknavigationAddDetail);
+            }
+        }
+
+        function clicklnknavigationAddDetail(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function clicklnkResetId(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function submitsearchsubitemid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the seacrh parameter
+            var szSearchItem = jQuery("#searchItem").val();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("action");
+            if (szSearchItem != "") {
+                szUrl = szUrl + '&searchitem=' + szSearchItem;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function eachlnkAddDetail(nPos, src) {
+            //debugger;
+            jQuery(src).click(clicklnkAddDetail);
+        }
+        function clicklnkAddDetail(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var nPos = -1;
+            var nPos1 = -1;
+            var itemPos = 0;
+            var itemOrder = 0;
+            var szMsg = "";
+            var hRefHlp0 = src.target.href;
+            var hRefHlp = hRefHlp0.split('=');
+            if (hRefHlp != null) {
+                itemOrder = hRefHlp[hRefHlp.length - 1];
+
+                nPos = hRefHlp0.indexOf("itemPos=");
+                if (nPos != -1) {
+                    szMsg = hRefHlp0.substring(nPos + 8);
+                    nPos1 = szMsg.indexOf("&");
+                    if (nPos1 != -1) {
+                        itemPos = szMsg.substring(0, nPos1);
+                    }
+                }
+            }
+
+            var hrefAdd = jQuery("#lnkAddSalesOrderDetail").attr("href");
+            if (itemPos != "") {
+                hrefAdd = hrefAdd + '&itemPos=' + itemPos + '&itemOrder=' + itemOrder;
+                jQuery("#lnkAddSalesOrderDetail").attr("href", hrefAdd)
+            }
+
+            jQuery("#lnkAddSalesOrderDetail").trigger('click');
+        }
+
+    </script>
+}
+

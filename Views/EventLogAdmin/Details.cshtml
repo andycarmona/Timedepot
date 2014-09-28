@@ -1,0 +1,44 @@
+﻿@model TimelyDepotMVC.Models.Admin.EventLog
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>EventLog</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EventLog1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EventLog1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IP)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IP)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.User)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.User)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EventTime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EventTime)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

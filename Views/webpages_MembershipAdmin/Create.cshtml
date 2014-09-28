@@ -1,0 +1,109 @@
+﻿@model TimelyDepotMVC.Models.Admin.webpages_Membership
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>webpages_Membership</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CreateDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CreateDate)
+            @Html.ValidationMessageFor(model => model.CreateDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ConfirmationToken)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ConfirmationToken)
+            @Html.ValidationMessageFor(model => model.ConfirmationToken)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsConfirmed)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsConfirmed)
+            @Html.ValidationMessageFor(model => model.IsConfirmed)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastPasswordFailureDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastPasswordFailureDate)
+            @Html.ValidationMessageFor(model => model.LastPasswordFailureDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordFailuresSinceLastSuccess)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordFailuresSinceLastSuccess)
+            @Html.ValidationMessageFor(model => model.PasswordFailuresSinceLastSuccess)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Password)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Password)
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordChangedDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordChangedDate)
+            @Html.ValidationMessageFor(model => model.PasswordChangedDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordSalt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordSalt)
+            @Html.ValidationMessageFor(model => model.PasswordSalt)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordVerificationToken)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordVerificationToken)
+            @Html.ValidationMessageFor(model => model.PasswordVerificationToken)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordVerificationTokenExpirationDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordVerificationTokenExpirationDate)
+            @Html.ValidationMessageFor(model => model.PasswordVerificationTokenExpirationDate)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,103 @@
+﻿@model IEnumerable<TimelyDepotMVC.Models.Admin.webpages_Membership>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>UserId</th>
+        <th>User Name</th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+@*        <th>
+            @Html.DisplayNameFor(model => model.ConfirmationToken)&nbsp;
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.IsConfirmed)&nbsp;
+        </th>
+@*        <th>
+            @Html.DisplayNameFor(model => model.LastPasswordFailureDate)&nbsp;
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PasswordFailuresSinceLastSuccess)&nbsp;
+        </th>*@
+@*        <th>
+            @Html.DisplayNameFor(model => model.Password)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.PasswordChangedDate)
+        </th>
+@*        <th>
+            @Html.DisplayNameFor(model => model.PasswordSalt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PasswordVerificationToken)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PasswordVerificationTokenExpirationDate)
+        </th>*@
+    </tr>
+@{
+    TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+    TimelyDepotMVC.Models.UserProfile userprofile = null;
+    string szUserName = "";
+}
+@foreach (var item in Model) {
+    userprofile = db01.UserProfiles.Find(item.UserId);
+    if (userprofile != null)
+    {
+        szUserName = userprofile.UserName;
+    }
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.UserId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.UserId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserId)
+        </td>
+        <td>@szUserName</td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreateDate)
+        </td>
+@*        <td>
+            @Html.DisplayFor(modelItem => item.ConfirmationToken)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.IsConfirmed)
+        </td>
+@*        <td>
+            @Html.DisplayFor(modelItem => item.LastPasswordFailureDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PasswordFailuresSinceLastSuccess)
+        </td>*@
+@*        <td>
+            @Html.DisplayFor(modelItem => item.Password)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.PasswordChangedDate)
+        </td>
+@*        <td>
+            @Html.DisplayFor(modelItem => item.PasswordSalt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PasswordVerificationToken)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PasswordVerificationTokenExpirationDate)
+        </td>*@
+    </tr>
+}
+
+</table>

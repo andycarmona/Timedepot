@@ -1,0 +1,21 @@
+
+using (AdventureWorksEntities context = new AdventureWorksEntities())
+{
+ObjectSet<SalesOrderHeader> orders = context.SalesOrderHeaders;
+
+var query =
+from order in orders
+group order by order.Contact.ContactID into g
+select new
+{
+Category = g.Key,
+TotalDue = g.Sum(order => order.TotalDue)
+};
+
+foreach (var order in query)
+{
+Console.WriteLine("ContactID = {0} \t TotalDue sum = {1}",
+order.Category, order.TotalDue);
+}
+}
+    

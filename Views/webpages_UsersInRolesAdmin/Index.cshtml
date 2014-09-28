@@ -1,0 +1,53 @@
+﻿@model IEnumerable<TimelyDepotMVC.Models.Admin.webpages_UsersInRoles>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>UserId</th>
+        <th>User Name</th>
+        <th>RoleId</th>
+        <th>Role name</th>
+    </tr>
+@{
+    TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+    TimelyDepotMVC.Models.UserProfile userprofile = null;
+    TimelyDepotMVC.Models.Admin.webpages_Roles webroles = null;
+    string szUserName = "";
+    string szRoleName = "";
+}
+
+@foreach (var item in Model) {
+    userprofile = db01.UserProfiles.Find(item.UserId);
+    if (userprofile != null)
+    {
+        szUserName = userprofile.UserName;
+    }
+    webroles = db01.webpages_Roles.Find(item.RoleId);
+    if (webroles != null)
+    {
+        szRoleName = webroles.RoleName;
+    }
+    <tr>
+        <td>
+@*            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+            @Html.ActionLink("Delete", "Delete", new { UserId = item.UserId, RoleId = item.RoleId })
+        </td>
+        <td class="viosinput60">@Html.EditorFor(modelitem => item.UserId)</td>
+        <td>@szUserName</td>
+        <td class="viosinput60">@Html.EditorFor(modelitem => item.RoleId)</td>
+        <td>@szRoleName</td>
+    </tr>
+}
+
+</table>

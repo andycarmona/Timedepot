@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Test02 Encription";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<div>
+    <div class="error">
+        @ViewBag.EncriptionError
+    </div>
+    @using (Html.BeginForm("EncriptInfo", "Payment", null, FormMethod.Post, null))
+    {
+        <div>Original&nbsp;Data&nbsp;to&nbsp;encript:&nbsp;<input id="originaldata" name="originaldata" type="text" value="Hello Timely" />
+            <input id="Submit1" type="submit" value="submit" />
+        </div>
+        <div>@ViewBag.EncriptedData</div>
+    }
+    <div>
+        @Html.ActionLink("Decode Data","DecodeInfo","Payment")&nbsp;@ViewBag.DecodedData
+    </div>
+    
+</div>

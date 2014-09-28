@@ -1,0 +1,100 @@
+﻿@model TimelyDepotMVC.Models.Admin.ShipmentDetails
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>ShipmentDetails</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipmentId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipmentId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DetailId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DetailId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BoxNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BoxNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Sub_ItemID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sub_ItemID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Quantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitWeight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitWeight)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionH)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionH)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionL)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionL)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionD)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionD)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Reference1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Reference1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Reference2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Reference2)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ShipmentDetailID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,23 @@
+﻿@model TimelyDepotMVC.Models.Admin.webpages_Roles
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>webpages_Roles</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RoleName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RoleName)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.RoleId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

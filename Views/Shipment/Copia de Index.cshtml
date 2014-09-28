@@ -1,0 +1,1214 @@
+﻿@{
+    ViewBag.Title = "Shipment";
+}
+
+<div class="divh1 boxtb3">@ViewBag.Title</div>
+<div>
+    <div id="tabs" style="margin: 0px auto;">
+        <ul>
+            <li><a href="#tabs-1">Enter Shipment</a></li>
+            <li><a href="#tabs-2">Shipment Detail</a></li>
+            <li><a href="#tabs-3">Process Shipment</a></li>
+            <li><a href="#tabs-4">Shipment Log</a></li>
+        </ul>
+        <div id="tabs-1">
+            <div>
+                <div class="cf">
+                    <div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
+                    <div class="left boxl5">Invoice #</div>
+                    <div class="left boxl5">
+                        <input id="invoiceNoid" type="text" readonly="readonly" />
+                    </div>
+                    <div class="left boxl5">Available default Address</div>
+                    <div id="tradeselector01id" class="left boxl5"></div>
+                </div>
+                <div id="editInvoicediv">
+                </div>
+            </div>
+        </div>
+        <div id="tabs-2">
+            <div id="shipmentDetailsdialog">
+            </div>
+        </div>
+        <div id="tabs-3">
+            <div>
+                <div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
+                <div class="cf">
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Shipper Number:
+                            </div>
+                            <div class="boxMR10">
+                                <input id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Request option:
+                            </div>
+                            <div class="boxMR10">
+                                @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, "Select Request Option", new { id = "selectrequestoptionid" })
+                                <div style="display: none;">
+                                    <input id="requestoption" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Customer Type:
+                            </div>
+                            <div class="boxMR10">
+                                @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, "Select Customer type", new { id = "selectcustomertypeid" })
+                                <div style="display: none;">
+                                    <input id="customertype" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cf boxMT10">
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                UPS Service Type:
+                            </div>
+                            <div class="boxMR10">
+                                @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist, "Select UPS Service Type", new { id = "selectupsServiceTypeid" })
+                                <div style="display: none;">
+                                    <input id="upsServiceType" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Package pack type:
+                            </div>
+                            <div class="boxMR10">
+                                @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, "Select Pacakege Pack Type", new { id = "selectpacakePackTypeid" })
+                                <div style="display: none;">
+                                    <input id="pacakePackType" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0" }, new { id = "btUpsRate", @class = "btNavTimley" })
+                    </div>
+                </div>
+                <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
+                    <textarea id="txtapiresultsid" cols="80" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="tabs-4">
+            <div>
+                Cuatro
+            </div>
+        </div>
+    </div>
+</div>
+<div id="shipmentDialog">
+</div>
+<div style="display: block;">
+    @Html.ActionLink("Edit", "Edit", "Shipment", new { id = "0" }, new { id = "editlnk" })
+    @Html.ActionLink("Get Sales Details", "GetSalesDetailsSRC", "Invoice", new { salesorderid = "0" }, new { id = "getsalesdetailsId" })
+    @Html.ActionLink("Get Shipment Details", "GetShipmenDetails", "Shipment", new { invoiceid = "0" }, new { id = "getshipmentdetailsId" })
+    <div id="addressresultdiv" class="tevalid" style="text-align: center;">@ViewBag.AddressResult</div>
+    <div id="upserrordiv" class="error" style="text-align: center;">
+        @ViewBag.UPSError
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        jQuery(document).ready(initializeShipment);
+
+        function initializeShipment() {
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
+            jQuery("#btUpsRate").click(clickbtUpsRate);
+
+            //Create the tabs
+            jQuery("#tabs").tabs({ load: loadTab });
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#shipmentDialog").dialog({ autoOpen: false, modal: true });
+
+
+
+            SetDefaultRateSelectors();
+
+            var szId = '@ViewBag.LoadInvoiceNo';
+            if (szId != "") {
+                LoadInvoice(szId);
+            }
+
+        }
+        function clickbtUpsRate(src, arg) {
+            src.preventDefault();
+
+            var szMsg = "";
+            var szUrl = "";
+            var szInvoiceId = "";
+            var szAddressResult = jQuery("#addressresultdiv03").html();
+            szAddressResult = jQuery.trim(szAddressResult);
+            if (szAddressResult != "") {
+
+                szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+
+                szMsg = "=" + szInvoiceId + '&ValidateAddresResult=' + szAddressResult
+
+                szUrl = src.target.parentNode.href;
+                szUrl = szUrl.replace("=0", szMsg)
+
+                //Display load image
+                ShowLoadingDialog();
+
+                //Get the UPS Rate
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: upsRateSuccess
+                });
+            }
+        }
+        function upsRateSuccess(response, statusCode) {
+
+            var szResult = eval("(" + response + ")");
+            jQuery("#txtapiresultsid").val(szResult);
+
+            //Hide load image
+            HideLoadingDialog();
+
+        }
+        function SetDefaultRateSelectors() {
+            jQuery("#selectrequestoptionid").val("Rate");
+            jQuery("#selectcustomertypeid").val("00");
+            jQuery("#selectupsServiceTypeid").val("03");
+            jQuery("#selectpacakePackTypeid").val("02");
+
+            //jQuery("#btUpsRate").prop("disabled", "true");
+            jQuery("#btUpsRate").css("cursor", "not-allowed");
+            jQuery("#btUpsRate").attr("title", "Validate Address first");
+        }
+        function SetDefaultCheckBox(szckCriteria) {
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+        function SetDefaultCheckBox(szckCriteria) {
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+        function clickckstate(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("itemno");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcode(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                //jQuery("#searchItem").val("");
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                else {
+                    jQuery("#searchItem").val("");
+                }
+                jQuery("#ckCriteriaHlp").val("shippeddate");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickcckemai(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("customername");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckphon(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("customerpo");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcomp(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("salesorder");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcust(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("invoice");
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckActive(src, arg) {
+            var bChkActive = (src.target.checked);
+            if (bChkActive) {
+                jQuery("#ckActiveHlp").val("true");
+            }
+            else {
+                jQuery("#ckActiveHlp").val("false");
+            }
+        }
+
+        function clickselectInvoicelnk(src, arg) {
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+
+            //Delete trade  selector
+            jQuery("#tradeselector01id").html("");
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectInvoiceSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function selectInvoiceSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#shipmentDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            jQuery(".btNavTimley").button();
+
+            //var szckCriteria = '@ViewBag.ckCriteriaHlp';
+            var szckCriteria = jQuery("#ckCriteriaHlp").val();
+            //var szckActiveHlp = '@ViewBag.ckActiveHlp';
+            var szckActiveHlp = jQuery("#ckActiveHlp").val();
+            SetDefaultCheckBox(szckCriteria);
+
+
+            if (szckActiveHlp == "true") {
+                jQuery("#ckActive").prop("checked", true);
+            }
+            else {
+                jQuery("#ckActive").prop("checked", false);
+            }
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#lnkResetSelectSOId").click(clicklnkResetSelectSOId);
+            jQuery("#searchsalesorderformid").submit(submitsearchsalesorderformid);
+            jQuery("#ckActive").click(clickckActive);
+            jQuery("#ckcust").click(clickckcust);
+            jQuery("#ckcomp").click(clickckcomp);
+            jQuery("#ckphon").click(clickckphon);
+            jQuery("#ckemai").click(clickcckemai);
+            jQuery("#ckcode").click(clickckcode);
+            jQuery("#ckstate").click(clickckstate);
+            jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
+
+
+            //jQuery(".pagination ul li a").each(eachlnknavigation);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Invoice";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#shipmentDialog").dialog("option", "title", "Select " + szTitle);
+
+            //setter
+            jQuery("#shipmentDialog").dialog("option", "width", 950);
+
+            //display the popup dialog
+            jQuery("#shipmentDialog").dialog("open");
+
+        }
+        function eacheditInvoicelnk(nPos, src) {
+            jQuery(src).click(clickeditInvoicelnk);
+        }
+        function clickeditInvoicelnk(src, arg) {
+            src.preventDefault();
+            var szHref = src.target.href;
+            var szHlp = szHref.split('/');
+            var szId = szHlp[szHlp.length - 1];
+            var szInvNo = jQuery("#incNo_" + szId).html();
+            szInvNo = jQuery.trim(szInvNo);
+
+            jQuery("#invoiceNoid").val(szInvNo);
+            jQuery("#shipmentDialog").dialog("close");
+
+            //Load selected Invoice
+            LoadInvoice(szId);
+        }
+        function clickbtDialogClose(src, arg) {
+            jQuery("#shipmentDialog").dialog("close");
+        }
+        function clicklnkResetSelectSOId(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectSalesOrderSuccess
+            });
+        }
+
+        function submitsearchsalesorderformid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get search criteria
+            var szSealesOrderNo = jQuery("#searchItem").val();
+            var szCustomer = jQuery("#ckActiveHlp").val();
+            var szEmail = jQuery("#ckCriteriaHlp").val();
+
+            //Get the partial view
+            //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
+            var szUrl = jQuery("#searchsalesorderformid").attr("action");
+            if (szUrl != "") {
+                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectInvoiceSuccess
+            });
+
+            return false;
+        }
+        function LoadInvoice(InvNo) {
+            InvNo = jQuery.trim(InvNo);
+            var szInvNo = "/" + InvNo
+            var szInvNoDet = "=" + InvNo
+            var szUrl = jQuery("#editlnk").attr('href');
+            szUrl = szUrl.replace("/0", szInvNo);
+
+            var szHrefDet = jQuery("#getsalesdetailsId").attr("href");
+
+            szHrefDet = szHrefDet.replace("=0", szInvNoDet);
+
+            jQuery("#getsalesdetailsId").attr("href", szHrefDet);
+
+            //Display load image
+            ShowLoadingDialog();
+
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectEditInvoiceSuccess
+            });
+        }
+        function selectEditInvoiceSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editInvoicediv").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons 
+            jQuery(".btNavTimley").button();
+
+            //Move trade selector
+            //jQuery("#tradeeditselector01id").remove();
+            jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
+
+            //Mark error message
+            var szMsg = jQuery("#addressresultdiv").html();
+            szMsg = jQuery.trim(szMsg);
+            var nPos = -1;
+            nPos = szMsg.indexOf("Error:");
+            if (nPos != -1) {
+                jQuery("#addressresultdiv").attr("class", "error");
+            }
+
+            //Move address validation result
+            jQuery("#addressresultdiv").appendTo(jQuery("#addressvalidationdiv"));
+            jQuery("#upserrordiv").appendTo(jQuery("#addressvalidationdiv"));
+
+            //Enable Get UPS rate button
+            var szAddressResult03 = jQuery("#addressresultdiv03").html();
+            szAddressResult03 = jQuery.trim(szAddressResult03);
+            if (szAddressResult03 != "") {
+                //jQuery("#btUpsRate").prop("disabled", "false");
+                jQuery("#btUpsRate").css("cursor", "default");
+                jQuery("#btUpsRate").attr("title", "");
+            }
+
+            //Load InvoiceDetail
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szUrl = jQuery("#getsalesdetailsId").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectEditInvoiceDetailSuccess
+            });
+
+        }
+        function selectEditInvoiceDetailSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#salesdetailsid").html(objRes);
+
+            //Hide load image and select invoice link
+            HideLoadingDialog();
+            jQuery("#selectInvoicelnk").css("display", "none");
+
+            //Initialize dialog
+            jQuery("#selectvendorDialog").dialog({ autoOpen: false, modal: true });
+
+            //Set the shipment link
+            jQuery(".detailShipment a").each(eachdetailShipment);
+
+            //Set readonly fields
+            // the tax should be on product only, no tax on service
+            jQuery(".service input").each(eachInvoicedetailservice)
+            jQuery(".detailShipmentUpdate a").each(eachdetailShipmentUpdate);
+
+            //Set the buttons 
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            jQuery(".pagination ul li a").each(eachlnknavigationDetails);
+            jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
+            jQuery(".lnkUpdateDetail a").each(eachlnkUpdateDetail);
+            jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
+            jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
+            jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
+
+            jQuery(".imprintselectorclass").each(eachimprintselectorclass);
+            jQuery(".imprintclass").each(eachimprintclass);
+
+            //Hide fields not used
+            jQuery(".teshipment").css("display", "none");
+
+            //Display required fields
+            jQuery(".lnkShipItem a").each(eachlnkShipItem);
+
+            //Mark shipped items
+            var szShiped = jQuery("#shippeditemsdiv").html();
+            szShiped = jQuery.trim(szShiped);
+            if (szShiped != "") {
+                var szShipedHlp = szShiped.split(';');
+                for (var i = 0; i < szShipedHlp.length; i++) {
+                    //Remove Update, ship item links
+                    jQuery("#" + szShipedHlp[i]).empty();
+                    var szShippedDiv = "<div style='margin-bottom:15px;'><span style='color: #FFFFFF; background-color: #009933; padding:10px;'>SHIPPED</span></div>";
+                    jQuery(szShippedDiv).appendTo("#" + szShipedHlp[i]);
+                }
+
+            }
+
+            //Center other fields
+            jQuery(".edititemhlpdiv").css("width", "600px");
+            jQuery(".edititemhlpdiv").css("margin", "0px auto");
+
+            //Load Shipment Details
+            var szHayShipment = jQuery("#hasShipmentDiv").html();
+            szHayShipment = jQuery.trim(szHayShipment);
+            if (szHayShipment != "0") {
+                LoadShipmentDetails(szHayShipment);
+            }
+        }
+        function LoadShipmentDetails(invoiceId) {
+            //Load Shipment Detail
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szMsg = "=" + invoiceId;
+
+            var szUrl = jQuery("#getshipmentdetailsId").attr("href");
+            szUrl = szUrl.replace("=0", szMsg)
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shipmentDetailSuccess
+            });
+        }
+        function shipmentDetailSuccess(response, statusCode) {
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#shipmentDetailsdialog").html(objRes);
+
+            //Hide load image and select invoice link
+            HideLoadingDialog();
+
+            //Attach handlers
+            jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
+        }
+        function clicklnkAddShipmentDetail(src, arg) {
+            src.preventDefault();
+
+            var szHref = src.target.href;
+
+            var szInvoiceNo = jQuery("#invoiceNoid").val();
+            szHref = szHref + '&invoiceNoid=' + szInvoiceNo;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szUrl = szHref;
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: addshipmentDetailSuccess
+            });
+        }
+        function addshipmentDetailSuccess(response, status) {
+            //debugger;
+
+
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#selectvendorDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons 
+            jQuery(".btNavTimley").button();
+            //jQuery(".btnSubmitSearch").button();
+
+            ////Attach handlers 
+            jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
+            //jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
+            //jQuery(".lnkResetId a").click(clicklnkResetId);
+            //jQuery("#searchsubitemid").submit(submitsearchsubitemid);
+
+
+            ////Initialize fields
+            //jQuery(".adddetailShipment a").each(eachadddetailShipmentlnk);
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Shipment Detail";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#selectvendorDialog").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#selectvendorDialog").dialog("option", "width", 340);
+
+            //display the popup dialog
+            jQuery("#selectvendorDialog").dialog("open");
+
+
+        }
+        function clickbtDialogCloseAddDetail(src, arg) {
+            jQuery("#selectvendorDialog").dialog("close");
+        }
+        function eachdetailShipment(nPos, src) {
+            var szHref = src.href;
+            if (szHref != "") {
+                szHref = szHref + '?shipment=true';
+                src.href = szHref;
+            }
+        }
+        function eachlnkShipItem(nPos, src) {
+            jQuery(src).css("display", "block");
+        }
+        function eachInvoicedetailservice(nPos, src) {
+            //debugger;
+            jQuery(src).attr("readonly", "readonly");
+            jQuery(src).attr("disabled");
+        }
+        function eachlnknavigationDetails(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnknavigationDetails);
+            }
+        }
+        function eachlnkUpdateDetail(nPos, src) {
+            jQuery(src).click(clicklnkUpdateDetail);
+        }
+        function clicklnkAddSalesOrderDetail(src, arg) {
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //debugger;
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function adddetailSuccess(response, status) {
+            //debugger;
+
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#selectvendorDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons 
+            jQuery(".btNavTimley").button();
+            jQuery(".btnSubmitSearch").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
+            jQuery(".lnkResetId a").click(clicklnkResetId);
+            jQuery("#searchsubitemid").submit(submitsearchsubitemid);
+
+
+            //Initialize fields
+            jQuery(".adddetailShipment a").each(eachadddetailShipmentlnk);
+
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Sales Order Detail";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#selectvendorDialog").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#selectvendorDialog").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#selectvendorDialog").dialog("open");
+        }
+        function eachadddetailShipmentlnk(nPos, src) {
+            var szHref = src.href;
+            if (szHref != "") {
+                szHref = szHref + '&shipment=true';
+                src.href = szHref;
+            }
+        }
+        function eachlnknavigationAddDetail(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnknavigationAddDetail);
+            }
+        }
+        function eachdetailShipmentUpdate(nPos, src) {
+            var szHref = src.href;
+            if (szHref != "") {
+                szHref = szHref + '&shipment=true';
+                src.href = szHref;
+            }
+        }
+        function clicklnknavigationAddDetail(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+        function clicklnkResetId(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+        function submitsearchsubitemid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the seacrh parameter
+            var szSearchItem = jQuery("#searchItem").val();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("action");
+            if (szSearchItem != "") {
+                szUrl = szUrl + '&searchitem=' + szSearchItem;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: adddetailSuccess
+            });
+        }
+
+        function eachlnkAddDetail(nPos, src) {
+            //debugger;
+            jQuery(src).click(clicklnkAddDetail);
+        }
+        function clicklnkAddDetail(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var nPos = -1;
+            var nPos1 = -1;
+            var itemPos = 0;
+            var itemOrder = 0;
+            var szMsg = "";
+            var hRefHlp0 = src.target.href;
+            var hRefHlp = hRefHlp0.split('=');
+            if (hRefHlp != null) {
+                itemOrder = hRefHlp[hRefHlp.length - 1];
+
+                nPos = hRefHlp0.indexOf("itemPos=");
+                if (nPos != -1) {
+                    szMsg = hRefHlp0.substring(nPos + 8);
+                    nPos1 = szMsg.indexOf("&");
+                    if (nPos1 != -1) {
+                        itemPos = szMsg.substring(0, nPos1);
+                    }
+                }
+            }
+
+            var hrefAdd = jQuery("#lnkAddSalesOrderDetail").attr("href");
+            if (itemPos != "") {
+                hrefAdd = hrefAdd + '&itemPos=' + itemPos + '&itemOrder=' + itemOrder;
+                jQuery("#lnkAddSalesOrderDetail").attr("href", hrefAdd)
+            }
+
+            jQuery("#lnkAddSalesOrderDetail").trigger('click');
+        }
+        function clicklnkAddDetail(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var nPos = -1;
+            var nPos1 = -1;
+            var itemPos = 0;
+            var itemOrder = 0;
+            var szMsg = "";
+            var hRefHlp0 = src.target.href;
+            var hRefHlp = hRefHlp0.split('=');
+            if (hRefHlp != null) {
+                itemOrder = hRefHlp[hRefHlp.length - 1];
+
+                nPos = hRefHlp0.indexOf("itemPos=");
+                if (nPos != -1) {
+                    szMsg = hRefHlp0.substring(nPos + 8);
+                    nPos1 = szMsg.indexOf("&");
+                    if (nPos1 != -1) {
+                        itemPos = szMsg.substring(0, nPos1);
+                    }
+                }
+            }
+
+            var hrefAdd = jQuery("#lnkAddSalesOrderDetail").attr("href");
+            if (itemPos != "") {
+                hrefAdd = hrefAdd + '&itemPos=' + itemPos + '&itemOrder=' + itemOrder;
+                jQuery("#lnkAddSalesOrderDetail").attr("href", hrefAdd)
+            }
+
+            jQuery("#lnkAddSalesOrderDetail").trigger('click');
+        }
+        function eachlksalesdetailQty(nPos, src) {
+            jQuery(src).change(changesalesdetailQty);
+        }
+        function changesalesdetailQty(src, arg) {
+            //debugger;
+            var szMsg = src.target.parentNode.id;
+            szMsg = szMsg.replace("qty_", "lkup_");
+            var lkHlp = jQuery("#" + szMsg).attr("href");
+
+            var hrefHlp = lkHlp;
+            var szHlp = hrefHlp.split('/');
+            var szMsg = "";
+            var szQty = "";
+            var szShipQty = "";
+            var szBOQty = "";
+            var szDesc = "";
+            var szPrice = "";
+            var szId = "0";
+            var nPos = -1;
+            szMsg = szHlp[szHlp.length - 1];
+            nPos = szMsg.indexOf('?');
+            if (nPos != -1) {
+                szId = szMsg.substring(0, nPos);
+            }
+            if (szId != "0") {
+                szMsg = "#qty_" + szId + ' input';
+                szQty = jQuery(szMsg).val();
+                szMsg = "#shipqty_" + szId + ' input';
+                szShipQty = jQuery(szMsg).val();
+                szMsg = "#boqty_" + szId + ' input';
+                szBOQty = jQuery(szMsg).val();
+                szMsg = "#desc_" + szId + ' input';
+                szDesc = jQuery(szMsg).val();
+                szMsg = "#price_" + szId + ' input';
+                szPrice = jQuery(szMsg).val();
+
+                hrefHlp = hrefHlp + '&qty=' + szQty + '&shipqty=' + szShipQty + '&boqty=' + szBOQty + '&desc=' + szDesc + '&price=' + szPrice;
+                //src.target.href = hrefHlp;
+                //Display load image
+                ShowLoadingDialog();
+
+                window.location(hrefHlp);
+            }
+        }
+        function eachimprintselectorclass(nPos, src) {
+            jQuery(src).change(changeimprintselector);
+        }
+        function changeimprintselector(src, arg) {
+            var szSelected = jQuery(src.target).val();
+            var szId = jQuery(src.target).attr("id");
+            szId = szId.replace("ipmtselect_", "ipmt_");
+            if (szSelected != "") {
+                jQuery("#" + szId + ' input').val(szSelected);
+            }
+            else {
+                jQuery("#" + szId + ' input').val("");
+            }
+        }
+        function eachimprintclass(nPos, src) {
+            jQuery(src).prop("readonly", true);
+        }
+        function eachlnkEditDetail(nPos, src) {
+            jQuery(src).click(clicklnkEditDetail);
+        }
+
+        function clicklnkEditDetail(src, arg) {
+
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: editdetailSuccess
+            });
+        }
+
+        function editdetailSuccess(response, status) {
+            //debugger;
+
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#selectvendorDialog").html(objRes);
+
+            //Hide load image and the select invoice link
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#btnSubmitSearchLocationid").click(clickbtnSubmitSearchLocationid02);
+
+            jQuery(".btnSubmitSearchLocation a").each(eachbtnSubmitSearchVendor);
+            jQuery(".lnkSelectLocation a").each(eachlnkSelectLocation);
+
+            jQuery(".btnSubmitSearchLocationlnk a").click(clickbtnSubmitSearchLocationid01);
+
+            jQuery(".pagination ul li a").each(eachlnknavigationlocation);
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Sales Order Detail";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#selectvendorDialog").dialog("option", "title", "Edit " + szTitle);
+
+            //setter
+            jQuery("#selectvendorDialog").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#selectvendorDialog").dialog("open");
+        }
+        function clicklnkUpdateDetail(src, arg) {
+            //debugger;
+
+            var hrefHlp = src.target.href;
+            var szHlp = hrefHlp.split('/');
+            var szMsg = "";
+            var szQty = "";
+            var szShipQty = "";
+            var szBOQty = "";
+            var szDesc = "";
+            var szTax = "";
+            var szPrice = "";
+            var szId = "0";
+            var nPos = -1;
+            szMsg = szHlp[szHlp.length - 1];
+            nPos = szMsg.indexOf('?');
+            if (nPos != -1) {
+                szId = szMsg.substring(0, nPos);
+            }
+            if (szId != "0") {
+                szMsg = "#qty_" + szId + ' input';
+                szQty = jQuery(szMsg).val();
+                szMsg = "#shipqty_" + szId + ' input';
+                szShipQty = jQuery(szMsg).val();
+                szMsg = "#boqty_" + szId + ' input';
+                szBOQty = jQuery(szMsg).val();
+                szMsg = "#desc_" + szId + ' input';
+                szDesc = jQuery(szMsg).val();
+                szMsg = "#tax_" + szId + ' input';
+                szTax = jQuery(szMsg).val();
+                szMsg = "#price_" + szId + ' input';
+                szPrice = jQuery(szMsg).val();
+
+
+                szMsg = "#logo_" + szId + ' input';
+                szLogo = jQuery(szMsg).val();
+                szMsg = "#ipmt_" + szId + ' input';
+                szImprint = jQuery(szMsg).val();
+                szMsg = "#qtySC_" + szId + ' input';
+                szQtySCid = jQuery(szMsg).val();
+                szMsg = "#qtyRC_" + szId + ' input';
+                szQtyRCid = jQuery(szMsg).val();
+                szMsg = "#priceSC_" + szId + ' input';
+                szPriceSC = jQuery(szMsg).val();
+                szMsg = "#priceRC_" + szId + ' input';
+                szPriceRC = jQuery(szMsg).val();
+
+                hrefHlp = hrefHlp + '&qty=' + szQty + '&shipqty=' + szShipQty + '&boqty=' + szBOQty + '&desc=' + szDesc + '&price=' + szPrice + '&tax=' + szTax + '&logo=' + szLogo + '&imprt=' + szImprint + '&qtysc=' + szQtySCid + '&qtyrc=' + szQtyRCid + '&pricesc=' + szPriceSC + '&pricerc=' + szPriceRC;
+                src.target.href = hrefHlp;
+            }
+        }
+
+        function loadTab(event, ui) {
+            //debugger;
+
+            //Use the required ui
+            if (ui.index == 1) {
+                //Create the buttons
+                jQuery(".divButtons a").button();
+            }
+        }
+
+    </script>
+}

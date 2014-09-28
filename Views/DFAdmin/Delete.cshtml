@@ -1,0 +1,118 @@
+﻿@model TimelyDepotMVC.Models.Admin.DF
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>DF</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DialType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DialType)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DescA)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DescA)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CollectionID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CollectionID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Start_Qty)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Start_Qty)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field11)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field11)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field12)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field12)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field13)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field13)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field14)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field14)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field15)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field15)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field16)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field16)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field17)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field17)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field18)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field18)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field19)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field19)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field20)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field20)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

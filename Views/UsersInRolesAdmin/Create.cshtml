@@ -1,0 +1,180 @@
+﻿@model TimelyDepotMVC.Models.Admin.UsersInRoles
+
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<h2 class="cepadding">@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>UsersInRoles</legend>
+        <div class="cf cepadding">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.UserId)
+            </div>
+            <div>@Html.ActionLink("Seleccionar Usuario", "SeleccionarUsuario", "UsersInRolesAdmin", null, new { id = "lnkSeleccionarUsuario" })</div>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.UserId)&nbsp;<span id="ursenameid">@ViewBag.UserName</span>
+            @Html.ValidationMessageFor(model => model.UserId)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RoleId)
+        </div>
+        @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.RolesList, "Select Role", new { id = "roleselectorId" })
+        @Html.ValidationMessageFor(model => model.RoleId)
+        <div class="editor-field" style="display: none;">
+            @Html.EditorFor(model => model.RoleId)
+        </div>
+
+        <div class="cepadding">
+            <input type="submit" value="Crear" class="ceButton" />
+        </div>
+    </fieldset>
+}
+
+<div class="cepadding">
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "ceButton" })
+</div>
+
+<div id="seleccionarUsuariodialog">
+    Seleccionar usuario aqui
+</div>
+
+@section Scripts {
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(initializeCreateUserProfile);
+
+        function initializeCreateUserProfile() {
+
+            //Initialaze fields
+            //jQuery("#UserId").css("width", "100px");
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#seleccionarUsuariodialog").dialog({ autoOpen: false, modal: true });
+
+            //Attach handlers 
+            jQuery("#lnkSeleccionarUsuario").click(clicklnkSeleccionarUsuario);
+            jQuery("#roleselectorId").change(changeroleselectorId);
+
+        }
+        function clicklnkSeleccionarUsuario(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectvendorSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function selectvendorSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#seleccionarUsuariodialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            //jQuery(".btNavTimley").button();
+
+            //Attach handlers lnkSelectVendor
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            //jQuery("#btnSubmitSearchVendorid").click(clickbtnSubmitSearchVendorid);
+            //jQuery(".btnSubmitSearchVendor a").each(eachbtnSubmitSearchVendor);
+
+            jQuery(".lnkSelectUsuario a").each(eachlnkSelectUsuario);
+            jQuery(".pagination-container ul li a").each(eachlnknavigation);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Usuarios";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#seleccionarUsuariodialog").dialog("option", "title", "Seleccionar " + szTitle);
+
+            //setter
+            jQuery("#seleccionarUsuariodialog").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#seleccionarUsuariodialog").dialog("open");
+
+        }
+        function eachlnkSelectUsuario(nPos, src) {
+            jQuery(src).click(clicklnkSelectUsuario);
+        }
+        function clicklnkSelectUsuario(src, arg) {
+            src.preventDefault();
+            //debugger;
+
+            var szUserName = "";
+            var szMsg01 = "";
+            var szMsg = src.target.href;
+            var szItemIdHlp = szMsg.split('/');
+            var szItemId = szItemIdHlp[szItemIdHlp.length - 1];
+
+
+            //Get and display the selected values
+            jQuery("#UserId").val(szItemId);
+
+            szMsg01 = "#usrnm_" + szItemId;
+            szUserName = jQuery(szMsg01).html();
+            szUserName = jQuery.trim(szUserName);
+            jQuery("#ursenameid").html(szUserName);
+
+            jQuery("#seleccionarUsuariodialog").dialog("close");
+        }
+        function clickbtDialogClose(src, arg) {
+            jQuery("#seleccionarUsuariodialog").dialog("close");
+        }
+        function eachlnknavigation(nPos, src) {
+            //debugger;
+            if (src.href != "") {
+                jQuery(src).click(clicklnkSeleccionarUsuario);
+            }
+        }
+        function changeroleselectorId(src, ag) {
+            //debugger;
+
+            var szRole = jQuery(src.target).val();
+            if (szRole != "") {
+                jQuery("#RoleId").val(szRole);
+            }
+        }
+    </script>
+
+}

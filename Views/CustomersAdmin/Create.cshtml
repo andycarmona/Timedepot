@@ -1,0 +1,133 @@
+﻿@model TimelyDepotMVC.Models.Admin.Customers
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Customers</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerNo)
+            @Html.ValidationMessageFor(model => model.CustomerNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Status)
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BussinesType)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BussinesType)
+            @Html.ValidationMessageFor(model => model.BussinesType)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesPerson)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesPerson)
+            @Html.ValidationMessageFor(model => model.SalesPerson)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DeptoNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.DeptoNo)
+            @Html.ValidationMessageFor(model => model.DeptoNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SellerPermintNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SellerPermintNo)
+            @Html.ValidationMessageFor(model => model.SellerPermintNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ASINo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ASINo)
+            @Html.ValidationMessageFor(model => model.ASINo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PPAINo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PPAINo)
+            @Html.ValidationMessageFor(model => model.PPAINo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SageNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SageNo)
+            @Html.ValidationMessageFor(model => model.SageNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Origin)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Origin)
+            @Html.ValidationMessageFor(model => model.Origin)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CreditLimit)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CreditLimit)
+            @Html.ValidationMessageFor(model => model.CreditLimit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentTerms)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentTerms)
+            @Html.ValidationMessageFor(model => model.PaymentTerms)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BussinesSice)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BussinesSice)
+            @Html.ValidationMessageFor(model => model.BussinesSice)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

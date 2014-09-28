@@ -1,0 +1,80 @@
+﻿@model TimelyDepotMVC.Models.Admin.Customers
+
+@{
+    ViewBag.Title = "Outsanding Sales Order";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+
+<div class="divh1">@ViewBag.Title</div>
+<div style="border: 1px solid #6B6C69; padding: 5px 50px 5px 50px;">
+    <div class="cf">
+        <div class="editor-label left">
+            @Html.LabelFor(model => model.CustomerNo)<span style="font-weight: bold; margin-left: 5px;">@Html.DisplayFor(model => model.CustomerNo)</span>
+        </div>
+        <div class="left" style="width: 500px; margin-left: 300px;">
+            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
+            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+        </div>
+        <div class="right">
+            @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
+            <div class="editor-field" style="display: none;">
+                @Html.EditorFor(model => model.Status)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;">
+    @Html.ActionLink("Previous", "PreviousCustomer", "Customers", new { customerNo = Model.CustomerNo, id = Model.Id, opcion = "salesorder" }, new { id = "lnkPrevious" })
+    @Html.ActionLink("Next", "NextCustomer", "Customers", new { customerNo = Model.CustomerNo, id = Model.Id, opcion = "salesorder" }, new { id = "lnkNext" })
+</div>
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeSalesOrderTab);
+
+        function initializeSalesOrderTab() {
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Initialize fields
+            SetActiveInactiveSelector();
+            jQuery("#selectiteminactiveid").attr("disabled", "disabled");
+
+
+            //Attach handlers 
+            jQuery("#btPrevious").click(clickbtPrevious);
+            jQuery("#btNext").click(clickbtNext);
+
+
+        }
+        function SetActiveInactiveSelector() {
+            //debugger;
+
+            //var szActiveInactive = jQuery("#customer_Status").val();
+            var szActiveInactive = '@Model.Status';
+
+            var ddlHlp = jQuery("#selectiteminactiveid")[0];
+            if (szActiveInactive == "") {
+                ddlHlp.selectedIndex = 2;
+            }
+            else {
+                if (szActiveInactive == "True") {
+                    ddlHlp.selectedIndex = 1;
+                }
+                else {
+                    ddlHlp.selectedIndex = 2;
+                }
+            }
+        }
+        function clickbtPrevious(src, arg) {
+            var szUrl = jQuery("#lnkPrevious").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtNext(src, arg) {
+            var szUrl = jQuery("#lnkNext").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+
+    </script>
+}

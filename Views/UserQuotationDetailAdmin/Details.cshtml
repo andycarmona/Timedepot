@@ -1,0 +1,72 @@
+﻿@model TimelyDepotMVC.Models.Admin.UserQuotationDetail
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>UserQuotationDetail</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DetailId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DetailId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ProductType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductType)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Quantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShippedQuantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShippedQuantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BOQuantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BOQuantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShippedQuantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Amount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ItemID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ItemID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

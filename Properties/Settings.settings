@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TimelyDepotMVC.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TimelyDepotMVC_XAVService_XAVService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://onlinetools.ups.com/webservices/XAV</Value>
+    </Setting>
+    <Setting Name="UPSApiKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">FCBD8E914895FF36</Value>
+    </Setting>
+    <Setting Name="UPSUserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">young55961</Value>
+    </Setting>
+    <Setting Name="UPSPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Merced88</Value>
+    </Setting>
+    <Setting Name="UPSShipperNumber" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">A3024V</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

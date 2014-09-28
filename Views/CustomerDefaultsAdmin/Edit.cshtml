@@ -1,0 +1,103 @@
+﻿@model TimelyDepotMVC.Models.Admin.CustomerDefaults
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>CustomerDefaults</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerId)
+            @Html.ValidationMessageFor(model => model.CustomerId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesContactId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesContactId)
+            @Html.ValidationMessageFor(model => model.SalesContactId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesName)
+            @Html.ValidationMessageFor(model => model.SalesName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubsidiaryId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SubsidiaryId)
+            @Html.ValidationMessageFor(model => model.SubsidiaryId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubsidiaryName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SubsidiaryName)
+            @Html.ValidationMessageFor(model => model.SubsidiaryName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShiptoAddressId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShiptoAddressId)
+            @Html.ValidationMessageFor(model => model.ShiptoAddressId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShiptoName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShiptoName)
+            @Html.ValidationMessageFor(model => model.ShiptoName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NoteId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NoteId)
+            @Html.ValidationMessageFor(model => model.NoteId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NoteName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NoteName)
+            @Html.ValidationMessageFor(model => model.NoteName)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

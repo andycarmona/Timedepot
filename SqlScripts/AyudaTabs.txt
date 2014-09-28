@@ -1,0 +1,9 @@
+1.$(function() {
+2.      $('#tabs div a').click(function() {
+3.            var id = $(this).attr('href').replace(/#/, ''); // Extract the new tab ID
+
+4.            $('#tabs').tabs('select', id); // And activate it
+
+5.            return false;
+6.      });
+7.});

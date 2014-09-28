@@ -1,0 +1,27 @@
+﻿@model TimelyDepotMVC.Models.Admin.ITEM
+<div style="border: 1px solid #6B6C69; padding: 5px 50px 5px 50px;">
+    <div id="noteid">
+        @using (Html.BeginForm("UpdateNote", "Inventory", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.ItemID)
+            <div style="width: 700px; margin: 5px auto; border: 1px solid #000; padding: 5px;">
+                <div class="editor-label" style="margin: 5px;">
+                    @Html.LabelFor(model => model.Note)
+                </div>
+                <div class="editor-field">
+                    <textarea id="Note" style="margin-left:40px;" name="Note" cols="80" rows="15">@Model.Note</textarea>
+                    @*                        @Html.EditorFor(model => model.Note)
+                        @Html.ValidationMessageFor(model => model.Note)*@
+                </div>
+                <div style="margin: 5px; text-align: center;">
+                    <input type="submit" class="btNavTimley" value="Update" />
+                </div>
+            </div>            
+        }
+    </div>
+    <div style="width: 50px; margin: 5px auto;">
+        <input id="btDialogClose02" class="btNavTimley" type="button" value="Close" />
+    </div>
+</div>

@@ -1,0 +1,375 @@
+﻿@model TimelyDepotMVC.Models.Admin.Invoice
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Invoice</legend>
+
+    
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesOrderId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesOrderId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesOrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesOrderNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InvoiceId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InvoiceNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InvoiceNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InvoiceNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InvoiceDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InvoiceDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipVia)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipVia)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TradeId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TradeId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CustomerId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CustomerId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CustomerShiptoId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CustomerShiptoId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CustomerShipLocation)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CustomerShipLocation)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.VendorId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VendorId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BussinesType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BussinesType)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.VendorAddress)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VendorAddress)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PurchaseOrderNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentTerms)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentTerms)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentAmount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentAmount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShippingHandling)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShippingHandling)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CreaditCardNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreaditCardNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Note)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsBlindShip)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsBlindShip)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesRep)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesRep)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TrackingNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TrackingNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Tax_rate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Tax_rate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Invs_Tax)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Invs_Tax)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Warehouse)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Warehouse)
+    </div>
+
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromTitle)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromTitle)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromCompany)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromCompany)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromAddress1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromAddress1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromAddress2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromAddress2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromCity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromCity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromState)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromState)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromZip)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromZip)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromCountry)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromCountry)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromEmail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromEmail)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromTel)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromTel)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FromFax)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FromFax)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToTitle)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToTitle)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToCompany)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToCompany)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToAddress1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToAddress1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToAddress2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToAddress2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToCity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToCity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToState)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToState)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToZip)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToZip)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToCountry)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToCountry)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToEmail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToEmail)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToTel)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToTel)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToFax)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToFax)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.InvoiceId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

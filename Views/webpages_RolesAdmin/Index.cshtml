@@ -1,0 +1,38 @@
+﻿@model IEnumerable<TimelyDepotMVC.Models.Admin.webpages_Roles>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+         <th></th>
+         <th>RoleId</th>
+       <th>
+            @Html.DisplayNameFor(model => model.RoleName)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.RoleId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.RoleId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.RoleId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RoleId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RoleName)
+        </td>
+    </tr>
+}
+
+</table>

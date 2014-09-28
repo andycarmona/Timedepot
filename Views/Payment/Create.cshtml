@@ -1,0 +1,85 @@
+﻿@model TimelyDepotMVC.Models.Admin.Payments
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Payments</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentNo)
+            @Html.ValidationMessageFor(model => model.PaymentNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerNo)
+            @Html.ValidationMessageFor(model => model.CustomerNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesOrderNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesOrderNo)
+            @Html.ValidationMessageFor(model => model.SalesOrderNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentType)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentType)
+            @Html.ValidationMessageFor(model => model.PaymentType)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReferenceNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ReferenceNo)
+            @Html.ValidationMessageFor(model => model.ReferenceNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Amount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Amount)
+            @Html.ValidationMessageFor(model => model.Amount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentDate)
+            @Html.ValidationMessageFor(model => model.PaymentDate)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

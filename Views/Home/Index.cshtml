@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+    @*    <section class="featured">
+        <div class="content-wrapper">
+            <div class="divh1">@ViewBag.Title.</div>
+            <div class="divh2">@ViewBag.Message</div>
+        </div>
+    </section>*@
+}
+<div class="cf">
+    <div class="tdLineBottom tdLineLR">Email Function (Send, check)</div>
+    <div class="left tdLineBottom tdLineL" style="width: 300px; padding: 5px;">
+        Email Box
+    </div>
+    <div class="left" style="width: 600px;">
+        <div class="tdLineBottom tdLineL" style="height: 300px; padding: 5px;">Email Heading</div>
+        <div class="tdLineBottom tdLineL" style="height: 400px; padding: 5px;">Email Body</div>
+    </div>
+    <div class="right" style="width: 285px;">
+        <div class="tdLineBottom tdLineLR" style="height: 233px; padding: 5px;">
+            Calender
+        </div>
+        <div class="tdLineBottom tdLineLR" style="height: 233px; padding: 5px;">
+            Remainder
+        </div>
+        <div class="tdLineBottom tdLineLR" style="height: 234px; padding: 5px;">
+            Internal Message
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        jQuery(document).ready(initializeHome);
+
+        function initializeHome() {
+            //debugger;
+            //alert('initializeHome');
+        }
+
+    </script>
+}

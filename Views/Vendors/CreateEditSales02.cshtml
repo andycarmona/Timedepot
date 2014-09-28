@@ -1,0 +1,133 @@
+﻿@model TimelyDepotMVC.Models.Admin.VendorsSalesContact
+
+@using (Html.BeginForm("UpdateVendorSales02", "Vendors", new { vendordefault = ViewBag.CustomerDefaultId }, FormMethod.Post, new { id = "UpdateCustomerSales02id" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>VendorsSalesContact</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div style="display:block;">
+            @Html.DisplayFor(model => model.Id)
+            ViewBag.Id02:&nbsp;@ViewBag.Id02
+            ViewBag.VendorId02&nbsp;<span id="vendorid02hlp">@ViewBag.VendorId02</span>
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VendorId)
+            @Html.ValidationMessageFor(model => model.VendorId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Title)
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Address)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Address)
+            @Html.ValidationMessageFor(model => model.Address)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.City)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.City)
+            @Html.ValidationMessageFor(model => model.City)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.State)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.State)
+            @Html.ValidationMessageFor(model => model.State)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Zip)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Zip)
+            @Html.ValidationMessageFor(model => model.Zip)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Country)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Country)
+            @Html.ValidationMessageFor(model => model.Country)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Tel)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Tel)
+            @Html.ValidationMessageFor(model => model.Tel)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Fax)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Fax)
+            @Html.ValidationMessageFor(model => model.Fax)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Email)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Email)
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Note)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Note)
+            @Html.ValidationMessageFor(model => model.Note)
+        </div>
+
+        <div style="width: 900px; margin: 5px auto;">
+            <input id="btAddSalesContact" class="btNavTimley" type="button" value="Add" />&nbsp;
+        <input type="submit" class="btNavTimley" value="Update" />&nbsp;   
+        @Html.ActionLink("Delete", "DeleteSales", "Vendors", new { id = Model.Id, vendordefaultid = ViewBag.CustomerDefaultId }, new { id = "btDeleteSalesContact", @class = "btNavTimley", onclick = "return confirm('Do you want to delete this Sales Contact');" })
+        </div>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

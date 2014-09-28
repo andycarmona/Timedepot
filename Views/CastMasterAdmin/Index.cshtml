@@ -1,0 +1,47 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.CastMaster>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>CastId</th>
+        <th>
+            @Html.DisplayNameFor(model => model.CastName)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CastId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CastId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CastId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CastId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CastName)
+        </td>
+    </tr>
+}
+    <tr>
+        <td colspan="3">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+        </td>
+    </tr>
+
+</table>

@@ -1,0 +1,1984 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CBC400CC-0B28-4E59-BC21-A2C168C33C5B}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TimelyDepotMVC</RootNamespace>
+    <AssemblyName>TimelyDepotMVC</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="PayPal">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\PayPal.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Providers">
+      <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\System.Web.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.0\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20715.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.2.0.20710.0\lib\net40\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.2.0.20710.0\lib\net40\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.2.0.20710.0\lib\net40\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.AspNet.4.1.4.12333\lib\net45-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.OData, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.OData.4.0.0\lib\net40\System.Web.Http.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Spatial.5.2.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\AuthConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CommonCode\NoCache.cs" />
+    <Compile Include="CommonCode\RateReference.cs" />
+    <Compile Include="CommonCode\TrustAllCertificatePolicy.cs" />
+    <Compile Include="CommonPdfRpt\AggregateProvider.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\Average.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\Maximum.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\Minimum.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\StdDev.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\Sum.cs" />
+    <Compile Include="CommonPdfRpt\Aggregates\Numbers\Variance.cs" />
+    <Compile Include="CommonPdfRpt\BasicTemplateProvider.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\CalendarAttributes.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\CalendarData.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\CalendarNames.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\CalendarType.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\DayInfo.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\DaysInfoToCalendarData.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\GradientCellEvent.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\MonthCalendar.cs" />
+    <Compile Include="CommonPdfRpt\Calendar\MonthTableCell.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\AnnotationField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\BarcodeField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\ByteArrayImageField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\CheckMarkField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\HtmlField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\HyperlinkField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\ImageFilePathField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\InlineField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\MonthCalendarField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\PdfTemplateField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\ProgressBarField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\SymbolField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\TextBlockField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\WingdingsSymbolField.cs" />
+    <Compile Include="CommonPdfRpt\ColumnsItemsTemplates\XHtmlField.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AdHocColumnsConventions.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AdobeZapfDingbats.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AggregateFunction.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AnnotationFieldData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AnnotationIcon.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\AttachmentFile.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\BasicTemplate.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellAttributes.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellBasicProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellRowData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellSharedData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CellType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CertificateFile.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ColumnAttributes.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CompressionLevel.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\CompressionSettings.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DiagonalWatermark.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentFontStyle.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentMargins.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentMetadata.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentPermissions.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\DocumentSecurity.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\Encryption.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\EncryptionType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\Events.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\EventsArguments.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\FileAttachment.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\FlushType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\FooterBasicProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\FooterData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\GroupsPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\GroupType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\HeaderBasicProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\HeaderData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\HeadingCell.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\HorizontalAlignment.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\HorizontalStackPanelPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IAggregateFunc.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IColumnItemsTemplate.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IDataExporter.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IDataSource.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ImportedPageInfo.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\InlineFieldData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IPageFooter.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IPageHeader.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IPdfFont.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\IPdfReportData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ITableTemplate.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\LastRenderedRowData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\MainTablePreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\MultipleColumnsPerPage.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\NonFullScreenPageMode.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PageOrientation.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PagePreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PagesDirection.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PasswordEncryption.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfGrid.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfPageSize.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfRunDirection.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfVersion.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfViewerPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PdfXConformance.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PrintingPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PrintScaling.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PrintSide.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\PublicKeyEncryption.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\RowType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SharedData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\Signature.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SigningInfo.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SummaryCellAttributes.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SummaryCellData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SummaryCellSettings.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\SummaryLocation.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\TableColumnWidthType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\TableType.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\TsaClient.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\VerticalTextAlignment.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ViewerPageLayout.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ViewerPageMode.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\ViewerPreferences.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\VisibleSignature.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\Wingdings.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\XFooterBasicProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Contracts\XHeaderBasicProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\AggregateException.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\ApplyDataAnnotations.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\BackgroundImageTemplate.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\CellDataExt.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\CompileAsIPdfRptData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\DiagonalWatermarkManager.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\DocumentSettings.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\DumpNestedProperties.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\ElementsWidth.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\ExcelHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\ExporterManager.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\ExtractPdfFileAttachments.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\FastReflection.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\FuncHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\GradientBackground.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\Guard.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\Hash.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HeaderFooterManager.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\CustomHrHTMLTagProcessor.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\HtmlWorkerHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\ImageProvider.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\RtlElementsCollector.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\SimpleElementsCollector.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\TotalPagesNumberHTMLTagProcessor.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\TotalPagesNumberXmlWorkerProcessor.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\UnicodeFontProvider.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\XmlWorkerHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HtmlToPdf\XmlWorkerUtils.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\HumanReadableInteger.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\MergePdfDocuments.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PdfConformance.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PdfImageHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PdfPageSizeToRectangle.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PersianDate.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PersianNumber.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PropertyDataAnnotations.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\PropertyHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\RunDirectionHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\SoftHttpContext.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\StreamHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\TableCellDefinitionsExt.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\TableHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\Helper\VectorImages.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\AdHocPdfColumnDefinitions.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\GroupsManager.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\InitTable.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\MainTableCellsEvent.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\PageEvents.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\RenderMainTable.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\RowsManager.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\TableCellHelper.cs" />
+    <Compile Include="CommonPdfRpt\Core\PdfTable\TablesInColumns.cs" />
+    <Compile Include="CommonPdfRpt\Core\Security\EncryptionWorker.cs" />
+    <Compile Include="CommonPdfRpt\Core\Security\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\Core\Security\PfxData.cs" />
+    <Compile Include="CommonPdfRpt\Core\Security\PfxReader.cs" />
+    <Compile Include="CommonPdfRpt\Core\Security\SignatureWriter.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\AggregateFunctionAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\CalculatedFieldFormulaAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\CellsHorizontalAlignmentAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\ColumnItemsTemplateAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\CustomAggregateFunctionAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\FixedHeightAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\IncludedGroupFieldEqualityComparerAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\IncludeInGroupingAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\IsCalculatedFieldAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\IsVisibleAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\MinimumHeightAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\OrderAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\PropertyNameAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataAnnotations\WidthAttribute.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\AccessDataReaderDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\AnonymousTypeListDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\CrosstabDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\CrosstabExtension.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\DataTableDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\ExcelDataReaderDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\GenericDataReaderDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\OdbcDataReaderDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\SqlDataReaderDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\SqlParametersParser.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\StronglyTypedListDataSource.cs" />
+    <Compile Include="CommonPdfRpt\DataSources\XmlDataSource.cs" />
+    <Compile Include="CommonPdfRpt\Export\ExportToCsv.cs" />
+    <Compile Include="CommonPdfRpt\Export\ExportToExcel.cs" />
+    <Compile Include="CommonPdfRpt\Export\ExportToXml.cs" />
+    <Compile Include="CommonPdfRpt\Export\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\AggregateFunctionBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\ColumnAttributesBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\ColumnItemsTemplateBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\CustomRowsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\DataBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\DataTemplate.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\DefaultFontsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\DefaultHeaderProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\DocumentPreferencesBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\EncryptedFileBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\ExportToBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\FileBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\GenericFontProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\HeaderCellsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\HtmlFooterProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\HtmlHeaderProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\InjectCustomRowsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\InlineFieldBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\InlineFooterProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\InlineHeaderProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableAdHocColumnsConventionsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableColumnsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableDataSourceBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableEventsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTablePreferencesBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableSummarySettingsBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\MainTableTemplateBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\PagesFooterBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\PagesHeaderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\PdfReport.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\SignedFileBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\XHtmlFooterProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FluentInterface\XHtmlHeaderProviderBuilder.cs" />
+    <Compile Include="CommonPdfRpt\FooterTemplates\DefaultFooterProvider.cs" />
+    <Compile Include="CommonPdfRpt\FooterTemplates\HtmlFooterProvider.cs" />
+    <Compile Include="CommonPdfRpt\FooterTemplates\InlineFooterProvider.cs" />
+    <Compile Include="CommonPdfRpt\FooterTemplates\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\FooterTemplates\XHtmlFooterProvider.cs" />
+    <Compile Include="CommonPdfRpt\GenericFontProvider.cs" />
+    <Compile Include="CommonPdfRpt\HeaderTemplates\DefaultHeaderProvider.cs" />
+    <Compile Include="CommonPdfRpt\HeaderTemplates\HtmlHeaderProvider.cs" />
+    <Compile Include="CommonPdfRpt\HeaderTemplates\InlineHeaderProvider.cs" />
+    <Compile Include="CommonPdfRpt\HeaderTemplates\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\HeaderTemplates\XHtmlHeaderProvider.cs" />
+    <Compile Include="CommonPdfRpt\NamespaceDoc.cs" />
+    <Compile Include="CommonPdfRpt\PdfReportDocument.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\BarChartItem.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\HorizontalBarChart.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\IVectorChart.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\PieChart.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\PieChartSegment.cs" />
+    <Compile Include="CommonPdfRpt\VectorCharts\VerticalBarChart.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Admin\ApplicationsAdminController.cs" />
+    <Compile Include="Controllers\Admin\aspnet_ApplicationsController.cs" />
+    <Compile Include="Controllers\Admin\aspnet_MembershipAdminController.cs" />
+    <Compile Include="Controllers\Admin\aspnet_RolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\aspnet_UsersController.cs" />
+    <Compile Include="Controllers\Admin\aspnet_UsersInRolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\BussinesAdminController.cs" />
+    <Compile Include="Controllers\Admin\CastMasterAdminController.cs" />
+    <Compile Include="Controllers\Admin\CATEGORYAdminController.cs" />
+    <Compile Include="Controllers\Admin\ClssNosAdminController.cs" />
+    <Compile Include="Controllers\Admin\COLLECTIONAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomerDefaultsAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersBillingDeptAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersCardTypeAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersContactAddressAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersCreditCardShippingAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersHistoryAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersSalesContactAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersShipAddressAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersSpecialNotesAdminController.cs" />
+    <Compile Include="Controllers\Admin\CustomersSubsidiaryAddressAdminController.cs" />
+    <Compile Include="Controllers\Admin\DELIVERYAdminController.cs" />
+    <Compile Include="Controllers\Admin\DeptosAdminController.cs" />
+    <Compile Include="Controllers\Admin\DFAdminController.cs" />
+    <Compile Include="Controllers\Admin\DIALAdminController.cs" />
+    <Compile Include="Controllers\Admin\DiscountManageAdminController.cs" />
+    <Compile Include="Controllers\Admin\EventLogAdminController.cs" />
+    <Compile Include="Controllers\Admin\Group_MasterAdminController.cs" />
+    <Compile Include="Controllers\Admin\ImprintitemdetailADMINController.cs" />
+    <Compile Include="Controllers\Admin\ImprintMasterAdminController.cs" />
+    <Compile Include="Controllers\Admin\ImprintMethodsAdminController.cs" />
+    <Compile Include="Controllers\Admin\InformationDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\InformationIdAdminController.cs" />
+    <Compile Include="Controllers\Admin\InitialInfoAdminController.cs" />
+    <Compile Include="Controllers\Admin\InvoiceAdminController.cs" />
+    <Compile Include="Controllers\Admin\InvoiceDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\ITEMAdminController.cs" />
+    <Compile Include="Controllers\Admin\ITEM_PACKAGEAdminController.cs" />
+    <Compile Include="Controllers\Admin\MembershipsAdminController.cs" />
+    <Compile Include="Controllers\Admin\New_ItemsAdminController.cs" />
+    <Compile Include="Controllers\Admin\OrderByAdminController.cs" />
+    <Compile Include="Controllers\Admin\OriginAdminController.cs" />
+    <Compile Include="Controllers\Admin\PACKAGEAdminController.cs" />
+    <Compile Include="Controllers\Admin\PackageGroupDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\packagemasterAdminController.cs" />
+    <Compile Include="Controllers\Admin\PackageRateLogAdminController.cs" />
+    <Compile Include="Controllers\Admin\PackageRateLogDetailsAdminController.cs" />
+    <Compile Include="Controllers\Admin\PackageRateLogParametersAdminController.cs" />
+    <Compile Include="Controllers\Admin\PackagingDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\packingitemdetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\ParametersAdminController.cs" />
+    <Compile Include="Controllers\Admin\PaymentsAdminController.cs" />
+    <Compile Include="Controllers\Admin\PRICEAdminController.cs" />
+    <Compile Include="Controllers\Admin\ProfilesAdminController.cs" />
+    <Compile Include="Controllers\Admin\PurchaseOrdersAdminController.cs" />
+    <Compile Include="Controllers\Admin\PurchasOrderDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\RolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\SalesOrderAdminController.cs" />
+    <Compile Include="Controllers\Admin\SalesOrderBlindShipAdminController.cs" />
+    <Compile Include="Controllers\Admin\SalesOrderDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\SETUPAdminController.cs" />
+    <Compile Include="Controllers\Admin\SetupChargeDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\Setup_for_PriceAdminController.cs" />
+    <Compile Include="Controllers\Admin\ShipmentAdminController.cs" />
+    <Compile Include="Controllers\Admin\ShipmentDetailsAdminController.cs" />
+    <Compile Include="Controllers\Admin\ShipViaAdminController.cs" />
+    <Compile Include="Controllers\Admin\SPECIALITEMAdminController.cs" />
+    <Compile Include="Controllers\Admin\SUB_ITEMAdminController.cs" />
+    <Compile Include="Controllers\Admin\SUB_SPECIALITEMAdminController.cs" />
+    <Compile Include="Controllers\Admin\TablesAdminController.cs" />
+    <Compile Include="Controllers\Admin\TermsAdminController.cs" />
+    <Compile Include="Controllers\Admin\TestsAdminController.cs" />
+    <Compile Include="Controllers\Admin\timelydepot_logAdminController.cs" />
+    <Compile Include="Controllers\Admin\TradeAdminController.cs" />
+    <Compile Include="Controllers\Admin\UserQuotationAdminController.cs" />
+    <Compile Include="Controllers\Admin\UserQuotationDetailAdminController.cs" />
+    <Compile Include="Controllers\Admin\UserRegistrationAdminController.cs" />
+    <Compile Include="Controllers\Admin\UsersAdminController.cs" />
+    <Compile Include="Controllers\Admin\UsersInRolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorDefaultsAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorItemAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsBillingDeptAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsContactAddressAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsHistoryAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsSalesContactAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorsSpecialNotesAdminController.cs" />
+    <Compile Include="Controllers\Admin\VendorTypesAdminController.cs" />
+    <Compile Include="Controllers\Admin\WarehousesAdminController.cs" />
+    <Compile Include="Controllers\Admin\webpages_MembershipAdminController.cs" />
+    <Compile Include="Controllers\Admin\webpages_OAuthMembershipAdminController.cs" />
+    <Compile Include="Controllers\Admin\webpages_RolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\webpages_UsersInRolesAdminController.cs" />
+    <Compile Include="Controllers\Admin\WorkerInfluentialPersonsAdminController.cs" />
+    <Compile Include="Controllers\Admin\YearProductsAdminController.cs" />
+    <Compile Include="Controllers\CustomersController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\InvoiceController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
+    <Compile Include="Controllers\PayPalPayment\PayPalPaymentController.cs" />
+    <Compile Include="Controllers\PDFReporting\InvoiceReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\PDFReporting\ITextReportsController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\PDFReporting\PurchaseOrderReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\PDFReporting\TDTestReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseOrderController.cs" />
+    <Compile Include="Controllers\QuotesController.cs" />
+    <Compile Include="Controllers\ReportsExcelController.cs" />
+    <Compile Include="Controllers\SalesOrderController.cs" />
+    <Compile Include="Controllers\ShipmentController.cs" />
+    <Compile Include="Controllers\TestUPSRatingPackageController.cs" />
+    <Compile Include="Controllers\UPSRatingPackageController.cs" />
+    <Compile Include="Controllers\VendorsController.cs" />
+    <Compile Include="DAL\TimelyDepotContext.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201409271625017_InitalStageFroLocalDatabase.cs" />
+    <Compile Include="Migrations\201409271625017_InitalStageFroLocalDatabase.Designer.cs">
+      <DependentUpon>201409271625017_InitalStageFroLocalDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelsView\PurchaseOrderDetailSRC.cs" />
+    <Compile Include="ModelsView\InvoiceDetailSRC.cs" />
+    <Compile Include="ModelsView\CustomerList.cs" />
+    <Compile Include="ModelsView\CustomerView.cs" />
+    <Compile Include="ModelsView\InvoiceList.cs" />
+    <Compile Include="ModelsView\ItemView.cs" />
+    <Compile Include="ModelsView\PurchaseOrderList.cs" />
+    <Compile Include="ModelsView\PurchaseOrderListHlp.cs" />
+    <Compile Include="ModelsView\PurchaseOrdersbyVendor.cs" />
+    <Compile Include="ModelsView\QuotationsView.cs" />
+    <Compile Include="ModelsView\SalesOrderDetailSRC.cs" />
+    <Compile Include="ModelsView\SalesOrderList.cs" />
+    <Compile Include="ModelsView\SelectCustomer.cs" />
+    <Compile Include="ModelsView\VendorList.cs" />
+    <Compile Include="ModelsView\VendorView.cs" />
+    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\Admin\Applications.cs" />
+    <Compile Include="Models\Admin\aspnet_Applications.cs" />
+    <Compile Include="Models\Admin\aspnet_Membership.cs" />
+    <Compile Include="Models\Admin\aspnet_Roles.cs" />
+    <Compile Include="Models\Admin\aspnet_Users.cs" />
+    <Compile Include="Models\Admin\aspnet_UsersInRoles.cs" />
+    <Compile Include="Models\Admin\Ayuda.cs" />
+    <Compile Include="Models\Admin\Bussines.cs" />
+    <Compile Include="Models\Admin\CastMaster.cs" />
+    <Compile Include="Models\Admin\CATEGORY.cs" />
+    <Compile Include="Models\Admin\ClssNos.cs" />
+    <Compile Include="Models\Admin\COLLECTION.cs" />
+    <Compile Include="Models\Admin\ShipmentDetails.cs" />
+    <Compile Include="Models\Admin\Shipment.cs" />
+    <Compile Include="Models\Admin\OrderBy.cs" />
+    <Compile Include="Models\Admin\ShipVia.cs" />
+    <Compile Include="Models\Admin\ImprintMethods.cs" />
+    <Compile Include="Models\Admin\SalesOrderTES.cs" />
+    <Compile Include="Models\Admin\CustomerDefaults.cs" />
+    <Compile Include="Models\Admin\Customers.cs" />
+    <Compile Include="Models\Admin\CustomersBillingDept.cs" />
+    <Compile Include="Models\Admin\CustomersCardType.cs" />
+    <Compile Include="Models\Admin\CustomersContactAddress.cs" />
+    <Compile Include="Models\Admin\CustomersCreditCardShipping.cs" />
+    <Compile Include="Models\Admin\CustomersHistory.cs" />
+    <Compile Include="Models\Admin\CustomersSalesContact.cs" />
+    <Compile Include="Models\Admin\CustomersShipAddress.cs" />
+    <Compile Include="Models\Admin\CustomersSpecialNotes.cs" />
+    <Compile Include="Models\Admin\CustomersSubsidiaryAddress.cs" />
+    <Compile Include="Models\Admin\DELIVERY.cs" />
+    <Compile Include="Models\Admin\Deptos.cs" />
+    <Compile Include="Models\Admin\DF.cs" />
+    <Compile Include="Models\Admin\DIAL.cs" />
+    <Compile Include="Models\Admin\DiscountManage.cs" />
+    <Compile Include="Models\Admin\EventLog.cs" />
+    <Compile Include="Models\Admin\Group_Master.cs" />
+    <Compile Include="Models\Admin\Imprintitemdetail.cs" />
+    <Compile Include="Models\Admin\ImprintMaster.cs" />
+    <Compile Include="Models\Admin\InformationDetail.cs" />
+    <Compile Include="Models\Admin\InformationId.cs" />
+    <Compile Include="Models\Admin\InitialInfo.cs" />
+    <Compile Include="Models\Admin\Invoice.cs" />
+    <Compile Include="Models\Admin\InvoiceDetail.cs" />
+    <Compile Include="Models\Admin\ITEM.cs" />
+    <Compile Include="Models\Admin\ITEM_PACKAGE.cs" />
+    <Compile Include="Models\Admin\Memberships.cs" />
+    <Compile Include="Models\Admin\New_Items.cs" />
+    <Compile Include="Models\Admin\Operator.cs" />
+    <Compile Include="Models\Admin\Origin.cs" />
+    <Compile Include="Models\Admin\PACKAGE.cs" />
+    <Compile Include="Models\Admin\PackageGroupDetail.cs" />
+    <Compile Include="Models\Admin\packagemaster.cs" />
+    <Compile Include="Models\Admin\PackageRateLog.cs" />
+    <Compile Include="Models\Admin\PackageRateLogDetail.cs" />
+    <Compile Include="Models\Admin\PackageRateLogParameters.cs" />
+    <Compile Include="Models\Admin\PackagingDetail.cs" />
+    <Compile Include="Models\Admin\packingitemdetail.cs" />
+    <Compile Include="Models\Admin\Parameters.cs" />
+    <Compile Include="Models\Admin\Payments.cs" />
+    <Compile Include="Models\Admin\PRICE.cs" />
+    <Compile Include="Models\Admin\Profiles.cs" />
+    <Compile Include="Models\Admin\PurchaseOrders.cs" />
+    <Compile Include="Models\Admin\PurchasOrderDetail.cs" />
+    <Compile Include="Models\Admin\Roles.cs" />
+    <Compile Include="Models\Admin\SalesOrder.cs" />
+    <Compile Include="Models\Admin\SalesOrderBlindShip.cs" />
+    <Compile Include="Models\Admin\SalesOrderDetail.cs" />
+    <Compile Include="Models\Admin\Setup for Price.cs" />
+    <Compile Include="Models\Admin\SETUP.cs" />
+    <Compile Include="Models\Admin\SetupChargeDetail.cs" />
+    <Compile Include="Models\Admin\SPECIALITEM.cs" />
+    <Compile Include="Models\Admin\SUB_ITEM.cs" />
+    <Compile Include="Models\Admin\SUB_SPECIALITEM.cs" />
+    <Compile Include="Models\Admin\Terms.cs" />
+    <Compile Include="Models\Admin\timelydepot_log.cs" />
+    <Compile Include="Models\Admin\Trade.cs" />
+    <Compile Include="Models\Admin\UserQuotation.cs" />
+    <Compile Include="Models\Admin\UserQuotationDetail.cs" />
+    <Compile Include="Models\Admin\UserRegistration.cs" />
+    <Compile Include="Models\Admin\Users.cs" />
+    <Compile Include="Models\Admin\UsersInRoles.cs" />
+    <Compile Include="Models\Admin\VendorDefaults.cs" />
+    <Compile Include="Models\Admin\VendorItem.cs" />
+    <Compile Include="Models\Admin\Vendors.cs" />
+    <Compile Include="Models\Admin\VendorsBillingDept.cs" />
+    <Compile Include="Models\Admin\VendorsContactAddress.cs" />
+    <Compile Include="Models\Admin\VendorsHistory.cs" />
+    <Compile Include="Models\Admin\VendorsSalesContact.cs" />
+    <Compile Include="Models\Admin\VendorsSpecialNotes.cs" />
+    <Compile Include="Models\Admin\VendorTypes.cs" />
+    <Compile Include="Models\Admin\Warehouses.cs" />
+    <Compile Include="Models\Admin\webpages_Membership.cs" />
+    <Compile Include="Models\Admin\webpages_OAuthMembership.cs" />
+    <Compile Include="Models\Admin\webpages_Roles.cs" />
+    <Compile Include="Models\Admin\webpages_UsersInRoles.cs" />
+    <Compile Include="Models\Admin\WorkerInfluentialPersons.cs" />
+    <Compile Include="Models\Admin\YearProducts.cs" />
+    <Compile Include="Models\Clients.cs" />
+    <Compile Include="Models\UPSinv_detl.cs" />
+    <Compile Include="Models\UPSResult.cs" />
+    <Compile Include="PdfReportSamples\AccountingBalanceColumn\AccountingBalanceColumnPdfReport.cs" />
+    <Compile Include="PdfReportSamples\AcroFormTemplate\AcroFormTemplatePdfReport.cs" />
+    <Compile Include="PdfReportSamples\AdHocColumns\AdHocColumnsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\AnnotationField\AnnotationFieldPdfReport.cs" />
+    <Compile Include="PdfReportSamples\AppPath.cs" />
+    <Compile Include="PdfReportSamples\Barcodes\BarcodesPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Barcodes\QRCodeTemplate.cs" />
+    <Compile Include="PdfReportSamples\CalculatedFields\CalculatedFieldsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\CharacterMap\CellTemplate.cs" />
+    <Compile Include="PdfReportSamples\CsvToPdf\CsvToPdfReport.cs" />
+    <Compile Include="PdfReportSamples\CustomCellTemplate\CustomCellTemplatePdfReport.cs" />
+    <Compile Include="PdfReportSamples\CustomCellTemplate\MyCustomCellTemplate.cs" />
+    <Compile Include="PdfReportSamples\CustomHeaderFooter\CustomFooter.cs" />
+    <Compile Include="PdfReportSamples\CustomHeaderFooter\CustomHeader.cs" />
+    <Compile Include="PdfReportSamples\CustomHeaderFooter\CustomHeaderFooterPdfReport.cs" />
+    <Compile Include="PdfReportSamples\CustomPriceNumber\CustomPriceCell.cs" />
+    <Compile Include="PdfReportSamples\CustomPriceNumber\CustomPriceNumberPdfReport.cs" />
+    <Compile Include="PdfReportSamples\CustomSummaryPerPage\CustomSummaryPerPagePdfReport.cs" />
+    <Compile Include="PdfReportSamples\DataAnnotations\DataAnnotationsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\DataAnnotations\Person.cs" />
+    <Compile Include="PdfReportSamples\DataAnnotations\PersonnelDataSource.cs" />
+    <Compile Include="PdfReportSamples\DbImage\DbImagePdfReport.cs" />
+    <Compile Include="PdfReportSamples\DigitalSignature\DigitalSignaturePdfReport.cs" />
+    <Compile Include="PdfReportSamples\DuplicateColumns\DuplicateColumnsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\DynamicCompile\DynamicCompilePdfReport.cs" />
+    <Compile Include="PdfReportSamples\DynamicCrosstab\DynamicCrosstabPdfReport.cs" />
+    <Compile Include="PdfReportSamples\EmailInMemoryPdf\EmailInMemoryPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Events\EventsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ExcelToPdf\ExcelToPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ExpensesCrosstab\ExpenseDataSource.cs" />
+    <Compile Include="PdfReportSamples\ExpensesCrosstab\ExpensesCrosstabPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ExtraHeadingCells\DataGenerator.cs" />
+    <Compile Include="PdfReportSamples\ExtraHeadingCells\ExtraHeadingCellsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Grouping\GroupingHeaders.cs" />
+    <Compile Include="PdfReportSamples\Grouping\GroupingPdfReport.cs" />
+    <Compile Include="PdfReportSamples\HexDump\GrayTemplate.cs" />
+    <Compile Include="PdfReportSamples\HexDump\HexDumpPdfReport.cs" />
+    <Compile Include="PdfReportSamples\HexDump\PrintHex.cs" />
+    <Compile Include="PdfReportSamples\HtmlCellTemplate\HtmlCellTemplatePdfReport.cs" />
+    <Compile Include="PdfReportSamples\HtmlHeaderRtl\HtmlHeaderRtlPdfReport.cs" />
+    <Compile Include="PdfReportSamples\HtmlHeader\HtmlHeaderPdfReport.cs" />
+    <Compile Include="PdfReportSamples\IList\IListPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ImageFilePath\ImageFilePathPdfReport.cs" />
+    <Compile Include="PdfReportSamples\InjectCustomRows\InjectCustomRowsDataSource.cs" />
+    <Compile Include="PdfReportSamples\InjectCustomRows\InjectCustomRowsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\InlineProviders\InlineProvidersPdfReport.cs" />
+    <Compile Include="PdfReportSamples\InMemory\InMemoryPdfReport.cs" />
+    <Compile Include="PdfReportSamples\MailingLabel\MailingLabelCellTemplate.cs" />
+    <Compile Include="PdfReportSamples\MailingLabel\MailingLabelPdfReport.cs" />
+    <Compile Include="PdfReportSamples\MasterDetails\MasterDetailsHeaders.cs" />
+    <Compile Include="PdfReportSamples\MasterDetails\MasterDetailsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\MergePdfFiles\MergePdfFilesPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Models\AcroFormModel.cs" />
+    <Compile Include="PdfReportSamples\Models\CharacterInfo.cs" />
+    <Compile Include="PdfReportSamples\Models\ClassSession.cs" />
+    <Compile Include="PdfReportSamples\Models\CustomerType.cs" />
+    <Compile Include="PdfReportSamples\Models\Employee.cs" />
+    <Compile Include="PdfReportSamples\Models\Expense.cs" />
+    <Compile Include="PdfReportSamples\Models\FlatContact.cs" />
+    <Compile Include="PdfReportSamples\Models\FontSample.cs" />
+    <Compile Include="PdfReportSamples\Models\ImageRecord.cs" />
+    <Compile Include="PdfReportSamples\Models\JobTitle.cs" />
+    <Compile Include="PdfReportSamples\Models\MailInfo.cs" />
+    <Compile Include="PdfReportSamples\Models\Order.cs" />
+    <Compile Include="PdfReportSamples\Models\Orders.cs" />
+    <Compile Include="PdfReportSamples\Models\OrderType.cs" />
+    <Compile Include="PdfReportSamples\Models\Payment.cs" />
+    <Compile Include="PdfReportSamples\Models\Person.cs" />
+    <Compile Include="PdfReportSamples\Models\Phone.cs" />
+    <Compile Include="PdfReportSamples\Models\PhoneType.cs" />
+    <Compile Include="PdfReportSamples\Models\PunchOutTimeRecord.cs" />
+    <Compile Include="PdfReportSamples\Models\Question.cs" />
+    <Compile Include="PdfReportSamples\Models\Shipping.cs" />
+    <Compile Include="PdfReportSamples\Models\StudentGrade.cs" />
+    <Compile Include="PdfReportSamples\Models\StudentStat.cs" />
+    <Compile Include="PdfReportSamples\Models\Task.cs" />
+    <Compile Include="PdfReportSamples\Models\Transaction.cs" />
+    <Compile Include="PdfReportSamples\Models\TransactionType.cs" />
+    <Compile Include="PdfReportSamples\Models\User.cs" />
+    <Compile Include="PdfReportSamples\Models\UserMonthCalendar.cs" />
+    <Compile Include="PdfReportSamples\Models\UserWorkedHours.cs" />
+    <Compile Include="PdfReportSamples\MonthCalendar\MonthCalendarDataSource.cs" />
+    <Compile Include="PdfReportSamples\MonthCalendar\MonthCalendarPdfReport.cs" />
+    <Compile Include="PdfReportSamples\NestedProperties\NestedPropertiesPdfReport.cs" />
+    <Compile Include="PdfReportSamples\NestedProperties\SessionsDataSource.cs" />
+    <Compile Include="PdfReportSamples\PdfA\PdfAPdfReport.cs" />
+    <Compile Include="PdfReportSamples\PdfA\TransactionsDataSource.cs" />
+    <Compile Include="PdfReportSamples\PersianFontsListToPdf\FontsListCellTemplate.cs" />
+    <Compile Include="PdfReportSamples\PersianFontsListToPdf\PersianFontsListToPdfReport.cs" />
+    <Compile Include="PdfReportSamples\PersianMonthCalendar\PersianMonthCalendarDataSource.cs" />
+    <Compile Include="PdfReportSamples\PersianMonthCalendar\PersianMonthCalendarPdfReport.cs" />
+    <Compile Include="PdfReportSamples\PersianRtl\PersianRtlPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ProgressReport\ProgressReportPdfReport.cs" />
+    <Compile Include="PdfReportSamples\QuestionsAcroForm\QuestionsAcroFormPdfReport.cs" />
+    <Compile Include="PdfReportSamples\QuestionsForm\EntryTemplate.cs" />
+    <Compile Include="PdfReportSamples\QuestionsForm\QuestionsFormPdfReport.cs" />
+    <Compile Include="PdfReportSamples\SQLiteDataReader\SQLiteDataReaderPdfReport.cs" />
+    <Compile Include="PdfReportSamples\StackedProperties\StackedPropertiesPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Tax\TaxPdfReport.cs" />
+    <Compile Include="PdfReportSamples\Templates\GradientTestTemplate.cs" />
+    <Compile Include="PdfReportSamples\Templates\TransparentTemplate.cs" />
+    <Compile Include="PdfReportSamples\VectorBarChart\VectorBarChartPdfReport.cs" />
+    <Compile Include="PdfReportSamples\VectorPieChart\VectorPieChartPdfReport.cs" />
+    <Compile Include="PdfReportSamples\WingdingsSymbols\WingdingsSymbolsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\WorkedHours\PunchOutTimePivot.cs" />
+    <Compile Include="PdfReportSamples\WorkedHours\PunchOutTimeSampleDataSource.cs" />
+    <Compile Include="PdfReportSamples\WorkedHours\WorkedHoursPdfReport.cs" />
+    <Compile Include="PdfReportSamples\WorkedHours\WorkedHoursSum.cs" />
+    <Compile Include="PdfReportSamples\WrapGroupsInColumns\WGHeaders.cs" />
+    <Compile Include="PdfReportSamples\WrapGroupsInColumns\WrapGroupsInColumnsPdfReport.cs" />
+    <Compile Include="PdfReportSamples\XmlToPdf\XmlToPdfReport.cs" />
+    <Compile Include="PdfReportSamples\ZapfDingbatsSymbols\ZapfDingbatsSymbols.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\GGE4ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="UPSWrappers\UPSXAVService.cs" />
+    <Compile Include="Web References\XAVService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Copia %282%29 de mystyleMVC.css" />
+    <Content Include="Content\Copia de mystyleMVC.css" />
+    <Content Include="Content\FDZstyle.css" />
+    <Content Include="Content\mystyleMVC.css" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\ImportData\Inventory.csv" />
+    <Content Include="Content\Data.dat" />
+    <Content Include="PdfReportSamples\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.csprojResolveAssemblyReference.cache" />
+    <Content Include="Pdf\fonts\arial.ttf" />
+    <Content Include="Pdf\fonts\arialbd.ttf" />
+    <Content Include="Pdf\fonts\arialbi.ttf" />
+    <Content Include="Pdf\fonts\ariali.ttf" />
+    <Content Include="Pdf\fonts\ARIALN.TTF" />
+    <Content Include="Pdf\fonts\ARIALNB.TTF" />
+    <Content Include="Pdf\fonts\ARIALNBI.TTF" />
+    <Content Include="Pdf\fonts\ARIALNI.TTF" />
+    <Content Include="Pdf\fonts\ARIALUNI.TTF" />
+    <Content Include="Pdf\fonts\ariblk.ttf" />
+    <Content Include="Pdf\fonts\verdana.ttf" />
+    <Content Include="Pdf\fonts\verdanab.ttf" />
+    <Content Include="Pdf\fonts\verdanai.ttf" />
+    <Content Include="Pdf\fonts\verdanaz.ttf" />
+    <Content Include="Pdf\InvoiceReport-4003.pdf" />
+    <Content Include="Pdf\POReport-7031.pdf" />
+    <Content Include="CommonPdfRpt\Core\Helper\srgb.profile" />
+    <Content Include="CommonPdfRpt\Key.snk" />
+    <None Include="Properties\PublishProfiles\AdminLive.pubxml" />
+    <Content Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </Content>
+    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Images\01.png" />
+    <Content Include="Images\05.png" />
+    <Content Include="Images\ajaxanim.gif" />
+    <Content Include="Images\calendar.gif" />
+    <Content Include="Images\timely\index_01.gif" />
+    <Content Include="Images\timely\index_02.gif" />
+    <Content Include="Images\timely\Large_Pic\BL5001.gif" />
+    <Content Include="Images\timely\Large_Pic\BL5002.gif" />
+    <Content Include="Images\timely\Large_Pic\BR5005.gif" />
+    <Content Include="Images\timely\Large_Pic\CH1006.gif" />
+    <Content Include="Images\timely\Large_Pic\CK809.gif" />
+    <Content Include="Images\timely\Large_Pic\CK810.gif" />
+    <Content Include="Images\timely\Large_Pic\CK815.gif" />
+    <Content Include="Images\timely\Large_Pic\CK817.gif" />
+    <Content Include="Images\timely\Large_Pic\CK819.gif" />
+    <Content Include="Images\timely\Large_Pic\CK821.gif" />
+    <Content Include="Images\timely\Large_Pic\CK825.gif" />
+    <Content Include="Images\timely\Large_Pic\CK827.gif" />
+    <Content Include="Images\timely\Large_Pic\CK828.gif" />
+    <Content Include="Images\timely\Large_Pic\CK831.gif" />
+    <Content Include="Images\timely\Large_Pic\CK832.gif" />
+    <Content Include="Images\timely\Large_Pic\CK833.gif" />
+    <Content Include="Images\timely\Large_Pic\CK834.gif" />
+    <Content Include="Images\timely\Large_Pic\CK835.gif" />
+    <Content Include="Images\timely\Large_Pic\CK836.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4006.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4008.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4010.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4011.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4012.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4013.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4014.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4015.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4016.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4017.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4019.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4020.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4021.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4028.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4030.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4031.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4034.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4035.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4037.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4038.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4039.gif" />
+    <Content Include="Images\timely\Large_Pic\DF4040.gif" />
+    <Content Include="Images\timely\Small_Pic\BL5001.gif" />
+    <Content Include="Images\timely\Small_Pic\BL5002.gif" />
+    <Content Include="Images\timely\Small_Pic\BR5005.gif" />
+    <Content Include="Images\timely\Small_Pic\CH1006.gif" />
+    <Content Include="Images\timely\Small_Pic\CK809.gif" />
+    <Content Include="Images\timely\Small_Pic\CK810.gif" />
+    <Content Include="Images\timely\Small_Pic\CK815.gif" />
+    <Content Include="Images\timely\Small_Pic\CK817.gif" />
+    <Content Include="Images\timely\Small_Pic\CK819.gif" />
+    <Content Include="Images\timely\Small_Pic\CK821.gif" />
+    <Content Include="Images\timely\Small_Pic\CK825.gif" />
+    <Content Include="Images\timely\Small_Pic\CK827.gif" />
+    <Content Include="Images\timely\Small_Pic\CK828.gif" />
+    <Content Include="Images\timely\Small_Pic\CK831.gif" />
+    <Content Include="Images\timely\Small_Pic\CK832.gif" />
+    <Content Include="Images\timely\Small_Pic\CK833.gif" />
+    <Content Include="Images\timely\Small_Pic\CK834.gif" />
+    <Content Include="Images\timely\Small_Pic\CK835.gif" />
+    <Content Include="Images\timely\Small_Pic\CK836.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4006.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4008.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4010.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4011.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4012.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4013.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4014.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4015.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4016.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4017.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4019.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4020.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4021.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4028.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4030.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4031.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4034.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4035.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4037.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4038.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4039.gif" />
+    <Content Include="Images\timely\Small_Pic\DF4040.gif" />
+    <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.csproj.FileListAbsolute.txt" />
+    <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.dll" />
+    <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.pdb" />
+    <Content Include="PdfReportSamples\PdfReportSamples.csproj" />
+    <Content Include="Properties\PublishProfiles\AdminLive.pubxml.user" />
+    <Content Include="Scripts\highcharts.js" />
+    <Content Include="Scripts\jquery-1.8.2.js" />
+    <Content Include="Scripts\jquery-1.8.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.8.24.js" />
+    <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jquery.watermark.js" />
+    <Content Include="Scripts\jquery.watermark.min.js" />
+    <Content Include="Scripts\knockout-2.2.0.debug.js" />
+    <Content Include="Scripts\knockout-2.2.0.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\TimelyMVC\Timely-common.js" />
+    <Content Include="Service References\GGE4ServiceReference\configuration91.svcinfo" />
+    <Content Include="Service References\GGE4ServiceReference\configuration.svcinfo" />
+    <Content Include="Service References\GGE4ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="SqlScripts\Alter_InitialInfo.sql" />
+    <Content Include="SqlScripts\Alter_Invoice.sql" />
+    <Content Include="SqlScripts\Alter_ITEM.sql" />
+    <Content Include="SqlScripts\Alter_ITEM01.sql" />
+    <Content Include="SqlScripts\Alter_ITEM_PACKAGE.sql" />
+    <Content Include="SqlScripts\Alter_Price.sql" />
+    <Content Include="SqlScripts\Alter_PurchaseOrders.sql" />
+    <Content Include="SqlScripts\Alter_SalesOrder.sql" />
+    <Content Include="SqlScripts\Alter_SalesOrderDetail.sql" />
+    <Content Include="SqlScripts\Alter_SalesOrder_01.sql" />
+    <Content Include="SqlScripts\Alter_SetupChargeDetail.sql" />
+    <Content Include="SqlScripts\Alter_setupforprice.sql" />
+    <Content Include="SqlScripts\Alter_SUB_ITEM.sql" />
+    <Content Include="SqlScripts\Alter_SUB_ITEM_2.sql" />
+    <Content Include="SqlScripts\Alter_SUB_ITEM_3.sql" />
+    <Content Include="SqlScripts\Alter_SUB_SPECIALITEM.sql" />
+    <Content Include="SqlScripts\Alter_Trade.sql" />
+    <Content Include="SqlScripts\Alter_UserQuotation.sql" />
+    <Content Include="SqlScripts\Alter_UserQuotationDetail.sql" />
+    <Content Include="SqlScripts\Alter_VendorsContactAddress.sql" />
+    <Content Include="SqlScripts\aydatabas3.txt" />
+    <Content Include="SqlScripts\ayudadl.txt" />
+    <Content Include="SqlScripts\Ayudajoin.txt" />
+    <Content Include="SqlScripts\AyudaLogon.txt" />
+    <Content Include="SqlScripts\ayudapaginacion.txt" />
+    <Content Include="SqlScripts\AyudaPaginacion_parcial.txt" />
+    <Content Include="SqlScripts\AyudaSql.txt" />
+    <Content Include="SqlScripts\ayudaSum.txt" />
+    <Content Include="SqlScripts\AyudaTabs.txt" />
+    <Content Include="SqlScripts\ayudaTelFaxformat.txt" />
+    <Content Include="SqlScripts\ayudavendortable.txt" />
+    <Content Include="SqlScripts\Alter_SalesOrder_02.sql" />
+    <Content Include="SqlScripts\Alter_SalesOrderDetail01.sql" />
+    <Content Include="SqlScripts\Alter_Invoice01.sql" />
+    <Content Include="SqlScripts\Alter_InvoiceDetail.sql" />
+    <Content Include="SqlScripts\Alter_PurchaseOrders01.sql" />
+    <Content Include="SqlScripts\Alter_PurchaseOrders02.sql" />
+    <Content Include="SqlScripts\Alter_PurchasOrderDetail.sql" />
+    <Content Include="SqlScripts\Alter_SalesOrder_03.sql" />
+    <Content Include="SqlScripts\Alter_Invoice02.sql" />
+    <Content Include="SqlScripts\Alter_Payment.sql" />
+    <Content Include="SqlScripts\Alter_Payment_1.sql" />
+    <Content Include="SqlScripts\Create_ShipmentDetails.sql" />
+    <Content Include="SqlScripts\Create_Shipment.sql" />
+    <Content Include="SqlScripts\OrderBy.sql" />
+    <Content Include="SqlScripts\Create_ShipVia.sql" />
+    <Content Include="SqlScripts\Create_ImprintMethods.sql" />
+    <Content Include="SqlScripts\Create_ClssNos.sql" />
+    <Content Include="SqlScripts\Create_YearProducts.sql" />
+    <Content Include="SqlScripts\Create_SalesOrder01.sql" />
+    <Content Include="SqlScripts\Create_Applications.sql" />
+    <Content Include="SqlScripts\Create_AspNetApplications.sql" />
+    <Content Include="SqlScripts\Create_AspNetMembership.sql" />
+    <Content Include="SqlScripts\Create_AspNetRoles.sql" />
+    <Content Include="SqlScripts\Create_AspNetUsers.sql" />
+    <Content Include="SqlScripts\Create_AspNetUsersInRoles.sql" />
+    <Content Include="SqlScripts\Create_Bussines.sql" />
+    <Content Include="SqlScripts\Create_CastMaster.sql" />
+    <Content Include="SqlScripts\Create_CATEGORY.sql" />
+    <Content Include="SqlScripts\Create_COLLECTION.sql" />
+    <Content Include="SqlScripts\Create_CustomerDefaults.sql" />
+    <Content Include="SqlScripts\Create_Customers.sql" />
+    <Content Include="SqlScripts\Create_CustomersBillingDept.sql" />
+    <Content Include="SqlScripts\Create_CustomersCardType.sql" />
+    <Content Include="SqlScripts\Create_CustomersContactAddress.sql" />
+    <Content Include="SqlScripts\Create_CustomersCreditCardShipping.sql" />
+    <Content Include="SqlScripts\Create_CustomersHistory.sql" />
+    <Content Include="SqlScripts\Create_CustomersSalesContact.sql" />
+    <Content Include="SqlScripts\Create_CustomersShipAddress.sql" />
+    <Content Include="SqlScripts\Create_CustomersSpecialNotes.sql" />
+    <Content Include="SqlScripts\Create_CustomersSubsidiaryAddress.sql" />
+    <Content Include="SqlScripts\Create_DELIVERY.sql" />
+    <Content Include="SqlScripts\Create_Deptos.sql" />
+    <Content Include="SqlScripts\Create_DF.sql" />
+    <Content Include="SqlScripts\Create_DIAL.sql" />
+    <Content Include="SqlScripts\Create_DiscountManage.sql" />
+    <Content Include="SqlScripts\Create_EventLog.sql" />
+    <Content Include="SqlScripts\Create_Group_Maste.sql" />
+    <Content Include="SqlScripts\Create_Imprintitemdetail.sql" />
+    <Content Include="SqlScripts\Create_ImprintMaster.sql" />
+    <Content Include="SqlScripts\Create_InformationDetail.sql" />
+    <Content Include="SqlScripts\Create_InformationId.sql" />
+    <Content Include="SqlScripts\Create_InitialInfo.sql" />
+    <Content Include="SqlScripts\Create_Invoice.sql" />
+    <Content Include="SqlScripts\Create_InvoiceDetail.sql" />
+    <Content Include="SqlScripts\Create_ITEM.sql" />
+    <Content Include="SqlScripts\Create_ITEM_PACKAGE.sql" />
+    <Content Include="SqlScripts\Create_Memberships.sql" />
+    <Content Include="SqlScripts\Create_New_Items.sql" />
+    <Content Include="SqlScripts\Create_Operator.sql" />
+    <Content Include="SqlScripts\Create_Origin.sql" />
+    <Content Include="SqlScripts\Create_PACKAGE.sql" />
+    <Content Include="SqlScripts\Create_PackageGroupDetail.sql" />
+    <Content Include="SqlScripts\Create_packagemaster.sql" />
+    <Content Include="SqlScripts\Create_PackageRateLog.sql" />
+    <Content Include="SqlScripts\Create_PackageRateLogDetails.sql" />
+    <Content Include="SqlScripts\Create_PackageRateLogParameters.sql" />
+    <Content Include="SqlScripts\Create_PackagingDetail.sql" />
+    <Content Include="SqlScripts\Create_packingitemdetail.sql" />
+    <Content Include="SqlScripts\Create_Parameters.sql" />
+    <Content Include="SqlScripts\Create_Payments.sql" />
+    <Content Include="SqlScripts\Create_PRICE.sql" />
+    <Content Include="SqlScripts\Create_Profiles.sql" />
+    <Content Include="SqlScripts\Create_PurchaseOrderDetail.sql" />
+    <Content Include="SqlScripts\Create_PurchaseOrders.sql" />
+    <Content Include="SqlScripts\Create_Roles.sql" />
+    <Content Include="SqlScripts\Create_SalesOrder.sql" />
+    <Content Include="SqlScripts\Create_SalesOrderBlindShip.sql" />
+    <Content Include="SqlScripts\Create_SalesOrderDetail.sql" />
+    <Content Include="SqlScripts\Create_Setup for Price.sql" />
+    <Content Include="SqlScripts\Create_SETUP.sql" />
+    <Content Include="SqlScripts\Create_SetupChargeDetail.sql" />
+    <Content Include="SqlScripts\Create_SPECIALITEM.sql" />
+    <Content Include="SqlScripts\Create_SUB_ITEM.sql" />
+    <Content Include="SqlScripts\Create_SUB_SPECIALITEM.sql" />
+    <Content Include="SqlScripts\Create_Terms.sql" />
+    <Content Include="SqlScripts\Create_timelydepot_log.sql" />
+    <Content Include="SqlScripts\Create_Trade.sql" />
+    <Content Include="SqlScripts\Create_UserProfile.sql" />
+    <Content Include="SqlScripts\Create_UserQuotation.sql" />
+    <Content Include="SqlScripts\Create_UserQuotationDetail.sql" />
+    <Content Include="SqlScripts\Create_UserRegistration.sql" />
+    <Content Include="SqlScripts\Create_Users.sql" />
+    <Content Include="SqlScripts\Create_UsersInRoles.sql" />
+    <Content Include="SqlScripts\Create_VendorDefaults.sql" />
+    <Content Include="SqlScripts\Create_VendorItem.sql" />
+    <Content Include="SqlScripts\Create_Vendors.sql" />
+    <Content Include="SqlScripts\Create_VendorsBillingDept.sql" />
+    <Content Include="SqlScripts\Create_VendorsContactAddress.sql" />
+    <Content Include="SqlScripts\Create_VendorsHistory.sql" />
+    <Content Include="SqlScripts\Create_VendorsSalesContact.sql" />
+    <Content Include="SqlScripts\Create_VendorsSpecialNotes.sql" />
+    <Content Include="SqlScripts\Create_VendorType.sql" />
+    <Content Include="SqlScripts\Create_Warehouses.sql" />
+    <Content Include="SqlScripts\Create_webpages_Membership.sql" />
+    <Content Include="SqlScripts\Create_webpages_OAuthMembership.sql" />
+    <Content Include="SqlScripts\Create_webpages_Roles.sql" />
+    <Content Include="SqlScripts\Create_webpages_UsersInRoles.sql" />
+    <Content Include="SqlScripts\Create_WorkerInfluentialPersons.sql" />
+    <Content Include="SqlScripts\Create_SalesOrderTES.sql" />
+    <Content Include="SqlScripts\Update_ITEM_Status.sql" />
+    <Content Include="SqlScripts\Update_SalesOrder.sql" />
+    <Content Include="SqlScripts\Update_SUB_ITEM.sql" />
+    <Content Include="SqlScripts\Update_UserQuotationDetail.sql" />
+    <Content Include="Web_ORG.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web_ORG.Debug.config">
+      <DependentUpon>Web_ORG.config</DependentUpon>
+    </Content>
+    <Content Include="Web_ORG.Release.config">
+      <DependentUpon>Web_ORG.config</DependentUpon>
+    </Content>
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ChangePasswordSuccess.cshtml" />
+    <Content Include="Views\Account\LogOn.cshtml" />
+    <Content Include="Views\ApplicationsAdmin\Create.cshtml" />
+    <Content Include="Views\ApplicationsAdmin\Delete.cshtml" />
+    <Content Include="Views\ApplicationsAdmin\Details.cshtml" />
+    <Content Include="Views\ApplicationsAdmin\Edit.cshtml" />
+    <Content Include="Views\ApplicationsAdmin\Index.cshtml" />
+    <Content Include="Views\aspnet_ApplicationsAdmin\Create.cshtml" />
+    <Content Include="Views\aspnet_ApplicationsAdmin\Delete.cshtml" />
+    <Content Include="Views\aspnet_ApplicationsAdmin\Details.cshtml" />
+    <Content Include="Views\aspnet_ApplicationsAdmin\Edit.cshtml" />
+    <Content Include="Views\aspnet_ApplicationsAdmin\Index.cshtml" />
+    <Content Include="Views\aspnet_MembershipAdmin\Create.cshtml" />
+    <Content Include="Views\aspnet_MembershipAdmin\Delete.cshtml" />
+    <Content Include="Views\aspnet_MembershipAdmin\Details.cshtml" />
+    <Content Include="Views\aspnet_MembershipAdmin\Edit.cshtml" />
+    <Content Include="Views\aspnet_MembershipAdmin\Index.cshtml" />
+    <Content Include="Views\aspnet_RolesAdmin\Create.cshtml" />
+    <Content Include="Views\aspnet_RolesAdmin\Delete.cshtml" />
+    <Content Include="Views\aspnet_RolesAdmin\Details.cshtml" />
+    <Content Include="Views\aspnet_RolesAdmin\Edit.cshtml" />
+    <Content Include="Views\aspnet_RolesAdmin\Index.cshtml" />
+    <Content Include="Views\aspnet_UsersAdmin\Create.cshtml" />
+    <Content Include="Views\aspnet_UsersAdmin\Delete.cshtml" />
+    <Content Include="Views\aspnet_UsersAdmin\Details.cshtml" />
+    <Content Include="Views\aspnet_UsersAdmin\Edit.cshtml" />
+    <Content Include="Views\aspnet_UsersAdmin\Index.cshtml" />
+    <Content Include="Views\aspnet_UsersInRolesAdmin\Create.cshtml" />
+    <Content Include="Views\aspnet_UsersInRolesAdmin\Delete.cshtml" />
+    <Content Include="Views\aspnet_UsersInRolesAdmin\Details.cshtml" />
+    <Content Include="Views\aspnet_UsersInRolesAdmin\Edit.cshtml" />
+    <Content Include="Views\aspnet_UsersInRolesAdmin\Index.cshtml" />
+    <Content Include="Views\BussinesAdmin\Create.cshtml" />
+    <Content Include="Views\BussinesAdmin\Delete.cshtml" />
+    <Content Include="Views\BussinesAdmin\Details.cshtml" />
+    <Content Include="Views\BussinesAdmin\Edit.cshtml" />
+    <Content Include="Views\BussinesAdmin\Index.cshtml" />
+    <Content Include="Views\CastMasterAdmin\Create.cshtml" />
+    <Content Include="Views\CastMasterAdmin\Delete.cshtml" />
+    <Content Include="Views\CastMasterAdmin\Details.cshtml" />
+    <Content Include="Views\CastMasterAdmin\Edit.cshtml" />
+    <Content Include="Views\CastMasterAdmin\Index.cshtml" />
+    <Content Include="Views\CATEGORYAdmin\Create.cshtml" />
+    <Content Include="Views\CATEGORYAdmin\Delete.cshtml" />
+    <Content Include="Views\CATEGORYAdmin\Details.cshtml" />
+    <Content Include="Views\CATEGORYAdmin\Edit.cshtml" />
+    <Content Include="Views\CATEGORYAdmin\Index.cshtml" />
+    <Content Include="Views\COLLECTIONAdmin\Create.cshtml" />
+    <Content Include="Views\COLLECTIONAdmin\Delete.cshtml" />
+    <Content Include="Views\COLLECTIONAdmin\Details.cshtml" />
+    <Content Include="Views\COLLECTIONAdmin\Edit.cshtml" />
+    <Content Include="Views\COLLECTIONAdmin\Index.cshtml" />
+    <Content Include="Views\CustomerDefaultsAdmin\Create.cshtml" />
+    <Content Include="Views\CustomerDefaultsAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomerDefaultsAdmin\Details.cshtml" />
+    <Content Include="Views\CustomerDefaultsAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomerDefaultsAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersBillingDeptAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersBillingDeptAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersBillingDeptAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersBillingDeptAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersBillingDeptAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersCardTypeAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersCardTypeAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersCardTypeAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersCardTypeAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersCardTypeAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersContactAddressAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersContactAddressAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersContactAddressAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersContactAddressAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersContactAddressAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersCreditCardShippingAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersCreditCardShippingAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersCreditCardShippingAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersCreditCardShippingAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersCreditCardShippingAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersHistoryAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersHistoryAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersHistoryAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersHistoryAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersHistoryAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersSalesContactAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersSalesContactAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersSalesContactAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersSalesContactAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersSalesContactAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersShipAddressAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersShipAddressAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersShipAddressAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersShipAddressAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersShipAddressAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersSpecialNotesAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersSpecialNotesAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersSpecialNotesAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersSpecialNotesAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersSpecialNotesAdmin\Index.cshtml" />
+    <Content Include="Views\CustomersSubsidiaryAddressAdmin\Create.cshtml" />
+    <Content Include="Views\CustomersSubsidiaryAddressAdmin\Delete.cshtml" />
+    <Content Include="Views\CustomersSubsidiaryAddressAdmin\Details.cshtml" />
+    <Content Include="Views\CustomersSubsidiaryAddressAdmin\Edit.cshtml" />
+    <Content Include="Views\CustomersSubsidiaryAddressAdmin\Index.cshtml" />
+    <Content Include="Views\Customers\Create.cshtml" />
+    <Content Include="Views\Customers\CreateEditCreditCard.cshtml" />
+    <Content Include="Views\Customers\CreateEditNote.cshtml" />
+    <Content Include="Views\Customers\CreateEditSales.cshtml" />
+    <Content Include="Views\Customers\CreateEditShip.cshtml" />
+    <Content Include="Views\Customers\CreateEditSubsidiary.cshtml" />
+    <Content Include="Views\Customers\CustomerList.cshtml" />
+    <Content Include="Views\Customers\Edit.cshtml" />
+    <Content Include="Views\Customers\Index.cshtml" />
+    <Content Include="Views\Customers\InvoiceList.cshtml" />
+    <Content Include="Views\Customers\OutsandingSalesOrder.cshtml" />
+    <Content Include="Views\Customers\PaymentList.cshtml" />
+    <Content Include="Views\DELIVERYAdmin\Create.cshtml" />
+    <Content Include="Views\DELIVERYAdmin\Delete.cshtml" />
+    <Content Include="Views\DELIVERYAdmin\Details.cshtml" />
+    <Content Include="Views\DELIVERYAdmin\Edit.cshtml" />
+    <Content Include="Views\DELIVERYAdmin\Index.cshtml" />
+    <Content Include="Views\DeptosAdmin\Create.cshtml" />
+    <Content Include="Views\DeptosAdmin\Delete.cshtml" />
+    <Content Include="Views\DeptosAdmin\Details.cshtml" />
+    <Content Include="Views\DeptosAdmin\Edit.cshtml" />
+    <Content Include="Views\DeptosAdmin\Index.cshtml" />
+    <Content Include="Views\DFAdmin\Create.cshtml" />
+    <Content Include="Views\DFAdmin\Delete.cshtml" />
+    <Content Include="Views\DFAdmin\Details.cshtml" />
+    <Content Include="Views\DFAdmin\Edit.cshtml" />
+    <Content Include="Views\DFAdmin\Index.cshtml" />
+    <Content Include="Views\DIALAdmin\Create.cshtml" />
+    <Content Include="Views\DIALAdmin\Delete.cshtml" />
+    <Content Include="Views\DIALAdmin\Details.cshtml" />
+    <Content Include="Views\DIALAdmin\Edit.cshtml" />
+    <Content Include="Views\DIALAdmin\Index.cshtml" />
+    <Content Include="Views\DiscountManageAdmin\Create.cshtml" />
+    <Content Include="Views\DiscountManageAdmin\Delete.cshtml" />
+    <Content Include="Views\DiscountManageAdmin\Details.cshtml" />
+    <Content Include="Views\DiscountManageAdmin\Edit.cshtml" />
+    <Content Include="Views\DiscountManageAdmin\Index.cshtml" />
+    <Content Include="Views\EventLogAdmin\Create.cshtml" />
+    <Content Include="Views\EventLogAdmin\Delete.cshtml" />
+    <Content Include="Views\EventLogAdmin\Details.cshtml" />
+    <Content Include="Views\EventLogAdmin\Edit.cshtml" />
+    <Content Include="Views\EventLogAdmin\Index.cshtml" />
+    <Content Include="Views\Group_MasterAdmin\Create.cshtml" />
+    <Content Include="Views\Group_MasterAdmin\Delete.cshtml" />
+    <Content Include="Views\Group_MasterAdmin\Details.cshtml" />
+    <Content Include="Views\Group_MasterAdmin\Edit.cshtml" />
+    <Content Include="Views\Group_MasterAdmin\Index.cshtml" />
+    <Content Include="Views\Home\Development.cshtml" />
+    <Content Include="Views\Home\Index_ORG.cshtml" />
+    <Content Include="Views\Home\Quit.cshtml" />
+    <Content Include="Views\ImprintitemdetailADMIN\Create.cshtml" />
+    <Content Include="Views\ImprintitemdetailADMIN\Delete.cshtml" />
+    <Content Include="Views\ImprintitemdetailADMIN\Details.cshtml" />
+    <Content Include="Views\ImprintitemdetailADMIN\Edit.cshtml" />
+    <Content Include="Views\ImprintitemdetailADMIN\Index.cshtml" />
+    <Content Include="Views\ImprintMasterAdmin\Create.cshtml" />
+    <Content Include="Views\ImprintMasterAdmin\Delete.cshtml" />
+    <Content Include="Views\ImprintMasterAdmin\Details.cshtml" />
+    <Content Include="Views\ImprintMasterAdmin\Edit.cshtml" />
+    <Content Include="Views\ImprintMasterAdmin\Index.cshtml" />
+    <Content Include="Views\InformationDetailAdmin\Create.cshtml" />
+    <Content Include="Views\InformationDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\InformationDetailAdmin\Details.cshtml" />
+    <Content Include="Views\InformationDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\InformationDetailAdmin\Index.cshtml" />
+    <Content Include="Views\InformationIdAdmin\Create.cshtml" />
+    <Content Include="Views\InformationIdAdmin\Delete.cshtml" />
+    <Content Include="Views\InformationIdAdmin\Details.cshtml" />
+    <Content Include="Views\InformationIdAdmin\Edit.cshtml" />
+    <Content Include="Views\InformationIdAdmin\Index.cshtml" />
+    <Content Include="Views\InitialInfoAdmin\Create.cshtml" />
+    <Content Include="Views\InitialInfoAdmin\Delete.cshtml" />
+    <Content Include="Views\InitialInfoAdmin\Details.cshtml" />
+    <Content Include="Views\InitialInfoAdmin\Edit.cshtml" />
+    <Content Include="Views\InitialInfoAdmin\Index.cshtml" />
+    <Content Include="Views\Inventory\Create.cshtml" />
+    <Content Include="Views\Inventory\CreateEditSubItem.cshtml" />
+    <Content Include="Views\Inventory\CreateVendor.cshtml" />
+    <Content Include="Views\Inventory\CreateVendorTab.cshtml" />
+    <Content Include="Views\Inventory\Delete.cshtml" />
+    <Content Include="Views\Inventory\Details.cshtml" />
+    <Content Include="Views\Inventory\Edit.cshtml" />
+    <Content Include="Views\Inventory\Edit_ORG.cshtml" />
+    <Content Include="Views\Inventory\Index.cshtml" />
+    <Content Include="Views\Inventory\Index_ORG.cshtml" />
+    <Content Include="Views\Inventory\InventoryList.cshtml" />
+    <Content Include="Views\Inventory\NoteTab.cshtml" />
+    <Content Include="Views\Inventory\OpenPurchaseOrderbyItem.cshtml" />
+    <Content Include="Views\Inventory\OpenPurchaseOrderbyItemTab.cshtml" />
+    <Content Include="Views\Inventory\OpenSalesOrderbyItem.cshtml" />
+    <Content Include="Views\Inventory\OpenSalesOrderbyItemTab.cshtml" />
+    <Content Include="Views\Inventory\SalesHistorybyItem.cshtml" />
+    <Content Include="Views\Inventory\SalesHistorybyItemTab.cshtml" />
+    <Content Include="Views\Inventory\SalesHistorybyItemTab_01.cshtml" />
+    <Content Include="Views\InvoiceAdmin\Create.cshtml" />
+    <Content Include="Views\InvoiceAdmin\Delete.cshtml" />
+    <Content Include="Views\InvoiceAdmin\Details.cshtml" />
+    <Content Include="Views\InvoiceAdmin\Edit.cshtml" />
+    <Content Include="Views\InvoiceAdmin\Index.cshtml" />
+    <Content Include="Views\InvoiceDetailAdmin\Create.cshtml" />
+    <Content Include="Views\InvoiceDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\InvoiceDetailAdmin\Details.cshtml" />
+    <Content Include="Views\InvoiceDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\InvoiceDetailAdmin\Index.cshtml" />
+    <Content Include="Views\Invoice\AddDetail.cshtml" />
+    <Content Include="Views\Invoice\BlindShip.cshtml" />
+    <Content Include="Views\Invoice\Create.cshtml" />
+    <Content Include="Views\Invoice\Delete.cshtml" />
+    <Content Include="Views\Invoice\Details.cshtml" />
+    <Content Include="Views\Invoice\Edit.cshtml" />
+    <Content Include="Views\Invoice\Edit0.cshtml" />
+    <Content Include="Views\Invoice\GetSalesDetails.cshtml" />
+    <Content Include="Views\Invoice\Index.cshtml" />
+    <Content Include="Views\Invoice\InvoiceList.cshtml" />
+    <Content Include="Views\Invoice\SelectSalesOrder.cshtml" />
+    <Content Include="Views\ITEMAdmin\Create.cshtml" />
+    <Content Include="Views\ITEMAdmin\Delete.cshtml" />
+    <Content Include="Views\ITEMAdmin\Details.cshtml" />
+    <Content Include="Views\ITEMAdmin\Edit.cshtml" />
+    <Content Include="Views\ITEMAdmin\Index.cshtml" />
+    <Content Include="Views\ITEM_PACKAGEAdmin\Create.cshtml" />
+    <Content Include="Views\ITEM_PACKAGEAdmin\Delete.cshtml" />
+    <Content Include="Views\ITEM_PACKAGEAdmin\Details.cshtml" />
+    <Content Include="Views\ITEM_PACKAGEAdmin\Edit.cshtml" />
+    <Content Include="Views\ITEM_PACKAGEAdmin\Index.cshtml" />
+    <Content Include="Views\ITextReports\Index.cshtml" />
+    <Content Include="Views\ITextReports\Invoice.cshtml" />
+    <Content Include="Views\ITextReports\InvoiceiText.cshtml" />
+    <Content Include="Views\ITextReports\OutputStream.cshtml" />
+    <Content Include="Views\ITextReports\PdfError.cshtml" />
+    <Content Include="Views\ITextReports\Samplekdi.cshtml" />
+    <Content Include="Views\MembershipsAdmin\Create.cshtml" />
+    <Content Include="Views\MembershipsAdmin\Delete.cshtml" />
+    <Content Include="Views\MembershipsAdmin\Details.cshtml" />
+    <Content Include="Views\MembershipsAdmin\Edit.cshtml" />
+    <Content Include="Views\MembershipsAdmin\Index.cshtml" />
+    <Content Include="Views\New_ItemsAdmin\Create.cshtml" />
+    <Content Include="Views\New_ItemsAdmin\Delete.cshtml" />
+    <Content Include="Views\New_ItemsAdmin\Details.cshtml" />
+    <Content Include="Views\New_ItemsAdmin\Edit.cshtml" />
+    <Content Include="Views\New_ItemsAdmin\Index.cshtml" />
+    <Content Include="Views\OriginAdmin\Create.cshtml" />
+    <Content Include="Views\OriginAdmin\Delete.cshtml" />
+    <Content Include="Views\OriginAdmin\Details.cshtml" />
+    <Content Include="Views\OriginAdmin\Edit.cshtml" />
+    <Content Include="Views\OriginAdmin\Index.cshtml" />
+    <Content Include="Views\PACKAGEAdmin\Create.cshtml" />
+    <Content Include="Views\PACKAGEAdmin\Delete.cshtml" />
+    <Content Include="Views\PACKAGEAdmin\Details.cshtml" />
+    <Content Include="Views\PACKAGEAdmin\Edit.cshtml" />
+    <Content Include="Views\PACKAGEAdmin\Index.cshtml" />
+    <Content Include="Views\PackageGroupDetailAdmin\Create.cshtml" />
+    <Content Include="Views\PackageGroupDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\PackageGroupDetailAdmin\Details.cshtml" />
+    <Content Include="Views\PackageGroupDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\PackageGroupDetailAdmin\Index.cshtml" />
+    <Content Include="Views\packagemasterAdmin\Create.cshtml" />
+    <Content Include="Views\packagemasterAdmin\Delete.cshtml" />
+    <Content Include="Views\packagemasterAdmin\Details.cshtml" />
+    <Content Include="Views\packagemasterAdmin\Edit.cshtml" />
+    <Content Include="Views\packagemasterAdmin\Index.cshtml" />
+    <Content Include="Views\PackageRateLogAdmin\Create.cshtml" />
+    <Content Include="Views\PackageRateLogAdmin\Delete.cshtml" />
+    <Content Include="Views\PackageRateLogAdmin\Details.cshtml" />
+    <Content Include="Views\PackageRateLogAdmin\Edit.cshtml" />
+    <Content Include="Views\PackageRateLogAdmin\Index.cshtml" />
+    <Content Include="Views\PackageRateLogDetailsAdmin\Create.cshtml" />
+    <Content Include="Views\PackageRateLogDetailsAdmin\Delete.cshtml" />
+    <Content Include="Views\PackageRateLogDetailsAdmin\Details.cshtml" />
+    <Content Include="Views\PackageRateLogDetailsAdmin\Edit.cshtml" />
+    <Content Include="Views\PackageRateLogDetailsAdmin\Index.cshtml" />
+    <Content Include="Views\PackageRateLogParametersAdmin\Create.cshtml" />
+    <Content Include="Views\PackageRateLogParametersAdmin\Delete.cshtml" />
+    <Content Include="Views\PackageRateLogParametersAdmin\Details.cshtml" />
+    <Content Include="Views\PackageRateLogParametersAdmin\Edit.cshtml" />
+    <Content Include="Views\PackageRateLogParametersAdmin\Index.cshtml" />
+    <Content Include="Views\PackagingDetailAdmin\Create.cshtml" />
+    <Content Include="Views\PackagingDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\PackagingDetailAdmin\Details.cshtml" />
+    <Content Include="Views\PackagingDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\PackagingDetailAdmin\Index.cshtml" />
+    <Content Include="Views\packingitemdetailAdmin\Create.cshtml" />
+    <Content Include="Views\packingitemdetailAdmin\Delete.cshtml" />
+    <Content Include="Views\packingitemdetailAdmin\Details.cshtml" />
+    <Content Include="Views\packingitemdetailAdmin\Edit.cshtml" />
+    <Content Include="Views\packingitemdetailAdmin\Index.cshtml" />
+    <Content Include="Views\ParametersAdmin\Create.cshtml" />
+    <Content Include="Views\ParametersAdmin\Delete.cshtml" />
+    <Content Include="Views\ParametersAdmin\Details.cshtml" />
+    <Content Include="Views\ParametersAdmin\Edit.cshtml" />
+    <Content Include="Views\ParametersAdmin\Index.cshtml" />
+    <Content Include="Views\PaymentsAdmin\Create.cshtml" />
+    <Content Include="Views\PaymentsAdmin\Delete.cshtml" />
+    <Content Include="Views\PaymentsAdmin\Details.cshtml" />
+    <Content Include="Views\PaymentsAdmin\Edit.cshtml" />
+    <Content Include="Views\PaymentsAdmin\Index.cshtml" />
+    <Content Include="Views\Payment\Create.cshtml" />
+    <Content Include="Views\Payment\Delete.cshtml" />
+    <Content Include="Views\Payment\Details.cshtml" />
+    <Content Include="Views\Payment\Edit.cshtml" />
+    <Content Include="Views\Payment\EditPay.cshtml" />
+    <Content Include="Views\Payment\Index.cshtml" />
+    <Content Include="Views\Payment\Test02Encription.cshtml" />
+    <Content Include="Views\PayPalPayment\Index.cshtml" />
+    <Content Include="Views\PayPalPayment\PaymentSuccess.cshtml" />
+    <Content Include="Views\PDFReports\Index.cshtml" />
+    <Content Include="Views\PRICEAdmin\Create.cshtml" />
+    <Content Include="Views\PRICEAdmin\Delete.cshtml" />
+    <Content Include="Views\PRICEAdmin\Details.cshtml" />
+    <Content Include="Views\PRICEAdmin\Edit.cshtml" />
+    <Content Include="Views\PRICEAdmin\Index.cshtml" />
+    <Content Include="Views\ProfilesAdmin\Create.cshtml" />
+    <Content Include="Views\ProfilesAdmin\Delete.cshtml" />
+    <Content Include="Views\ProfilesAdmin\Details.cshtml" />
+    <Content Include="Views\ProfilesAdmin\Edit.cshtml" />
+    <Content Include="Views\ProfilesAdmin\Index.cshtml" />
+    <Content Include="Views\PurchaseOrdersAdmin\Create.cshtml" />
+    <Content Include="Views\PurchaseOrdersAdmin\Delete.cshtml" />
+    <Content Include="Views\PurchaseOrdersAdmin\Details.cshtml" />
+    <Content Include="Views\PurchaseOrdersAdmin\Edit.cshtml" />
+    <Content Include="Views\PurchaseOrdersAdmin\Index.cshtml" />
+    <Content Include="Views\PurchaseOrder\AddDetail.cshtml" />
+    <Content Include="Views\PurchaseOrder\Create.cshtml" />
+    <Content Include="Views\PurchaseOrder\Delete.cshtml" />
+    <Content Include="Views\PurchaseOrder\Details.cshtml" />
+    <Content Include="Views\PurchaseOrder\Edit.cshtml" />
+    <Content Include="Views\PurchaseOrder\GetPODetail.cshtml" />
+    <Content Include="Views\PurchaseOrder\Index.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderList.cshtml" />
+    <Content Include="Views\PurchaseOrder\SelectSalesOrder.cshtml" />
+    <Content Include="Views\PurchaseOrder\SelectVendor.cshtml" />
+    <Content Include="Views\PurchasOrderDetailAdmin\Create.cshtml" />
+    <Content Include="Views\PurchasOrderDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\PurchasOrderDetailAdmin\Details.cshtml" />
+    <Content Include="Views\PurchasOrderDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\PurchasOrderDetailAdmin\Index.cshtml" />
+    <Content Include="Views\Quotes\CompleteCustomerData.cshtml" />
+    <Content Include="Views\Quotes\Create.cshtml" />
+    <Content Include="Views\Quotes\Delete.cshtml" />
+    <Content Include="Views\Quotes\Details.cshtml" />
+    <Content Include="Views\Quotes\Edit.cshtml" />
+    <Content Include="Views\Quotes\Index.cshtml" />
+    <Content Include="Views\Quotes\SearchUserRegistration.cshtml" />
+    <Content Include="Views\Quotes\SelectCustomer.cshtml" />
+    <Content Include="Views\Quotes\SelectQuote.cshtml" />
+    <Content Include="Views\ReportsExcel\Index.cshtml" />
+    <Content Include="Views\RolesAdmin\Create.cshtml" />
+    <Content Include="Views\RolesAdmin\Delete.cshtml" />
+    <Content Include="Views\RolesAdmin\Details.cshtml" />
+    <Content Include="Views\RolesAdmin\Edit.cshtml" />
+    <Content Include="Views\RolesAdmin\Index.cshtml" />
+    <Content Include="Views\SalesOrderBlindShipAdmin\Create.cshtml" />
+    <Content Include="Views\SalesOrderBlindShipAdmin\Delete.cshtml" />
+    <Content Include="Views\SalesOrderBlindShipAdmin\Details.cshtml" />
+    <Content Include="Views\SalesOrderBlindShipAdmin\Edit.cshtml" />
+    <Content Include="Views\SalesOrderBlindShipAdmin\Index.cshtml" />
+    <Content Include="Views\SalesOrderDetailAdmin\Create.cshtml" />
+    <Content Include="Views\SalesOrderDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\SalesOrderDetailAdmin\Details.cshtml" />
+    <Content Include="Views\SalesOrderDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\SalesOrderDetailAdmin\Index.cshtml" />
+    <Content Include="Views\SalesOrder\AddDetail.cshtml" />
+    <Content Include="Views\SalesOrder\BlindShip.cshtml" />
+    <Content Include="Views\SalesOrder\Create.cshtml" />
+    <Content Include="Views\SalesOrder\Delete.cshtml" />
+    <Content Include="Views\SalesOrder\Details.cshtml" />
+    <Content Include="Views\SalesOrder\EditDetail.cshtml" />
+    <Content Include="Views\SalesOrder\GetSalesDetails.cshtml" />
+    <Content Include="Views\SalesOrder\Index.cshtml" />
+    <Content Include="Views\SalesOrder\SalesOrderList.cshtml" />
+    <Content Include="Views\SalesOrder\SelectLocation.cshtml" />
+    <Content Include="Views\SalesOrder\SelectVendor.cshtml" />
+    <Content Include="Views\SETUPAdmin\Create.cshtml" />
+    <Content Include="Views\SETUPAdmin\Delete.cshtml" />
+    <Content Include="Views\SETUPAdmin\Details.cshtml" />
+    <Content Include="Views\SETUPAdmin\Edit.cshtml" />
+    <Content Include="Views\SETUPAdmin\Index.cshtml" />
+    <Content Include="Views\SetupChargeDetailAdmin\Create.cshtml" />
+    <Content Include="Views\SetupChargeDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\SetupChargeDetailAdmin\Details.cshtml" />
+    <Content Include="Views\SetupChargeDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\SetupChargeDetailAdmin\Index.cshtml" />
+    <Content Include="Views\Setup_for_PriceAdmin\Create.cshtml" />
+    <Content Include="Views\Setup_for_PriceAdmin\Delete.cshtml" />
+    <Content Include="Views\Setup_for_PriceAdmin\Details.cshtml" />
+    <Content Include="Views\Setup_for_PriceAdmin\Edit.cshtml" />
+    <Content Include="Views\Setup_for_PriceAdmin\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Views\Shared\_LayoutAdmin_ORG.cshtml" />
+    <Content Include="Views\Shared\_LayoutLogin.cshtml" />
+    <Content Include="Views\Shared\_LayoutModule.cshtml" />
+    <Content Include="Views\Shared\_LayoutTest.cshtml" />
+    <Content Include="Views\Shared\_Layout_ORG.cshtml" />
+    <Content Include="Views\SPECIALITEMAdmin\Create.cshtml" />
+    <Content Include="Views\SPECIALITEMAdmin\Delete.cshtml" />
+    <Content Include="Views\SPECIALITEMAdmin\Details.cshtml" />
+    <Content Include="Views\SPECIALITEMAdmin\Edit.cshtml" />
+    <Content Include="Views\SPECIALITEMAdmin\Index.cshtml" />
+    <Content Include="Views\SUB_ITEMAdmin\Create.cshtml" />
+    <Content Include="Views\SUB_ITEMAdmin\Delete.cshtml" />
+    <Content Include="Views\SUB_ITEMAdmin\Details.cshtml" />
+    <Content Include="Views\SUB_ITEMAdmin\Edit.cshtml" />
+    <Content Include="Views\SUB_ITEMAdmin\Index.cshtml" />
+    <Content Include="Views\SUB_SPECIALITEMAdmin\Create.cshtml" />
+    <Content Include="Views\SUB_SPECIALITEMAdmin\Delete.cshtml" />
+    <Content Include="Views\SUB_SPECIALITEMAdmin\Details.cshtml" />
+    <Content Include="Views\SUB_SPECIALITEMAdmin\Edit.cshtml" />
+    <Content Include="Views\SUB_SPECIALITEMAdmin\Index.cshtml" />
+    <Content Include="Views\TablesAdmin\Index.cshtml" />
+    <Content Include="Views\TermsAdmin\Create.cshtml" />
+    <Content Include="Views\TermsAdmin\Delete.cshtml" />
+    <Content Include="Views\TermsAdmin\Details.cshtml" />
+    <Content Include="Views\TermsAdmin\Edit.cshtml" />
+    <Content Include="Views\TermsAdmin\Index.cshtml" />
+    <Content Include="Views\TestsAdmin\Index.cshtml" />
+    <Content Include="Views\TestUPSRatingPackage\GetCost.cshtml" />
+    <Content Include="Views\TestUPSRatingPackage\Index.cshtml" />
+    <Content Include="Views\timelydepot_logAdmin\Create.cshtml" />
+    <Content Include="Views\timelydepot_logAdmin\Delete.cshtml" />
+    <Content Include="Views\timelydepot_logAdmin\Details.cshtml" />
+    <Content Include="Views\timelydepot_logAdmin\Edit.cshtml" />
+    <Content Include="Views\timelydepot_logAdmin\Index.cshtml" />
+    <Content Include="Views\TradeAdmin\Create.cshtml" />
+    <Content Include="Views\TradeAdmin\Delete.cshtml" />
+    <Content Include="Views\TradeAdmin\Details.cshtml" />
+    <Content Include="Views\TradeAdmin\Edit.cshtml" />
+    <Content Include="Views\TradeAdmin\Index.cshtml" />
+    <Content Include="Views\UPSRatingPackage\Edit.cshtml" />
+    <Content Include="Views\UPSRatingPackage\GetCost.cshtml" />
+    <Content Include="Views\UPSRatingPackage\GetShippingCost.cshtml" />
+    <Content Include="Views\UPSRatingPackage\GetShippingRate02.cshtml" />
+    <Content Include="Views\UPSRatingPackage\Index.cshtml" />
+    <Content Include="Views\UPSRatingPackage\MainTest.cshtml" />
+    <Content Include="Views\UPSRatingPackage\Parameters.cshtml" />
+    <Content Include="Views\UPSRatingPackage\SelectItem.cshtml" />
+    <Content Include="Views\UPSRatingPackage\ShippingRateTest.cshtml" />
+    <Content Include="Views\UPSRatingPackage\ShippingRateTest02.cshtml" />
+    <Content Include="Views\UserQuotationAdmin\Create.cshtml" />
+    <Content Include="Views\UserQuotationAdmin\Delete.cshtml" />
+    <Content Include="Views\UserQuotationAdmin\Details.cshtml" />
+    <Content Include="Views\UserQuotationAdmin\Edit.cshtml" />
+    <Content Include="Views\UserQuotationAdmin\Index.cshtml" />
+    <Content Include="Views\UserQuotationDetailAdmin\Create.cshtml" />
+    <Content Include="Views\UserQuotationDetailAdmin\Delete.cshtml" />
+    <Content Include="Views\UserQuotationDetailAdmin\Details.cshtml" />
+    <Content Include="Views\UserQuotationDetailAdmin\Edit.cshtml" />
+    <Content Include="Views\UserQuotationDetailAdmin\Index.cshtml" />
+    <Content Include="Views\UserRegistrationAdmin\Create.cshtml" />
+    <Content Include="Views\UserRegistrationAdmin\Delete.cshtml" />
+    <Content Include="Views\UserRegistrationAdmin\Details.cshtml" />
+    <Content Include="Views\UserRegistrationAdmin\Edit.cshtml" />
+    <Content Include="Views\UserRegistrationAdmin\Index.cshtml" />
+    <Content Include="Views\UsersAdmin\Create.cshtml" />
+    <Content Include="Views\UsersAdmin\Delete.cshtml" />
+    <Content Include="Views\UsersAdmin\Details.cshtml" />
+    <Content Include="Views\UsersAdmin\Edit.cshtml" />
+    <Content Include="Views\UsersAdmin\Index.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Create_ORG.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Delete.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Details.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Edit.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Index.cshtml" />
+    <Content Include="Views\VendorDefaultsAdmin\Create.cshtml" />
+    <Content Include="Views\VendorDefaultsAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorDefaultsAdmin\Details.cshtml" />
+    <Content Include="Views\VendorDefaultsAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorDefaultsAdmin\Index.cshtml" />
+    <Content Include="Views\VendorItemAdmin\Create.cshtml" />
+    <Content Include="Views\VendorItemAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorItemAdmin\Details.cshtml" />
+    <Content Include="Views\VendorItemAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorItemAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsBillingDeptAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsBillingDeptAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsBillingDeptAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsBillingDeptAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsBillingDeptAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsContactAddressAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsContactAddressAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsContactAddressAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsContactAddressAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsContactAddressAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsHistoryAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsHistoryAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsHistoryAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsHistoryAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsHistoryAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsSalesContactAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsSalesContactAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsSalesContactAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsSalesContactAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsSalesContactAdmin\Index.cshtml" />
+    <Content Include="Views\VendorsSpecialNotesAdmin\Create.cshtml" />
+    <Content Include="Views\VendorsSpecialNotesAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorsSpecialNotesAdmin\Details.cshtml" />
+    <Content Include="Views\VendorsSpecialNotesAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorsSpecialNotesAdmin\Index.cshtml" />
+    <Content Include="Views\Vendors\Create.cshtml" />
+    <Content Include="Views\Vendors\CreateEditNote.cshtml" />
+    <Content Include="Views\Vendors\CreateEditSales.cshtml" />
+    <Content Include="Views\Vendors\CreateEditSales02.cshtml" />
+    <Content Include="Views\Vendors\Delete.cshtml" />
+    <Content Include="Views\Vendors\Details.cshtml" />
+    <Content Include="Views\Vendors\Edit.cshtml" />
+    <Content Include="Views\Vendors\Index.cshtml" />
+    <Content Include="Views\Vendors\OpenPurchaseOrderbyVendor.cshtml" />
+    <Content Include="Views\Vendors\VendorList.cshtml" />
+    <Content Include="Views\VendorTypesAdmin\Create.cshtml" />
+    <Content Include="Views\VendorTypesAdmin\Delete.cshtml" />
+    <Content Include="Views\VendorTypesAdmin\Details.cshtml" />
+    <Content Include="Views\VendorTypesAdmin\Edit.cshtml" />
+    <Content Include="Views\VendorTypesAdmin\Index.cshtml" />
+    <Content Include="Views\WarehousesAdmin\Create.cshtml" />
+    <Content Include="Views\WarehousesAdmin\Delete.cshtml" />
+    <Content Include="Views\WarehousesAdmin\Details.cshtml" />
+    <Content Include="Views\WarehousesAdmin\Edit.cshtml" />
+    <Content Include="Views\WarehousesAdmin\Index.cshtml" />
+    <Content Include="Views\WorkerInfluentialPersonsAdmin\Create.cshtml" />
+    <Content Include="Views\WorkerInfluentialPersonsAdmin\Delete.cshtml" />
+    <Content Include="Views\WorkerInfluentialPersonsAdmin\Details.cshtml" />
+    <Content Include="Views\WorkerInfluentialPersonsAdmin\Edit.cshtml" />
+    <Content Include="Views\WorkerInfluentialPersonsAdmin\Index.cshtml" />
+    <Content Include="Views\Inventory\Note.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Create - Copy.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\Create.cshtml" />
+    <Content Include="Views\UsersInRolesAdmin\SeleccionarUsuario.cshtml" />
+    <Content Include="Views\Customers\Index_ORG.cshtml" />
+    <Content Include="Views\Customers\Edit_ORG.cshtml" />
+    <Content Include="Views\Customers\OutsandingSalesOrderTab.cshtml" />
+    <Content Include="Views\Customers\OutsandingSalesOrderTab_00.cshtml" />
+    <Content Include="Views\Customers\OutstandinginvoiceTab.cshtml" />
+    <Content Include="Views\Customers\InvoiceListTab.cshtml" />
+    <Content Include="Views\Customers\PaymentListTab.cshtml" />
+    <Content Include="Views\Customers\Outstandinginvoice.cshtml" />
+    <Content Include="Views\Vendors\Copia de Index.cshtml" />
+    <Content Include="Views\Vendors\Copia %283%29 de Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutLV.cshtml" />
+    <Content Include="Views\SalesOrder\Edit_ORG.cshtml" />
+    <Content Include="Views\SalesOrder\GetSalesDetails_ORG.cshtml" />
+    <Content Include="Views\SalesOrder\GetSalesDetailsSRC.cshtml" />
+    <Content Include="Views\SalesOrder\PaymentXxx.cshtml" />
+    <Content Include="Views\SalesOrder\Edit.cshtml" />
+    <Content Include="Views\SalesOrder\Payment.cshtml" />
+    <Content Include="Views\SalesOrder\Copia de Edit.cshtml" />
+    <Content Include="Views\SalesOrderAdmin\Create.cshtml" />
+    <Content Include="Views\SalesOrderAdmin\Delete.cshtml" />
+    <Content Include="Views\SalesOrderAdmin\Details.cshtml" />
+    <Content Include="Views\SalesOrderAdmin\Edit.cshtml" />
+    <Content Include="Views\SalesOrderAdmin\Index.cshtml" />
+    <Content Include="Views\Invoice\GetSalesDetails_ORG.cshtml" />
+    <Content Include="Views\Invoice\GetSalesDetailsSRC.cshtml" />
+    <Content Include="Views\Invoice\Payment.cshtml" />
+    <Content Include="Views\PurchaseOrder\Copia de Index.cshtml" />
+    <Content Include="Views\PurchaseOrder\Edit_ORG.cshtml" />
+    <Content Include="Views\PurchaseOrder\Copia de Edit.cshtml" />
+    <Content Include="Views\PurchaseOrder\Copia %282%29 de Edit.cshtml" />
+    <Content Include="Views\PurchaseOrder\Copia %283%29 de Edit.cshtml" />
+    <Content Include="Views\PurchaseOrder\GetSalesDetailsSRC.cshtml" />
+    <Content Include="Views\Customers\OutsandingSalesOrderTab_ORG.cshtml" />
+    <Content Include="Views\ClssNosAdmin\Index.cshtml" />
+    <Content Include="Views\ClssNosAdmin\Details.cshtml" />
+    <Content Include="Views\ClssNosAdmin\Create.cshtml" />
+    <Content Include="Views\ClssNosAdmin\Edit.cshtml" />
+    <Content Include="Views\ClssNosAdmin\Delete.cshtml" />
+    <Content Include="Views\YearProductsAdmin\Index.cshtml" />
+    <Content Include="Views\YearProductsAdmin\Details.cshtml" />
+    <Content Include="Views\YearProductsAdmin\Create.cshtml" />
+    <Content Include="Views\YearProductsAdmin\Edit.cshtml" />
+    <Content Include="Views\YearProductsAdmin\Delete.cshtml" />
+    <Content Include="Views\SalesOrder\SelectCustomer_Xxx.cshtml" />
+    <Content Include="Views\SalesOrder\SelectCustomer.cshtml" />
+    <Content Include="Views\SalesOrder\Copia %282%29 de Edit.cshtml" />
+    <Content Include="Views\ImprintMethodsAdmin\Index.cshtml" />
+    <Content Include="Views\ImprintMethodsAdmin\Details.cshtml" />
+    <Content Include="Views\ImprintMethodsAdmin\Create.cshtml" />
+    <Content Include="Views\ImprintMethodsAdmin\Edit.cshtml" />
+    <Content Include="Views\ImprintMethodsAdmin\Delete.cshtml" />
+    <Content Include="Views\Invoice\Copia de Edit.cshtml" />
+    <Content Include="Views\ShipViaAdmin\Index.cshtml" />
+    <Content Include="Views\ShipViaAdmin\Details.cshtml" />
+    <Content Include="Views\ShipViaAdmin\Create.cshtml" />
+    <Content Include="Views\ShipViaAdmin\Edit.cshtml" />
+    <Content Include="Views\ShipViaAdmin\Delete.cshtml" />
+    <Content Include="Views\OrderByAdmin\Index.cshtml" />
+    <Content Include="Views\OrderByAdmin\Details.cshtml" />
+    <Content Include="Views\OrderByAdmin\Create.cshtml" />
+    <Content Include="Views\OrderByAdmin\Edit.cshtml" />
+    <Content Include="Views\OrderByAdmin\Delete.cshtml" />
+    <Content Include="Views\TablesAdmin\Copia de Index.cshtml" />
+    <Content Include="Views\Home\Copia de Index.cshtml" />
+    <Content Include="Views\Shipment\Index.cshtml" />
+    <Content Include="Views\Shipment\SelectInvoice.cshtml" />
+    <Content Include="Views\Shipment\Edit.cshtml" />
+    <Content Include="Views\Invoice\Copia de GetSalesDetailsSRC.cshtml" />
+    <Content Include="Views\Shipment\Edit0.cshtml" />
+    <Content Include="Views\Invoice\Copia %282%29 de GetSalesDetailsSRC.cshtml" />
+    <Content Include="Views\ShipmentAdmin\Index.cshtml" />
+    <Content Include="Views\ShipmentAdmin\Details.cshtml" />
+    <Content Include="Views\ShipmentAdmin\Create.cshtml" />
+    <Content Include="Views\ShipmentAdmin\Edit.cshtml" />
+    <Content Include="Views\ShipmentAdmin\Delete.cshtml" />
+    <Content Include="Views\ShipmentDetailsAdmin\Index.cshtml" />
+    <Content Include="Views\ShipmentDetailsAdmin\Details.cshtml" />
+    <Content Include="Views\ShipmentDetailsAdmin\Create.cshtml" />
+    <Content Include="Views\ShipmentDetailsAdmin\Edit.cshtml" />
+    <Content Include="Views\ShipmentDetailsAdmin\Delete.cshtml" />
+    <Content Include="Views\Shipment\GetShipmenDetails.cshtml" />
+    <Content Include="Views\Shipment\AddDetail.cshtml" />
+    <Content Include="Web References\XAVService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\XAVService\XAV.wsdl" />
+    <Content Include="Web References\XAVService\XAVResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Views\Shipment\Copia de Index.cshtml" />
+    <Content Include="Views\Shipment\Copia %282%29 de Index.cshtml" />
+    <Content Include="Views\Shipment\ShipmentLog.cshtml" />
+    <Content Include="Views\Payment\FDZTest.cshtml" />
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.CheckTransactionInfoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.CheckTransactionResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.SendAndCommitCheckResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.SendAndCommitResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.TransactionInfoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\TimelyDepotMVC.GGE4ServiceReference.TransactionResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\GGE4ServiceReference\wsdl.wsdl" />
+    <Content Include="Views\Payment\TestRest02.cshtml" />
+    <Content Include="Views\Payment\GetRestData02.cshtml" />
+    <Content Include="Views\Payment\FDZPayment.cshtml" />
+    <Content Include="Views\Payment\ViewLog.cshtml" />
+    <Content Include="Views\Payment\SelectInvoicePayment.cshtml" />
+    <Content Include="Views\Payment\GetCards.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="_AppStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="PdfReportSamples\ChartImage\" />
+    <Folder Include="PdfReportSamples\obj\Release\TempPE\" />
+    <Folder Include="PdfReportSamples\Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="C:\TrabajosCS\FREE4634523_5261911_6008979\Materiales_6008979\Project 4\ReferenciasWeb\XAV.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\XAVService\</RelPath>
+      <UpdateFromURL>C:\TrabajosCS\FREE4634523_5261911_6008979\Materiales_6008979\Project 4\ReferenciasWeb\XAV.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TimelyDepotMVC_XAVService_XAVService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\GGE4ServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201409271625017_InitalStageFroLocalDatabase.resx">
+      <DependentUpon>201409271625017_InitalStageFroLocalDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51034/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

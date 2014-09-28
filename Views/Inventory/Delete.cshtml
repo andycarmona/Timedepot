@@ -1,0 +1,223 @@
+﻿@model TimelyDepotMVC.Models.Admin.ITEM
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>ITEM</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PicID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PicID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DialType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DialType)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DescA)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DescA)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DescB)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DescB)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CollectionID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CollectionID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Price_ID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price_ID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Misc_ID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Misc_ID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Inactive)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Inactive)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Keywords)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Keywords)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Special)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Special)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.New)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.New)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.title)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.title)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitPerCase)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitPerCase)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitWeight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitWeight)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseWeight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseWeight)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionH)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionH)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionL)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionL)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionD)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionD)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Pic2ID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Pic2ID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Pic3ID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Pic3ID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DeptoNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DeptoNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.YearProduct)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.YearProduct)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ClassNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ClassNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UPCCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UPCCode)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseDimensionL)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseDimensionL)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseDimensionW)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseDimensionW)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseDimensionH)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseDimensionH)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Note)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

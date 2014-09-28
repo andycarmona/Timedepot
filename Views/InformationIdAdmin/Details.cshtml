@@ -1,0 +1,51 @@
+﻿@model TimelyDepotMVC.Models.Admin.InformationId
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>InformationId</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InformationId1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InformationId1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Priceinformation)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Priceinformation)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ProductionTime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductionTime)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Artwork)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Artwork)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

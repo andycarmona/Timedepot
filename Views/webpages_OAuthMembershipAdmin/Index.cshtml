@@ -1,0 +1,54 @@
+﻿@model IEnumerable<TimelyDepotMVC.Models.Admin.webpages_OAuthMembership>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>@Html.DisplayNameFor(model => model.Provider)</th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProviderUserId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserId)
+        </th>
+        <th>User Name</th>
+    </tr>
+@{
+    TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+    TimelyDepotMVC.Models.UserProfile userprofile = null;
+    string szUserName = "";
+}
+
+@foreach (var item in Model) {
+    userprofile = db01.UserProfiles.Find(item.UserId);
+    if (userprofile != null)
+    {
+        szUserName = userprofile.UserName;
+    }
+    <tr>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new {  ProviderUserId=item.ProviderUserId, UserId = item.UserId  })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Provider)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProviderUserId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserId)
+        </td>
+        <td>@szUserName</td>
+    </tr>
+}
+
+</table>

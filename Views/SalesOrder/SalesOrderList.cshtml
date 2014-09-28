@@ -1,0 +1,103 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.ModelsView.SalesOrderList>
+
+<div style="padding: 10px;">
+    @Html.ActionLink("Sales Order List (Excel)", "SalesOrderListExcel", "SalesOrder")
+</div>
+<table class="webgrid" style="width: 1100px; margin: 0px auto;">
+    <tr class="webgrid-header">
+        <th></th>
+        @*        <th>
+            @Html.DisplayNameFor(model => model.SalesOrderId)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.SalesOrderNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SODate)
+        </th>
+        @*        <th>
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShipDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </th>
+    </tr>
+
+    @{
+        long telHlp = 0;
+        long faxHlp = 0;
+        string telfmt = "000-000-0000";
+        string szTel = "";
+
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+    }
+    @foreach (var item in Model)
+    {
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row";
+        }
+        else
+        {
+            szClass = "webgrid-row-style";
+        }
+        <tr class="@szClass">
+            <td>
+                @Html.ActionLink("Details", "Edit", "SalesOrder", new { id = item.SalesOrderId }, null)
+            </td>
+            @*        <td>
+            @Html.DisplayFor(modelItem => item.SalesOrderId)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.SalesOrderNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SODate)
+            </td>
+            @*        <td>
+            @Html.DisplayFor(modelItem => item.CustomerId)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchaseOrderNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShipDate)
+            </td>
+            <td style="text-align: right;">
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="8">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("SalesOrderList", new { page }))
+
+        </td>
+    </tr>
+
+</table>

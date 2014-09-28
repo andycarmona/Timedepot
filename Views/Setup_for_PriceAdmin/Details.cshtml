@@ -1,0 +1,51 @@
+﻿@model TimelyDepotMVC.Models.Admin.Setup_for_Price
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Setup_for_Price</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Item)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Item)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Qty)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Price)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Discount_Code)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Discount_Code)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

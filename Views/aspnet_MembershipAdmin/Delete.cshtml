@@ -1,0 +1,159 @@
+﻿@model TimelyDepotMVC.Models.Admin.aspnet_Membership
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>aspnet_Membership</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ApplicationId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ApplicationId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Password)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Password)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordFormat)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordFormat)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordSalt)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordSalt)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MobilePIN)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MobilePIN)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Email)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LoweredEmail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LoweredEmail)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordQuestion)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordQuestion)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordAnswer)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordAnswer)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsApproved)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsApproved)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsLockedOut)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsLockedOut)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CreateDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastLoginDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastLoginDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastPasswordChangedDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastPasswordChangedDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastLockoutDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastLockoutDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FailedPasswordAttemptCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FailedPasswordAttemptCount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FailedPasswordAttemptWindowStart)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FailedPasswordAttemptWindowStart)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FailedPasswordAnswerAttemptCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FailedPasswordAnswerAttemptCount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FailedPasswordAnswerAttemptWindowStart)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FailedPasswordAnswerAttemptWindowStart)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Comment)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comment)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

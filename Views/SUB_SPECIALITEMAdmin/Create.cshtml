@@ -1,0 +1,53 @@
+﻿@model TimelyDepotMVC.Models.Admin.SUB_SPECIALITEM
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>SUB_SPECIALITEM</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ItemID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ItemID)
+            @Html.ValidationMessageFor(model => model.ItemID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Option)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Option)
+            @Html.ValidationMessageFor(model => model.Option)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OptionCost)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OptionCost)
+            @Html.ValidationMessageFor(model => model.OptionCost)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

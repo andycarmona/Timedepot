@@ -1,0 +1,671 @@
+﻿@model TimelyDepotMVC.Models.Admin.Payments
+
+@{
+    ViewBag.Title = "Payment";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        .webgrid th{
+            text-align:left;
+        }
+        .paymentselector {
+            width:245px;
+        }
+    </style>
+}
+@section scripts{
+    <script type="text/javascript">
+
+        var pageStatus = "";
+        jQuery(document).ready(initializePayment);
+
+        function initializePayment() {
+
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#editpaymentdialogid").dialog({ autoOpen: false, modal: true });
+
+            pageStatus = '@ViewBag.Status';
+            //alert(pageStatus);
+
+            //Set buttons
+            jQuery("#Submit1").button();
+            jQuery(".btNavTimley").button();
+
+            //Initialize fields
+            if (pageStatus == "Initial") {
+                //Disable action links
+                document.getElementById("deletePaymentid").disabled = true;
+                document.getElementById("UpdatePaymentid").disabled = true;
+                document.getElementById("PayPaymentid").disabled = true;
+
+                jQuery("#deletePaymentid").css("color", "#999999");
+                jQuery("#UpdatePaymentid").css("color", "#999999");
+                jQuery("#PayPaymentid").css("color", "#999999");
+
+                //Set buttons
+                jQuery("#Submit1").button();
+
+                //debugger;
+                var szSearchPaymentNo = '@ViewBag.SearchPaymentNo';
+                LoadPaymentLog(szSearchPaymentNo);
+            }
+
+            if (pageStatus == "Add") {
+                //debugger;
+
+                //Set buttons
+                jQuery("#Submit1").button();
+
+                //Attach handlers
+                jQuery("#CustomerNoselectorId").change(changeCustomerNoselectorId);
+                //jQuery("#UpdatePaymentid").click(clikUpdatePaymentid);
+            }
+
+            if (pageStatus == "Add01") {
+
+                //Set buttons
+                jQuery("#Submit1").button();
+
+                //Attach handlers
+                jQuery("#CustomerNoselectorId").change(changeCustomerNoselectorId);
+            }
+
+            if (pageStatus == "Add02") {
+                //debugger;
+                //Set the Payment Type selected
+                var szPaymentType = '@ViewBag.PaymentTypeSelected';
+                SetPaymentType(szPaymentType);
+
+                //Attach handlers
+                jQuery("#CardNumberselectorId").change(changeCardNumberselectorId);
+            }
+
+            if (pageStatus == "Add03") {
+                //Set the Payment Type selected
+                var szPaymentType = '@ViewBag.PaymentTypeSelected';
+                SetPaymentType(szPaymentType);
+
+                //Set the Card Number
+                var szCardNumber = '@ViewBag.SelectedCardNumber';
+                SetCardNumber(szCardNumber);
+
+                //Set buttons
+                jQuery("#Submit1").button();
+
+                //Attach handlers
+                jQuery("#CustomerNoselectorId").change(changeCustomerNoselectorId);
+            }
+
+            //Attach handlers
+            jQuery("#EditPaymenidt").click(clickEditPaymenidt);
+
+
+        }
+
+        function changeCustomerNoselectorId(src, arg) {
+            //debugger;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            if (nId != "") {
+                var hrefHlp = jQuery("#UpdatePaymentid").attr("href");
+                hrefHlp = hrefHlp + '&paystate=adding' + '&customerno=' + nId;
+                jQuery("#UpdatePaymentid").attr("href", hrefHlp);
+                //jQuery("#UpdatePaymentid").trigger('click');
+                //window.location(hrefHlp);
+            }
+        }
+
+        function changeCardNumberselectorId(src, arg) {
+            //debugger;
+            var nPos = -1;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var nIdTxt = src.target[nSelected].text
+
+            nPos = nIdTxt.indexOf("-");
+            if (nPos != -1) {
+                nIdTxt = nIdTxt.substring(nPos + 1);
+                jQuery("#CreditCardNumberhlp").val(nIdTxt);
+                //jQuery("#CreditCardNumber").val(nId);
+            }
+        }
+
+        function clickEditPaymenidt(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: editpaymentSuccess
+            });
+        }
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function editpaymentSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editpaymentdialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btnSubmitSearch").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#lnkResetId").click(clicklnkResetId);
+            jQuery("#editpayformid").submit(submiteditpayformid);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Payment log";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editpaymentdialogid").dialog("option", "title", szTitle);
+
+            //setter
+            jQuery("#editpaymentdialogid").dialog("option", "width", 1000);
+
+            //display the popup dialog
+            jQuery("#editpaymentdialogid").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#editpaymentdialogid").dialog("close");
+        }
+
+        function clicklnkResetId(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkResetId").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: editpaymentSuccess
+            });
+        }
+
+        function submiteditpayformid(src, arg) {
+            src.preventDefault();
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get search criteria
+            var szSearch = jQuery("#searchPaymentNo").val();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkResetId").attr("href");
+            if (szSearch != "") {
+                szUrl = szUrl + '?searchPaymentNo=' + szSearch;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: editpaymentSuccess
+            });
+        }
+
+        function SetPaymentType(szPaymentType) {
+            //debugger;
+
+            var szText = "";
+            var ddlPaymentType = jQuery("#PaymentTypeselectorId")[0];
+            for (var i = 0; i < ddlPaymentType.length; i++) {
+                szText = ddlPaymentType.options[i].text;
+                if (szText == szPaymentType) {
+                    ddlPaymentType.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        function SetCardNumber(szCardNumber) {
+            //debugger;
+            jQuery("#CreditCardNumberhlp").val(szCardNumber);
+            jQuery("#CardNumberselectorIdHlp").css("display", "none");
+
+            //Disable selectors
+            jQuery("#CustomerNoselectorId").attr("disabled", "disabled");
+            jQuery("#SalesOrderNoselectorId").attr("disabled", "disabled");
+            jQuery("#PaymentTypeselectorId").attr("disabled", "disabled");
+        }
+        function LoadPaymentLog(szSearchPaymentNo) {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            //var szUrl = jQuery(src.target).attr("href");
+            var szUrl = jQuery("#EditPaymenidt").attr("href");
+            if (szSearchPaymentNo != "") {
+                szUrl = szUrl + '?searchPaymentNo=' + szSearchPaymentNo;
+            }
+
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: editpaymentSuccess01
+            });
+        }
+        function editpaymentSuccess01(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#paymentlogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btnSubmitSearch").button();
+
+            //Hide close button
+            jQuery("#btDialogClose").css("display", "none");
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#lnkResetId").click(clicklnkResetId01);
+            jQuery("#editpayformid").submit(submiteditpayformid01);
+            jQuery(".lnkViewLog").each(eachlnkViewLog);
+        }
+        function eachlnkViewLog(nPos, src) {
+            jQuery(src).click(clicklnkViewLog);
+        }
+        function clicklnkViewLog(src, arg) {
+            src.preventDefault();
+
+            var szUrl = src.target.href;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: viewlogSuccess
+            });
+        }
+        function viewlogSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editpaymentdialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btNavTimley").button();
+
+            //Attach handlers 
+            jQuery("#btnClose").click(clickbtDialogClose);
+            //Get the title 
+            //debugger;
+            var szTitle = "Payment log";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editpaymentdialogid").dialog("option", "title", szTitle);
+
+            //setter
+            jQuery("#editpaymentdialogid").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#editpaymentdialogid").dialog("open");
+        }
+        function clicklnkResetId01(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+            if (szUrl != "") {
+                szUrl = szUrl.replace("EditPay", "Index");
+                window.open(szUrl, "_self");
+            }
+            else {
+                return false;
+            }
+        }
+        function submiteditpayformid01(src,arg){
+            src.preventDefault();
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get search criteria
+            var szSearch = jQuery("#searchPaymentNo").val();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkResetId").attr("href");
+            if (szSearch != "") {
+                szUrl = szUrl + '?searchPaymentNo=' + szSearch;
+                szUrl = szUrl.replace("EditPay", "Index");
+                window.open(szUrl, "_self");
+            }
+        }
+    </script>
+}
+<div class="divh1">@ViewBag.Title</div>
+
+<div>
+    @if (ViewBag.Status == "Initial")
+    {
+        <div style="display: none;">
+            <div>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PaymentNo)
+                </div>
+                <div class="editor-field">
+                    <input id="Text1" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.CustomerNo)
+                </div>
+                <div class="editor-field">
+                    <input id="Text2" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SalesOrderNo)
+                </div>
+                <div class="editor-field">
+                    <input id="Text3" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PaymentType)
+                </div>
+                <div class="editor-field">
+                    <input id="Text4" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.CreditCardNumber)
+                </div>
+                <div class="editor-field">
+                    <input id="Text4" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ReferenceNo)
+                </div>
+                <div class="editor-field">
+                    <input id="Text5" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Amount)
+                </div>
+                <div class="editor-field">
+                    <input id="Text6" type="text" readonly />
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PaymentDate)
+                </div>
+                <div class="editor-field">
+                    <input id="Text7" type="text" readonly />
+                </div>
+            </div>
+            <div style="margin: 0px auto; width: 400px; padding: 5px; text-align: center;">
+                @Html.ActionLink("Add", "Add", "Payment", null, new { id = "AddPaymentid01" }) | @Html.ActionLink("Edit", "EditPay", "Payment", null, new { id = "EditPaymenidt" }) | @Html.ActionLink("Delete", "DeletePay", "Payment", null, new { id = "deletePaymentid", onclick = "return confirm('Do you want to delte this payment?');" }) | @Html.ActionLink("Save", "UpdatePay", "Payment", new { id = ViewBag.PaymentId }, new { id = "UpdatePaymentid" }) | @Html.ActionLink("Pay", "Pay", "Payment", null, new { id = "PayPaymentid" })
+            </div>
+        </div>
+        <div id="paymentlogid">
+            Payment Log here
+        </div>
+    }
+    else
+    {
+        string szStatus = ViewBag.Status;
+        string szText = "Update";
+        string szTip = "";
+        string szDisplayDate = "block";
+        string szDisplayAmount = "block";
+        string szDisplayReference = "block";
+        string szDisplayPayment = "block";
+        string szDisplayPaymentType = "block";
+        string szDisplaySO = "block";
+        switch (szStatus)
+        {
+            case "Add":
+                szText = "Next";
+                szTip = string.Format("Select Customer and then click 'Next'.");
+                szDisplayDate = "none";
+                szDisplayAmount = "none";
+                szDisplayReference = "none";
+                szDisplayPaymentType = "none";
+                szDisplayPayment = "none";
+                szDisplaySO = "none";
+                break;
+            case "Add01":
+                szText = "Next";
+                szTip = string.Format("Select Sales Order No., Payment Type and then click 'Next'.");
+                szDisplayDate = "none";
+                szDisplayAmount = "none";
+                szDisplayReference = "none";
+                szDisplayPaymentType = "block";
+                szDisplayPayment = "none";
+                break;
+            case "Add02":
+                szText = "Next";
+                szTip = string.Format("Select or Enter Card Number and then click 'Next'.");
+                szDisplayDate = "none";
+                szDisplayAmount = "none";
+                szDisplayReference = "none";
+                szDisplayPaymentType = "block";
+                szDisplayPayment = "block";
+                break;
+            case "Add03":
+                szText = "Pay";
+                break;
+            default:
+                break;
+        }
+        <div style="margin: 0px auto; width: 400px; border: 1px solid #000000; padding: 10px;">
+            @using (Html.BeginForm("UpdatePay", "Payment", new { Status = ViewBag.Status }, FormMethod.Post, null))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.PaymentNo)
+                @Html.HiddenFor(model => model.PaymentDate)
+
+                <div>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentNo)
+                    </div>
+                    <div class="editor-field">
+                        <input id="PaymentNo" name="PaymentNo" type="text" readonly value="@Model.PaymentNo" />
+                        @*                @Html.EditorFor(model => model.PaymentNo)
+                @Html.ValidationMessageFor(model => model.PaymentNo)*@
+                    </div>
+
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.CustomerNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("CustomerNo", (IEnumerable<SelectListItem>)ViewBag.CustomerList, "Select Customer", new { id = "CustomerNoselectorId", @class="paymentselector" })&nbsp;
+                        @if (ViewBag.Status == "Add")
+                        {
+                            <span class="error">*</span> 
+                        }
+                        <div style="display: none;">
+                            @Html.EditorFor(model => model.CustomerNo)
+                            @Html.ValidationMessageFor(model => model.CustomerNo)
+                        </div>
+                    </div>
+
+                    <div class="editor-label" style="display:@szDisplaySO">
+                        @Html.LabelFor(model => model.SalesOrderNo)
+                    </div>
+                    <div style="display:@szDisplaySO">
+                        @if (ViewBag.SalesOrderList != null)
+                        {
+                            @Html.DropDownList("SalesOrderNo", (IEnumerable<SelectListItem>)ViewBag.SalesOrderList, "Select Sales Order No", new { id = "SalesOrderNoselectorId", @class="paymentselector" })
+                            if (ViewBag.Status == "Add01")
+                            {
+                            <span class="error">&nbsp;*</span>                         
+                            }
+                        }
+                    </div>
+                    <div class="editor-field">
+                        <div style="display: none;">
+                            @Html.EditorFor(model => model.SalesOrderNo)
+                            @Html.ValidationMessageFor(model => model.SalesOrderNo)
+                        </div>
+                    </div>
+
+                    <div class="editor-label" style="display:@szDisplayPaymentType">
+                        @Html.LabelFor(model => model.PaymentType)
+                    </div>
+                    <div class="editor-field">
+                        <div style="display:@szDisplayPaymentType">
+                            @if (ViewBag.PaymentType != null)
+                            {
+                                @Html.DropDownList("PaymentType", (IEnumerable<SelectListItem>)ViewBag.PaymentType, "Select Payment Type", new { id = "PaymentTypeselectorId", @class="paymentselector" })
+                                if (ViewBag.Status == "Add01")
+                                {
+                                <span class="error">&nbsp;*</span>                         
+                                }
+                            }
+                        </div>
+                        <div>
+                            <div style="display: none;">
+                                @Html.EditorFor(model => model.PaymentType)
+                                @Html.ValidationMessageFor(model => model.PaymentType)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editor-label" style="display:@szDisplayPayment">
+                        @Html.LabelFor(model => model.CreditCardNumber)
+                    </div>
+                    <div class="editor-field">
+                        <div id="CardNumberselectorIdHlp" style="display:@szDisplayPayment">
+                            @if (ViewBag.PaymentList != null)
+                            {
+                                @Html.DropDownList("CreditCardNumber", (IEnumerable<SelectListItem>)ViewBag.PaymentList, "Select Card Number", new { id = "CardNumberselectorId", @class="paymentselector" })
+                                if (ViewBag.Status == "Add01")
+                                {
+                                <span class="error">&nbsp;*</span>                         
+                                }
+                            }
+                        </div>
+                        <div style="padding-top:3px;">
+                            <div style="display:@szDisplayPayment">
+                                <input id="CreditCardNumberhlp" style="width:240px; position:relative; left:-4px;" name="CreditCardNumberhlp" type="text" />
+                            </div>
+                            <div style="display:none;">
+                                @Html.EditorFor(model => model.CreditCardNumber)
+                                @Html.ValidationMessageFor(model => model.CreditCardNumber)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editor-label" style="display:@szDisplayReference">
+                        @Html.LabelFor(model => model.ReferenceNo)
+                    </div>
+                    <div class="editor-field" style="display:@szDisplayReference">
+                        @Html.EditorFor(model => model.ReferenceNo)
+                        @Html.ValidationMessageFor(model => model.ReferenceNo)
+                    </div>
+
+                    <div class="editor-label" style="display:@szDisplayAmount">
+                        @Html.LabelFor(model => model.Amount)
+                    </div>
+                    <div class="editor-field" style="display:@szDisplayAmount">
+                        @Html.EditorFor(model => model.Amount)
+                        @Html.ValidationMessageFor(model => model.Amount)
+                    </div>
+
+
+                    <div class="editor-label" style="display:@szDisplayDate">
+                        @Html.LabelFor(model => model.PaymentDate)
+                    </div>
+                    @{                        
+                            DateTime dDate = Convert.ToDateTime(Model.PaymentDate);
+                    }
+                    <div class="editor-field" style="display:@szDisplayDate">
+                        <input id="PaymentDateHlp" name="PaymentDateHlp" type="text" value="@dDate.ToString("MM/dd/yyyy")" />
+                        <div style="display: none;">
+                            @Html.EditorFor(model => model.PaymentDate)
+                            @Html.ValidationMessageFor(model => model.PaymentDate)
+                        </div>
+                    </div>
+
+                </div>
+                <div id="mesaagetipid" style="text-align: center; font-weight: bold; padding: 5px;">
+                    @szTip
+                </div>
+                <div style="margin: 5px auto; text-align: center;">
+                    <input id="Submit1" type="submit" value="@szText" />&nbsp;
+                @if (ViewBag.Status == "Add02")
+                {
+@*Html.ActionLink("Pay", "Pay", "Payment", new { paymentid = Model.Id }, new { id = "PayPayment02id", @class = "btnPayments" })*@                 
+                }
+                </div>
+            }
+        </div>
+    }
+
+    <div id="editpaymentdialogid">
+        Payment log here
+    </div>
+</div>

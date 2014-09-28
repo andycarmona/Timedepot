@@ -1,0 +1,90 @@
+﻿@model TimelyDepotMVC.Models.Admin.webpages_Membership
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>webpages_Membership</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CreateDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ConfirmationToken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ConfirmationToken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsConfirmed)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsConfirmed)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastPasswordFailureDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastPasswordFailureDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordFailuresSinceLastSuccess)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordFailuresSinceLastSuccess)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Password)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Password)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordChangedDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordChangedDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordSalt)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordSalt)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordVerificationToken)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordVerificationToken)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PasswordVerificationTokenExpirationDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PasswordVerificationTokenExpirationDate)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

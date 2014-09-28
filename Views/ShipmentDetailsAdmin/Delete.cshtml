@@ -1,0 +1,104 @@
+﻿@model TimelyDepotMVC.Models.Admin.ShipmentDetails
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>ShipmentDetails</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipmentId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipmentId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DetailId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DetailId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BoxNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BoxNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Sub_ItemID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sub_ItemID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Quantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UnitWeight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UnitWeight)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionH)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionH)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionL)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionL)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DimensionD)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DimensionD)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Reference1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Reference1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Reference2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Reference2)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
