@@ -1,0 +1,198 @@
+﻿@model TimelyDepotMVC.Models.Admin.Payments
+
+@{
+    ViewBag.Title = "PaymentComponent";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Payments</legend>
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-5 column">
+                    <form role="form">
+                        <div class="input-group">
+                            <span class="input-group-addon">RECEIVED FROM</span>
+                            <div id="receivedInput" class="btn-group">
+                                <button class="btn btn-default">New age company for dataprograms</button> 
+                                <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">Action</a>
+                                    </li>
+                                    <li class="disabled">
+                                        <a href="#">Another action</a>
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li>
+                                        <a href="#">Something else here</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="paymentHorizontalseparation"></span>
+                        <div class="input-group">
+                            <span class="input-group-addon">PAYMENT AMOUNT</span><input type="text"  class="form-control" id="paymentAmount" />
+                        </div>
+                        <span class="paymentHorizontalseparation"></span>
+                        <div class="input-group">
+                            <span class="input-group-addon">DATE</span><input type="date" class="form-control" id="dateText" />
+                        </div>
+                        <span class="paymentHorizontalseparation"></span>
+                        <div class="input-group">
+                            <span class="input-group-addon">REFERENCE #</span><input type="text" class="form-control" id="referenceText" />
+                        </div>
+                        <span class="paymentHorizontalseparation"></span>
+                          </form>
+                </div>
+                <div class="col-md-4 column">
+                    <div class="btn-group btn-group-lg">
+                        <a class="btn btn-default">
+                            <img src="~/Images/cash_pasive.png" /> <br /><br/>CASH
+                        </a> 
+                        <a class="btn btn-default" type="button">
+                            <img src="~/Images/check_pasive.png" /><br /><br />CHECK
+                        </a> 
+                        <a class="btn btn-default" type="button">
+                            <img src="~/Images/creditcard_pasive.png" /> <br /><br />CREDIT CARD
+                        </a>
+                       
+                    </div>
+                </div>
+                <div class="col-md-3 column">
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <table class="table table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    DATE
+                                </th>
+                                <th>
+                                    NUMBER
+                                </th>
+                                <th>
+                                    ORIG. ANT.
+                                </th>
+                                <th>
+                                    AMT. DUE
+                                </th>
+                                <th>
+                                    PAYMENT
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    1
+                                </td>
+                                <td>
+                                      01/04/2012
+                                </td>
+                                <td>
+                                    214312
+                                </td>
+                                <td>
+                                    Default
+                                </td>
+                                <td>
+                                  
+                                </td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                            <tr class="active">
+                                <td>
+                                    1
+                                </td>
+                                <td>
+                                    01/04/2012
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                
+                                </td>
+                                <td>
+                                   
+                                </td>
+                                <td>
+                                    Default
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    2
+                                </td>
+                                <td>
+                                    02/04/2012
+                                </td>
+                                <td>
+                                   
+                                </td>
+                                <td>
+                                  
+                                </td>
+                                <td>
+                                   
+                                </td>
+                                <td>
+                                    Default
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row clearfix">
+                        <div class="col-md-4 column">
+                            <span class="input-group-addon">MEMO</span>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="paymentAmount" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 column">
+                        </div>
+                        <div class="col-md-4 column">
+                            <fieldset>
+                                <p>AMOUNTS FOR SELECTED INVOICES</p>
+                                <span>AMOUNT DUE </span><span class="amountResultPosition">0.00</span><br/>
+                                <span>APPLIED</span><span class="amountResultPosition">0.00</span><br/>
+                                <span>DISCOUNT AND CREDITS APPLIED</span><span class="amountResultPosition">0.00</span><br/>
+                              
+                               
+                                <div class="btn-group">
+                                    <button class="btn btn-default" type="button">Save & Close
+                                    </button> <button class="btn btn-default" type="button"> Save & New
+                                    </button>
+                                    <button class="btn btn-default" type="button"> Clear
+                                    </button>
+                                </div></fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

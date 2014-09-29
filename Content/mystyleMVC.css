@@ -628,3 +628,13 @@ h5, h6 {
 .tdw196 {
     width: 196px;
 }
+.paymentHorizontalseparation {
+    margin: 5px;
+}
+.amountHorizontalseparation {
+    padding: 8px;
+    margin: 5px;
+}
+.amountResultPosition {
+    float: right;
+}

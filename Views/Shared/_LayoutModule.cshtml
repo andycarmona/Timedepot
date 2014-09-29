@@ -19,6 +19,7 @@
     <link href="~/Content/themes/base/jquery.ui.progressbar.css" rel="stylesheet" />
     <link href="~/Content/themes/base/jquery.ui.theme.css" rel="stylesheet" />
     @Styles.Render("~/Content/mystyleMVC.css")
+    @Styles.Render("~/Content/bootstrap.css")
     @Styles.Render("~/Content/PagedList.css")
     @RenderSection("styles", required: false)
     @Scripts.Render("~/bundles/modernizr")
@@ -84,6 +85,7 @@
         }
     </script>
     @Scripts.Render("~/Scripts/TimelyMVC/Timely-common.js")
+    @Scripts.Render("~/Scripts/bootstrap.js")
     @RenderSection("scripts", required: false)
 </body>
 </html>

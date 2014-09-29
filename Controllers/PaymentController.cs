@@ -19,6 +19,8 @@ using System.Net;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Globalization;
+
     public class PaymentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
@@ -62,10 +64,10 @@ namespace TimelyDepotMVC.Controllers
             int nCardId = 0;
             int nPos = 0;
             int nHas = 0;
-            string szError = "";
-            string szDecriptedData = "";
-            string szMsg = "";
-            string szEncriptedData = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szMsg = string.Empty;
+            string szEncriptedData = string.Empty;
 
             CustomersCreditCardShipping card = null;
 
@@ -77,7 +79,7 @@ namespace TimelyDepotMVC.Controllers
                 if (card != null)
                 {
                     //Decode card number
-                    szError = "";
+                    szError = string.Empty;
                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(card.CreditNumber, ref szError);
                     if (!string.IsNullOrEmpty(szError))
                     {
@@ -131,7 +133,7 @@ namespace TimelyDepotMVC.Controllers
                     szEncriptedData = EncriptInfo02(CreditCardNumberhlp, ref szError);
                     if (!string.IsNullOrEmpty(szEncriptedData))
                     {
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(szEncriptedData, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -184,9 +186,9 @@ namespace TimelyDepotMVC.Controllers
             int nCustomerId = 0;
             int nPos = 0;
             int nHas = 0;
-            string szMsg = "";
-            string szError = "";
-            string szDecriptedData = "";
+            string szMsg = string.Empty;
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
 
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
 
@@ -195,8 +197,15 @@ namespace TimelyDepotMVC.Controllers
             listSelector = new List<KeyValuePair<string, string>>();
             if (string.IsNullOrEmpty(PaymentType))
             {
-                var qryPayment = db.CustomersCreditCardShippings.Join(db.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
-                    => new { ctcc, cstm }).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == customerNo);
+                var qryPayment =
+                    db.CustomersCreditCardShippings.Join(
+                        db.Customers,
+                        ctcc => ctcc.CustomerId,
+                        cstm => cstm.Id,
+                        (ctcc, cstm) => new { ctcc, cstm })
+                        .OrderBy(Nctad => Nctad.ctcc.CardType)
+                        .ThenBy(Nctad => Nctad.ctcc.CreditNumber)
+                        .Where(Nctad => Nctad.cstm.CustomerNo == customerNo);
 
                 if (qryPayment.Count() > 0)
                 {
@@ -208,7 +217,7 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Decode card number
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -259,7 +268,7 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Decode card number
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -369,10 +378,10 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szError = "";
-            string szDecriptedData = "";
-            string szMsg = "";
-            string szCustomerNo = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szMsg = string.Empty;
+            string szCustomerNo = string.Empty;
 
             Payments payment = null;
 
@@ -444,7 +453,7 @@ namespace TimelyDepotMVC.Controllers
                                     }
 
                                     //Decode card number
-                                    szError = "";
+                                    szError = string.Empty;
                                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(itemCard.ctcc.CreditNumber, ref szError);
                                     if (!string.IsNullOrEmpty(szError))
                                     {
@@ -513,10 +522,10 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szError = "";
-            string szDecriptedData = "";
-            string szMsg = "";
-            string szCustomerNo = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szMsg = string.Empty;
+            string szCustomerNo = string.Empty;
 
             Payments payment = null;
 
@@ -587,7 +596,7 @@ namespace TimelyDepotMVC.Controllers
                                     }
 
                                     //Decode card number
-                                    szError = "";
+                                    szError = string.Empty;
                                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(itemCard.ctcc.CreditNumber, ref szError);
                                     if (!string.IsNullOrEmpty(szError))
                                     {
@@ -651,9 +660,9 @@ namespace TimelyDepotMVC.Controllers
             int nId = 0;
             int nPos = 0;
             int nHas = 0;
-            string szMsg = "";
-            string szError = "";
-            string szDecriptedData = "";
+            string szMsg = string.Empty;
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
 
             Payments payment = null;
             Invoice invoice = null;
@@ -757,13 +766,13 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szError = "";
-            string szDecriptedData = "";
-            string szDecriptedData02 = "";
-            string szMsg = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szDecriptedData02 = string.Empty;
+            string szMsg = string.Empty;
 
             int nId = 0;
-            string szYear = "";
+            string szYear = string.Empty;
             decimal dTotalSalesOrder = 0;
             DateTime dDate = DateTime.Now;
 
@@ -909,7 +918,7 @@ namespace TimelyDepotMVC.Controllers
                 {
                     ViewBag.Transaction = "Purchase";
                 }
-                ViewBag.Amount = dTotalSalesOrder.ToString("");
+                ViewBag.Amount = dTotalSalesOrder.ToString(string.Empty);
                 szYear = dDate.Year.ToString();
                 ViewBag.expiryDate = string.Format("{0}{1}", dDate.Month.ToString("00"), szYear.Substring(2, 2));
                 ViewBag.CardHolderName = creditcard.Name;
@@ -943,24 +952,24 @@ namespace TimelyDepotMVC.Controllers
             bool bApproved = true;
             int nId = 0;
             decimal dAmount = 0;
-            string szMsg = "";
-            string szInvoicePayment = "";
-            string Authorization_Num = "";
-            string szTransaction_Approved = "";
-            string szTransaction_Type = "";
-            string szSalesOrderNo = "";
-            string szPaymentid = "";
-            string szAmount = "";
-            string szExpiryDate = "";
-            string szCardHoldersName = "";
-            string szCardNumber = "";
-            string szCardNumber02 = "";
-            string szAuthorizationNumber = "";
-            string szTransaction = "";
-            string szError = "";
-            string szRequest = "";
-            string szResponse = "";
-            string szNodeList = "";
+            string szMsg = string.Empty;
+            string szInvoicePayment = string.Empty;
+            string Authorization_Num = string.Empty;
+            string szTransaction_Approved = string.Empty;
+            string szTransaction_Type = string.Empty;
+            string szSalesOrderNo = string.Empty;
+            string szPaymentid = string.Empty;
+            string szAmount = string.Empty;
+            string szExpiryDate = string.Empty;
+            string szCardHoldersName = string.Empty;
+            string szCardNumber = string.Empty;
+            string szCardNumber02 = string.Empty;
+            string szAuthorizationNumber = string.Empty;
+            string szTransaction = string.Empty;
+            string szError = string.Empty;
+            string szRequest = string.Empty;
+            string szResponse = string.Empty;
+            string szNodeList = string.Empty;
             XmlNodeList xmlchilds = null;
 
             Payments payment = null;
@@ -1169,7 +1178,7 @@ namespace TimelyDepotMVC.Controllers
             int nId = 0;
             int nHas = 0;
             decimal dHlp = 0;
-            string szCreditCard = "";
+            string szCreditCard = string.Empty;
             string response_string = string.Empty;
 
             if (!string.IsNullOrEmpty(szCardNumber02))
@@ -1236,7 +1245,7 @@ namespace TimelyDepotMVC.Controllers
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] xml_byte = encoder.GetBytes(xml_string);
             SHA1CryptoServiceProvider sha1_crypto = new SHA1CryptoServiceProvider();
-            string hash = BitConverter.ToString(sha1_crypto.ComputeHash(xml_byte)).Replace("-", "");
+            string hash = BitConverter.ToString(sha1_crypto.ComputeHash(xml_byte)).Replace("-", string.Empty);
             string hashed_content = hash.ToLower();
 
             //assign values to hashing and header variables
@@ -1377,10 +1386,10 @@ namespace TimelyDepotMVC.Controllers
         // GET: //TestRest
         public ActionResult TestRest01()
         {
-            string szError = "";
-            string szRequest = "";
-            string szResponse = "";
-            string szNodeList = "";
+            string szError = string.Empty;
+            string szRequest = string.Empty;
+            string szResponse = string.Empty;
+            string szNodeList = string.Empty;
             XmlNodeList xmlchilds = null;
 
             szError = "En proceso de obtener la respuesta";
@@ -1448,7 +1457,7 @@ namespace TimelyDepotMVC.Controllers
             ASCIIEncoding encoder = new ASCIIEncoding();
             byte[] xml_byte = encoder.GetBytes(xml_string);
             SHA1CryptoServiceProvider sha1_crypto = new SHA1CryptoServiceProvider();
-            string hash = BitConverter.ToString(sha1_crypto.ComputeHash(xml_byte)).Replace("-", "");
+            string hash = BitConverter.ToString(sha1_crypto.ComputeHash(xml_byte)).Replace("-", string.Empty);
             string hashed_content = hash.ToLower();
 
             //assign values to hashing and header variables
@@ -1596,7 +1605,7 @@ namespace TimelyDepotMVC.Controllers
         // GET: /Payment/DeletePayment
         public ActionResult DeletePayment(int id = 0)
         {
-            string szSalesOrderNo = "";
+            string szSalesOrderNo = string.Empty;
 
             SalesOrder salesorder = null;
             Invoice invoice = null;
@@ -1686,10 +1695,10 @@ namespace TimelyDepotMVC.Controllers
             byte[] btKey = null;
             byte[] btIV = null;
             byte[] encrypted = null;
-            string szError = "";
-            string szMsg = "";
-            string szEncriptedData = "";
-            string szDecriptedData = "";
+            string szError = string.Empty;
+            string szMsg = string.Empty;
+            string szEncriptedData = string.Empty;
+            string szDecriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -1738,8 +1747,8 @@ namespace TimelyDepotMVC.Controllers
         public static string DecodeInfo02(string szEncriptedData, ref string szError)
         {
             byte[] bytes = null;
-            string szMsg = "";
-            string szDecriptedData = "";
+            string szMsg = string.Empty;
+            string szDecriptedData = string.Empty;
             string szKey = "o7x8y6";
 
             Rfc2898DeriveBytes key = null;
@@ -1830,8 +1839,8 @@ namespace TimelyDepotMVC.Controllers
             byte[] btKey = null;
             byte[] btIV = null;
             byte[] encrypted = null;
-            string szMsg = "";
-            string szDecriptedData = "";
+            string szMsg = string.Empty;
+            string szDecriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -1877,8 +1886,8 @@ namespace TimelyDepotMVC.Controllers
             //byte[] encrypted = null;
             //string szMsg = "";
             //string szDecriptedData = "";
-            string szError = "";
-            string szEncriptedData = "";
+            string szError = string.Empty;
+            string szEncriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -1921,7 +1930,7 @@ namespace TimelyDepotMVC.Controllers
 
         public static string EncriptInfo02(string szOriginalData, ref string szError)
         {
-            string szEncriptedData = "";
+            string szEncriptedData = string.Empty;
             string szKey = "o7x8y6";
 
             Rfc2898DeriveBytes key = null;
@@ -1980,8 +1989,8 @@ namespace TimelyDepotMVC.Controllers
             byte[] btKey = null;
             byte[] btIV = null;
             byte[] encrypted = null;
-            string szMsg = "";
-            string szEncriptedData = "";
+            string szMsg = string.Empty;
+            string szEncriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -2038,10 +2047,10 @@ namespace TimelyDepotMVC.Controllers
             byte[] btKey = null;
             byte[] btIV = null;
             byte[] encrypted = null;
-            string szError = "";
-            string szMsg = "";
-            string szEncriptedData = "";
-            string szDecriptedData = "";
+            string szError = string.Empty;
+            string szMsg = string.Empty;
+            string szEncriptedData = string.Empty;
+            string szDecriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -2077,12 +2086,12 @@ namespace TimelyDepotMVC.Controllers
             byte[] btKey = null;
             byte[] btIV = null;
 
-            string szError = "";
-            string szMsg = "";
-            string szMsg01 = "";
+            string szError = string.Empty;
+            string szMsg = string.Empty;
+            string szMsg01 = string.Empty;
             string szOriginalData = "HolaVios VIOS";
-            string szEncriptedData = "";
-            string szDecriptedData = "";
+            string szEncriptedData = string.Empty;
+            string szDecriptedData = string.Empty;
 
             UnicodeEncoding unicode = new UnicodeEncoding();
 
@@ -2126,7 +2135,7 @@ namespace TimelyDepotMVC.Controllers
 
         private string GetEncriptedData(ref string szError)
         {
-            string szEncriptedData = "";
+            string szEncriptedData = string.Empty;
             string szDataPath = "~/Content/Data.dat";
 
             StreamReader sreader = null;
@@ -2315,8 +2324,8 @@ namespace TimelyDepotMVC.Controllers
 
         private string DecriptData(string szEncriptedData)
         {
-            string szDecriptedData = "";
-            string szError = "";
+            string szDecriptedData = string.Empty;
+            string szError = string.Empty;
             string szDataPath = "~/Content/Data.dat";
 
             FileStream fStream = null;
@@ -2356,8 +2365,8 @@ namespace TimelyDepotMVC.Controllers
         private string EncriptData(string szOriginalData)
         {
             byte[] plainBytes = null;
-            string szEncriptedData = "";
-            string szError = "";
+            string szEncriptedData = string.Empty;
+            string szError = string.Empty;
             string szDataPath = "~/Content/Data.dat";
 
             FileStream fStream = null;
@@ -2456,8 +2465,8 @@ namespace TimelyDepotMVC.Controllers
         {
             byte[] btKey = null;
             byte[] btIV = null;
-            string szEncriptedData = "";
-            string szMsg = "";
+            string szEncriptedData = string.Empty;
+            string szMsg = string.Empty;
 
             // Instantiate a new RijndaelManaged object to perform string symmetric encryption
             RijndaelManaged rijndaelCipher = new RijndaelManaged();
@@ -2611,7 +2620,7 @@ namespace TimelyDepotMVC.Controllers
 
         public static string GetCompanyName(TimelyDepotMVC.DAL.TimelyDepotContext db01, string szCustomerNo)
         {
-            string szCompanyName = "";
+            string szCompanyName = string.Empty;
 
             var qryCust = db01.CustomersContactAddresses.Join(db01.Customers, ctad => ctad.CustomerId, ctmr => ctmr.Id, (ctad, ctmr)
                 => new { ctad, ctmr }).Where(Ncact => Ncact.ctmr.CustomerNo == szCustomerNo);
@@ -2645,9 +2654,7 @@ namespace TimelyDepotMVC.Controllers
         [HttpPost]
         public ActionResult UpdatePay(Payments payment, string PaymentDateHlp, string Status, string CreditCardNumberhlp)
         {
-            int nYear = 0;
-            int nMonth = 0;
-            int nDay = 0;
+          
             int nPos = -1;
             int nHas = 0;
             double dSalesAmount = 0;
@@ -2656,18 +2663,14 @@ namespace TimelyDepotMVC.Controllers
             double dTotalAmount = 0;
             double dBalanceDue = 0;
             DateTime dDate = DateTime.Now;
-            string[] szdateHlp = PaymentDateHlp.Split('/');
-            string szError = "";
-            string szDecriptedData = "";
-            string szEncriptedData = "";
-            string szMsg = "";
-            if (szdateHlp != null)
-            {
-                nMonth = Convert.ToInt32(szdateHlp[0]);
-                nDay = Convert.ToInt32(szdateHlp[1]);
-                nYear = Convert.ToInt32(szdateHlp[2]);
-                dDate = new DateTime(nYear, nMonth, nDay);
-            }
+            CultureInfo provider = CultureInfo.InvariantCulture;
+         
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szEncriptedData = string.Empty;
+            string szMsg = string.Empty;    
+            
+            dDate = DateTime.ParseExact(PaymentDateHlp, "MM-dd-yyyy", provider);
 
             if (ModelState.IsValid)
             {
@@ -2778,9 +2781,9 @@ namespace TimelyDepotMVC.Controllers
             bool bAddCard = true;
             int nPos = -1;
             int nHas = -1;
-            string szDecriptedData = "";
-            string szError = "";
-            string szMsg = "";
+            string szDecriptedData = string.Empty;
+            string szError = string.Empty;
+            string szMsg = string.Empty;
 
             Customers customer = null;
             CustomersCreditCardShipping creditcard = null;
@@ -2869,8 +2872,8 @@ namespace TimelyDepotMVC.Controllers
         public ActionResult Add()
         {
             int nPaymentNo = 0;
-            string CustomerNo = "";
-            string CompanyName = "";
+            string CustomerNo = string.Empty;
+            string CompanyName = string.Empty;
             InitialInfo initialinfo = null;
 
 
@@ -2905,6 +2908,10 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index", new { id = payment.Id });
         }
 
+        public ActionResult PaymentComponent()
+        {
+            return View();
+        }
         //
         // GET: /Payment/
         [NoCache]
@@ -2918,12 +2925,12 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szError = "";
-            string szDecriptedData = "";
-            string szMsg = "";
-            string szCustomerNo = "";
-            string szSalesOrderNo = "";
-            string szCardType = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szMsg = string.Empty;
+            string szCustomerNo = string.Empty;
+            string szSalesOrderNo = string.Empty;
+            string szCardType = string.Empty;
 
             TimelyDepotContext db02 = new TimelyDepotContext();
             TimelyDepotContext db03 = new TimelyDepotContext();
@@ -3023,7 +3030,7 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Decode card number
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -3133,7 +3140,7 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Decode card number
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -3205,7 +3212,7 @@ namespace TimelyDepotMVC.Controllers
 
 
                     //Decode card number
-                    szError = "";
+                    szError = string.Empty;
                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(payment.CreditCardNumber, ref szError);
                     if (!string.IsNullOrEmpty(szError))
                     {
@@ -3286,7 +3293,7 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Decode card number
-                        szError = "";
+                        szError = string.Empty;
                         szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
@@ -3606,9 +3613,9 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szSalesOrderNo = "";
-            string szEncriptedData = "";
-            string szError = "";
+            string szSalesOrderNo = string.Empty;
+            string szEncriptedData = string.Empty;
+            string szError = string.Empty;
 
             CustomersCardType cardtype = null;
             Invoice invoice = null;
