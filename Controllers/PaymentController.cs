@@ -2908,8 +2908,61 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index", new { id = payment.Id });
         }
 
+        [HttpGet]
         public ActionResult PaymentComponent()
         {
+            return this.View();
+        }
+
+        [HttpGet]
+        public JsonResult CustomerListJsonResult()
+        {
+            var listSelector = new List<KeyValuePair<string, string>>();
+            var qryCust =
+                db.CustomersContactAddresses.Join(
+                    db.Customers,
+                    ctad => ctad.CustomerId,
+                    cstm => cstm.Id,
+                    (ctad, cstm) => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            if (qryCust.Count() > 0)
+            {
+                foreach (var item in qryCust)
+                {
+                    listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+                }
+            }
+
+            var tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+           
+            return Json(tradeselectorlist,JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult PaymentsListJsonResult(string aCustomerNo)
+        {
+            var paymentsByCustomer = db.Payments.Where(x=>x.CustomerNo ==aCustomerNo);
+            return Json(paymentsByCustomer,JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult PaymentComponentUpdate(string id)
+        {
+            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
+            Payments payment = new Payments();
+            ViewBag.PaymentId = id;
+            payment = db.Payments.Find(id);
+
+            //Get the dropdown data
+            var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
+                => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            if (qryCust.Count() > 0)
+            {
+                foreach (var item in qryCust)
+                {
+                    listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+                }
+            }
+            SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.CustomerList = tradeselectorlist;
             return View();
         }
         //

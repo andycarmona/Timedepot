@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "PaymentComponent";
+   
     Layout = "~/Views/Shared/_LayoutModule.cshtml";
 }
 
@@ -18,22 +19,12 @@
                         <div class="input-group">
                             <span class="input-group-addon">RECEIVED FROM</span>
                             <div id="receivedInput" class="btn-group">
-                                <button class="btn btn-default">New age company for dataprograms</button> 
+                                <button class="btn btn-default">Choose a customer:</button> 
                                 <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#">Action</a>
-                                    </li>
-                                    <li class="disabled">
-                                        <a href="#">Another action</a>
-                                    </li>
-                                    <li class="divider">
-                                    </li>
-                                    <li>
-                                        <a href="#">Something else here</a>
-                                    </li>
+                                <ul id="payment-dropdown-menu" class="dropdown-menu">
+                                
                                 </ul>
                             </div>
                         </div>
