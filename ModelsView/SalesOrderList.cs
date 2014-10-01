@@ -36,5 +36,6 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Amount")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal? PaymentAmount { get; set; }
+
     }
 }

@@ -1925,6 +1925,8 @@
     <Content Include="Views\Payment\SelectInvoicePayment.cshtml" />
     <Content Include="Views\Payment\GetCards.cshtml" />
     <Content Include="Views\Payment\PaymentComponent.cshtml" />
+    <Content Include="Views\Payment\PaymentIndex.cshtml" />
+    <Content Include="Views\Payment\SalesOrderByCustomer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

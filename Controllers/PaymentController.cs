@@ -19,7 +19,10 @@ using System.Net;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Collections;
     using System.Globalization;
+
+    using TimelyDepotMVC.ModelsView;
 
     public class PaymentController : Controller
     {
@@ -2654,7 +2657,7 @@ namespace TimelyDepotMVC.Controllers
         [HttpPost]
         public ActionResult UpdatePay(Payments payment, string PaymentDateHlp, string Status, string CreditCardNumberhlp)
         {
-          
+
             int nPos = -1;
             int nHas = 0;
             double dSalesAmount = 0;
@@ -2664,12 +2667,12 @@ namespace TimelyDepotMVC.Controllers
             double dBalanceDue = 0;
             DateTime dDate = DateTime.Now;
             CultureInfo provider = CultureInfo.InvariantCulture;
-         
+
             string szError = string.Empty;
             string szDecriptedData = string.Empty;
             string szEncriptedData = string.Empty;
-            string szMsg = string.Empty;    
-            
+            string szMsg = string.Empty;
+
             dDate = DateTime.ParseExact(PaymentDateHlp, "MM-dd-yyyy", provider);
 
             if (ModelState.IsValid)
@@ -2908,6 +2911,258 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index", new { id = payment.Id });
         }
 
+        [NoCache]
+        public ActionResult PaymentIndex(int? page, string searchItem, string ckActive, string ckCriteria)
+        {
+            bool bCustomerStatus = false;
+            int pageIndex = 0;
+            int pageSize = PageSize;
+
+            Customers customer = null;
+            IQueryable<Customers> qryCustomers = null;
+            //IQueryable<CustomersContactAddress> qryMainContact = null;
+
+            List<Customers> CustomersList = new List<Customers>();
+
+            if (string.IsNullOrEmpty(searchItem) || searchItem == "0")
+            {
+                //qryItem = db.ITEMs.OrderBy(it => it.ItemID);
+                ViewBag.ckActiveHlp = "true";
+                ViewBag.ckCriteriaHlp = "customer";
+
+                if (searchItem == "0")
+                {
+                    ViewBag.SearchItem = searchItem;
+
+                    if (ckCriteria == "customer")
+                    {
+                        if (ckActive == "true")
+                        {
+                            qryCustomers = db.Customers.Where(cut => cut.Status == true).OrderBy(cut => cut.CustomerNo);
+                        }
+                        else
+                        {
+                            qryCustomers = db.Customers.Where(cut => cut.Status == false).OrderBy(cut => cut.CustomerNo);
+                        }
+
+                        //Display the data
+                        if (qryCustomers != null)
+                        {
+                            if (qryCustomers.Count() > 0)
+                            {
+                                foreach (var item in qryCustomers)
+                                {
+                                    CustomersList.Add(item);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                ViewBag.SearchItem = searchItem;
+                ViewBag.ckActiveHlp = ckActive;
+                ViewBag.ckCriteriaHlp = ckCriteria;
+
+                if (ckCriteria == "customer")
+                {
+                    if (ckActive == "true")
+                    {
+                        qryCustomers = db.Customers.Where(cut => cut.CustomerNo.StartsWith(searchItem) && cut.Status == true).OrderBy(cut => cut.CustomerNo);
+                    }
+                    else
+                    {
+                        qryCustomers = db.Customers.Where(cut => cut.CustomerNo.StartsWith(searchItem) && cut.Status == false).OrderBy(cut => cut.CustomerNo);
+                    }
+
+                    //Display the data
+                    if (qryCustomers != null)
+                    {
+                        if (qryCustomers.Count() > 0)
+                        {
+                            foreach (var item in qryCustomers)
+                            {
+                                CustomersList.Add(item);
+                            }
+                        }
+                    }
+                }
+
+                if (ckCriteria == "company")
+                {
+                    if (ckActive == "true")
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.CompanyName.StartsWith(searchItem) && Nctcs.ctc.Status == true).OrderBy(Nctcs => Nctcs.cus.CompanyName);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.CompanyName.StartsWith(searchItem) && Nctcs.ctc.Status == false).OrderBy(Nctcs => Nctcs.cus.CompanyName);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                }
+
+                if (ckCriteria == "phone")
+                {
+                    if (ckActive == "true")
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Tel.StartsWith(searchItem) && Nctcs.ctc.Status == true).OrderBy(Nctcs => Nctcs.cus.Tel);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Tel.StartsWith(searchItem) && Nctcs.ctc.Status == false).OrderBy(Nctcs => Nctcs.cus.Tel);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                }
+
+                if (ckCriteria == "email")
+                {
+                    if (ckActive == "true")
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Email.StartsWith(searchItem) && Nctcs.ctc.Status == true).OrderBy(Nctcs => Nctcs.cus.Email);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Email.StartsWith(searchItem) && Nctcs.ctc.Status == false).OrderBy(Nctcs => Nctcs.cus.Email);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                }
+
+                if (ckCriteria == "areacode")
+                {
+                    if (ckActive == "true")
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Zip.StartsWith(searchItem) && Nctcs.ctc.Status == true).OrderBy(Nctcs => Nctcs.cus.Zip);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.Zip.StartsWith(searchItem) && Nctcs.ctc.Status == false).OrderBy(Nctcs => Nctcs.cus.Zip);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                }
+
+                if (ckCriteria == "state")
+                {
+                    if (ckActive == "true")
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.State.StartsWith(searchItem) && Nctcs.ctc.Status == true).OrderBy(Nctcs => Nctcs.cus.State);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var qryMainContact = db.Customers.Join(db.CustomersContactAddresses, ctc => ctc.Id, cus => cus.CustomerId, (ctc, cus)
+                             => new { ctc, cus }).Where(Nctcs => Nctcs.cus.State.StartsWith(searchItem) && Nctcs.ctc.Status == false).OrderBy(Nctcs => Nctcs.cus.State);
+                        if (qryMainContact.Count() > 0)
+                        {
+                            foreach (var item in qryMainContact)
+                            {
+                                CustomersList.Add(item.ctc);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            //Set the page
+            if (page == null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                pageIndex = Convert.ToInt32(page);
+            }
+
+
+            var onePageOfData = CustomersList.ToPagedList(pageIndex, pageSize);
+            ViewBag.OnePageOfData = onePageOfData;
+
+
+            //Authorize user
+            if (User.IsInRole("Owner"))
+            {
+                return View(CustomersList.ToPagedList(pageIndex, pageSize));
+            }
+            if (User.IsInRole("Admin"))
+            {
+                return View(CustomersList.ToPagedList(pageIndex, pageSize));
+            }
+
+
+            //return View(CustomersList.ToPagedList(pageIndex, pageSize));
+            return RedirectToAction("LogOn", "Account");
+        }
+
+
         [HttpGet]
         public ActionResult PaymentComponent()
         {
@@ -2915,32 +3170,62 @@ namespace TimelyDepotMVC.Controllers
         }
 
         [HttpGet]
-        public JsonResult CustomerListJsonResult()
+        public ActionResult SalesOrderByCustomer(int nCustomerId)
         {
-            var listSelector = new List<KeyValuePair<string, string>>();
-            var qryCust =
-                db.CustomersContactAddresses.Join(
-                    db.Customers,
-                    ctad => ctad.CustomerId,
-                    cstm => cstm.Id,
-                    (ctad, cstm) => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
-            if (qryCust.Count() > 0)
+            double dSalesAmount = 0;
+            double dTax = 0;
+            double dTotalTax = 0;
+            double dTotalAmount = 0;
+            double dBalanceDue = 0;
+
+            if (nCustomerId > 0)
             {
-                foreach (var item in qryCust)
+                var filterSalesOrderByDue = new List<PurchaseOrderList>();
+
+                var totalSalesOrderAndInvoices = from salesorder in this.db.SalesOrders
+                                                 join invoices in this.db.Invoices on salesorder.SalesOrderNo equals
+                                                     invoices.SalesOrderNo
+                                                 where salesorder.CustomerId == nCustomerId
+                                                 select
+                                                     new PurchaseOrderList()
+                                                         {
+                                                             SalesOrderNo = salesorder.SalesOrderNo,
+                                                             SalesAmount = salesorder.PaymentAmount,
+                                                             PaymentAmount = invoices.PaymentAmount,
+                                                             SODate = salesorder.SODate,
+                                                             InvoiceDate = invoices.InvoiceDate,
+                                                             InvoiceNo = invoices.InvoiceNo
+                                                         };
+
+                if (!totalSalesOrderAndInvoices.Any())
                 {
-                    listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+                    return this.View(filterSalesOrderByDue);
                 }
+
+                foreach (var item in totalSalesOrderAndInvoices)
+                {
+                    var aSalesId = this.db.SalesOrders.Single(x => x.SalesOrderNo == item.SalesOrderNo).SalesOrderId;
+
+
+                    this.GetSalesOrderTotals(
+                        aSalesId,
+                        ref dSalesAmount,
+                        ref dTotalTax,
+                        ref dTax,
+                        ref dTotalAmount,
+                        ref dBalanceDue);
+                    if (!(dBalanceDue > 0))
+                    {
+                        continue;
+                    }
+
+                    filterSalesOrderByDue.Add(item);
+                }
+
+                return this.View(filterSalesOrderByDue);
             }
 
-            var tradeselectorlist = new SelectList(listSelector, "Key", "Value");
-           
-            return Json(tradeselectorlist,JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult PaymentsListJsonResult(string aCustomerNo)
-        {
-            var paymentsByCustomer = db.Payments.Where(x=>x.CustomerNo ==aCustomerNo);
-            return Json(paymentsByCustomer,JsonRequestBehavior.AllowGet);
+            return this.RedirectToAction("PaymentIndex");
         }
 
         [HttpGet]

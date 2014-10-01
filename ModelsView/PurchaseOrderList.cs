@@ -14,7 +14,7 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Purchase Order No")]
         public string PurchaseOrderNo { get; set; }
 
-        [Display(Name = "Date")]
+        [Display(Name = "Sales Order Date")]
         [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? SODate { get; set; }
 
@@ -33,8 +33,25 @@ namespace TimelyDepotMVC.ModelsView
         [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ShipDate { get; set; }
 
-        [Display(Name = "Amount")]
+        [Display(Name = "Payment")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
         public decimal? PaymentAmount { get; set; }
+
+        [Display(Name = "Total Amount")]
+        public double? TotalAmount { get; set; }
+
+        [Display(Name = "Sales Order Amount")]
+        public decimal? SalesAmount { get; set; }
+
+        [Display(Name = "Balance Due")]
+        public double? BalanceDue { get; set; }
+        
+        [Display(Name = "Invoice #")]
+        public string InvoiceNo { get; set; }
+
+        [Display(Name = "InvoiceDate")]
+        public DateTime? InvoiceDate { get; set; }
+
+
     }
 }

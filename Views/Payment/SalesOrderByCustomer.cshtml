@@ -1,0 +1,94 @@
+﻿@model IEnumerable<TimelyDepotMVC.ModelsView.PurchaseOrderList>
+
+@{
+    ViewBag.Title = "SalesOrderByCustomer";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+      int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+}
+
+<h2>SalesOrderByCustomer</h2>
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th>@Html.DisplayNameFor(model => model.SODate)
+          
+            </th>
+            <th>@Html.DisplayNameFor(model => model.SalesOrderNo)
+              
+            </th>
+            <th>@Html.DisplayNameFor(model => model.SalesAmount)
+           
+            </th>
+            <th>@Html.DisplayNameFor(model => model.InvoiceDate)
+                
+            </th>
+            <th>@Html.DisplayNameFor(model => model.InvoiceNo)
+              
+            </th>
+            <th>@Html.DisplayNameFor(model => model.PaymentAmount)
+             
+            </th>
+            <th>@Html.DisplayNameFor(model => model.BalanceDue)
+               
+            </th>
+        </tr>
+   
+
+        @foreach (var item in Model)
+        {
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row timelycustomertr trhlp";
+            }
+            else
+            {
+                szClass = "webgrid-row-style timelycustomertr trhlp";
+            }
+
+            string sztrId = string.Format("row0_{0}", item.InvoiceNo);
+
+            <tr id="@sztrId" class="@szClass">
+                <td>
+                    @item.SODate
+                Sales Order Date
+            </td>
+            <td>
+                @item.SalesOrderNo
+            
+            </td>
+            <td>
+                @item.SalesAmount
+           
+            </td>
+            <td>
+                @item.InvoiceDate
+      
+            </td>
+            <td>
+                @item.InvoiceNo
+     
+            </td>
+            <td>
+                @item.PaymentAmount
+      
+            </td>
+            <td>
+                @item.BalanceDue
+            
+            </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="7">
+       
+
+            </td>
+        </tr>
+
+    </table>
+</div>
