@@ -240,6 +240,10 @@ namespace TimelyDepotMVC.DAL
 
         public DbSet<ShipmentDetails> ShipmentDetails { get; set; }
 
+        public DbSet<Refunds> Refunds { get; set; }
 
+        public DbSet<CustomerTransactions> CustomerTransactions { get; set; }
+
+        public DbSet<TransactionsCodes> TransactionCodes { get; set; } 
     }
 }

@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<TimelyDepotMVC.ModelsView.PurchaseOrderList>
 
 @{
-    ViewBag.Title = "SalesOrderByCustomer";
+  
     Layout = "~/Views/Shared/_LayoutModule.cshtml";
       int nRow = 0;
             int nMod = 0;
             string szClass = "";
 }
 
-<h2>SalesOrderByCustomer</h2>
+<h2>SalesOrder by Customer</h2>
 <div style="width: 1240px; margin: 0px auto;">
     <table class="webgrid" style="width: 1240px; margin: 0px auto;">
         <tr class="webgrid-header">
@@ -55,32 +55,31 @@
             <tr id="@sztrId" class="@szClass">
                 <td>
                     @item.SODate
-                Sales Order Date
-            </td>
-            <td>
-                @item.SalesOrderNo
+                </td>
+                <td>
+                    @item.SalesOrderNo
             
-            </td>
-            <td>
-                @item.SalesAmount
+                </td>
+                <td>
+                    @item.SalesAmount
            
-            </td>
-            <td>
-                @item.InvoiceDate
+                </td>
+                <td>
+                    @item.InvoiceDate
       
-            </td>
-            <td>
-                @item.InvoiceNo
+                </td>
+                <td>
+                    @item.InvoiceNo
      
-            </td>
-            <td>
-                @item.PaymentAmount
+                </td>
+                <td>
+                    @item.PaymentAmount
       
-            </td>
-            <td>
-                @item.BalanceDue
+                </td>
+                <td>
+                    @item.BalanceDue
             
-            </td>
+                </td>
             </tr>
         }
         <tr>
@@ -92,3 +91,26 @@
 
     </table>
 </div>
+@section scripts{
+    <script>
+        jQuery(".timelycustomertr td").each(eachtimelycustomertr);
+        function eachtimelycustomertr(nPos, src) {
+            jQuery(src).click(clicktimelycustomertr);
+            jQuery(src).mouseover(mouseovertimelycustomertr);
+        }
+        function clicktimelycustomertr(src, arg) {
+
+            //var szhRef = jQuery("#lnkeditcustomer").attr("href");
+
+            //var szId = src.target.parentNode.id;
+            //szId = szId.replace("row0_", "");
+            //alert(szId);
+            //szhRef = szhRef + '/' + szId;
+            //window.open(szhRef, "_self");
+            window.open("/Payment/PaymentTransactionList?salesOrderNo=1", "_self");
+        }
+        function mouseovertimelycustomertr(src, arg) {
+            jQuery(src.target).css("cursor", "pointer");
+        }
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿¨@model TimelyDepotMVC.ModelsView.PaymentTransactionList
+
+@{
+    ViewBag.Title = "ViewCreditCardPayment";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+
+<h2>View Credit Card Payment</h2>
+<label>@Html.DisplayNameFor(model => model.CustomerNo)</label><br/>
+@Html.DisplayFor(model=>model.CustomerNo)<br/>
+
+<label> @Html.DisplayNameFor(model => model.SalesOrderNo)</label><br/>
+@Html.DisplayFor(model=>model.SalesOrderNo)<br/>
+
+
+<label>Transaction code: 2</label><br/>
+<label>@Html.DisplayNameFor(model => model.PaymentType)</label><br/>
+@Html.DisplayFor(model=>model.PaymentType)<br/>
+<label>Choose a credit card number</label><br/>
+@Html.DisplayFor(model=>model.CreditCardNumber)<br/>
+
+<label>@Html.DisplayNameFor(model => model.PaymentDate)</label>
+@Html.DisplayFor(model=>model.PaymentDate)
+<label>Aproval code</label>
+
+<label>@Html.DisplayNameFor(model=>model.Amount)</label>
+@Html.DisplayFor(model=>model.Amount)

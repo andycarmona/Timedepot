@@ -1,0 +1,37 @@
+﻿@model List<TimelyDepotMVC.ModelsView.PurchaseOrderList>
+
+@{
+    ViewBag.Title = "AddCreditCardPayment";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+
+<h2>Add Credit Card Payment</h2>
+<label>Customer No</label>
+<select id="customerList">
+    <option></option>
+
+</select>
+
+<label> Sales Order No</label>
+<select id="salesOrderList">
+    <option></option>
+
+</select>
+<label>Transaction code: 2</label>
+<label>Payment type</label>
+<select id="paymentType">
+    <option></option>
+
+</select>
+<label>Choose a credit card number</label>
+<select id="creditcardList">
+    <option></option>
+
+</select>
+<input id="Button1" type="button" value="Add new creditCard" />
+<label>Payment date</label>
+<input id="Text1" type="text" />
+<label>Aproval code</label>
+<input id="Text1" type="text" />
+<label>Payment amount</label>
+<input id="Text1" type="text" />

@@ -22,6 +22,8 @@ namespace TimelyDepotMVC.Controllers
     using System.Collections;
     using System.Globalization;
 
+    using PdfRpt.Core.Helper;
+
     using TimelyDepotMVC.ModelsView;
 
     public class PaymentController : Controller
@@ -3161,9 +3163,61 @@ namespace TimelyDepotMVC.Controllers
             //return View(CustomersList.ToPagedList(pageIndex, pageSize));
             return RedirectToAction("LogOn", "Account");
         }
+        public ActionResult EditCreditCardPayment()
+        {
+            return this.View();
+        }
 
+        public ActionResult AddCreditCardPayment(string customerNo)
+        {
+            if (!string.IsNullOrEmpty(customerNo))
+            {
+                var query = from salesorder in this.db.SalesOrders
+                            join customerslist in this.db.Customers
+                            on salesorder.CustomerId equals customerslist.Id
+                            select new PaymentTransactionList()
+                            {
+                                CustomerNo = customerslist.CustomerNo,
+                                SalesOrderNo = salesorder.SalesOrderNo,
 
-        [HttpGet]
+                            };
+
+            }
+            return this.View();
+        }
+
+        public ActionResult ViewCreditCardPayment(string customerNo,string salesOrderNo)
+        {
+            var query = (from paymentlist in this.db.Payments
+                         join customerslist in this.db.Customers on paymentlist.CustomerNo equals
+                             customerslist.CustomerNo
+                         select
+                             new PaymentTransactionList()
+                             {
+                                 CustomerNo = customerslist.CustomerNo,
+                                 SalesOrderNo = paymentlist.SalesOrderNo,
+                                 PaymentType = paymentlist.PaymentType,
+                                 CreditCardNumber = paymentlist.CreditCardNumber,
+                                 PaymentDate = paymentlist.PaymentDate,
+                                 PaymentAmount = paymentlist.Amount.ToString()
+                             }).ToList();
+
+            if (string.IsNullOrEmpty(customerNo) && string.IsNullOrEmpty(salesOrderNo))
+            {
+                var aElment = query.SingleOrDefault(x => x.SalesOrderNo == salesOrderNo);
+
+                return View(aElment);j
+            }
+            ViewBag.SaleOrderNumbers = query.Select(x => x.SalesOrderNo); 
+            return this.View();
+        }
+
+        public ActionResult TransactionDetail()
+        {
+            return View();
+        }
+
+        [HttpGet]   
         public ActionResult PaymentComponent()
         {
             return this.View();
@@ -3183,12 +3237,12 @@ namespace TimelyDepotMVC.Controllers
                 var filterSalesOrderByDue = new List<PurchaseOrderList>();
 
                 var totalSalesOrderAndInvoices = from salesorder in this.db.SalesOrders
-                                                 join invoices in this.db.Invoices on salesorder.SalesOrderNo equals
-                                                     invoices.SalesOrderNo
+                                                 join invoices in this.db.Invoices on salesorder.SalesOrderNo equals invoices.SalesOrderNo
                                                  where salesorder.CustomerId == nCustomerId
                                                  select
                                                      new PurchaseOrderList()
                                                          {
+                                                             SalesOrderId = salesorder.SalesOrderId,
                                                              SalesOrderNo = salesorder.SalesOrderNo,
                                                              SalesAmount = salesorder.PaymentAmount,
                                                              PaymentAmount = invoices.PaymentAmount,
@@ -3219,6 +3273,7 @@ namespace TimelyDepotMVC.Controllers
                         continue;
                     }
 
+                    item.BalanceDue = dBalanceDue;
                     filterSalesOrderByDue.Add(item);
                 }
 
@@ -3227,6 +3282,32 @@ namespace TimelyDepotMVC.Controllers
 
             return this.RedirectToAction("PaymentIndex");
         }
+
+        public ActionResult PaymentTransactionList(string salesOrderNo)
+        {
+            //var queryPaymentTranList = from transaction in this.db.CustomerTransactions 
+            //                           where transaction.SalesorderNo == salesOrderNo
+            //                           select new PaymentTransactionList()
+            //                                      {
+            //                                          CustomerNo = transaction.CustomerNo,
+            //                                          SalesOrderNo = transaction.SalesorderNo,
+            //                                          TransactionCode = transaction.TransactionCode,
+            //                                         TransactionDate = transaction.TransactionDate,
+            //                                         SalesAmount = transaction.s
+                                                      
+            //                                      };
+                                           
+                                                                            //{
+                                                                                                                  
+                                                                                                              //}
+            List<PaymentTransactionList> aTransList=new List<PaymentTransactionList>();
+            aTransList.Add(new PaymentTransactionList());
+            aTransList.Add(new PaymentTransactionList());
+            aTransList.Add(new PaymentTransactionList());
+
+            return this.View(new List<PaymentTransactionList>());
+        }
+
 
         [HttpGet]
         public ActionResult PaymentComponentUpdate(string id)

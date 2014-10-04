@@ -148,10 +148,8 @@
     </table>
 </div>
 
-<div id="addcustomerDialog">
-    Add Customer here
-</div>
-<div>
+
+<div style="display: none;">
     @Html.ActionLink("select", "SalesOrderByCustomer", "Payment", null, new { aCustomerNo = "lnkeditcustomer" })
 </div>
 @section scripts{
@@ -189,7 +187,7 @@
             jQuery("#ckemai").click(clickcckemai);
             jQuery("#ckcode").click(clickckcode);
             jQuery("#ckstate").click(clickckstate);
-            jQuery(".timelycustomertr td").click(eachtimelycustomertr);
+            jQuery(".timelycustomertr td").each(eachtimelycustomertr);
 
             //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
@@ -201,13 +199,14 @@
         }
         function clicktimelycustomertr(src, arg) {
             
-            var szhRef = jQuery("#lnkeditcustomer").attr("href");
+            //var szhRef = jQuery("#lnkeditcustomer").attr("href");
 
-            var szId = src.target.parentNode.id;
-            szId = szId.replace("row0_", "");
-            alert(szId);
+            //var szId = src.target.parentNode.id;
+            //szId = szId.replace("row0_", "");
+            //alert(szId);
             //szhRef = szhRef + '/' + szId;
             //window.open(szhRef, "_self");
+            window.open("/Payment/SalesOrderByCustomer?nCustomerId=1", "_self");
         }
         function mouseovertimelycustomertr(src, arg) {
             jQuery(src.target).css("cursor", "pointer");

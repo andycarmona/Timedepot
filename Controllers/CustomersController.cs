@@ -607,7 +607,7 @@ namespace TimelyDepotMVC.Controllers
         {
             //DataTable hlpTbl = GetCustomerListTable();
 
-            ExportCSV(GetPaymentListTable(customerid), "PaymentList");
+            ExportCSV(GetPaymentListTable(customerid), "PaymentTransactionList");
 
             return RedirectToAction("Index", "ReportsExcel");
         }
@@ -761,7 +761,7 @@ namespace TimelyDepotMVC.Controllers
 
 
         // 
-        // GET:/Customers/PaymentList
+        // GET:/Customers/PaymentTransactionList
         [NoCache]
         public PartialViewResult PaymentList(int? page, string customerid)
         {

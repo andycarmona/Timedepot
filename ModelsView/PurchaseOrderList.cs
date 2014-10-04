@@ -11,6 +11,8 @@ namespace TimelyDepotMVC.ModelsView
     {
         public int PurchaseOrderId { get; set; }
 
+        public int SalesOrderId { get; set; }
+
         [Display(Name = "Purchase Order No")]
         public string PurchaseOrderNo { get; set; }
 
@@ -18,7 +20,7 @@ namespace TimelyDepotMVC.ModelsView
         [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? SODate { get; set; }
 
-        public int? CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         [Display(Name = "Vendor No")]
         public string VendorNo { get; set; }

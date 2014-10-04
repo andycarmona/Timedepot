@@ -39,7 +39,7 @@
         }
 
         $('a').on('click', function () {
-            alert('vaue : ' + $(this).attr('data-value'));
+          
  
            GetCustomerData($(this).attr('data-value'));
         });

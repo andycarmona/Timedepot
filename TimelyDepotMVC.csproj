@@ -607,11 +607,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201409271625017_InitalStageFroLocalDatabase.cs" />
-    <Compile Include="Migrations\201409271625017_InitalStageFroLocalDatabase.Designer.cs">
-      <DependentUpon>201409271625017_InitalStageFroLocalDatabase.cs</DependentUpon>
+    <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.cs" />
+    <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.Designer.cs">
+      <DependentUpon>201410020747288_AddTransactionListforRefundsAndPayments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.cs" />
+    <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.Designer.cs">
+      <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelsView\PaymentTransactionList.cs" />
     <Compile Include="ModelsView\PurchaseOrderDetailSRC.cs" />
     <Compile Include="ModelsView\InvoiceDetailSRC.cs" />
     <Compile Include="ModelsView\CustomerList.cs" />
@@ -640,6 +645,8 @@
     <Compile Include="Models\Admin\CATEGORY.cs" />
     <Compile Include="Models\Admin\ClssNos.cs" />
     <Compile Include="Models\Admin\COLLECTION.cs" />
+    <Compile Include="Models\Admin\CustomerTransactions.cs" />
+    <Compile Include="Models\Admin\Refunds.cs" />
     <Compile Include="Models\Admin\ShipmentDetails.cs" />
     <Compile Include="Models\Admin\Shipment.cs" />
     <Compile Include="Models\Admin\OrderBy.cs" />
@@ -704,6 +711,7 @@
     <Compile Include="Models\Admin\Terms.cs" />
     <Compile Include="Models\Admin\timelydepot_log.cs" />
     <Compile Include="Models\Admin\Trade.cs" />
+    <Compile Include="Models\Admin\TransactionsCodes.cs" />
     <Compile Include="Models\Admin\UserQuotation.cs" />
     <Compile Include="Models\Admin\UserQuotationDetail.cs" />
     <Compile Include="Models\Admin\UserRegistration.cs" />
@@ -1927,6 +1935,10 @@
     <Content Include="Views\Payment\PaymentComponent.cshtml" />
     <Content Include="Views\Payment\PaymentIndex.cshtml" />
     <Content Include="Views\Payment\SalesOrderByCustomer.cshtml" />
+    <Content Include="Views\Payment\PaymentTransactionList.cshtml" />
+    <Content Include="Views\Payment\EditCreditCardPayment.cshtml" />
+    <Content Include="Views\Payment\AddCreditCardPayment.cshtml" />
+    <Content Include="Views\Payment\ViewCreditCardPayment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1967,8 +1979,11 @@
     <WCFMetadataStorage Include="Service References\GGE4ServiceReference\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201409271625017_InitalStageFroLocalDatabase.resx">
-      <DependentUpon>201409271625017_InitalStageFroLocalDatabase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.resx">
+      <DependentUpon>201410020747288_AddTransactionListforRefundsAndPayments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410021511054_AddTranslationCodesTable.resx">
+      <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
