@@ -615,6 +615,18 @@
     <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.Designer.cs">
       <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.cs" />
+    <Compile Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.Designer.cs">
+      <DependentUpon>201410051252593_UpdateThe-WayTransactionListHandlesdata.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs" />
+    <Compile Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.Designer.cs">
+      <DependentUpon>201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.cs" />
+    <Compile Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.Designer.cs">
+      <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\PaymentTransactionList.cs" />
     <Compile Include="ModelsView\PurchaseOrderDetailSRC.cs" />
@@ -1270,7 +1282,9 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1984,6 +1998,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410021511054_AddTranslationCodesTable.resx">
       <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.resx">
+      <DependentUpon>201410051252593_UpdateThe-WayTransactionListHandlesdata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.resx">
+      <DependentUpon>201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.resx">
+      <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

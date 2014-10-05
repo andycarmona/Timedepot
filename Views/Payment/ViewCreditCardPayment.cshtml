@@ -9,9 +9,14 @@
 <label>@Html.DisplayNameFor(model => model.CustomerNo)</label><br/>
 @Html.DisplayFor(model=>model.CustomerNo)<br/>
 
-<label> @Html.DisplayNameFor(model => model.SalesOrderNo)</label><br/>
-@Html.DisplayFor(model=>model.SalesOrderNo)<br/>
-
+<label>Actual Sales order number:</label><br/>
+@Html.DisplayFor(model => model.SalesOrderNo)<br />
+@using (@Html.BeginForm("ViewCreditCardPayment","Payment",FormMethod.Get))
+{
+@Html.DropDownList("paymentListNumber")
+    @Html.HiddenFor(model=>model.CustomerNo)
+<input type="submit" value="choose sale order number" />
+}
 
 <label>Transaction code: 2</label><br/>
 <label>@Html.DisplayNameFor(model => model.PaymentType)</label><br/>
@@ -19,9 +24,9 @@
 <label>Choose a credit card number</label><br/>
 @Html.DisplayFor(model=>model.CreditCardNumber)<br/>
 
-<label>@Html.DisplayNameFor(model => model.PaymentDate)</label>
-@Html.DisplayFor(model=>model.PaymentDate)
-<label>Aproval code</label>
+<label>@Html.DisplayNameFor(model => model.PaymentDate)</label><br />
+@Html.DisplayFor(model => model.PaymentDate)<br />
+<label>Aproval code  Accepted</label><br />
 
 <label>@Html.DisplayNameFor(model=>model.Amount)</label>
 @Html.DisplayFor(model=>model.Amount)

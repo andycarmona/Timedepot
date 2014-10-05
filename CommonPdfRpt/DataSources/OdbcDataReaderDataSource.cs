@@ -68,6 +68,7 @@ namespace PdfRpt.DataSources
                                 };
                                 result.Add(pdfCellData);
                             }
+                            odbcReader.Close();
                             yield return result;
                         }
                     }

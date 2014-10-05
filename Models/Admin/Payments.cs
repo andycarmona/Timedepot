@@ -43,5 +43,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Invoice Payment")]
         public string InvoicePayment { get; set; }
+
+        public int TransactionCode { get; set; }
     }
 }

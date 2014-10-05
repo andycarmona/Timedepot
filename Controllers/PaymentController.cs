@@ -20,6 +20,7 @@ using System.Net;
 namespace TimelyDepotMVC.Controllers
 {
     using System.Collections;
+    using System.Data.Entity.Core;
     using System.Globalization;
 
     using PdfRpt.Core.Helper;
@@ -1298,8 +1299,9 @@ namespace TimelyDepotMVC.Controllers
                     using (StreamReader response_stream = new StreamReader(web_response.GetResponseStream()))
                     {
                         response_string = response_stream.ReadToEnd();
+                        
                     }
-
+                   
                     //load xml
                     XmlDocument xmldoc = new XmlDocument();
                     xmldoc.LoadXml(response_string);
@@ -1555,6 +1557,7 @@ namespace TimelyDepotMVC.Controllers
                             string remote_ex = reader.ReadToEnd();
                             //error.Text = remote_ex;
                             szError = remote_ex;
+                            reader.Close();
                         }
                     }
                 }
@@ -1800,6 +1803,7 @@ namespace TimelyDepotMVC.Controllers
                             // Read the decrypted bytes from the decrypting stream
                             // and place them in a string.
                             szDecriptedData = srDecrypt.ReadToEnd();
+                        msDecrypt.Close();
                     }
                 }
 
@@ -1835,7 +1839,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 szError = err.Message;
             }
-
+            msDecrypt.Close();
             return buffer;
         }
 
@@ -2267,6 +2271,7 @@ namespace TimelyDepotMVC.Controllers
                             // Read the decrypted bytes from the decrypting stream 
                             // and place them in a string.
                             plaintext = srDecrypt.ReadToEnd();
+                            srDecrypt.Close();
                         }
                     }
                 }
@@ -3186,8 +3191,9 @@ namespace TimelyDepotMVC.Controllers
             return this.View();
         }
 
-        public ActionResult ViewCreditCardPayment(string customerNo,string salesOrderNo)
+        public ActionResult ViewCreditCardPayment(string customerNo, string paymentNumber)
         {
+            var listOfPaymentNo= new List<SelectListItem>();
             var query = (from paymentlist in this.db.Payments
                          join customerslist in this.db.Customers on paymentlist.CustomerNo equals
                              customerslist.CustomerNo
@@ -3199,17 +3205,81 @@ namespace TimelyDepotMVC.Controllers
                                  PaymentType = paymentlist.PaymentType,
                                  CreditCardNumber = paymentlist.CreditCardNumber,
                                  PaymentDate = paymentlist.PaymentDate,
-                                 PaymentAmount = paymentlist.Amount.ToString()
+                                 PaymentAmount = paymentlist.Amount,
+                                 PaymentNo = paymentlist.PaymentNo
                              }).ToList();
-
-            if (string.IsNullOrEmpty(customerNo) && string.IsNullOrEmpty(salesOrderNo))
+            foreach(var listOfPayments in query)
             {
-                var aElment = query.SingleOrDefault(x => x.SalesOrderNo == salesOrderNo);
-
-                return View(aElment);j
+                if (!string.IsNullOrEmpty(listOfPayments.PaymentNo))
+                {
+                    listOfPaymentNo.Add(
+                        new SelectListItem { Text = listOfPayments.PaymentNo, Value = listOfPayments.PaymentNo });
+                }
+                
             }
-            ViewBag.SaleOrderNumbers = query.Select(x => x.SalesOrderNo); 
+
+            
+
+            if (!string.IsNullOrEmpty(customerNo) && !string.IsNullOrEmpty(paymentNumber))
+            {
+                var salesOrderNoForCustomer = query.SingleOrDefault(x => x.PaymentNo == paymentNumber);
+
+                if (salesOrderNoForCustomer != null)
+                {
+                    salesOrderNoForCustomer.CreditCardNumber = DecriptCreditCardNumber(salesOrderNoForCustomer.CreditCardNumber);
+                    return this.View(salesOrderNoForCustomer);
+                }
+            }
+            List<SelectListItem> items = new List<SelectListItem>();
+
+            items.Add(new SelectListItem { Text = "Action", Value = "0" });
+
+            items.Add(new SelectListItem { Text = "Drama", Value = "1" });
+
+            items.Add(new SelectListItem { Text = "Comedy", Value = "2", Selected = true });
+
+            items.Add(new SelectListItem { Text = "Science Fiction", Value = "3" });
+            ViewBag.paymentListNumber = items;
             return this.View();
+        }
+
+        private static string DecriptCreditCardNumber(string creditNumber)
+        {
+            var nPos = 0;
+            var szError = string.Empty;
+            var szDecriptedData = DecodeInfo02(creditNumber, ref szError);
+            var nHas = szDecriptedData.Length;
+
+            //Decode card number
+
+
+            if (!string.IsNullOrEmpty(szError))
+            {
+                nPos = szError.IndexOf("data to decode");
+                if (nPos != -1)
+                {
+                    szDecriptedData = string.Empty;
+                }
+                else
+                {
+                    szDecriptedData = string.Format("******");
+                }
+            }
+            else
+            {
+                //Mask the card number
+
+                if (nHas > 4)
+                {
+                    var szMsg = szDecriptedData.Substring(nHas - 4, 4);
+                    szDecriptedData = string.Format("******{0}", szMsg);
+                }
+                else
+                {
+                    szDecriptedData = string.Format("******");
+                }
+            }
+            return szDecriptedData;
         }
 
         public ActionResult TransactionDetail()
@@ -3217,7 +3287,7 @@ namespace TimelyDepotMVC.Controllers
             return View();
         }
 
-        [HttpGet]   
+        [HttpGet]
         public ActionResult PaymentComponent()
         {
             return this.View();
@@ -3258,11 +3328,11 @@ namespace TimelyDepotMVC.Controllers
 
                 foreach (var item in totalSalesOrderAndInvoices)
                 {
-                    var aSalesId = this.db.SalesOrders.Single(x => x.SalesOrderNo == item.SalesOrderNo).SalesOrderId;
+                    //var aSalesId = this.db.SalesOrders.Single(x => x.SalesOrderNo == item.SalesOrderNo).SalesOrderId;
 
 
                     this.GetSalesOrderTotals(
-                        aSalesId,
+                        item.SalesOrderId,
                         ref dSalesAmount,
                         ref dTotalTax,
                         ref dTax,
@@ -3285,27 +3355,37 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult PaymentTransactionList(string salesOrderNo)
         {
-            //var queryPaymentTranList = from transaction in this.db.CustomerTransactions 
-            //                           where transaction.SalesorderNo == salesOrderNo
-            //                           select new PaymentTransactionList()
-            //                                      {
-            //                                          CustomerNo = transaction.CustomerNo,
-            //                                          SalesOrderNo = transaction.SalesorderNo,
-            //                                          TransactionCode = transaction.TransactionCode,
-            //                                         TransactionDate = transaction.TransactionDate,
-            //                                         SalesAmount = transaction.s
-                                                      
-            //                                      };
-                                           
-                                                                            //{
-                                                                                                                  
-                                                                                                              //}
-            List<PaymentTransactionList> aTransList=new List<PaymentTransactionList>();
-            aTransList.Add(new PaymentTransactionList());
-            aTransList.Add(new PaymentTransactionList());
-            aTransList.Add(new PaymentTransactionList());
+            var queryPaymentList = from payments in this.db.Payments  
+                                       where payments.SalesOrderNo == salesOrderNo
+                                       select new PaymentTransactionList()
+                                                  {
+                                                      CustomerNo = payments.CustomerNo,
+                                                      SalesOrderNo = payments.SalesOrderNo,
+                                                      TransactionCode = payments.TransactionCode,
+                                                      TransactionDate = payments.PaymentDate,
+                                                      PaymentType = payments.PaymentType,
+                                                      PaymentAmount = payments.Amount,
+                                                      RefundAmount = null
+                                                  };
 
-            return this.View(new List<PaymentTransactionList>());
+            var queryRefundList = from refunds in this.db.Refunds
+                                  where refunds.SalesOrderNo == salesOrderNo
+                                  select
+                                      new PaymentTransactionList()
+                                          {
+                                              CustomerNo = refunds.CustomerNo,
+                                              SalesOrderNo = refunds.SalesOrderNo,
+                                              TransactionCode = 3,
+                                              TransactionDate = refunds.Refunddate,
+                                              PaymentType = null,
+                                              PaymentAmount = null,
+                                              RefundAmount = refunds.RefundAmount
+                                          };
+
+
+            var joinedRefundsAndPayments = queryPaymentList.Concat(queryRefundList);
+
+            return this.View(joinedRefundsAndPayments);
         }
 
 
@@ -3897,8 +3977,11 @@ namespace TimelyDepotMVC.Controllers
             dTotalAmount = 0;
             dBalanceDue = 0;
             dTotalTax = 0;
+            try
+            {
+                initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
+          
 
-            initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
             if (initialinfo == null)
             {
                 initialinfo = new InitialInfo();
@@ -3915,6 +3998,7 @@ namespace TimelyDepotMVC.Controllers
                 dTax = initialinfo.TaxRate;
             }
 
+      
 
             SalesOrder salesorder = db.SalesOrders.Find(nSalesOrderId);
             if (salesorder != null)
@@ -3961,6 +4045,12 @@ namespace TimelyDepotMVC.Controllers
                 //Set the sales order tax again
                 dTax = dSOTax;
             }
+            }
+            catch (EntityCommandExecutionException e)
+            {
+            
+            }
+       
         }
 
         //

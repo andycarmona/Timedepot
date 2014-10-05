@@ -84,8 +84,7 @@
         }
         <tr>
             <td colspan="7">
-       
-
+                @Html.ActionLink("Back", "PaymentIndex", "Payment",null,null)
             </td>
         </tr>
 
@@ -99,15 +98,9 @@
             jQuery(src).mouseover(mouseovertimelycustomertr);
         }
         function clicktimelycustomertr(src, arg) {
-
-            //var szhRef = jQuery("#lnkeditcustomer").attr("href");
-
-            //var szId = src.target.parentNode.id;
-            //szId = szId.replace("row0_", "");
-            //alert(szId);
-            //szhRef = szhRef + '/' + szId;
-            //window.open(szhRef, "_self");
-            window.open("/Payment/PaymentTransactionList?salesOrderNo=1", "_self");
+            var szId = src.target.parentNode.id;
+            szId = szId.replace("row0_", "");
+            window.open("/Payment/PaymentTransactionList?salesOrderNo="+szId, "_self");
         }
         function mouseovertimelycustomertr(src, arg) {
             jQuery(src.target).css("cursor", "pointer");

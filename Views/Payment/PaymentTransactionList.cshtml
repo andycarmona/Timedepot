@@ -15,34 +15,34 @@ Sales order No. 1234
 <div style="width: 1240px; margin: 0px auto;">
     <table class="webgrid" style="width: 1240px; margin: 0px auto;">
         <tr class="webgrid-header">
+            
+            <th>@Html.DisplayNameFor(model=>model.TransactionCode)</th>
+            
             <th>
-                @Html.DisplayNameFor(model => model.TransactionCode)
+                @Html.DisplayNameFor(model => model.TransactionDate)
+             
 
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesAmount)
+              
 
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.SalesAmount)
+            </th>
+            <th>
+             @Html.DisplayNameFor(model => model.PaymentType)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.PaymentType)
+            </th>
+            <th>
+             @Html.DisplayNameFor(model => model.PaymentAmount)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.PaymentAmount)
+            </th>
+            <th>
+              @Html.DisplayNameFor(model => model.RefundAmount)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.RefundAmount)
+            </th>
+        </tr>
 
-</th>
-</tr>
-
-
-@*@foreach (var item in Model)
+@foreach (var item in Model)
 {
 
     nRow++;
@@ -57,84 +57,25 @@ Sales order No. 1234
     }
 
     string sztrId = string.Format("row0_{0}", item.TransactionNo);
+    <tr id="@sztrId" class="@szClass" class="webgrid-alternating-row timelycustomertr trhlp">
+        <td>
+            @item.TransactionNo
 
-    <tr id="@sztrId" class="@szClass">*@
-        @*<th>
-            @item.PaymentNo
-
-        </th>
-        <th>
+        </td>
+        <td>
             @item.TransactionDate
 
-        </th>
-        <th>
+        </td>
+        <td>
             @item.SalesAmount
 
-        </th>
-        <th>
-            @item.PaymentType
-
-        </th>
-        <th>
-            @item.PaymentAmount
-
-        </th>
-        <th>
-            @item.RefundAmount
-
-        </th>*@
-        <tr class="webgrid-alternating-row timelycustomertr trhlp">
-            <td>
-                1
-
-            </td>
-            <td>
-                01/01/14
-
-            </td>
-            <td>
-                1000
-
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="webgrid-row-style timelycustomertr trhlp">
-            <td>
-               2
-
-            </td>
-            <td>
-                01/01/14
-
-            </td>
-            <td>
-                
-
-            </td>
-            <td>Visa</td>
-            <td>1000</td>
-            <td></td>
-        </tr>
-        <tr class="webgrid-alternating-row timelycustomertr trhlp">
-            <td>
-                3
-
-            </td>
-            <td>
-                01/01/14
-
-            </td>
-            <td>
-             
-
-            </td>
-            <td>visa</td>
-            <td></td>
-            <td>500</td>
-        </tr>
-@*}*@
+        </td>
+        <td>@item.PaymentType</td>
+        <td>@item.PaymentAmount</td>
+        <td>@item.RefundAmount</td>
+       
+    </tr>
+}
 <tr>
     <td colspan="7"><input id="Button1" type="button" value="Add a credit card payment" /></td>
 </tr>

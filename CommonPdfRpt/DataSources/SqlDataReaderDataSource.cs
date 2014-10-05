@@ -68,6 +68,7 @@ namespace PdfRpt.DataSources
                                 };
                                 result.Add(pdfCellData);
                             }
+                            sqlReader.Close();
                             yield return result;
                         }
                     }

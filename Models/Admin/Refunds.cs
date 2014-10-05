@@ -9,12 +9,14 @@ namespace TimelyDepotMVC.Models.Admin
         [Key]
         public int RefundId { get; set; }
 
-        public int CustomerId { get; set; }
+        public int TransactionId { get; set; }
 
-        public double RefundAmount { get; set; }
+        public decimal RefundAmount { get; set; }
 
         public DateTime Refunddate { get; set; }
 
+        public string SalesOrderNo { get; set; }
 
+        public string CustomerNo { get; set; }
     }
 }

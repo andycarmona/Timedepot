@@ -21,6 +21,8 @@ namespace TimelyDepotMVC.ModelsView
 
         public string SalesAmount { get; set; }
 
+        public string PaymentNo { get; set; }
+
         [Display(Name = "Payment type")]
         public string PaymentType { get; set; }
 
@@ -28,10 +30,10 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? PaymentDate { get; set; }
 
         [Display(Name = "Payment amount")]
-        public string PaymentAmount { get; set; }
+        public decimal? PaymentAmount { get; set; }
 
         [Display(Name = "Refund amount")]
-        public string RefundAmount { get; set; }
+        public decimal? RefundAmount { get; set; }
 
         [Display(Name = "Credit card number")]
         public string CreditCardNumber { get; set; }
@@ -43,7 +45,7 @@ namespace TimelyDepotMVC.ModelsView
         public double Amount { get; set; }
 
         [Display(Name = "Transaction date")]
-        public DateTime TransactionDate { get; set; }
+        public DateTime? TransactionDate { get; set; }
 
         public string PayLog { get; set; }
 
