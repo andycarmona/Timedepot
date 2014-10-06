@@ -13,6 +13,8 @@ using TimelyDepotMVC.ModelsView;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Globalization;
+
     public class SalesOrderController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
@@ -2295,72 +2297,13 @@ namespace TimelyDepotMVC.Controllers
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
             IQueryable<Trade> qryTrade = null;
             IQueryable<Warehouses> qryWarehouse = null;
+            CultureInfo provider = CultureInfo.InvariantCulture;
 
-            if (!string.IsNullOrEmpty(SODateHlp))
-            {
-                szSODateHlp = SODateHlp.Split('/');
-                if (szSODateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szSODateHlp[0]);
-                    nDay = Convert.ToInt32(szSODateHlp[1]);
-                    nYear = Convert.ToInt32(szSODateHlp[2]);
-                    dSODate = new DateTime(nYear, nMonth, nDay);
-                }
-                else
-                {
-                    dSODate = Convert.ToDateTime(salesorder.SODate);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(RequiredateHlp))
-            {
-                szSODateHlp = RequiredateHlp.Split('/');
-                if (szSODateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szSODateHlp[0]);
-                    nDay = Convert.ToInt32(szSODateHlp[1]);
-                    nYear = Convert.ToInt32(szSODateHlp[2]);
-                    dRequiredDate = new DateTime(nYear, nMonth, nDay);
-                }
-                else
-                {
-                    dRequiredDate = Convert.ToDateTime(salesorder.Requiredate);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(ShipDateHlp))
-            {
-                szShipDateHlp = ShipDateHlp.Split('/');
-                if (szShipDateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szShipDateHlp[0]);
-                    nDay = Convert.ToInt32(szShipDateHlp[1]);
-                    nYear = Convert.ToInt32(szShipDateHlp[2]);
-                    dShipDate = new DateTime(nYear, nMonth, nDay);
-                }
-                else
-                {
-                    dShipDate = Convert.ToDateTime(salesorder.ShipDate);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(AprovedDateHlp))
-            {
-                szShipDateHlp = AprovedDateHlp.Split('/');
-                if (szShipDateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szShipDateHlp[0]);
-                    nDay = Convert.ToInt32(szShipDateHlp[1]);
-                    nYear = Convert.ToInt32(szShipDateHlp[2]);
-                    dApprovedDate = new DateTime(nYear, nMonth, nDay);
-                }
-                else
-                {
-                    dApprovedDate = Convert.ToDateTime(salesorder.ShipDate);
-                }
-            }
-
-
+            dSODate = !string.IsNullOrEmpty(SODateHlp) ? DateTime.ParseExact(SODateHlp, "MM-dd-yyyy", provider) : Convert.ToDateTime(salesorder.SODate);
+            dRequiredDate = !string.IsNullOrEmpty(RequiredateHlp) ? DateTime.ParseExact(RequiredateHlp, "MM-dd-yyyy", provider).Date : Convert.ToDateTime(salesorder.Requiredate);
+            dShipDate = !string.IsNullOrEmpty(ShipDateHlp) ? DateTime.ParseExact(ShipDateHlp, "MM-dd-yyyy", provider).Date : DateTime.Now;
+            dApprovedDate = !string.IsNullOrEmpty(AprovedDateHlp) ? DateTime.ParseExact(AprovedDateHlp, "MM-dd-yyyy", provider).Date : Convert.ToDateTime(salesorder.ShipDate);
+             
             if (ModelState.IsValid)
             {
                 salesorder.SODate = dSODate;

@@ -6,10 +6,10 @@ namespace TimelyDepotMVC.ModelsView
 
     public class PaymentTransactionList
     {
-      
+        public string CustomerId { get; set; }
 
         [Display(Name = "Transaction No")]
-        public string TransactionNo { get; set; }
+        public string TransactionId { get; set; }
 
         public int TransactionCode { get; set; }
 

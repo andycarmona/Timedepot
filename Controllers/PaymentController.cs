@@ -3175,31 +3175,81 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult AddCreditCardPayment(string customerNo)
         {
-            if (!string.IsNullOrEmpty(customerNo))
+            int nPaymentNo = 0;
+            string CustomerNo = string.Empty;
+            string CompanyName = string.Empty;
+            InitialInfo initialinfo = null;
+
+
+            //Get the next payment No
+            initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
+            if (initialinfo == null)
             {
-                var query = from salesorder in this.db.SalesOrders
-                            join customerslist in this.db.Customers
-                            on salesorder.CustomerId equals customerslist.Id
-                            select new PaymentTransactionList()
-                            {
-                                CustomerNo = customerslist.CustomerNo,
-                                SalesOrderNo = salesorder.SalesOrderNo,
-
-                            };
-
+                initialinfo = new InitialInfo();
+                initialinfo.InvoiceNo = 0;
+                initialinfo.PaymentNo = 1;
+                initialinfo.PurchaseOrderNo = 0;
+                initialinfo.SalesOrderNo = 0;
+                initialinfo.TaxRate = 0;
+                db.InitialInfoes.Add(initialinfo);
             }
+            else
+            {
+                nPaymentNo = initialinfo.PaymentNo;
+                nPaymentNo++;
+                initialinfo.PaymentNo = nPaymentNo;
+                db.Entry(initialinfo).State = EntityState.Modified;
+            }
+
+            Payments payment = new Payments();
+            payment.PaymentNo = nPaymentNo.ToString();
+            payment.PaymentDate = DateTime.Now;
+            db.Payments.Add(payment);
+            db.SaveChanges();
             return this.View();
         }
 
-        public ActionResult ViewCreditCardPayment(string customerNo, string paymentNumber)
+        public ActionResult ViewCashPayment(string customerNo, string paymentId)
         {
-            var listOfPaymentNo= new List<SelectListItem>();
+    
             var query = (from paymentlist in this.db.Payments
                          join customerslist in this.db.Customers on paymentlist.CustomerNo equals
                              customerslist.CustomerNo
                          select
                              new PaymentTransactionList()
                              {
+                                 TransactionId = paymentlist.Id.ToString(),
+                                 CustomerNo = customerslist.CustomerNo,
+                                 SalesOrderNo = paymentlist.SalesOrderNo,
+                                 PaymentType = paymentlist.PaymentType,
+                                 PaymentDate = paymentlist.PaymentDate,
+                                 PaymentAmount = paymentlist.Amount,
+                                 PaymentNo = paymentlist.PaymentNo
+                             }).ToList();
+
+            if (!string.IsNullOrEmpty(customerNo) && !string.IsNullOrEmpty(paymentId))
+            {
+                var salesOrderNoForCustomer = query.SingleOrDefault(x => x.TransactionId == paymentId);
+
+                if (salesOrderNoForCustomer != null)
+                {
+                    return this.View(salesOrderNoForCustomer);
+                }
+            }
+
+            return this.View();
+        }
+
+        public ActionResult ViewCreditCardPayment(string customerNo, string paymentId)
+        {
+            
+            var query = (from paymentlist in this.db.Payments
+                         join customerslist in this.db.Customers on paymentlist.CustomerNo equals
+                             customerslist.CustomerNo
+                         select
+                             new PaymentTransactionList()
+                             {
+                                 TransactionId = paymentlist.Id.ToString(),
                                  CustomerNo = customerslist.CustomerNo,
                                  SalesOrderNo = paymentlist.SalesOrderNo,
                                  PaymentType = paymentlist.PaymentType,
@@ -3208,21 +3258,10 @@ namespace TimelyDepotMVC.Controllers
                                  PaymentAmount = paymentlist.Amount,
                                  PaymentNo = paymentlist.PaymentNo
                              }).ToList();
-            foreach(var listOfPayments in query)
-            {
-                if (!string.IsNullOrEmpty(listOfPayments.PaymentNo))
-                {
-                    listOfPaymentNo.Add(
-                        new SelectListItem { Text = listOfPayments.PaymentNo, Value = listOfPayments.PaymentNo });
-                }
-                
-            }
 
-            
-
-            if (!string.IsNullOrEmpty(customerNo) && !string.IsNullOrEmpty(paymentNumber))
+            if (!string.IsNullOrEmpty(customerNo) && !string.IsNullOrEmpty(paymentId))
             {
-                var salesOrderNoForCustomer = query.SingleOrDefault(x => x.PaymentNo == paymentNumber);
+                var salesOrderNoForCustomer = query.SingleOrDefault(x => x.TransactionId == paymentId);
 
                 if (salesOrderNoForCustomer != null)
                 {
@@ -3230,16 +3269,7 @@ namespace TimelyDepotMVC.Controllers
                     return this.View(salesOrderNoForCustomer);
                 }
             }
-            List<SelectListItem> items = new List<SelectListItem>();
-
-            items.Add(new SelectListItem { Text = "Action", Value = "0" });
-
-            items.Add(new SelectListItem { Text = "Drama", Value = "1" });
-
-            items.Add(new SelectListItem { Text = "Comedy", Value = "2", Selected = true });
-
-            items.Add(new SelectListItem { Text = "Science Fiction", Value = "3" });
-            ViewBag.paymentListNumber = items;
+          
             return this.View();
         }
 
@@ -3302,90 +3332,127 @@ namespace TimelyDepotMVC.Controllers
             double dTotalAmount = 0;
             double dBalanceDue = 0;
 
-            if (nCustomerId > 0)
+            if (nCustomerId <= 0)
             {
-                var filterSalesOrderByDue = new List<PurchaseOrderList>();
+                return this.RedirectToAction("PaymentIndex");
+            }
 
-                var totalSalesOrderAndInvoices = from salesorder in this.db.SalesOrders
-                                                 join invoices in this.db.Invoices on salesorder.SalesOrderNo equals invoices.SalesOrderNo
-                                                 where salesorder.CustomerId == nCustomerId
-                                                 select
-                                                     new PurchaseOrderList()
-                                                         {
-                                                             SalesOrderId = salesorder.SalesOrderId,
-                                                             SalesOrderNo = salesorder.SalesOrderNo,
-                                                             SalesAmount = salesorder.PaymentAmount,
-                                                             PaymentAmount = invoices.PaymentAmount,
-                                                             SODate = salesorder.SODate,
-                                                             InvoiceDate = invoices.InvoiceDate,
-                                                             InvoiceNo = invoices.InvoiceNo
-                                                         };
+            var filterSalesOrderByDue = new List<PurchaseOrderList>();
 
-                if (!totalSalesOrderAndInvoices.Any())
+            var totalSalesOrder = (from salesorder in this.db.SalesOrders
+                                   where salesorder.CustomerId == nCustomerId
+                                   select
+                                       new PurchaseOrderList()
+                                           {  
+                                               CustomerId = nCustomerId,
+                                               SalesOrderId = salesorder.SalesOrderId,
+                                               SalesOrderNo = salesorder.SalesOrderNo,
+                                               SalesAmount = salesorder.PaymentAmount,
+                                               SODate = salesorder.SODate
+                                           }).ToList();
+
+            var totalSalesOrderAndInvoices = (from salesorder in this.db.SalesOrders
+                                             join invoices in this.db.Invoices on salesorder.SalesOrderNo equals invoices.SalesOrderNo
+                                             where salesorder.CustomerId == nCustomerId
+                                             select
+                                                 new PurchaseOrderList()
+                                                     {
+                                                         CustomerId = nCustomerId,
+                                                         PaymentAmount = invoices.PaymentAmount,
+                                                         InvoiceDate = invoices.InvoiceDate,
+                                                         InvoiceNo = invoices.InvoiceNo
+                                                     }).ToList();
+
+
+
+            var totalSalesOrderWithInvoice = new List<PurchaseOrderList>();
+
+            foreach (var salesorder in totalSalesOrder)
+            {
+                var aPurchaseList = salesorder;
+                var salesId = salesorder.SalesOrderNo;
+                try
                 {
-                    return this.View(filterSalesOrderByDue);
-                }
+                    var aInvoice = totalSalesOrderAndInvoices.SingleOrDefault(x => x.SalesOrderNo == salesId);
 
-                foreach (var item in totalSalesOrderAndInvoices)
-                {
-                    //var aSalesId = this.db.SalesOrders.Single(x => x.SalesOrderNo == item.SalesOrderNo).SalesOrderId;
-
-
-                    this.GetSalesOrderTotals(
-                        item.SalesOrderId,
-                        ref dSalesAmount,
-                        ref dTotalTax,
-                        ref dTax,
-                        ref dTotalAmount,
-                        ref dBalanceDue);
-                    if (!(dBalanceDue > 0))
+                    if (aInvoice != null)
                     {
-                        continue;
+                        aPurchaseList.InvoiceDate = aInvoice.InvoiceDate;
+                        aPurchaseList.InvoiceNo = aInvoice.InvoiceNo;
                     }
-
-                    item.BalanceDue = dBalanceDue;
-                    filterSalesOrderByDue.Add(item);
+                    totalSalesOrderWithInvoice.Add(aPurchaseList);
                 }
+                catch (Exception e)
+                {
+                    
+                }
+            }
 
+
+            if (!totalSalesOrderWithInvoice.Any())
+            {
                 return this.View(filterSalesOrderByDue);
             }
 
-            return this.RedirectToAction("PaymentIndex");
+            foreach (var item in totalSalesOrderWithInvoice)
+            {
+
+                this.GetSalesOrderTotals(
+                    item.SalesOrderId,
+                    ref dSalesAmount,
+                    ref dTotalTax,
+                    ref dTax,
+                    ref dTotalAmount,
+                    ref dBalanceDue);
+                if (!(dBalanceDue > 0))
+                {
+                    continue;
+                }
+
+                item.BalanceDue = dBalanceDue;
+                filterSalesOrderByDue.Add(item);
+            }
+
+            return this.View(filterSalesOrderByDue);
         }
 
         public ActionResult PaymentTransactionList(string salesOrderNo)
         {
-            var queryPaymentList = from payments in this.db.Payments  
+            var queryPaymentList = (from payments in this.db.Payments  
                                        where payments.SalesOrderNo == salesOrderNo
                                        select new PaymentTransactionList()
                                                   {
+                                                    TransactionId = payments.Id.ToString(),
                                                       CustomerNo = payments.CustomerNo,
                                                       SalesOrderNo = payments.SalesOrderNo,
                                                       TransactionCode = payments.TransactionCode,
                                                       TransactionDate = payments.PaymentDate,
+                                                      SalesAmount = "10",
                                                       PaymentType = payments.PaymentType,
                                                       PaymentAmount = payments.Amount,
                                                       RefundAmount = null
-                                                  };
+                                                  }).ToList();
 
-            var queryRefundList = from refunds in this.db.Refunds
-                                  where refunds.SalesOrderNo == salesOrderNo
-                                  select
-                                      new PaymentTransactionList()
-                                          {
-                                              CustomerNo = refunds.CustomerNo,
-                                              SalesOrderNo = refunds.SalesOrderNo,
-                                              TransactionCode = 3,
-                                              TransactionDate = refunds.Refunddate,
-                                              PaymentType = null,
-                                              PaymentAmount = null,
-                                              RefundAmount = refunds.RefundAmount
-                                          };
+            var queryRefundList = (from refunds in this.db.Refunds
+                                   where refunds.SalesOrderNo == salesOrderNo
+                                   select
+                                       new PaymentTransactionList()
+                                           {
+                                               TransactionId = refunds.RefundId.ToString(),
+                                               CustomerNo = refunds.CustomerNo,
+                                               SalesOrderNo = refunds.SalesOrderNo,
+                                               TransactionCode = 3,
+                                               TransactionDate = refunds.Refunddate,
+                                               PaymentType = null,
+                                               PaymentAmount = null,
+                                               RefundAmount = refunds.RefundAmount
+                                           }).ToList();
 
 
             var joinedRefundsAndPayments = queryPaymentList.Concat(queryRefundList);
 
             return this.View(joinedRefundsAndPayments);
+            //return this.View(queryPaymentList);
         }
 
 
@@ -3416,470 +3483,471 @@ namespace TimelyDepotMVC.Controllers
         [NoCache]
         public ActionResult Index(string searchPaymentNo, int id = 0)
         {
-            int nCustomerId = 0;
-            int nPos = -1;
-            int nHas = 0;
-            double dSalesAmount = 0;
-            double dTax = 0;
-            double dTotalTax = 0;
-            double dTotalAmount = 0;
-            double dBalanceDue = 0;
-            string szError = string.Empty;
-            string szDecriptedData = string.Empty;
-            string szMsg = string.Empty;
-            string szCustomerNo = string.Empty;
-            string szSalesOrderNo = string.Empty;
-            string szCardType = string.Empty;
+            //int nCustomerId = 0;
+            //int nPos = -1;
+            //int nHas = 0;
+            //double dSalesAmount = 0;
+            //double dTax = 0;
+            //double dTotalTax = 0;
+            //double dTotalAmount = 0;
+            //double dBalanceDue = 0;
+            //string szError = string.Empty;
+            //string szDecriptedData = string.Empty;
+            //string szMsg = string.Empty;
+            //string szCustomerNo = string.Empty;
+            //string szSalesOrderNo = string.Empty;
+            //string szCardType = string.Empty;
 
-            TimelyDepotContext db02 = new TimelyDepotContext();
-            TimelyDepotContext db03 = new TimelyDepotContext();
-            TimelyDepotContext db04 = new TimelyDepotContext();
-            TimelyDepotContext db05 = new TimelyDepotContext();
+            //TimelyDepotContext db02 = new TimelyDepotContext();
+            //TimelyDepotContext db03 = new TimelyDepotContext();
+            //TimelyDepotContext db04 = new TimelyDepotContext();
+            //TimelyDepotContext db05 = new TimelyDepotContext();
 
-            SalesOrder salesorder = null;
+            //SalesOrder salesorder = null;
 
-            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
-            IQueryable<SalesOrder> qrySalesOrder = null;
+            //List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
+            //IQueryable<SalesOrder> qrySalesOrder = null;
 
-            Payments payment = new Payments();
+            //Payments payment = new Payments();
 
-            //Set the status of the page
-            ViewBag.Status = "Initial";
-            if (TempData["Status"] != null)
-            {
-                ViewBag.Status = TempData["Status"].ToString();
-            }
+            ////Set the status of the page
+            //ViewBag.Status = "Initial";
+            //if (TempData["Status"] != null)
+            //{
+            //    ViewBag.Status = TempData["Status"].ToString();
+            //}
 
-            if (ViewBag.Status == "Initial")
-            {
-                if (!string.IsNullOrEmpty(searchPaymentNo))
-                {
-                    ViewBag.SearchPaymentNo = searchPaymentNo;
-                }
-            }
+            //if (ViewBag.Status == "Initial")
+            //{
+            //    if (!string.IsNullOrEmpty(searchPaymentNo))
+            //    {
+            //        ViewBag.SearchPaymentNo = searchPaymentNo;
+            //    }
+            //}
 
-            //Add payment
-            if (ViewBag.Status == "Add")
-            {
-                ViewBag.PaymentId = id;
-                payment = db.Payments.Find(id);
+            ////Add payment
+            //if (ViewBag.Status == "Add")
+            //{
+            //    ViewBag.PaymentId = id;
+            //    payment = db.Payments.Find(id);
 
-                //Get the dropdown data
-                var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
-                    => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
-                if (qryCust.Count() > 0)
-                {
-                    foreach (var item in qryCust)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
-                    }
-                }
-                SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.CustomerList = tradeselectorlist;
-            }
+            //    //Get the dropdown data
+            //    var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
+            //        => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            //    if (qryCust.Count() > 0)
+            //    {
+            //        foreach (var item in qryCust)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+            //        }
+            //    }
+            //    SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.CustomerList = tradeselectorlist;
+            //}
 
-            //Add payment, get sales orders and payment type for this customer
-            if (ViewBag.Status == "Add01")
-            {
-                ViewBag.PaymentId = id;
-                payment = db.Payments.Find(id);
-                if (payment != null)
-                {
-                    szCustomerNo = payment.CustomerNo;
-                }
+            ////Add payment, get sales orders and payment type for this customer
+            //if (ViewBag.Status == "Add01")
+            //{
+            //    ViewBag.PaymentId = id;
+            //    payment = db.Payments.Find(id);
+            //    if (payment != null)
+            //    {
+            //        szCustomerNo = payment.CustomerNo;
+            //    }
 
-                //Get the dropdown data with all the customers
-                var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
-                    => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
-                if (qryCust.Count() > 0)
-                {
-                    foreach (var item in qryCust)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
-                    }
-                }
-                SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.CustomerList = tradeselectorlist;
+            //    //Get the dropdown data with all the customers
+            //    var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
+            //        => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            //    if (qryCust.Count() > 0)
+            //    {
+            //        foreach (var item in qryCust)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+            //        }
+            //    }
+            //    SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.CustomerList = tradeselectorlist;
 
-                //Get Payment Type
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
-                if (qryPaymentType.Count() > 0)
-                {
-                    foreach (var item in qryPaymentType)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
-                    }
-                }
-                SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentType = paymentTypeselectorlist;
-
-
-                //Get the Credit Card Number
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
-                    => new { ctcc, cstm }).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
-                if (qryPayment.Count() > 0)
-                {
-                    foreach (var item in qryPayment)
-                    {
-                        if (nCustomerId == 0)
-                        {
-                            nCustomerId = item.cstm.Id;
-                        }
-
-                        //Decode card number
-                        szError = string.Empty;
-                        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
-                        if (!string.IsNullOrEmpty(szError))
-                        {
-                            nPos = szError.IndexOf("data to decode");
-                            if (nPos != -1)
-                            {
-                                szDecriptedData = string.Empty;
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
-                        else
-                        {
-                            //Mask the card number
-                            nHas = szDecriptedData.Length;
-                            if (nHas > 4)
-                            {
-                                szMsg = szDecriptedData.Substring(nHas - 4, 4);
-                                szDecriptedData = string.Format("******{0}", szMsg);
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
+            //    //Get Payment Type
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
+            //    if (qryPaymentType.Count() > 0)
+            //    {
+            //        foreach (var item in qryPaymentType)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
+            //        }
+            //    }
+            //    SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentType = paymentTypeselectorlist;
 
 
-                        szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
-                        listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
-                    }
-                }
-                SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentList = paymentselectorlist;
+            //    //Get the Credit Card Number
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
+            //        => new { ctcc, cstm }).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
+            //    if (qryPayment.Count() > 0)
+            //    {
+            //        foreach (var item in qryPayment)
+            //        {
+            //            if (nCustomerId == 0)
+            //            {
+            //                nCustomerId = item.cstm.Id;
+            //            }
 
-                //Get the sales orders with a due amount
-                listSelector = new List<KeyValuePair<string, string>>();
-                qrySalesOrder = db03.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
-                if (qrySalesOrder.Count() > 0)
-                {
-                    foreach (var item in qrySalesOrder)
-                    {
-                        //Get the balance due
-                        GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-                        if (dBalanceDue > 0)
-                        {
-                            szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
-                            listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
-                        }
-                    }
-                }
-                SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.SalesOrderList = salesorderselectorlist;
-            }
-
-            //Add payment, get sales orders and payment type for this customer
-            if (ViewBag.Status == "Add02")
-            {
-                ViewBag.PaymentId = id;
-                payment = db.Payments.Find(id);
-                if (payment != null)
-                {
-                    szCustomerNo = payment.CustomerNo;
-                    szCardType = payment.PaymentType;
-                    ViewBag.PaymentTypeSelected = payment.PaymentType;
-                }
-
-                //Get the dropdown data
-                var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
-                    => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
-                if (qryCust.Count() > 0)
-                {
-                    foreach (var item in qryCust)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
-                    }
-                }
-                SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.CustomerList = tradeselectorlist;
-
-                //Get Payment Type
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
-                if (qryPaymentType.Count() > 0)
-                {
-                    foreach (var item in qryPaymentType)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
-                    }
-                }
-                SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentType = paymentTypeselectorlist;
+            //            //Decode card number
+            //            szError = string.Empty;
+            //            szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+            //            if (!string.IsNullOrEmpty(szError))
+            //            {
+            //                nPos = szError.IndexOf("data to decode");
+            //                if (nPos != -1)
+            //                {
+            //                    szDecriptedData = string.Empty;
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                //Mask the card number
+            //                nHas = szDecriptedData.Length;
+            //                if (nHas > 4)
+            //                {
+            //                    szMsg = szDecriptedData.Substring(nHas - 4, 4);
+            //                    szDecriptedData = string.Format("******{0}", szMsg);
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
 
 
-                //Get the Credit Card Number for the selected Payment Type
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
-                    => new { ctcc, cstm }).Where(Nctad => Nctad.ctcc.CardType == szCardType).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
-                if (qryPayment.Count() > 0)
-                {
-                    foreach (var item in qryPayment)
-                    {
-                        if (nCustomerId == 0)
-                        {
-                            nCustomerId = item.cstm.Id;
-                        }
+            //            szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
+            //            listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
+            //        }
+            //    }
+            //    SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentList = paymentselectorlist;
 
-                        //Decode card number
-                        szError = string.Empty;
-                        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
-                        if (!string.IsNullOrEmpty(szError))
-                        {
-                            nPos = szError.IndexOf("data to decode");
-                            if (nPos != -1)
-                            {
-                                szDecriptedData = string.Empty;
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
-                        else
-                        {
-                            //Mask the card number
-                            nHas = szDecriptedData.Length;
-                            if (nHas > 4)
-                            {
-                                szMsg = szDecriptedData.Substring(nHas - 4, 4);
-                                szDecriptedData = string.Format("******{0}", szMsg);
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
+            //    //Get the sales orders with a due amount
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    qrySalesOrder = db03.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
+            //    if (qrySalesOrder.Count() > 0)
+            //    {
+            //        foreach (var item in qrySalesOrder)
+            //        {
+            //            //Get the balance due
+            //            GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
+            //            if (dBalanceDue > 0)
+            //            {
+            //                szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
+            //                listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
+            //            }
+            //        }
+            //    }
+            //    SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.SalesOrderList = salesorderselectorlist;
+            //}
 
+            ////Add payment, get sales orders and payment type for this customer
+            //if (ViewBag.Status == "Add02")
+            //{
+            //    ViewBag.PaymentId = id;
+            //    payment = db.Payments.Find(id);
+            //    if (payment != null)
+            //    {
+            //        szCustomerNo = payment.CustomerNo;
+            //        szCardType = payment.PaymentType;
+            //        ViewBag.PaymentTypeSelected = payment.PaymentType;
+            //    }
 
-                        szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
-                        listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
-                    }
-                }
-                SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentList = paymentselectorlist;
+            //    //Get the dropdown data
+            //    var qryCust = db.CustomersContactAddresses.Join(db.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
+            //        => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            //    if (qryCust.Count() > 0)
+            //    {
+            //        foreach (var item in qryCust)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+            //        }
+            //    }
+            //    SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.CustomerList = tradeselectorlist;
 
-                //Get the sales orders with a due amount
-                listSelector = new List<KeyValuePair<string, string>>();
-                qrySalesOrder = db03.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
-                if (qrySalesOrder.Count() > 0)
-                {
-                    foreach (var item in qrySalesOrder)
-                    {
-                        //Get the balance due
-                        GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-                        if (dBalanceDue > 0)
-                        {
-                            szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
-                            listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
-                        }
-                    }
-                }
-                SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.SalesOrderList = salesorderselectorlist;
-            }
-
-            //Add payment, get sales orders and payment type for this customer, dispay due amount, enable Pay link
-            // display selected card number
-            if (ViewBag.Status == "Add03")
-            {
-                ViewBag.PaymentId = id;
-                payment = db.Payments.Find(id);
-                if (payment != null)
-                {
-                    szCustomerNo = payment.CustomerNo;
-                    szSalesOrderNo = payment.SalesOrderNo;
-                    szCardType = payment.PaymentType;
-                    ViewBag.PaymentTypeSelected = payment.PaymentType;
+            //    //Get Payment Type
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
+            //    if (qryPaymentType.Count() > 0)
+            //    {
+            //        foreach (var item in qryPaymentType)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
+            //        }
+            //    }
+            //    SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentType = paymentTypeselectorlist;
 
 
-                    //Decode card number
-                    szError = string.Empty;
-                    szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(payment.CreditCardNumber, ref szError);
-                    if (!string.IsNullOrEmpty(szError))
-                    {
-                        nPos = szError.IndexOf("data to decode");
-                        if (nPos != -1)
-                        {
-                            szDecriptedData = string.Empty;
-                        }
-                        else
-                        {
-                            szDecriptedData = string.Format("******");
-                        }
-                    }
-                    else
-                    {
-                        //Mask the card number
-                        nHas = szDecriptedData.Length;
-                        if (nHas > 4)
-                        {
-                            szMsg = szDecriptedData.Substring(nHas - 4, 4);
-                            szDecriptedData = string.Format("******{0}", szMsg);
-                        }
-                        else
-                        {
-                            szDecriptedData = string.Format("******");
-                        }
-                    }
-                    ViewBag.SelectedCardNumber = szDecriptedData;
+            //    //Get the Credit Card Number for the selected Payment Type
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
+            //        => new { ctcc, cstm }).Where(Nctad => Nctad.ctcc.CardType == szCardType).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
+            //    if (qryPayment.Count() > 0)
+            //    {
+            //        foreach (var item in qryPayment)
+            //        {
+            //            if (nCustomerId == 0)
+            //            {
+            //                nCustomerId = item.cstm.Id;
+            //            }
 
-                    salesorder = db.SalesOrders.Where(slor => slor.SalesOrderNo == szSalesOrderNo).FirstOrDefault<SalesOrder>();
-                    if (salesorder != null)
-                    {
-                        //Get the balance due
-                        GetSalesOrderTotals(salesorder.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-                        payment.Amount = Convert.ToDecimal(dBalanceDue);
-                    }
-                }
-
-                //Get the dropdown data
-                var qryCust = db02.CustomersContactAddresses.Join(db02.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
-                    => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
-                if (qryCust.Count() > 0)
-                {
-                    foreach (var item in qryCust)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
-                    }
-                }
-                SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.CustomerList = tradeselectorlist;
+            //            //Decode card number
+            //            szError = string.Empty;
+            //            szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+            //            if (!string.IsNullOrEmpty(szError))
+            //            {
+            //                nPos = szError.IndexOf("data to decode");
+            //                if (nPos != -1)
+            //                {
+            //                    szDecriptedData = string.Empty;
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                //Mask the card number
+            //                nHas = szDecriptedData.Length;
+            //                if (nHas > 4)
+            //                {
+            //                    szMsg = szDecriptedData.Substring(nHas - 4, 4);
+            //                    szDecriptedData = string.Format("******{0}", szMsg);
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
 
 
-                //Get Payment Type
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
-                if (qryPaymentType.Count() > 0)
-                {
-                    foreach (var item in qryPaymentType)
-                    {
-                        listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
-                    }
-                }
-                SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentType = paymentTypeselectorlist;
+            //            szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
+            //            listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
+            //        }
+            //    }
+            //    SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentList = paymentselectorlist;
+
+            //    //Get the sales orders with a due amount
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    qrySalesOrder = db03.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
+            //    if (qrySalesOrder.Count() > 0)
+            //    {
+            //        foreach (var item in qrySalesOrder)
+            //        {
+            //            //Get the balance due
+            //            GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
+            //            if (dBalanceDue > 0)
+            //            {
+            //                szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
+            //                listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
+            //            }
+            //        }
+            //    }
+            //    SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.SalesOrderList = salesorderselectorlist;
+            //}
+
+            ////Add payment, get sales orders and payment type for this customer, dispay due amount, enable Pay link
+            //// display selected card number
+            //if (ViewBag.Status == "Add03")
+            //{
+            //    ViewBag.PaymentId = id;
+            //    payment = db.Payments.Find(id);
+            //    if (payment != null)
+            //    {
+            //        szCustomerNo = payment.CustomerNo;
+            //        szSalesOrderNo = payment.SalesOrderNo;
+            //        szCardType = payment.PaymentType;
+            //        ViewBag.PaymentTypeSelected = payment.PaymentType;
 
 
-                //Get the Credit Card Number for the selected Payment Type
-                listSelector = new List<KeyValuePair<string, string>>();
-                var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
-                    => new { ctcc, cstm }).Where(Nctad => Nctad.ctcc.CardType == szCardType).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
-                if (qryPayment.Count() > 0)
-                {
-                    foreach (var item in qryPayment)
-                    {
-                        if (nCustomerId == 0)
-                        {
-                            nCustomerId = item.cstm.Id;
-                        }
+            //        //Decode card number
+            //        szError = string.Empty;
+            //        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(payment.CreditCardNumber, ref szError);
+            //        if (!string.IsNullOrEmpty(szError))
+            //        {
+            //            nPos = szError.IndexOf("data to decode");
+            //            if (nPos != -1)
+            //            {
+            //                szDecriptedData = string.Empty;
+            //            }
+            //            else
+            //            {
+            //                szDecriptedData = string.Format("******");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //Mask the card number
+            //            nHas = szDecriptedData.Length;
+            //            if (nHas > 4)
+            //            {
+            //                szMsg = szDecriptedData.Substring(nHas - 4, 4);
+            //                szDecriptedData = string.Format("******{0}", szMsg);
+            //            }
+            //            else
+            //            {
+            //                szDecriptedData = string.Format("******");
+            //            }
+            //        }
+            //        ViewBag.SelectedCardNumber = szDecriptedData;
 
-                        //Decode card number
-                        szError = string.Empty;
-                        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
-                        if (!string.IsNullOrEmpty(szError))
-                        {
-                            nPos = szError.IndexOf("data to decode");
-                            if (nPos != -1)
-                            {
-                                szDecriptedData = string.Empty;
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
-                        else
-                        {
-                            //Mask the card number
-                            nHas = szDecriptedData.Length;
-                            if (nHas > 4)
-                            {
-                                szMsg = szDecriptedData.Substring(nHas - 4, 4);
-                                szDecriptedData = string.Format("******{0}", szMsg);
-                            }
-                            else
-                            {
-                                szDecriptedData = string.Format("******");
-                            }
-                        }
+            //        salesorder = db.SalesOrders.Where(slor => slor.SalesOrderNo == szSalesOrderNo).FirstOrDefault<SalesOrder>();
+            //        if (salesorder != null)
+            //        {
+            //            //Get the balance due
+            //            GetSalesOrderTotals(salesorder.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
+            //            payment.Amount = Convert.ToDecimal(dBalanceDue);
+            //        }
+            //    }
 
-                        szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
-                        listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
-                    }
-                }
-                SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.PaymentList = paymentselectorlist;
+            //    //Get the dropdown data
+            //    var qryCust = db02.CustomersContactAddresses.Join(db02.Customers, ctad => ctad.CustomerId, cstm => cstm.Id, (ctad, cstm)
+            //        => new { ctad, cstm }).OrderBy(Nctad => Nctad.ctad.CompanyName);
+            //    if (qryCust.Count() > 0)
+            //    {
+            //        foreach (var item in qryCust)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.cstm.CustomerNo, item.ctad.CompanyName));
+            //        }
+            //    }
+            //    SelectList tradeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.CustomerList = tradeselectorlist;
 
-                //Get the sales orders with a due amount
-                listSelector = new List<KeyValuePair<string, string>>();
-                qrySalesOrder = db04.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
-                if (qrySalesOrder.Count() > 0)
-                {
-                    foreach (var item in qrySalesOrder)
-                    {
-                        //Get the balance due
-                        GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-                        if (dBalanceDue > 0)
-                        {
-                            szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
-                            listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
-                        }
-                    }
-                }
-                SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
-                ViewBag.SalesOrderList = salesorderselectorlist;
 
-                return RedirectToAction("FDZPayment", "Payment", new { id = ViewBag.PaymentId });
-            }
+            //    //Get Payment Type
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPaymentType = db05.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
+            //    if (qryPaymentType.Count() > 0)
+            //    {
+            //        foreach (var item in qryPaymentType)
+            //        {
+            //            listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
+            //        }
+            //    }
+            //    SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentType = paymentTypeselectorlist;
 
-            //Pay the selected Sales Order
-            if (ViewBag.Status == "Pay")
-            {
-                ViewBag.PaymentId = id;
-                payment = db.Payments.Find(id);
-                if (payment != null)
-                {
-                    //Display any pay error
-                    if (TempData["PayError"] != null)
-                    {
-                        ViewBag.PayError = TempData["PayError"].ToString();
-                    }
 
-                    //Display paypal payment page
-                    return RedirectToAction("Index", "PayPalPayment", new { id = payment.Id });
+            //    //Get the Credit Card Number for the selected Payment Type
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    var qryPayment = db02.CustomersCreditCardShippings.Join(db02.Customers, ctcc => ctcc.CustomerId, cstm => cstm.Id, (ctcc, cstm)
+            //        => new { ctcc, cstm }).Where(Nctad => Nctad.ctcc.CardType == szCardType).OrderBy(Nctad => Nctad.ctcc.CardType).ThenBy(Nctad => Nctad.ctcc.CreditNumber).Where(Nctad => Nctad.cstm.CustomerNo == szCustomerNo);
+            //    if (qryPayment.Count() > 0)
+            //    {
+            //        foreach (var item in qryPayment)
+            //        {
+            //            if (nCustomerId == 0)
+            //            {
+            //                nCustomerId = item.cstm.Id;
+            //            }
 
-                    //issue2.docx
-                    //2.	After “pay” that’s, no need go to PayPal page. 
-                    //return RedirectToAction("PaymentSuccess", "PayPalPayment", new { paymentid = payment.Id });
-                }
+            //            //Decode card number
+            //            szError = string.Empty;
+            //            szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+            //            if (!string.IsNullOrEmpty(szError))
+            //            {
+            //                nPos = szError.IndexOf("data to decode");
+            //                if (nPos != -1)
+            //                {
+            //                    szDecriptedData = string.Empty;
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                //Mask the card number
+            //                nHas = szDecriptedData.Length;
+            //                if (nHas > 4)
+            //                {
+            //                    szMsg = szDecriptedData.Substring(nHas - 4, 4);
+            //                    szDecriptedData = string.Format("******{0}", szMsg);
+            //                }
+            //                else
+            //                {
+            //                    szDecriptedData = string.Format("******");
+            //                }
+            //            }
 
-                //Start again the secuence
-                TempData["Status"] = null;
-                TempData["PayError"] = null;
-                return RedirectToAction("Index");
+            //            szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
+            //            listSelector.Add(new KeyValuePair<string, string>(item.ctcc.CreditNumber, szMsg));
+            //        }
+            //    }
+            //    SelectList paymentselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.PaymentList = paymentselectorlist;
 
-            }
+            //    //Get the sales orders with a due amount
+            //    listSelector = new List<KeyValuePair<string, string>>();
+            //    qrySalesOrder = db04.SalesOrders.Where(slor => slor.CustomerId == nCustomerId).OrderBy(slor => slor.SalesOrderNo);
+            //    if (qrySalesOrder.Count() > 0)
+            //    {
+            //        foreach (var item in qrySalesOrder)
+            //        {
+            //            //Get the balance due
+            //            GetSalesOrderTotals(item.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
+            //            if (dBalanceDue > 0)
+            //            {
+            //                szMsg = string.Format("{0} - {1}", item.SalesOrderNo, dBalanceDue.ToString("C"));
+            //                listSelector.Add(new KeyValuePair<string, string>(item.SalesOrderNo, szMsg));
+            //            }
+            //        }
+            //    }
+            //    SelectList salesorderselectorlist = new SelectList(listSelector, "Key", "Value");
+            //    ViewBag.SalesOrderList = salesorderselectorlist;
 
-            //return View(db.Payments.ToList());
-            return View(payment);
+            //    return RedirectToAction("FDZPayment", "Payment", new { id = ViewBag.PaymentId });
+            //}
+
+            ////Pay the selected Sales Order
+            //if (ViewBag.Status == "Pay")
+            //{
+            //    ViewBag.PaymentId = id;
+            //    payment = db.Payments.Find(id);
+            //    if (payment != null)
+            //    {
+            //        //Display any pay error
+            //        if (TempData["PayError"] != null)
+            //        {
+            //            ViewBag.PayError = TempData["PayError"].ToString();
+            //        }
+
+            //        //Display paypal payment page
+            //        return RedirectToAction("Index", "PayPalPayment", new { id = payment.Id });
+
+            //        //issue2.docx
+            //        //2.	After “pay” that’s, no need go to PayPal page. 
+            //        //return RedirectToAction("PaymentSuccess", "PayPalPayment", new { paymentid = payment.Id });
+            //    }
+
+            //    //Start again the secuence
+            //    TempData["Status"] = null;
+            //    TempData["PayError"] = null;
+            //    return RedirectToAction("Index");
+
+            //}
+
+            ////return View(db.Payments.ToList());
+            //return View(payment);
+           return  this.RedirectToAction("PaymentIndex");
         }
 
         private void GetSalesOrderTotals02(int nSalesOrderId, double dPayment, ref double dSalesAmount, ref double dTotalTax, ref double dTax, ref double dTotalAmount, ref double dBalanceDue)

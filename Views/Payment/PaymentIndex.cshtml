@@ -200,14 +200,6 @@
         function clicktimelycustomertr(src, arg) {
             var szId = src.target.parentNode.id;
             szId = szId.replace("row0_", "");
-     
-            //var szhRef = jQuery("#lnkeditcustomer").attr("href");
-
-            //var szId = src.target.parentNode.id;
-            //szId = szId.replace("row0_", "");
-            //alert(szId);
-            //szhRef = szhRef + '/' + szId;
-            //window.open(szhRef, "_self");
             window.open("/Payment/SalesOrderByCustomer?nCustomerId="+szId, "_self");
         }
         function mouseovertimelycustomertr(src, arg) {
