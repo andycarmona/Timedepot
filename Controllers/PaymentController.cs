@@ -23,6 +23,8 @@ namespace TimelyDepotMVC.Controllers
     using System.Data.Entity.Core;
     using System.Globalization;
 
+    using PdfReportSamples.Models;
+
     using PdfRpt.Core.Helper;
 
     using TimelyDepotMVC.ModelsView;
@@ -1299,9 +1301,9 @@ namespace TimelyDepotMVC.Controllers
                     using (StreamReader response_stream = new StreamReader(web_response.GetResponseStream()))
                     {
                         response_string = response_stream.ReadToEnd();
-                        
+
                     }
-                   
+
                     //load xml
                     XmlDocument xmldoc = new XmlDocument();
                     xmldoc.LoadXml(response_string);
@@ -3173,7 +3175,72 @@ namespace TimelyDepotMVC.Controllers
             return this.View();
         }
 
-        public ActionResult AddCreditCardPayment(string customerNo)
+        public ActionResult AddCashPayment(string salesOrderNumber)
+        {
+            var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
+
+
+
+            if (latestPayments != null)
+            {
+                var parsedPaymentNo = int.Parse(latestPayments.PaymentNo);
+
+                parsedPaymentNo++;
+                var actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
+                double dBalanceDue = 0;
+                double dTotalAmount = 0;
+                double dTax = 0;
+                double dTotalTax = 0;
+                double dSalesAmount = 0;
+
+
+
+                var paymentCash = (from salesorders in this.db.SalesOrders
+                                   where (salesorders.SalesOrderNo == salesOrderNumber)
+                                   select new CashPayment()
+                                           {
+                                               SalesOrderId = salesorders.SalesOrderId,
+                                               CustomerId = salesorders.CustomerId,
+                                               SalesOrderNo = salesorders.SalesOrderNo,
+                                               SalesAmount = dTotalAmount,
+                                               PaymentNo = actualPaymentNo,
+                                               PaymentType = "Cash/Check",
+                                               PaymentDate = DateTime.Now,
+                                           }).FirstOrDefault();
+
+                this.GetSalesOrderTotals(
+          paymentCash.SalesOrderId,
+       ref dSalesAmount,
+       ref dTotalTax,
+       ref dTax,
+       ref dTotalAmount,
+       ref dBalanceDue);
+
+                paymentCash.SalesAmount = dSalesAmount;
+
+                return this.View(paymentCash);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddCashPayment(CashPayment aPayment)
+        {
+            if (ModelState.IsValid)
+            {
+
+                return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo });
+            }
+            return View(aPayment);
+        }
+
+        public ActionResult AddCreditCardPayment(string salesOrdeNumber)
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public ActionResult AddCreditCardPayment(Payment aPayment)
         {
             int nPaymentNo = 0;
             string CustomerNo = string.Empty;
@@ -3211,7 +3278,7 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult ViewCashPayment(string customerNo, string paymentId)
         {
-    
+
             var query = (from paymentlist in this.db.Payments
                          join customerslist in this.db.Customers on paymentlist.CustomerNo equals
                              customerslist.CustomerNo
@@ -3242,7 +3309,7 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult ViewCreditCardPayment(string customerNo, string paymentId)
         {
-            
+
             var query = (from paymentlist in this.db.Payments
                          join customerslist in this.db.Customers on paymentlist.CustomerNo equals
                              customerslist.CustomerNo
@@ -3269,7 +3336,7 @@ namespace TimelyDepotMVC.Controllers
                     return this.View(salesOrderNoForCustomer);
                 }
             }
-          
+
             return this.View();
         }
 
@@ -3337,43 +3404,41 @@ namespace TimelyDepotMVC.Controllers
                 return this.RedirectToAction("PaymentIndex");
             }
 
-            var filterSalesOrderByDue = new List<PurchaseOrderList>();
+            var listOfSalesOrder = (from salesorder in this.db.SalesOrders
+                                    where salesorder.CustomerId == nCustomerId
+                                    select
+                                        new PurchaseOrderList()
+                                            {
+                                                CustomerId = nCustomerId,
+                                                SalesOrderId = salesorder.SalesOrderId,
+                                                SalesOrderNo = salesorder.SalesOrderNo,
+                                                SalesAmount = salesorder.PaymentAmount,
+                                                SODate = salesorder.SODate
+                                            }).ToList();
 
-            var totalSalesOrder = (from salesorder in this.db.SalesOrders
-                                   where salesorder.CustomerId == nCustomerId
-                                   select
-                                       new PurchaseOrderList()
-                                           {  
-                                               CustomerId = nCustomerId,
-                                               SalesOrderId = salesorder.SalesOrderId,
-                                               SalesOrderNo = salesorder.SalesOrderNo,
-                                               SalesAmount = salesorder.PaymentAmount,
-                                               SODate = salesorder.SODate
-                                           }).ToList();
-
-            var totalSalesOrderAndInvoices = (from salesorder in this.db.SalesOrders
-                                             join invoices in this.db.Invoices on salesorder.SalesOrderNo equals invoices.SalesOrderNo
-                                             where salesorder.CustomerId == nCustomerId
-                                             select
-                                                 new PurchaseOrderList()
-                                                     {
-                                                         CustomerId = nCustomerId,
-                                                         PaymentAmount = invoices.PaymentAmount,
-                                                         InvoiceDate = invoices.InvoiceDate,
-                                                         InvoiceNo = invoices.InvoiceNo
-                                                     }).ToList();
+            var listOfInvoices = (from invoices in this.db.Invoices
+                                  where invoices.CustomerId == nCustomerId
+                                  select
+                                      new PurchaseOrderList()
+                                          {
+                                              SalesOrderNo = invoices.SalesOrderNo,
+                                              CustomerId = nCustomerId,
+                                              PaymentAmount = invoices.PaymentAmount,
+                                              InvoiceDate = invoices.InvoiceDate,
+                                              InvoiceNo = invoices.InvoiceNo
+                                          }).ToList();
 
 
 
             var totalSalesOrderWithInvoice = new List<PurchaseOrderList>();
 
-            foreach (var salesorder in totalSalesOrder)
+            foreach (var salesorder in listOfSalesOrder)
             {
                 var aPurchaseList = salesorder;
-                var salesId = salesorder.SalesOrderNo;
+
                 try
                 {
-                    var aInvoice = totalSalesOrderAndInvoices.SingleOrDefault(x => x.SalesOrderNo == salesId);
+                    var aInvoice = listOfInvoices.SingleOrDefault(x => x.SalesOrderNo == salesorder.SalesOrderNo);
 
                     if (aInvoice != null)
                     {
@@ -3384,19 +3449,25 @@ namespace TimelyDepotMVC.Controllers
                 }
                 catch (Exception e)
                 {
-                    
+
                 }
             }
 
+            this.GetBalanceDue(totalSalesOrderWithInvoice, dSalesAmount, dTotalTax, dTax, dTotalAmount, dBalanceDue);
 
-            if (!totalSalesOrderWithInvoice.Any())
-            {
-                return this.View(filterSalesOrderByDue);
-            }
+            return this.View(totalSalesOrderWithInvoice);
+        }
 
+        private void GetBalanceDue(
+            IEnumerable<PurchaseOrderList> totalSalesOrderWithInvoice,
+            double dSalesAmount,
+            double dTotalTax,
+            double dTax,
+            double dTotalAmount,
+            double dBalanceDue)
+        {
             foreach (var item in totalSalesOrderWithInvoice)
             {
-
                 this.GetSalesOrderTotals(
                     item.SalesOrderId,
                     ref dSalesAmount,
@@ -3410,28 +3481,45 @@ namespace TimelyDepotMVC.Controllers
                 }
 
                 item.BalanceDue = dBalanceDue;
-                filterSalesOrderByDue.Add(item);
-            }
 
-            return this.View(filterSalesOrderByDue);
+            }
         }
 
         public ActionResult PaymentTransactionList(string salesOrderNo)
         {
-            var queryPaymentList = (from payments in this.db.Payments  
-                                       where payments.SalesOrderNo == salesOrderNo
-                                       select new PaymentTransactionList()
-                                                  {
-                                                    TransactionId = payments.Id.ToString(),
-                                                      CustomerNo = payments.CustomerNo,
-                                                      SalesOrderNo = payments.SalesOrderNo,
-                                                      TransactionCode = payments.TransactionCode,
-                                                      TransactionDate = payments.PaymentDate,
-                                                      SalesAmount = "10",
-                                                      PaymentType = payments.PaymentType,
-                                                      PaymentAmount = payments.Amount,
-                                                      RefundAmount = null
-                                                  }).ToList();
+            var salesorderElement = this.db.SalesOrders.FirstOrDefault(x => x.SalesOrderNo == salesOrderNo);
+            PaymentTransactionList auxPaymentTransList = null;
+
+            if (salesorderElement != null)
+            {
+                var customerInfo = this.db.Customers.FirstOrDefault(x => x.Id == salesorderElement.CustomerId);
+
+                if (customerInfo != null)
+                {
+                    auxPaymentTransList = new PaymentTransactionList()
+                                              {
+                                                  CustomerNo = customerInfo.CustomerNo,
+                                                  SalesOrderNo = salesorderElement.SalesOrderNo
+                                              };
+                }
+
+                    ViewBag.CustomerData = salesorderElement;
+            }
+
+            var queryPaymentList = (from payments in this.db.Payments
+                                    where payments.SalesOrderNo == salesOrderNo
+                                    select new PaymentTransactionList()
+                                               {
+                                                   TransactionId = payments.Id.ToString(),
+                                                   CustomerNo = payments.CustomerNo,
+                                                   SalesOrderNo = payments.SalesOrderNo,
+                                                   TransactionCode = payments.TransactionCode,
+                                                   TransactionDate = payments.PaymentDate,
+                                                   SalesAmount = "10",
+                                                   PaymentType = payments.PaymentType,
+                                                   PaymentAmount = payments.Amount,
+                                                   RefundAmount = null
+                                               }).ToList();
 
             var queryRefundList = (from refunds in this.db.Refunds
                                    where refunds.SalesOrderNo == salesOrderNo
@@ -3450,9 +3538,13 @@ namespace TimelyDepotMVC.Controllers
 
 
             var joinedRefundsAndPayments = queryPaymentList.Concat(queryRefundList);
+            if (joinedRefundsAndPayments.Any())
+            {
+                return this.View(joinedRefundsAndPayments);
+            }
+            ViewBag.ErrorMessage = "There is no payments for this salesorder.";
 
-            return this.View(joinedRefundsAndPayments);
-            //return this.View(queryPaymentList);
+            return this.View();
         }
 
 
@@ -3947,7 +4039,7 @@ namespace TimelyDepotMVC.Controllers
 
             ////return View(db.Payments.ToList());
             //return View(payment);
-           return  this.RedirectToAction("PaymentIndex");
+            return this.RedirectToAction("PaymentIndex");
         }
 
         private void GetSalesOrderTotals02(int nSalesOrderId, double dPayment, ref double dSalesAmount, ref double dTotalTax, ref double dTax, ref double dTotalAmount, ref double dBalanceDue)
@@ -4048,77 +4140,77 @@ namespace TimelyDepotMVC.Controllers
             try
             {
                 initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
-          
 
-            if (initialinfo == null)
-            {
-                initialinfo = new InitialInfo();
-                initialinfo.InvoiceNo = 0;
-                initialinfo.PaymentNo = 0;
-                initialinfo.PurchaseOrderNo = 0;
-                initialinfo.SalesOrderNo = 1;
-                initialinfo.TaxRate = 0;
-                db.InitialInfoes.Add(initialinfo);
-                dTax = initialinfo.TaxRate;
-            }
-            else
-            {
-                dTax = initialinfo.TaxRate;
-            }
 
-      
-
-            SalesOrder salesorder = db.SalesOrders.Find(nSalesOrderId);
-            if (salesorder != null)
-            {
-                dShipping = Convert.ToDouble(salesorder.ShippingHandling);
-                dPayment = Convert.ToDouble(salesorder.PaymentAmount);
-
-                //Use the sales order tax information
-                if (salesorder.Tax_rate != null)
+                if (initialinfo == null)
                 {
-                    if (Convert.ToDecimal(salesorder.Tax_rate) >= 0)
-                    {
-                        dTax = Convert.ToDouble(salesorder.Tax_rate);
-                    }
+                    initialinfo = new InitialInfo();
+                    initialinfo.InvoiceNo = 0;
+                    initialinfo.PaymentNo = 0;
+                    initialinfo.PurchaseOrderNo = 0;
+                    initialinfo.SalesOrderNo = 1;
+                    initialinfo.TaxRate = 0;
+                    db.InitialInfoes.Add(initialinfo);
+                    dTax = initialinfo.TaxRate;
                 }
-                dSOTax = dTax;
-
-                qryDetails = db.SalesOrderDetails.Where(sldt => sldt.SalesOrderId == salesorder.SalesOrderId);
-                if (qryDetails.Count() > 0)
+                else
                 {
-                    foreach (var item in qryDetails)
-                    {
-                        ////use the tax on product
-                        //if (item.Tax != null)
-                        //{
-                        //    if (Convert.ToDecimal(item.Tax) >= 0)
-                        //    {
-                        //        dTax = Convert.ToDouble(item.Tax);
-                        //    }
-                        //}
+                    dTax = initialinfo.TaxRate;
+                }
 
-                        dSalesAmount = dSalesAmount + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice));
-                        //use the tax on product
-                        if (!string.IsNullOrEmpty(item.Sub_ItemID))
+
+
+                SalesOrder salesorder = db.SalesOrders.Find(nSalesOrderId);
+                if (salesorder != null)
+                {
+                    dShipping = Convert.ToDouble(salesorder.ShippingHandling);
+                    dPayment = Convert.ToDouble(salesorder.PaymentAmount);
+
+                    //Use the sales order tax information
+                    if (salesorder.Tax_rate != null)
+                    {
+                        if (Convert.ToDecimal(salesorder.Tax_rate) >= 0)
                         {
-                            dTotalTax = dTotalTax + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice) * (dTax / 100));
+                            dTax = Convert.ToDouble(salesorder.Tax_rate);
                         }
                     }
+                    dSOTax = dTax;
+
+                    qryDetails = db.SalesOrderDetails.Where(sldt => sldt.SalesOrderId == salesorder.SalesOrderId);
+                    if (qryDetails.Count() > 0)
+                    {
+                        foreach (var item in qryDetails)
+                        {
+                            ////use the tax on product
+                            //if (item.Tax != null)
+                            //{
+                            //    if (Convert.ToDecimal(item.Tax) >= 0)
+                            //    {
+                            //        dTax = Convert.ToDouble(item.Tax);
+                            //    }
+                            //}
+
+                            dSalesAmount = dSalesAmount + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice));
+                            //use the tax on product
+                            if (!string.IsNullOrEmpty(item.Sub_ItemID))
+                            {
+                                dTotalTax = dTotalTax + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice) * (dTax / 100));
+                            }
+                        }
+                    }
+
+                    dTotalAmount = dSalesAmount + dTotalTax + dShipping;
+                    dBalanceDue = dTotalAmount - dPayment;
+
+                    //Set the sales order tax again
+                    dTax = dSOTax;
                 }
-
-                dTotalAmount = dSalesAmount + dTotalTax + dShipping;
-                dBalanceDue = dTotalAmount - dPayment;
-
-                //Set the sales order tax again
-                dTax = dSOTax;
-            }
             }
             catch (EntityCommandExecutionException e)
             {
-            
+
             }
-       
+
         }
 
         //

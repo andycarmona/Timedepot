@@ -607,6 +607,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CustomErrorHandlerAttribute.cs" />
+    <Compile Include="Helpers\SalesOrderAmountValidatorAttribute.cs" />
     <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.cs" />
     <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.Designer.cs">
       <DependentUpon>201410020747288_AddTransactionListforRefundsAndPayments.cs</DependentUpon>
@@ -628,6 +630,8 @@
       <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelsView\CreditCardPayment.cs" />
+    <Compile Include="ModelsView\CashPayment.cs" />
     <Compile Include="ModelsView\PaymentTransactionList.cs" />
     <Compile Include="ModelsView\PurchaseOrderDetailSRC.cs" />
     <Compile Include="ModelsView\InvoiceDetailSRC.cs" />
@@ -1954,6 +1958,8 @@
     <Content Include="Views\Payment\AddCreditCardPayment.cshtml" />
     <Content Include="Views\Payment\ViewCreditCardPayment.cshtml" />
     <Content Include="Views\Payment\ViewCashPayment.cshtml" />
+    <Content Include="Views\Payment\AddGenericPayment.cshtml" />
+    <Content Include="Views\Payment\AddCashPayment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
