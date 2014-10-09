@@ -27,6 +27,10 @@ namespace TimelyDepotMVC.ModelsView
          [Display(Name = "Payment date")]
         public DateTime? PaymentDate { get; set; }
 
+         public int TransactionCode { get; set; }
+
+         public string ReferenceNo { get; set; }
+
         [Display(Name = "Payment amount")]
         [Required]
         public double PaymentAmount { get; set; }

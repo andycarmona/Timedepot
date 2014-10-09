@@ -1,8 +1,8 @@
 ﻿@model TimelyDepotMVC.Models.Admin.Payments
 
 @{
-    ViewBag.Title = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Edit Payment";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
 }
 
 @section scripts{
@@ -82,6 +82,7 @@
 
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.SalesOrderNo)
+            @Html.HiddenFor(model=>model.TransactionCode)
 
             <div style="width:80%; margin:0px auto;">
                 <div class="editor-label">
@@ -115,18 +116,19 @@
                     @Html.EditorFor(model => model.PaymentType)
                     @Html.ValidationMessageFor(model => model.PaymentType)
                 </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.CreditCardNumber)
-                </div>
-                <div class="editor-field">
-                    <input id="CreditCardNumberHlp" name="CreditCardNumberHlp" type="text" value="@szDecriptedData" />
-                </div>
-                <div class="editor-field" style="display:none">
-                    @Html.EditorFor(model => model.CreditCardNumber)
-                    @Html.ValidationMessageFor(model => model.CreditCardNumber)
-                </div>
-
+                @if (ViewBag.TransCode == 2)
+                {
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.CreditCardNumber)
+                    </div>
+                    <div class="editor-field">
+                        <input id="CreditCardNumberHlp" name="CreditCardNumberHlp" type="text" value="@szDecriptedData" />
+                    </div>
+                    <div class="editor-field" style="display: none">
+                        @Html.EditorFor(model => model.CreditCardNumber)
+                        @Html.ValidationMessageFor(model => model.CreditCardNumber)
+                    </div>
+                }
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ReferenceNo)
                 </div>
@@ -152,14 +154,16 @@
                 </div>
 
                 <div style="margin:5px;">
-                    <input id="btnSubmit" type="submit" value="Save" />
+                    <input class="btn btn-default" id="btnSubmit" type="submit" value="Save" />
+                    @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
                 </div>
             </div>
         </fieldset>
     }
 
     <div style="margin:5px;">
-        @Html.ActionLink("Back to List", "Index")
+    
     </div>
 </div>
 @*@section Scripts {

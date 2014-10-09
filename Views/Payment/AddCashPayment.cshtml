@@ -19,6 +19,7 @@
         @Html.HiddenFor(model => model.SalesOrderNo)
         @Html.HiddenFor(model => model.PaymentNo)
         @Html.HiddenFor(model => model.SalesAmount)
+    @Html.HiddenFor(model => model.PaymentType)
 
         <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
          
@@ -50,7 +51,7 @@
                         </div>
                         <div class="editor-field">
                           
-                            @Html.TextBoxFor(model => model.PaymentAmount, new { Value = "" })
+                            @Html.EditorFor(model => model.PaymentAmount)
                             @Html.ValidationMessageFor(model => model.PaymentAmount)
                         </div>
                     </div>

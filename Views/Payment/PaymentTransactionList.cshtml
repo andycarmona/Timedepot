@@ -111,16 +111,16 @@
 
             <td>
                 @Html.ActionLink("Add a Credit card payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" }) |
-            @Html.ActionLink("Add Cash/Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" })
-        </td>
-        <td></td>
-        <td></td>
+                @Html.ActionLink("Add Cash/Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" })
+            </td>
             <td></td>
             <td></td>
-        <td><b>Due balance= @ViewBag.DueBalance </b></td>
-    </tr>
+            <td></td>
+            <td></td>
+            <td><b>Due balance= @ViewBag.DueBalance </b></td>
+        </tr>
 
-</table>
+    </table>
 </div>
 @section scripts{
     <script>
@@ -132,22 +132,12 @@
         }
 
         function clicktimelycustomertr(src, arg) {
-
-            //var szhRef = jQuery("#lnkeditcustomer").attr("href");
-
             var szId = src.target.parentNode.id;
             var splittedId = szId.split('_');
             var transCode = splittedId[splittedId.length - 1];
-
             szId = splittedId[1];
-
-            //alert(szId);
-            //szhRef = szhRef + '/' + szId;
-            //window.open(szhRef, "_self");
-            if (transCode === '1') {
-                window.open("/Payment/ViewCashPayment?paymentId=" + szId + "&customerNo=CANYI", "_self");
-            } else if (transCode === '2') {
-                window.open("/Payment/ViewCreditCardPayment?paymentId=" + szId + "&customerNo=CANYI", "_self");
+            if ((transCode == 2) || (transCode == 1)) {
+                window.open("/Payment/Edit?paymentId=" + szId + "&TransCode=" + transCode, "_self");
             }
         }
 

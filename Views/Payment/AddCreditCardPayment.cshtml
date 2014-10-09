@@ -1,37 +1,107 @@
-﻿@model List<TimelyDepotMVC.ModelsView.PurchaseOrderList>
+﻿@model TimelyDepotMVC.ModelsView.CashPayment
 
 @{
-    ViewBag.Title = "AddCreditCardPayment";
+
     Layout = "~/Views/Shared/_LayoutModule.cshtml";
+    var salesOrderNumber = Model.SalesOrderNo;
 }
 
-<h2>Add Credit Card Payment</h2>
-<label>Customer No</label>
-<select id="customerList">
-    <option></option>
 
-</select>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-<label> Sales Order No</label>
-<select id="salesOrderList">
-    <option></option>
 
-</select>
-<label>Transaction code: 2</label>
-<label>Payment type</label>
-<select id="paymentType">
-    <option></option>
 
-</select>
-<label>Choose a credit card number</label>
-<select id="creditcardList">
-    <option></option>
+    <legend>Add cash payment</legend>
 
-</select>
-<input id="Button1" type="button" value="Add new creditCard" />
-<label>Payment date</label>
-<input id="Text1" type="text" />
-<label>Aproval code</label>
-<input id="Text1" type="text" />
-<label>Payment amount</label>
-<input id="Text1" type="text" />
+
+    @Html.HiddenFor(model => model.CustomerId)
+    @Html.HiddenFor(model => model.SalesOrderNo)
+    @Html.HiddenFor(model => model.PaymentNo)
+    @Html.HiddenFor(model => model.SalesAmount)
+    @Html.HiddenFor(model => model.PaymentType)
+
+    <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
+
+        <div class="cf">
+            <br />
+            <div class="darkerline right" style="width: 40%; padding: 5px;">
+
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SalesOrderNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.SalesOrderNo, new { disabled = "disabled", @readonly = "readonly" })
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SalesAmount)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.SalesAmount, new { disabled = "disabled", @readonly = "readonly" })
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentAmount)
+                    </div>
+                    <div class="editor-field">
+
+                        @Html.EditorFor(model => model.PaymentAmount)
+                        @Html.ValidationMessageFor(model => model.PaymentAmount)
+                    </div>
+                </div>
+
+            </div>
+            <div class="darkerline left" style="width: 40%; padding: 5px;">
+
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.PaymentNo, new { disabled = "disabled", @readonly = "readonly" })
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentType)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.PaymentType, new { disabled = "disabled", @readonly = "readonly" })
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentDate)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PaymentDate)<br />
+                        @Html.ValidationMessageFor(model => model.PaymentDate)
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <p>
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
+    </p>
+    @Html.ValidationSummary(true)
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
