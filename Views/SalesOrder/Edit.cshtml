@@ -649,7 +649,7 @@
                 <div style="margin-bottom: 5px;">
                     <div>
                         <div class="right">@Html.DisplayFor(model => model.PaymentAmount)</div>
-                        <div>@Html.ActionLink("Payment:", "PaySalesOrder", "Payment", new { id = Model.SalesOrderId }, new { id = "lnkpaysalesorderid02" })</div>
+                        <div>@Html.ActionLink("Payment:","PaymentTransactionList","Payment", new { salesOrderNo = Model.SalesOrderNo },null)</div>
                     </div>
                 </div>
                 <div style="margin-bottom: 5px;">

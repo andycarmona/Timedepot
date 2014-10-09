@@ -43,7 +43,7 @@ namespace TimelyDepotMVC.ModelsView
         public double? TotalAmount { get; set; }
 
         [Display(Name = "Sales Order Amount")]
-        public decimal? SalesAmount { get; set; }
+        public double SalesAmount { get; set; }
 
         [Display(Name = "Balance Due")]
         public double? BalanceDue { get; set; }

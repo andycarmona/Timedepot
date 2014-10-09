@@ -11,6 +11,8 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Transaction No")]
         public string TransactionId { get; set; }
 
+        public int SalesOrderId { get; set; }
+
         public int TransactionCode { get; set; }
 
         [Display(Name = "Customer No")]
@@ -19,7 +21,7 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Salesorder No")]
         public string SalesOrderNo { get; set; }
 
-        public string SalesAmount { get; set; }
+        public double SalesAmount { get; set; }
 
         public string PaymentNo { get; set; }
 
@@ -37,6 +39,9 @@ namespace TimelyDepotMVC.ModelsView
 
         [Display(Name = "Credit card number")]
         public string CreditCardNumber { get; set; }
+
+        [Display(Name = "Company name")]
+        public string CompanyName { get; set; }
 
         [Display(Name = "Reference no")]
         public string ReferenceNo { get; set; }

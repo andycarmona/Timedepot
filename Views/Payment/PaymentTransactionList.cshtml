@@ -7,107 +7,120 @@
     var nMod = 0;
     var szClass = "";
     var customerData = ViewBag.CustomerData;
-    var companyName = "company name here";
-    var errorMsg="";
+    var errorMsg = "";
     if (ViewBag.ErrorMessage != null)
     {
-     errorMsg = ViewBag.ErrorMessage;
+        errorMsg = ViewBag.ErrorMessage;
     }
 }
 
 <h2>Payments transaction list</h2>
 
-@if(!string.IsNullOrEmpty(errorMsg))
-{
-    <p>Error result: @errorMsg</p>
-}
-
-    <div style="width: 1240px; margin: 0px auto;">
-        <table class="webgrid" style="width: 1240px; margin: 0px auto;">
-            <tr>@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btNavTimley" })</tr>
-            @if(Model!=null)
-            { 
-                <tr>
-        
-
-         
-                    <td>Customer No:</td>
-        
-                    <td>Company Name @companyName</td>
-     
-      
-                    <td>Sales order No @customerData.SalesOrderNo</td>
-                </tr>
-
-                <tr class="webgrid-header">
-
-                    <th>@Html.DisplayNameFor(model => model.TransactionCode)</th>
-
-                    <th>
-                        @Html.DisplayNameFor(model => model.TransactionDate)
 
 
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SalesAmount)
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+        @if (!string.IsNullOrEmpty(errorMsg))
+        {
+            <tr><td><p>Error result: @errorMsg</p></td></tr>
+        }
+        <tr><td>@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })</td></tr>
+        @if (Model != null)
+        {
+            <tr class="webgrid-header">
 
 
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PaymentType)
+                <td></td>
 
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PaymentAmount)
+                <td></td>
 
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.RefundAmount)
 
-                    </th>
-                </tr>
+                <td></td>
+                <td><b>Customer No: </b> @customerData.CustomerNo</td>
 
-                foreach (var item in Model)
-                {
+                <td><b>Company Name:</b> @customerData.CompanyName</td>
 
-                    nRow++;
-                    nMod = (nRow % 2);
-                    if (nMod == 0)
-                    {
-                        szClass = "webgrid-alternating-row timelycustomertr trhlp";
-                    }
-                    else
-                    {
-                        szClass = "webgrid-row-style timelycustomertr trhlp";
-                    }
 
-                    string sztrId = string.Format("row0_{0}_{1}", item.TransactionId,item.TransactionCode);
-                    <tr id="@sztrId" class="@szClass">
-                        <td>
-                            @item.TransactionCode
-
-                        </td>
-                        <td>
-                            @item.TransactionDate
-
-                        </td>
-                        <td>
-                            @item.SalesAmount
-
-                        </td>
-                        <td>@item.PaymentType</td>
-                        <td>@item.PaymentAmount</td>
-                        <td>@item.RefundAmount</td>
-
-                    </tr>
-                }}
-            <tr>
-        
-                <td>@Html.ActionLink("Credit card payment", "AddCreditCardPayment", null, new { salesOrderNumber = @customerData.SalesOrderNo, @class = "btNavTimley" })</td>
-                <td>@Html.ActionLink("Cash payment", "AddCashPayment", null, new { salesOrderNumber = @customerData.SalesOrderNo, @class = "btNavTimley" })</td>
+                <td><b>Sales order No: </b> @customerData.SalesOrderNo</td>
             </tr>
 
-        </table>
+            <tr class="webgrid-header">
+
+                <th>@Html.DisplayNameFor(model => model.TransactionId)</th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.TransactionDate)
+
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalesAmount)
+
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentType)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentAmount)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RefundAmount)
+
+                </th>
+            </tr>
+
+            foreach (var item in Model)
+            {
+
+                nRow++;
+                nMod = (nRow % 2);
+                if (nMod == 0)
+                {
+                    szClass = "webgrid-alternating-row timelycustomertr trhlp";
+                }
+                else
+                {
+                    szClass = "webgrid-row-style timelycustomertr trhlp";
+                }
+
+                string sztrId = string.Format("row0_{0}_{1}", item.TransactionId, item.TransactionCode);
+                <tr id="@sztrId" class="@szClass">
+                    <td>
+                        @item.TransactionId
+
+                    </td>
+                    <td>
+                        @item.TransactionDate
+
+                    </td>
+                    <td>
+                        @(@item.SalesAmount == 0 ? String.Empty : @item.SalesAmount.ToString())
+
+                    </td>
+                    <td>@item.PaymentType</td>
+                    <td>@item.PaymentAmount</td>
+                    <td>@item.RefundAmount</td>
+
+                </tr>
+            }
+        }
+        <tr>
+
+            <td>
+                @Html.ActionLink("Add a Credit card payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" }) |
+            @Html.ActionLink("Add Cash/Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" })
+        </td>
+        <td></td>
+        <td></td>
+            <td></td>
+            <td></td>
+        <td><b>Due balance= @ViewBag.DueBalance </b></td>
+    </tr>
+
+</table>
 </div>
 @section scripts{
     <script>
@@ -133,7 +146,7 @@
             //window.open(szhRef, "_self");
             if (transCode === '1') {
                 window.open("/Payment/ViewCashPayment?paymentId=" + szId + "&customerNo=CANYI", "_self");
-            } else {
+            } else if (transCode === '2') {
                 window.open("/Payment/ViewCreditCardPayment?paymentId=" + szId + "&customerNo=CANYI", "_self");
             }
         }

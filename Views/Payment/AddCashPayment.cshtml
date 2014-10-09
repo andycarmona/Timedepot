@@ -49,7 +49,8 @@
                             @Html.LabelFor(model => model.PaymentAmount)
                         </div>
                         <div class="editor-field">
-                            @Html.EditorFor(model => model.PaymentAmount)
+                          
+                            @Html.TextBoxFor(model => model.PaymentAmount, new { Value = "" })
                             @Html.ValidationMessageFor(model => model.PaymentAmount)
                         </div>
                     </div>
@@ -92,15 +93,12 @@
         </div>
 
     <p>
-        <input type="submit" value="Create" />
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
     </p>
     @Html.ValidationSummary(true)
 
 }
-<div>
-    @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber }, new { @class = "btn" })
 
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -3412,22 +3412,18 @@ namespace TimelyDepotMVC.Controllers
                                                 CustomerId = nCustomerId,
                                                 SalesOrderId = salesorder.SalesOrderId,
                                                 SalesOrderNo = salesorder.SalesOrderNo,
-                                                SalesAmount = salesorder.PaymentAmount,
                                                 SODate = salesorder.SODate
-                                            }).ToList();
+                                            }).OrderBy(x => x.SODate).ToList();
 
             var listOfInvoices = (from invoices in this.db.Invoices
                                   where invoices.CustomerId == nCustomerId
                                   select
                                       new PurchaseOrderList()
                                           {
-                                              SalesOrderNo = invoices.SalesOrderNo,
-                                              CustomerId = nCustomerId,
-                                              PaymentAmount = invoices.PaymentAmount,
+                                              SalesOrderNo =  invoices.SalesOrderNo,
                                               InvoiceDate = invoices.InvoiceDate,
                                               InvoiceNo = invoices.InvoiceNo
                                           }).ToList();
-
 
 
             var totalSalesOrderWithInvoice = new List<PurchaseOrderList>();
@@ -3439,109 +3435,126 @@ namespace TimelyDepotMVC.Controllers
                 try
                 {
                     var aInvoice = listOfInvoices.SingleOrDefault(x => x.SalesOrderNo == salesorder.SalesOrderNo);
-
+                    var sumPayment = (from paymentslist in this.db.Payments
+                                      where paymentslist.SalesOrderNo == salesorder.SalesOrderNo
+                                      select paymentslist.Amount).Sum();
                     if (aInvoice != null)
                     {
                         aPurchaseList.InvoiceDate = aInvoice.InvoiceDate;
                         aPurchaseList.InvoiceNo = aInvoice.InvoiceNo;
                     }
+                    this.GetSalesOrderTotals(
+                        salesorder.SalesOrderId,
+                        ref dSalesAmount,
+                        ref dTotalTax,
+                        ref dTax,
+                        ref dTotalAmount,
+                        ref dBalanceDue);
+
+                    aPurchaseList.SalesAmount = dTotalAmount;
+                    aPurchaseList.BalanceDue = dTotalAmount - (double)sumPayment;
+                    aPurchaseList.PaymentAmount = sumPayment;
+
                     totalSalesOrderWithInvoice.Add(aPurchaseList);
                 }
                 catch (Exception e)
                 {
+                    ViewBag.ErroMssg = e.Message;
 
                 }
             }
 
-            this.GetBalanceDue(totalSalesOrderWithInvoice, dSalesAmount, dTotalTax, dTax, dTotalAmount, dBalanceDue);
-
             return this.View(totalSalesOrderWithInvoice);
         }
 
-        private void GetBalanceDue(
-            IEnumerable<PurchaseOrderList> totalSalesOrderWithInvoice,
-            double dSalesAmount,
-            double dTotalTax,
-            double dTax,
-            double dTotalAmount,
-            double dBalanceDue)
+  
+
+        public ActionResult PaymentTransactionList(string salesOrderNo)
         {
-            foreach (var item in totalSalesOrderWithInvoice)
+            var salesorderElement = this.db.SalesOrders.FirstOrDefault(x => x.SalesOrderNo == salesOrderNo);
+            double dSalesAmount = 0;
+            double dTotalTax = 0;
+            double dTax = 0;
+            double dTotalAmount = 0;
+            double dBalanceDue = 0;
+
+            if (salesorderElement != null)
             {
                 this.GetSalesOrderTotals(
-                    item.SalesOrderId,
+                    salesorderElement.SalesOrderId,
                     ref dSalesAmount,
                     ref dTotalTax,
                     ref dTax,
                     ref dTotalAmount,
                     ref dBalanceDue);
-                if (!(dBalanceDue > 0))
-                {
-                    continue;
-                }
 
-                item.BalanceDue = dBalanceDue;
+                var salesorderData = new PaymentTransactionList()
+                                         {
+                                             TransactionId = salesorderElement.SalesOrderId.ToString(),
+                                             TransactionCode = 0,
+                                             TransactionDate = salesorderElement.SODate,
+                                             SalesAmount = dTotalAmount,
+                                             CompanyName = salesorderElement.FromCompany,
+                                             CustomerId = salesorderElement.CustomerId.ToString(),
+                                             SalesOrderNo = salesorderElement.SalesOrderNo
 
-            }
-        }
+                                         };
 
-        public ActionResult PaymentTransactionList(string salesOrderNo)
-        {
-            var salesorderElement = this.db.SalesOrders.FirstOrDefault(x => x.SalesOrderNo == salesOrderNo);
-            PaymentTransactionList auxPaymentTransList = null;
+                var queryPaymentList = (from payments in this.db.Payments
+                                        where payments.SalesOrderNo == salesOrderNo
+                                        select new PaymentTransactionList()
+                                                   {
+                                                       TransactionId = payments.Id.ToString(),
+                                                       TransactionCode= payments.TransactionCode,
+                                                       CustomerNo = payments.CustomerNo,
+                                                       SalesOrderNo = payments.SalesOrderNo,
+                                                       TransactionDate = payments.PaymentDate,
+                                                       PaymentType = payments.PaymentType,
+                                                       PaymentAmount = payments.Amount,
+                                                       RefundAmount = null
+                                                   }).ToList();
+                salesorderData.CustomerNo = queryPaymentList[0].CustomerNo;
+                queryPaymentList.Insert(0,salesorderData);
 
-            if (salesorderElement != null)
-            {
-                var customerInfo = this.db.Customers.FirstOrDefault(x => x.Id == salesorderElement.CustomerId);
-
-                if (customerInfo != null)
-                {
-                    auxPaymentTransList = new PaymentTransactionList()
-                                              {
-                                                  CustomerNo = customerInfo.CustomerNo,
-                                                  SalesOrderNo = salesorderElement.SalesOrderNo
-                                              };
-                }
-
-                    ViewBag.CustomerData = salesorderElement;
-            }
-
-            var queryPaymentList = (from payments in this.db.Payments
-                                    where payments.SalesOrderNo == salesOrderNo
-                                    select new PaymentTransactionList()
+                var queryRefundList = (from refunds in this.db.Refunds
+                                       where refunds.SalesOrderNo == salesOrderNo
+                                       select
+                                           new PaymentTransactionList()
                                                {
-                                                   TransactionId = payments.Id.ToString(),
-                                                   CustomerNo = payments.CustomerNo,
-                                                   SalesOrderNo = payments.SalesOrderNo,
-                                                   TransactionCode = payments.TransactionCode,
-                                                   TransactionDate = payments.PaymentDate,
-                                                   SalesAmount = "10",
-                                                   PaymentType = payments.PaymentType,
-                                                   PaymentAmount = payments.Amount,
-                                                   RefundAmount = null
+                                                   TransactionId = refunds.RefundId.ToString(),
+                                                   CustomerNo = refunds.CustomerNo,
+                                                   SalesOrderNo = refunds.SalesOrderNo,
+                                                   TransactionCode = 3,
+                                                   TransactionDate = refunds.Refunddate,
+                                                   PaymentType = null,
+                                                   PaymentAmount = null,
+                                                   RefundAmount = refunds.RefundAmount
                                                }).ToList();
 
-            var queryRefundList = (from refunds in this.db.Refunds
-                                   where refunds.SalesOrderNo == salesOrderNo
-                                   select
-                                       new PaymentTransactionList()
-                                           {
-                                               TransactionId = refunds.RefundId.ToString(),
-                                               CustomerNo = refunds.CustomerNo,
-                                               SalesOrderNo = refunds.SalesOrderNo,
-                                               TransactionCode = 3,
-                                               TransactionDate = refunds.Refunddate,
-                                               PaymentType = null,
-                                               PaymentAmount = null,
-                                               RefundAmount = refunds.RefundAmount
-                                           }).ToList();
+                var joinedRefundsAndPayments = queryPaymentList.Concat(queryRefundList);
 
+                var paymentTransactionLists = joinedRefundsAndPayments as IList<PaymentTransactionList> ?? joinedRefundsAndPayments.ToList();
+            
+                if (paymentTransactionLists.Any())
+                {
+                    var sumPayment = (from paymentslist in paymentTransactionLists
+                                      where paymentslist.TransactionCode == 2 || paymentslist.TransactionCode == 1
+                                      select paymentslist.PaymentAmount).Sum();
 
-            var joinedRefundsAndPayments = queryPaymentList.Concat(queryRefundList);
-            if (joinedRefundsAndPayments.Any())
-            {
-                return this.View(joinedRefundsAndPayments);
+                    var sumRefunds = (from refundlist in paymentTransactionLists
+                                      where refundlist.TransactionCode == 3
+                                      select refundlist.RefundAmount).Sum();
+
+                    this.ViewBag.CustomerData = salesorderData;
+                    if ((sumPayment != null) && (sumRefunds != null))
+                    {
+                        this.ViewBag.DueBalance = dTotalAmount - (double)sumPayment + (double)sumRefunds;
+                    }
+
+                    return this.View(joinedRefundsAndPayments);
+                }
             }
+
             ViewBag.ErrorMessage = "There is no payments for this salesorder.";
 
             return this.View();

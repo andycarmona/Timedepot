@@ -28,7 +28,6 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? PaymentDate { get; set; }
 
         [Display(Name = "Payment amount")]
-        [SalesOrderAmountValidator(ErrorMessage = "Start date should be a future date")]
         [Required]
         public double PaymentAmount { get; set; }
 
