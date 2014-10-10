@@ -45,6 +45,19 @@
 
                         </div>
                     </div>
+                    @if (Model.TransactionCode == 1002)
+                    {
+                        <div class="viosinput400 boxtb3">
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.CheckNumber)
+                            </div>
+                            <div class="editor-field">
+
+                                @Html.EditorFor(model => model.CheckNumber)
+                                @Html.ValidationMessageFor(model => model.CheckNumber)
+                            </div>
+                        </div>
+                    }
                     <div class="viosinput400 boxtb3">
                         <div class="editor-label">
                             @Html.LabelFor(model => model.PaymentAmount)
@@ -55,6 +68,7 @@
                             @Html.ValidationMessageFor(model => model.PaymentAmount)
                         </div>
                     </div>
+                  
                   
                 </div>
                 <div class="darkerline left" style="width: 40%; padding: 5px;">

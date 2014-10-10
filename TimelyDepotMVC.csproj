@@ -629,6 +629,10 @@
     <Compile Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.Designer.cs">
       <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410100646132_AddedCheckNumberToPayment.cs" />
+    <Compile Include="Migrations\201410100646132_AddedCheckNumberToPayment.Designer.cs">
+      <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2014,6 +2018,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.resx">
       <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410100646132_AddedCheckNumberToPayment.resx">
+      <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

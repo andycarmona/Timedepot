@@ -1,12 +1,18 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CashPayment.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
 
 namespace TimelyDepotMVC.ModelsView
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Web.Mvc;
-
-    using TimelyDepotMVC.Helpers;
 
     public class CashPayment : IValidatableObject
     {
@@ -24,12 +30,15 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Payment type")]
         public string PaymentType { get; set; }
 
-         [Display(Name = "Payment date")]
+        [Display(Name = "Payment date")]
         public DateTime? PaymentDate { get; set; }
 
-         public int TransactionCode { get; set; }
+        public int TransactionCode { get; set; }
 
-         public string ReferenceNo { get; set; }
+      
+        public string CheckNumber { get; set; }
+
+        public string ReferenceNo { get; set; }
 
         [Display(Name = "Payment amount")]
         [Required]
@@ -43,6 +52,6 @@ namespace TimelyDepotMVC.ModelsView
             }
         }
 
-    
+
     }
 }

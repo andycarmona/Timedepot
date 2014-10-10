@@ -3175,7 +3175,7 @@ namespace TimelyDepotMVC.Controllers
             return this.View();
         }
 
-        public ActionResult AddCashPayment(string salesOrderNumber)
+        public ActionResult AddCashPayment(string salesOrderNumber,int transactionCode)
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
 
@@ -3192,19 +3192,24 @@ namespace TimelyDepotMVC.Controllers
             double dTax = 0;
             double dTotalTax = 0;
             double dSalesAmount = 0;
+            var aPaymentType = "Cash";
 
-
+            if (transactionCode == 1002)
+            {
+                aPaymentType = "Check";
+            }
 
             var paymentCash = (from salesorders in this.db.SalesOrders
                                where (salesorders.SalesOrderNo == salesOrderNumber)
                                select new CashPayment()
                                           {
+                                              TransactionCode = transactionCode,
                                               SalesOrderId = salesorders.SalesOrderId,
                                               CustomerId = salesorders.CustomerId,
                                               SalesOrderNo = salesorders.SalesOrderNo,
                                               SalesAmount = dTotalAmount,
                                               PaymentNo = actualPaymentNo,
-                                              PaymentType = "Cash/Check",
+                                              PaymentType = aPaymentType,
                                               PaymentDate = DateTime.Now,
                                           }).FirstOrDefault();
 
@@ -3229,6 +3234,7 @@ namespace TimelyDepotMVC.Controllers
                 var customerData = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
                 Payments aNewPayment = new Payments()
                                            {
+                                               CheckNo = aPayment.CheckNumber,
                                                PaymentNo = aPayment.PaymentNo,
                                                CustomerNo = String.IsNullOrEmpty(customerData.CustomerNo) ? String.Empty:customerData.CustomerNo ,
                                                SalesOrderNo = aPayment.SalesOrderNo,
@@ -3300,6 +3306,7 @@ namespace TimelyDepotMVC.Controllers
                 Payments aNewPayment = new Payments()
                 {
                     PaymentNo = aPayment.PaymentNo,
+                    CheckNo = aPayment.CheckNumber,
                     CustomerNo = String.IsNullOrEmpty(customerData.CustomerNo) ? String.Empty : customerData.CustomerNo,
                     SalesOrderNo = aPayment.SalesOrderNo,
                     PaymentType = aPayment.PaymentType,
@@ -3552,7 +3559,10 @@ namespace TimelyDepotMVC.Controllers
                                                        PaymentAmount = payments.Amount,
                                                        RefundAmount = null
                                                    }).ToList();
-                salesorderData.CustomerNo = queryPaymentList[0].CustomerNo;
+                if (queryPaymentList.Any())
+                {
+                    salesorderData.CustomerNo = queryPaymentList[0].CustomerNo;
+                }
                 queryPaymentList.Insert(0,salesorderData);
 
                 var queryRefundList = (from refunds in this.db.Refunds

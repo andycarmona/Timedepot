@@ -62,6 +62,7 @@
                     @Html.DisplayNameFor(model => model.PaymentType)
 
                 </th>
+
                 <th>
                     @Html.DisplayNameFor(model => model.PaymentAmount)
 
@@ -110,11 +111,12 @@
         <tr>
 
             <td>
-                @Html.ActionLink("Add a Credit card payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" }) |
-                @Html.ActionLink("Add Cash/Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Add a Credit card payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" }) 
+                
+       
             </td>
-            <td></td>
-            <td></td>
+            <td>@Html.ActionLink("Add Cash payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 1 }, new { @class = "btn btn-default" })</td>
+            <td>@Html.ActionLink("Add Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 1002 }, new { @class = "btn btn-default" })</td>
             <td></td>
             <td></td>
             <td><b>Due balance= @ViewBag.DueBalance </b></td>
@@ -136,7 +138,7 @@
             var splittedId = szId.split('_');
             var transCode = splittedId[splittedId.length - 1];
             szId = splittedId[1];
-            if ((transCode == 2) || (transCode == 1)) {
+            if ((transCode == 1002) || (transCode == 1) || (transCode==2)) {
                 window.open("/Payment/Edit?paymentId=" + szId + "&TransCode=" + transCode, "_self");
             }
         }

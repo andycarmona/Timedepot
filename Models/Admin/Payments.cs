@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-namespace TimelyDepotMVC.Models.Admin
+﻿namespace TimelyDepotMVC.Models.Admin
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
     public class Payments
     {
         [Key]
@@ -29,6 +25,9 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Reference No")]
         public string ReferenceNo { get; set; }
+
+        [Display(Name = "Check number")]
+        public string CheckNo { get; set; }
 
         [Display(Name = "Amount")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
