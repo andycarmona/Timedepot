@@ -22,19 +22,22 @@ namespace TimelyDepotMVC.Controllers
     using System.Collections;
     using System.Data.Entity.Core;
     using System.Globalization;
+    using System.Net.Mime;
 
     using PdfReportSamples.Models;
 
     using PdfRpt.Core.Helper;
 
     using TimelyDepotMVC.ModelsView;
+    using System.Text.RegularExpressions;
 
     public class PaymentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
 
         //private static byte[] _salt = Encoding.ASCII.GetBytes("o6806642kbM7c5");
-        private static byte[] _salt = Encoding.ASCII.GetBytes("o6806642kbT7e5");
+        private static string _salt = "o6806642kbT7e5";
+        internal const string szKey = "560A18CD-6346-4CF0-A2E8-671F9B6B9EA9";
 
         int _pageIndex = 0;
         public int PageIndex
@@ -226,7 +229,7 @@ namespace TimelyDepotMVC.Controllers
 
                         //Decode card number
                         szError = string.Empty;
-                        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+                        szDecriptedData = DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
                             nPos = szError.IndexOf("data to decode");
@@ -277,7 +280,7 @@ namespace TimelyDepotMVC.Controllers
 
                         //Decode card number
                         szError = string.Empty;
-                        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+                        szDecriptedData = DecodeInfo02(item.ctcc.CreditNumber, ref szError);
                         if (!string.IsNullOrEmpty(szError))
                         {
                             nPos = szError.IndexOf("data to decode");
@@ -1749,6 +1752,8 @@ namespace TimelyDepotMVC.Controllers
 
             return RedirectToAction("Test02Encription");
         }
+       
+
 
         /// <summary>
         /// Decrypt the given string.  Assumes the string was encrypted using
@@ -1756,59 +1761,44 @@ namespace TimelyDepotMVC.Controllers
         /// </summary>
         public static string DecodeInfo02(string szEncriptedData, ref string szError)
         {
-            byte[] bytes = null;
-            string szMsg = string.Empty;
             string szDecriptedData = string.Empty;
-            string szKey = "o7x8y6";
-
-            Rfc2898DeriveBytes key = null;
-
+         
             try
             {
-                szKey = ConfigurationManager.AppSettings["EncodeKey"];
+                if (!IsBase64String(szEncriptedData))
+                {
+                    throw new Exception("The cipherText input parameter is not base64 encoded");
+                }
 
                 if (string.IsNullOrEmpty(szEncriptedData))
                 {
-                    throw new ArgumentNullException("data to decode");
+                    throw new ArgumentNullException("data to encode");
                 }
+
                 if (string.IsNullOrEmpty(szKey))
                 {
                     throw new ArgumentNullException("shared key");
                 }
 
-                // generate the key from the shared secret and the salt
-                key = new Rfc2898DeriveBytes(szKey, _salt);
+                var saltBytes = Encoding.ASCII.GetBytes(_salt);
+                var key = new Rfc2898DeriveBytes(szKey, saltBytes);
 
-                // Create the streams used for decryption.
-                bytes = Convert.FromBase64String(szEncriptedData);
+                var aesAlg = new RijndaelManaged();
+                aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+                aesAlg.IV = key.GetBytes(aesAlg.BlockSize / 8);
+                var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                var cipher = Convert.FromBase64String(szEncriptedData);
 
-                RijndaelManaged myRijndael = new RijndaelManaged();
-
-                using (MemoryStream msDecrypt = new MemoryStream(bytes))
+                using (var msDecrypt = new MemoryStream(cipher))
                 {
-                    // Create a RijndaelManaged object
-                    // with the specified key and IV.
-                    myRijndael = new RijndaelManaged();
-                    myRijndael.Key = key.GetBytes(myRijndael.KeySize / 8);
-
-                    // Get the initialization vector from the encrypted stream
-                    myRijndael.IV = ReadByteArray(msDecrypt, ref szError);
-
-                    // Create a decrytor to perform the stream transform.
-                    ICryptoTransform decryptor = myRijndael.CreateDecryptor(myRijndael.Key, myRijndael.IV);
-
-                    using (CryptoStream csDecrypt =
-                        new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-
-                            // Read the decrypted bytes from the decrypting stream
-                            // and place them in a string.
+                        using (var srDecrypt = new StreamReader(csDecrypt))
+                        {
                             szDecriptedData = srDecrypt.ReadToEnd();
-                        msDecrypt.Close();
+                        }
                     }
                 }
-
             }
             catch (Exception err)
             {
@@ -1818,6 +1808,13 @@ namespace TimelyDepotMVC.Controllers
             return szDecriptedData;
         }
 
+        public static bool IsBase64String(string base64String)
+        {
+            base64String = base64String.Trim();
+            return (base64String.Length % 4 == 0) &&
+                   Regex.IsMatch(base64String, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+
+        }
         public static byte[] ReadByteArray(MemoryStream msDecrypt, ref string szError)
         {
             byte[] buffer = null;
@@ -1942,50 +1939,44 @@ namespace TimelyDepotMVC.Controllers
         public static string EncriptInfo02(string szOriginalData, ref string szError)
         {
             string szEncriptedData = string.Empty;
-            string szKey = "o7x8y6";
-
-            Rfc2898DeriveBytes key = null;
-
+       
             try
             {
-                szKey = ConfigurationManager.AppSettings["EncodeKey"];
+                if (!IsBase64String(szOriginalData))
+                {
+                    throw new Exception("The cipherText input parameter is not base64 encoded");
+                }
 
                 if (string.IsNullOrEmpty(szOriginalData))
                 {
                     throw new ArgumentNullException("data to encode");
                 }
+
                 if (string.IsNullOrEmpty(szKey))
                 {
                     throw new ArgumentNullException("shared key");
                 }
 
-                // generate the key from the shared secret and the salt
-                key = new Rfc2898DeriveBytes(szKey, _salt);
+                var saltBytes = Encoding.ASCII.GetBytes(_salt);
+                var key = new Rfc2898DeriveBytes(szKey, saltBytes);
 
-                RijndaelManaged myRijndael = new RijndaelManaged();
-                myRijndael.Key = key.GetBytes(myRijndael.KeySize / 8);
+                var aesAlg = new RijndaelManaged();
+                aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+                aesAlg.IV = key.GetBytes(aesAlg.BlockSize / 8);
+                var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                // Create a decrytor to perform the stream transform.
-                ICryptoTransform encryptor = myRijndael.CreateEncryptor(myRijndael.Key, myRijndael.IV);
 
-                // Create the streams used for encryption. 
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                var msEncrypt = new MemoryStream();
+               
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (var srEncrypt = new StreamWriter(csEncrypt))
                         {
-                            // prepend the IV
-                            msEncrypt.Write(BitConverter.GetBytes(myRijndael.IV.Length), 0, sizeof(int));
-                            msEncrypt.Write(myRijndael.IV, 0, myRijndael.IV.Length);
-
-                            //Write all data to the stream.
-                            swEncrypt.Write(szOriginalData);
+                            srEncrypt.Write(szOriginalData);
                         }
                         szEncriptedData = Convert.ToBase64String(msEncrypt.ToArray());
                     }
-                }
-
+            
             }
             catch (Exception err)
             {
@@ -2052,6 +2043,8 @@ namespace TimelyDepotMVC.Controllers
 
             return View();
         }
+
+      
 
         public void AyudaEncDec01()
         {
@@ -3194,7 +3187,7 @@ namespace TimelyDepotMVC.Controllers
             double dSalesAmount = 0;
             var aPaymentType = "Cash";
 
-            if (transactionCode == 1002)
+            if (transactionCode == 4)
             {
                 aPaymentType = "Check";
             }
@@ -3251,10 +3244,11 @@ namespace TimelyDepotMVC.Controllers
             return View(aPayment);
         }
 
-        public ActionResult AddCreditCardPayment(string salesOrderNumber)
+        public ActionResult AddCreditCardPayment(string salesOrderNumber, string paymentTypeSelected="MasterCard")
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
-
+              List<SelectListItem> listOfCards = new List<SelectListItem>(){new SelectListItem(){Text = "",Value=""}};
+           
             if (latestPayments == null)
             {
                 return this.View();
@@ -3269,8 +3263,6 @@ namespace TimelyDepotMVC.Controllers
             double dTotalTax = 0;
             double dSalesAmount = 0;
 
-           
-
             var paymentCash = (from salesorders in this.db.SalesOrders
                                where (salesorders.SalesOrderNo == salesOrderNumber)
                                select new CashPayment()
@@ -3280,7 +3272,7 @@ namespace TimelyDepotMVC.Controllers
                                    SalesOrderNo = salesorders.SalesOrderNo,
                                    SalesAmount = dTotalAmount,
                                    PaymentNo = actualPaymentNo,
-                                   PaymentType = "Cash/Check",
+                                   PaymentType = "CreditCard",
                                    PaymentDate = DateTime.Now,
                                }).FirstOrDefault();
 
@@ -3293,7 +3285,26 @@ namespace TimelyDepotMVC.Controllers
                 ref dBalanceDue);
 
             paymentCash.SalesAmount = dSalesAmount;
+          
+            var listSelector = new List<KeyValuePair<string, string>>();
+            var qryPaymentType = db.CustomersCardTypes.OrderBy(cdty => cdty.CardType);
+            if (qryPaymentType.Count() > 0)
+            {
+                foreach (var item in qryPaymentType)
+                {
+                    listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
+                }
+            }
+            var paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
+            var aCustomer = this.db.Customers.SingleOrDefault(x => x.Id == paymentCash.CustomerId);
+            if (aCustomer != null)
+            {
+               listOfCards.Clear();
+               listOfCards = this.GetListOfCardsByUsers(aCustomer.CustomerNo);
+            }
 
+            ViewBag.PaymentType = paymentTypeselectorlist;
+            ViewBag.CreditCards = listOfCards;
             return this.View(paymentCash);
         }
 
@@ -3320,6 +3331,65 @@ namespace TimelyDepotMVC.Controllers
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo });
             }
             return View(aPayment);
+        }
+
+        private List<SelectListItem> GetListOfCardsByUsers(string customerNo)
+        {
+            int nCustomerId = 0;
+            int nPos = 0;
+            int nHas = 0;
+            string szMsg = string.Empty;
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+
+           
+
+
+            //Get the Credit Card Number
+            List<SelectListItem> listSelector = new List<SelectListItem>();
+
+            var qryPayment =
+                    db.CustomersCreditCardShippings.Join(
+                        db.Customers,
+                        ctcc => ctcc.CustomerId,
+                        cstm => cstm.Id,
+                        (ctcc, cstm) => new { ctcc, cstm })
+                        .OrderBy(Nctad => Nctad.ctcc.CardType)
+                        .ThenBy(Nctad => Nctad.ctcc.CreditNumber)
+                        .Where(Nctad => Nctad.cstm.CustomerNo == customerNo);
+
+                if (qryPayment.Count() > 0)
+                {
+                    foreach (var item in qryPayment)
+                    {
+                        if (nCustomerId == 0)
+                        {
+                            nCustomerId = item.cstm.Id;
+                        }
+
+                        //Decode card number
+                        szError = string.Empty;
+                        szDecriptedData = DecodeInfo02(item.ctcc.CreditNumber, ref szError);
+                     
+                            //Mask the card number
+                            nHas = szDecriptedData.Length;
+                            if (nHas > 4)
+                            {
+                                szMsg = szDecriptedData.Substring(nHas - 4, 4);
+                                szDecriptedData = string.Format("******{0}", szMsg);
+                            }
+                            else
+                            {
+                                szDecriptedData = string.Format("******");
+                            }
+                        //szMsg = string.Format("{0} - {1}", item.ctcc.CardType, szDecriptedData);
+                        szDecriptedData = item.ctcc.CardType + " - " + szDecriptedData;
+                        szMsg = item.ctcc.Id.ToString();
+                        listSelector.Add(new SelectListItem { Text = szDecriptedData, Value = szMsg });
+                    }
+                }
+          
+            return listSelector;
         }
 
         public ActionResult ViewCashPayment(string customerNo, string paymentId)
@@ -3730,7 +3800,6 @@ namespace TimelyDepotMVC.Controllers
             //        foreach (var item in qryPaymentType)
             //        {
             //            listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
-            //        }
             //    }
             //    SelectList paymentTypeselectorlist = new SelectList(listSelector, "Key", "Value");
             //    ViewBag.PaymentType = paymentTypeselectorlist;

@@ -38,6 +38,8 @@ namespace TimelyDepotMVC.ModelsView
       
         public string CheckNumber { get; set; }
 
+        public string CreditCardNumber { get; set; }
+
         public string ReferenceNo { get; set; }
 
         [Display(Name = "Payment amount")]

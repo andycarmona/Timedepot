@@ -13,7 +13,7 @@
 
 
 
-    <legend>Add cash payment</legend>
+    <legend>Add credit card payment</legend>
 
 
     @Html.HiddenFor(model => model.CustomerId)
@@ -46,7 +46,10 @@
 
                     </div>
                 </div>
+            
+   
                 <div class="viosinput400 boxtb3">
+               
                     <div class="editor-label">
                         @Html.LabelFor(model => model.PaymentAmount)
                     </div>
@@ -71,10 +74,10 @@
                 </div>
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.PaymentType)
+                        @Html.LabelFor(model => model.CreditCardNumber)
                     </div>
                     <div class="editor-field">
-                        @Html.TextBoxFor(model => model.PaymentType, new { disabled = "disabled", @readonly = "readonly" })
+                        @Html.DropDownList("CreditCards")
 
                     </div>
                 </div>
