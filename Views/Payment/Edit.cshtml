@@ -89,16 +89,15 @@
                     @Html.LabelFor(model => model.PaymentNo)
                 </div>
                 <div class="editor-field">
-                    @Html.EditorFor(model => model.PaymentNo)
-                    @Html.ValidationMessageFor(model => model.PaymentNo)
+                    @Html.DisplayFor(model => model.PaymentNo)
+         
                 </div>
 
                 <div class="editor-label">
                     @Html.LabelFor(model => model.CustomerNo)
                 </div>
                 <div class="editor-field">
-                    @Html.EditorFor(model => model.CustomerNo)
-                    @Html.ValidationMessageFor(model => model.CustomerNo)
+                    @Html.DisplayFor(model => model.CustomerNo)
                 </div>
 
                 <div class="editor-label">
@@ -106,7 +105,7 @@
                 </div>
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.SalesOrderNo)
-                    @Html.ValidationMessageFor(model => model.SalesOrderNo)
+              
                 </div>
 
                 <div class="editor-label">

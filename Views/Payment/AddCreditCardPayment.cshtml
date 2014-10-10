@@ -28,25 +28,26 @@
             <br />
             <div class="darkerline right" style="width: 40%; padding: 5px;">
 
+          
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.SalesOrderNo)
+                        @Html.LabelFor(model => model.CreditCardNumber)
                     </div>
                     <div class="editor-field">
-                        @Html.TextBoxFor(model => model.SalesOrderNo, new { disabled = "disabled", @readonly = "readonly" })
+                        @Html.DropDownList("CreditCards")
 
                     </div>
                 </div>
                 <div class="viosinput400 boxtb3">
+
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.SalesAmount)
+                        @Html.LabelFor(model => model.PaymentDate)
                     </div>
                     <div class="editor-field">
-                        @Html.TextBoxFor(model => model.SalesAmount, new { disabled = "disabled", @readonly = "readonly" })
-
+                        @Html.EditorFor(model => model.PaymentDate)<br />
+                        @Html.ValidationMessageFor(model => model.PaymentDate)
                     </div>
                 </div>
-            
    
                 <div class="viosinput400 boxtb3">
                
@@ -68,27 +69,26 @@
                         @Html.LabelFor(model => model.PaymentNo)
                     </div>
                     <div class="editor-field">
-                        @Html.TextBoxFor(model => model.PaymentNo, new { disabled = "disabled", @readonly = "readonly" })
+                        @Html.DisplayFor(model => model.PaymentNo)
 
                     </div>
                 </div>
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.CreditCardNumber)
+                        @Html.LabelFor(model => model.SalesOrderNo)
                     </div>
                     <div class="editor-field">
-                        @Html.DropDownList("CreditCards")
+                        @Html.DisplayFor(model => model.SalesOrderNo)
 
                     </div>
                 </div>
                 <div class="viosinput400 boxtb3">
-
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.PaymentDate)
+                        @Html.LabelFor(model => model.SalesAmount)
                     </div>
                     <div class="editor-field">
-                        @Html.EditorFor(model => model.PaymentDate)<br />
-                        @Html.ValidationMessageFor(model => model.PaymentDate)
+                        @Html.DisplayFor(model => model.SalesAmount)
+
                     </div>
                 </div>
 
@@ -107,4 +107,26 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+    jQuery(document).ready(initalizeEditPayment);
+
+    function initalizeEditPayment() {
+        //debugger;
+
+
+
+        //Set the datepicker
+        jQuery("#PaymentDate").datepicker({
+            dateFormat: "mm/dd/yy",
+            showOn: "button",
+            buttonImage: "/images/calendar.gif",
+            buttonImageOnly: true
+        });
+
+        var szDate = jQuery("#PaymentDate").val();
+        szDate = jQuery.trim(szDate);
+        jQuery("#PaymentDate").val(szDate);
+    }
+
+</script>
 }
