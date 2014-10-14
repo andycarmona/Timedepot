@@ -10,6 +10,8 @@ using TimelyDepotMVC.Controllers;
 
 namespace TimelyDepotMVC
 {
+    using TimelyDepotMVC.Helpers;
+
     // Nota: para obtener instrucciones sobre cómo habilitar el modo clásico de IIS6 o IIS7, 
     // visite http://go.microsoft.com/?LinkId=9394801
 
@@ -21,7 +23,7 @@ namespace TimelyDepotMVC
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-
+            //ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

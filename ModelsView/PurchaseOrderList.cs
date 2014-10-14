@@ -51,6 +51,8 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Invoice #")]
         public string InvoiceNo { get; set; }
 
+        public int InvoiceId { get; set; }
+
         [Display(Name = "InvoiceDate")]
         public DateTime? InvoiceDate { get; set; }
 

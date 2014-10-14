@@ -7,6 +7,8 @@
         [Key]
         public int TransactionCodeId { get; set; }
 
+        public int TransactionCode { get; set; }
+
         public string CodeDescription { get; set; }
     }
     

@@ -12,6 +12,11 @@
     {
         errorMsg = ViewBag.ErrorMessage;
     }
+    var anInvoiceId = 0;
+    if (ViewBag.InvoiceId != null)
+    {
+        anInvoiceId = (int)ViewBag.InvoiceId;
+    }
 }
 
 <h2>Payments transaction list</h2>
@@ -111,12 +116,11 @@
         <tr>
 
             <td>
-                @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo }, new { @class = "btn btn-default" }) 
+                @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance }, new { @class = "btn btn-default" }) 
                 
        
             </td>
-            <td>@Html.ActionLink("Add Cash payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 1 }, new { @class = "btn btn-default" })</td>
-            <td>@Html.ActionLink("Add Check payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4 }, new { @class = "btn btn-default" })</td>
+            <td>@Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })</td>
             <td></td>
             <td></td>
             <td><b>Due balance= @ViewBag.DueBalance </b></td>

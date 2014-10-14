@@ -21,6 +21,7 @@
     @Html.HiddenFor(model => model.PaymentNo)
     @Html.HiddenFor(model => model.SalesAmount)
     @Html.HiddenFor(model => model.PaymentType)
+    @Html.HiddenFor(model => model.BalanceDue)
 
     <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
 
@@ -28,7 +29,7 @@
             <br />
             <div class="darkerline right" style="width: 40%; padding: 5px;">
 
-          
+
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
                         @Html.LabelFor(model => model.CreditCardNumber)
@@ -48,9 +49,9 @@
                         @Html.ValidationMessageFor(model => model.PaymentDate)
                     </div>
                 </div>
-   
+
                 <div class="viosinput400 boxtb3">
-               
+
                     <div class="editor-label">
                         @Html.LabelFor(model => model.PaymentAmount)
                     </div>
@@ -92,13 +93,37 @@
                     </div>
                 </div>
 
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.InvoiceDate)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.InvoiceDate)
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.InvoiceNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.InvoiceNo)
+
+                    </div>
+                </div>
 
             </div>
+        </div>
+        <div style="float:right;" class="viosinput400 boxtb3">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.BalanceDue):@Html.DisplayFor(model => model.BalanceDue)
+            </div>
+
         </div>
     </div>
 
     <p>
-        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber,invoiceId=-1 }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
     </p>
     @Html.ValidationSummary(true)
 
@@ -107,26 +132,26 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-<script type="text/javascript">
-    jQuery(document).ready(initalizeEditPayment);
+    <script type="text/javascript">
+        jQuery(document).ready(initalizeEditPayment);
 
-    function initalizeEditPayment() {
-        //debugger;
+        function initalizeEditPayment() {
+            //debugger;
 
 
 
-        //Set the datepicker
-        jQuery("#PaymentDate").datepicker({
-            dateFormat: "mm/dd/yy",
-            showOn: "button",
-            buttonImage: "/images/calendar.gif",
-            buttonImageOnly: true
-        });
+            //Set the datepicker
+            jQuery("#PaymentDate").datepicker({
+                dateFormat: "mm/dd/yy",
+                showOn: "button",
+                buttonImage: "/images/calendar.gif",
+                buttonImageOnly: true
+            });
 
-        var szDate = jQuery("#PaymentDate").val();
-        szDate = jQuery.trim(szDate);
-        jQuery("#PaymentDate").val(szDate);
-    }
+            var szDate = jQuery("#PaymentDate").val();
+            szDate = jQuery.trim(szDate);
+            jQuery("#PaymentDate").val(szDate);
+        }
 
-</script>
+    </script>
 }

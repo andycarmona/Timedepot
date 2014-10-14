@@ -82,7 +82,9 @@
 
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.SalesOrderNo)
-            @Html.HiddenFor(model=>model.TransactionCode)
+            @Html.HiddenFor(model => model.TransactionCode)
+            @Html.HiddenFor(model => model.PaymentNo)
+            @Html.HiddenFor(model => model.CustomerNo)
 
             <div style="width:80%; margin:0px auto;">
                 <div class="editor-label">
@@ -90,7 +92,7 @@
                 </div>
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.PaymentNo)
-         
+
                 </div>
 
                 <div class="editor-label">
@@ -105,7 +107,7 @@
                 </div>
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.SalesOrderNo)
-              
+
                 </div>
 
                 <div class="editor-label">
@@ -128,14 +130,15 @@
                         @Html.ValidationMessageFor(model => model.CreditCardNumber)
                     </div>
                 }
-             
+                
                     <div class="editor-label">
                         @Html.LabelFor(model => model.CheckNo)
                     </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.CheckNo)
-                        @Html.ValidationMessageFor(model => model.CheckNo)
-                    </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.CheckNo)
+                    @Html.ValidationMessageFor(model => model.CheckNo)
+                </div>
+           
                 
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ReferenceNo)
@@ -163,17 +166,20 @@
 
                 <div style="margin:5px;">
                     <input class="btn btn-default" id="btnSubmit" type="submit" value="Save" />
-                    @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo }, new { @class = "btn btn-default" })
-                    @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo ,invoiceId=-1}, new { @class = "btn btn-default" })
+                    @if (ViewBag.TransCode != 2)
+                    {
+                        @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
+                    }
                 </div>
             </div>
         </fieldset>
     }
 
     <div style="margin:5px;">
-    
+
     </div>
 </div>
 @*@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}*@
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

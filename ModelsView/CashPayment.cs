@@ -6,11 +6,9 @@
 //   
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-using System;
-
 namespace TimelyDepotMVC.ModelsView
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -35,22 +33,33 @@ namespace TimelyDepotMVC.ModelsView
 
         public int TransactionCode { get; set; }
 
+        [Display(Name = "Due balance")]
+        public decimal BalanceDue { get; set; }
       
-        public string CheckNumber { get; set; }
 
         public string CreditCardNumber { get; set; }
 
         public string ReferenceNo { get; set; }
 
-        [Display(Name = "Payment amount")]
-        [Required]
+
         public double PaymentAmount { get; set; }
+
+        public string CheckNumber { get; set; }
+
+        public string InvoiceNo { get; set; }
+
+        public DateTime? InvoiceDate { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (PaymentAmount > SalesAmount)
+            if (PaymentAmount > (double)this.BalanceDue)
             {
-                yield return new ValidationResult("You should not pay more than the salesorder amount.");
+                yield return new ValidationResult("Payment amount should'n be bigger than the balance due");
+            }
+
+            if (PaymentAmount < 1)
+            {
+                yield return new ValidationResult("Please! Write an amount bigger than zero");
             }
         }
 

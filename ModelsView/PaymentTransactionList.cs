@@ -32,7 +32,7 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? PaymentDate { get; set; }
 
         [Display(Name = "Payment amount")]
-        public decimal? PaymentAmount { get; set; }
+        public double PaymentAmount { get; set; }
 
         [Display(Name = "Refund amount")]
         public decimal? RefundAmount { get; set; }
@@ -46,6 +46,7 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Reference no")]
         public string ReferenceNo { get; set; }
 
+        public double BalanceDue { get; set; }
 
         public double Amount { get; set; }
 
@@ -53,6 +54,10 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? TransactionDate { get; set; }
 
         public string PayLog { get; set; }
+
+        public string InvoiceNo { get; set; }
+
+        public DateTime? InvoiceDate { get; set; }
 
         public string InvoicePayment { get; set; }
     }

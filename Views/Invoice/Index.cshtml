@@ -314,7 +314,7 @@
 <div class="divh1">@ViewBag.Title</div>
 
 <div style="width: 1240px; margin: 5px auto;">
-    @Html.ActionLink("Generate Invoice", "SelectSalesOrder", null, new { id = "generateinvoiceid" })
+    @Html.ActionLink("Generate Invoice", "SalesOrderForInvoice","Payment", null,null)
 </div>
 <div style="margin: 0px auto; width: 1240px; padding: 5px;">
     @using (Html.BeginForm("Index", "Invoice", FormMethod.Post))

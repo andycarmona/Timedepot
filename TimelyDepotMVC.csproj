@@ -1964,6 +1964,7 @@
     <Content Include="Views\Payment\ViewCashPayment.cshtml" />
     <Content Include="Views\Payment\AddGenericPayment.cshtml" />
     <Content Include="Views\Payment\AddCashPayment.cshtml" />
+    <Content Include="Views\Payment\SalesOrderForInvoice.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
