@@ -3666,7 +3666,17 @@ namespace TimelyDepotMVC.Controllers
             double dTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
+            var companyName = "No company name";
 
+            var customersContactAddress = this.db.CustomersContactAddresses.SingleOrDefault(x => x.CustomerId == salesorderElement.CustomerId);
+            if (customersContactAddress != null)
+            {
+                var customerData =customersContactAddress.CompanyName;
+                if (!string.IsNullOrEmpty(customerData))
+                {
+                    companyName = customerData;
+                }
+            }
 
             if (salesorderElement != null)
             {
@@ -3685,7 +3695,7 @@ namespace TimelyDepotMVC.Controllers
                                              TransactionCode = 0,
                                              TransactionDate = salesorderElement.SODate,
                                              SalesAmount = dTotalAmount,
-                                             CompanyName = salesorderElement.FromCompany,
+                                             CompanyName = companyName,
                                              CustomerId = salesorderElement.CustomerId.ToString(),
                                              SalesOrderNo = salesorderElement.SalesOrderNo,
                                          };
