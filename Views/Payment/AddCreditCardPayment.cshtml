@@ -22,6 +22,8 @@
     @Html.HiddenFor(model => model.SalesAmount)
     @Html.HiddenFor(model => model.PaymentType)
     @Html.HiddenFor(model => model.BalanceDue)
+     @Html.HiddenFor(model => model.InvoiceDate)
+         @Html.HiddenFor(model => model.InvoiceNo)
 
     <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
 
@@ -123,7 +125,8 @@
     </div>
 
     <p>
-        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber,invoiceId=-1 }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber,invoiceId=@Model.InvoiceId }, new { @class = "btn btn-default" }) 
+        <input class="btn btn-default" type="submit" value="Create" />
     </p>
     @Html.ValidationSummary(true)
 

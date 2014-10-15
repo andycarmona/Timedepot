@@ -3173,11 +3173,7 @@ namespace TimelyDepotMVC.Controllers
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
             Invoice anInvoice = null;
-            var paymentType = new List<SelectListItem>()
-                                  {
-                                      new SelectListItem() { Text = "Cash", Value = "1" },
-                                      new SelectListItem() { Text = "Check", Value = "4" }
-                                  };
+         
 
             if (latestPayments == null)
             {
@@ -3237,7 +3233,7 @@ namespace TimelyDepotMVC.Controllers
 
                 paymentCash.SalesAmount = dSalesAmount;
                 paymentCash.BalanceDue = totalBalance;
-                ViewBag.PaymentType = paymentType;
+                ViewBag.PaymentType = SelectPayTypeListItems();
                 return this.View(paymentCash);
             }
 
@@ -3283,20 +3279,29 @@ namespace TimelyDepotMVC.Controllers
                 db.SaveChanges();
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = -1 });
             }
+           
+            ViewBag.PaymentType = SelectPayTypeListItems();
+            return View(aPayment);
+        }
+
+        private static List<SelectListItem> SelectPayTypeListItems()
+        {
             var paymentType = new List<SelectListItem>()
                                   {
                                       new SelectListItem() { Text = "Cash", Value = "1" },
                                       new SelectListItem() { Text = "Check", Value = "4" }
-
                                   };
-            ViewBag.PaymentType = paymentType;
-            return View(aPayment);
+            return paymentType;
         }
 
-        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance, string paymentTypeSelected = "MasterCard")
+        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance, int invoiceId, string paymentTypeSelected = "")
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
-
+            Invoice anInvoice = null;
+            if (invoiceId > 0)
+            {
+              anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+            }
 
             if (latestPayments == null)
             {
@@ -3332,6 +3337,13 @@ namespace TimelyDepotMVC.Controllers
                 ref dTax,
                 ref dTotalAmount,
                 ref dBalanceDue);
+
+            if (anInvoice != null)
+            {
+                paymentCash.InvoiceDate = anInvoice.InvoiceDate;
+                paymentCash.InvoiceNo = anInvoice.InvoiceNo;
+                paymentCash.InvoiceId = anInvoice.InvoiceId;
+            }
 
             paymentCash.SalesAmount = dSalesAmount;
             paymentCash.BalanceDue = totalBalance;
