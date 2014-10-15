@@ -3362,7 +3362,7 @@ namespace TimelyDepotMVC.Controllers
             if (aCustomer != null)
             {
                 var listOfCards = this.GetListOfCardSelectItems(aCustomer);
-                ViewBag.CreditCards = listOfCards;
+                ViewBag.CreditCardNumber = listOfCards;
             }
 
             ViewBag.PaymentType = paymentTypeselectorlist;
@@ -3386,27 +3386,45 @@ namespace TimelyDepotMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                var creditCardNumber = "No credit card";
+                var creditcardId = int.Parse(aPayment.CreditCardNumber);
+                var customersCreditCardShipping =
+                    this.db.CustomersCreditCardShippings.SingleOrDefault(
+                        x => x.Id == creditcardId );
+                if (customersCreditCardShipping != null)
+                {
+                creditCardNumber =
+                        customersCreditCardShipping.CreditNumber;
+                }
+
                 var customerData = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
                 var aNewPayment = new Payments()
                 {
                     PaymentNo = aPayment.PaymentNo,
                     CheckNo = aPayment.CheckNumber,
-                    CustomerNo = String.IsNullOrEmpty(customerData.CustomerNo) ? String.Empty : customerData.CustomerNo,
+                    CustomerNo = String.IsNullOrEmpty(customerData.CustomerNo) ? string.Empty : customerData.CustomerNo,
                     SalesOrderNo = aPayment.SalesOrderNo,
                     PaymentType = aPayment.PaymentType,
                     Amount = (decimal?)aPayment.PaymentAmount,
                     PaymentDate = aPayment.PaymentDate,
                     TransactionCode = 2,
-                };
+                    CreditCardNumber = creditCardNumber};
+
+                if (!string.IsNullOrEmpty(aPayment.InvoiceNo) || (aPayment.InvoiceId != -1))
+                {
+                    aNewPayment.InvoicePayment = "True";
+                }
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
-                return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo });
+                return RedirectToAction(
+                    "PaymentTransactionList",
+                    new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = aPayment.InvoiceId });
             }
 
             var aCustomer = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
             var listOfCards = this.GetListOfCardSelectItems(aCustomer);
-            this.ViewBag.CreditCards = listOfCards;
+            this.ViewBag.CreditCardNumber = listOfCards;
 
 
             return View(aPayment);

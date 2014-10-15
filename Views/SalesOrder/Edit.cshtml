@@ -616,7 +616,7 @@
                     </div>
                 </div>
             </div>
-            <div class="left" style="margin-top: 20px; margin-left: 50px;">
+            <div class="left" style="margin-top: 20px; margin-left: 50px;width: 20%;">
                 <div style="margin-bottom: 5px;">
                     <div class="right">@ViewBag.SalesAmount</div>
                     <div><span style="font-size: 1.0em; font-weight: bold;">Sub_total:</span></div>
@@ -649,7 +649,7 @@
                 <div style="margin-bottom: 5px;">
                     <div>
                         <div class="right">@Html.DisplayFor(model => model.PaymentAmount)</div>
-                        <div>@Html.ActionLink("Payment:","PaymentTransactionList","Payment", new { salesOrderNo = Model.SalesOrderNo },null)</div>
+                        <div>@Html.ActionLink("Payment:","PaymentTransactionList","Payment", new { salesOrderNo = Model.SalesOrderNo,invoiceId=-1 },null)</div>
                     </div>
                 </div>
                 <div style="margin-bottom: 5px;">
