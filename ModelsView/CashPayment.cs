@@ -46,6 +46,8 @@ namespace TimelyDepotMVC.ModelsView
 
         public string CheckNumber { get; set; }
 
+        public int InvoiceId { get; set; }
+
         public string InvoiceNo { get; set; }
 
         public DateTime? InvoiceDate { get; set; }

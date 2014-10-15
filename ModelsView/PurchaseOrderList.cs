@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace TimelyDepotMVC.ModelsView
 {
+    using iTextSharp.tool.xml.css;
+
     public class PurchaseOrderList
     {
         public int PurchaseOrderId { get; set; }
@@ -36,8 +38,8 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? ShipDate { get; set; }
 
         [Display(Name = "Payment")]
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
-        public decimal? PaymentAmount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:0.##}", ApplyFormatInEditMode = true)]
+        public double? PaymentAmount { get; set; }
 
         [Display(Name = "Total Amount")]
         public double? TotalAmount { get; set; }

@@ -332,7 +332,7 @@ namespace TimelyDepotMVC.Controllers
                     thepurchaseorderlist.CompanyName = GetVendorData01(db01, item.prod.VendorId);
                     thepurchaseorderlist.SalesOrderNo = item.prod.SalesOrderNo;
                     thepurchaseorderlist.ShipDate = item.prod.ShipDate;
-                    thepurchaseorderlist.PaymentAmount = GetTotalPO01(db01, item.prod.PurchaseOrderId);
+                    thepurchaseorderlist.PaymentAmount = (double?)this.GetTotalPO01(db01, item.prod.PurchaseOrderId);
 
                     purchaseList.Add(thepurchaseorderlist);
                 }
@@ -401,7 +401,7 @@ namespace TimelyDepotMVC.Controllers
                     thepurchaseorderlist.CompanyName = GetVendorData01(db01, item.prod.VendorId);
                     thepurchaseorderlist.SalesOrderNo = item.prod.SalesOrderNo;
                     thepurchaseorderlist.ShipDate = item.prod.ShipDate;
-                    thepurchaseorderlist.PaymentAmount = GetTotalPO01(db01, item.prod.PurchaseOrderId);
+                    thepurchaseorderlist.PaymentAmount = (double?)this.GetTotalPO01(db01, item.prod.PurchaseOrderId);
 
                     customerList.Add(thepurchaseorderlist);
                 }

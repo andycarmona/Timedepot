@@ -6,64 +6,76 @@
     int nRow = 0;
     int nMod = 0;
     string szClass = "";
+    var errorMsg = "";
+    if (ViewBag.ErrorMessage != null)
+    {
+        errorMsg = ViewBag.ErrorMessage;
+    }
 }
 
 <h2>SalesOrder by Customer</h2>
 <div style="width: 1240px; margin: 0px auto;">
-    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
-        <tr class="webgrid-header">
-            <th>
-                @Html.DisplayNameFor(model => model.SODate)
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <tr><td><p>Error result: @errorMsg</p></td></tr>
+    }
+    @if (Model != null)
+    {
+        <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+            <tr class="webgrid-header">
+                <th>
+                    @Html.DisplayNameFor(model => model.SODate)
 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalesOrderNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalesOrderNo)
 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalesAmount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalesAmount)
 
-            </th>
+                </th>
 
-        </tr>
+            </tr>
 
 
-        @foreach (var item in Model)
-        {
-
-            nRow++;
-            nMod = (nRow % 2);
-            if (nMod == 0)
+            @foreach (var item in Model)
             {
-                szClass = "webgrid-alternating-row timelycustomertr trhlp";
+
+                nRow++;
+                nMod = (nRow % 2);
+                if (nMod == 0)
+                {
+                    szClass = "webgrid-alternating-row timelycustomertr trhlp";
+                }
+                else
+                {
+                    szClass = "webgrid-row-style timelycustomertr trhlp";
+                }
+
+                string sztrId = string.Format("row0_{0}", item.SalesOrderId);
+
+                <tr id="@sztrId" class="@szClass">
+                    <td>
+                        @item.SODate
+                    </td>
+                    <td>
+                        @item.SalesOrderNo
+
+                    </td>
+                    <td>
+                        @item.SalesAmount
+                    </td>
+                </tr>
             }
-            else
-            {
-                szClass = "webgrid-row-style timelycustomertr trhlp";
-            }
-
-            string sztrId = string.Format("row0_{0}", item.SalesOrderId);
-
-            <tr id="@sztrId" class="@szClass">
-                <td>
-                    @item.SODate
-                </td>
-                <td>
-                    @item.SalesOrderNo
-
-                </td>
-                <td>
-                    @item.SalesAmount
+            <tr>
+                <td colspan="7">
+                    @Html.ActionLink("Back", "Index", "Invoice", null, new { @class = "btn btn-default" })
                 </td>
             </tr>
-        }
-        <tr>
-            <td colspan="7">
-                @Html.ActionLink("Back", "Index", "Invoice", null, new { @class = "btn btn-default" })
-            </td>
-        </tr>
 
-    </table>
+        </table>
+    }
 </div>
 @section scripts{
     <script>
