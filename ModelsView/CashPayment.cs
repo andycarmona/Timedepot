@@ -21,7 +21,7 @@ namespace TimelyDepotMVC.ModelsView
         [Display(Name = "Salesorder No")]
         public string SalesOrderNo { get; set; }
 
-        public double SalesAmount { get; set; }
+        public decimal SalesAmount { get; set; }
 
         public string PaymentNo { get; set; }
 
@@ -34,14 +34,15 @@ namespace TimelyDepotMVC.ModelsView
         public int TransactionCode { get; set; }
 
         [Display(Name = "Due balance")]
-        public decimal BalanceDue { get; set; }
-      
+        public decimal? BalanceDue { get; set; }
+
 
         public string CreditCardNumber { get; set; }
 
         public string ReferenceNo { get; set; }
 
-
+        [Display(Name = "Payment amount")]
+        [DisplayFormat(DataFormatString = "{0:n2}")]
         public double PaymentAmount { get; set; }
 
         public string CheckNumber { get; set; }
@@ -54,7 +55,8 @@ namespace TimelyDepotMVC.ModelsView
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (PaymentAmount > (double)this.BalanceDue)
+            var balanceDue = this.BalanceDue;
+            if (balanceDue != null && this.PaymentAmount > (double)balanceDue)
             {
                 yield return new ValidationResult("Payment amount should'n be bigger than the balance due");
             }

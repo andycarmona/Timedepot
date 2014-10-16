@@ -608,6 +608,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CustomErrorHandlerAttribute.cs" />
+    <Compile Include="Helpers\DecimalModelBinder.cs" />
     <Compile Include="Helpers\SalesOrderAmountValidatorAttribute.cs" />
     <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.cs" />
     <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.Designer.cs">

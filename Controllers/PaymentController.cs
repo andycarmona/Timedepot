@@ -3169,7 +3169,7 @@ namespace TimelyDepotMVC.Controllers
             return this.View();
         }
 
-        public ActionResult AddCashPayment(string salesOrderNumber, int transactionCode, decimal totalBalance, int invoiceId)
+        public ActionResult AddCashPayment(string salesOrderNumber, int transactionCode, decimal? totalBalance, int invoiceId)
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
             Invoice anInvoice = null;
@@ -3205,10 +3205,9 @@ namespace TimelyDepotMVC.Controllers
                                               SalesOrderId = salesorders.SalesOrderId,
                                               CustomerId = salesorders.CustomerId,
                                               SalesOrderNo = salesorders.SalesOrderNo,
-                                              SalesAmount = dTotalAmount,
+                                              SalesAmount = (decimal)dTotalAmount,
                                               PaymentNo = actualPaymentNo,
-                                              PaymentDate = DateTime.Now,
-                                              PaymentAmount = 0
+                                              PaymentDate = DateTime.Now
                                           }).FirstOrDefault();
 
             if (anInvoice != null)
@@ -3231,7 +3230,7 @@ namespace TimelyDepotMVC.Controllers
                     ref dTotalAmount,
                     ref dBalanceDue);
 
-                paymentCash.SalesAmount = dSalesAmount;
+                paymentCash.SalesAmount = (decimal)dSalesAmount;
                 paymentCash.BalanceDue = totalBalance;
                 ViewBag.PaymentType = SelectPayTypeListItems();
                 return this.View(paymentCash);
@@ -3324,7 +3323,7 @@ namespace TimelyDepotMVC.Controllers
                                    SalesOrderId = salesorders.SalesOrderId,
                                    CustomerId = salesorders.CustomerId,
                                    SalesOrderNo = salesorders.SalesOrderNo,
-                                   SalesAmount = dTotalAmount,
+                                   SalesAmount = (decimal)dTotalAmount,
                                    PaymentNo = actualPaymentNo,
                                    PaymentType = "CreditCard",
                                    PaymentDate = DateTime.Now,
@@ -3345,7 +3344,7 @@ namespace TimelyDepotMVC.Controllers
                 paymentCash.InvoiceId = anInvoice.InvoiceId;
             }
 
-            paymentCash.SalesAmount = dSalesAmount;
+            paymentCash.SalesAmount = (decimal)dSalesAmount;
             paymentCash.BalanceDue = totalBalance;
 
             var listSelector = new List<KeyValuePair<string, string>>();
@@ -3503,7 +3502,7 @@ namespace TimelyDepotMVC.Controllers
                                  SalesOrderNo = paymentlist.SalesOrderNo,
                                  PaymentType = paymentlist.PaymentType,
                                  PaymentDate = paymentlist.PaymentDate,
-                                 PaymentAmount = (double)paymentlist.Amount,
+                                 PaymentAmount = paymentlist.Amount,
                                  PaymentNo = paymentlist.PaymentNo
                              }).ToList();
 
@@ -3535,7 +3534,7 @@ namespace TimelyDepotMVC.Controllers
                                  PaymentType = paymentlist.PaymentType,
                                  CreditCardNumber = paymentlist.CreditCardNumber,
                                  PaymentDate = paymentlist.PaymentDate,
-                                 PaymentAmount = (double)paymentlist.Amount,
+                                 PaymentAmount = paymentlist.Amount,
                                  PaymentNo = paymentlist.PaymentNo
                              }).ToList();
 
@@ -3672,9 +3671,9 @@ namespace TimelyDepotMVC.Controllers
                         ref dTotalAmount,
                         ref dBalanceDue);
 
-                    aPurchaseList.SalesAmount = dTotalAmount;
-                    aPurchaseList.BalanceDue = dTotalAmount - (double)sumPayment;
-                    aPurchaseList.PaymentAmount = (double?)sumPayment;
+                    aPurchaseList.SalesAmount = (decimal)dTotalAmount;
+                    aPurchaseList.BalanceDue = (decimal)dTotalAmount - sumPayment;
+                    aPurchaseList.PaymentAmount = sumPayment;
 
                     totalSalesOrderWithInvoice.Add(aPurchaseList);
                 }
@@ -3724,7 +3723,7 @@ namespace TimelyDepotMVC.Controllers
                                              TransactionId = salesorderElement.SalesOrderId.ToString(),
                                              TransactionCode = 0,
                                              TransactionDate = salesorderElement.SODate,
-                                             SalesAmount = dTotalAmount,
+                                             SalesAmount = (decimal)dTotalAmount,
                                              CompanyName = companyName,
                                              CustomerId = salesorderElement.CustomerId.ToString(),
                                              SalesOrderNo = salesorderElement.SalesOrderNo,
@@ -3740,13 +3739,13 @@ namespace TimelyDepotMVC.Controllers
                                                        SalesOrderNo = payments.SalesOrderNo,
                                                        TransactionDate = payments.PaymentDate,
                                                        PaymentType = payments.PaymentType,
-                                                       PaymentAmount = (double)payments.Amount == null ? 0 : (double)payments.Amount,
+                                                       PaymentAmount = payments.Amount ?? 0,
                                                        RefundAmount = null,
                                                    }).ToList();
                 if (queryPaymentList.Any())
                 {
                     salesorderData.CustomerNo = queryPaymentList[0].CustomerNo;
-                    salesorderData.BalanceDue = dBalanceDue;
+                    salesorderData.BalanceDue = (decimal?)dBalanceDue;
                 }
 
                 queryPaymentList.Insert(0, salesorderData);
@@ -4542,7 +4541,6 @@ namespace TimelyDepotMVC.Controllers
         // POST: /Payment/Edit/5
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Edit(Payments payments, string CreditCardNumberHlp)
         {
             int nPos = -1;
@@ -4597,15 +4595,6 @@ namespace TimelyDepotMVC.Controllers
                 SalesOrder salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
                 if (salesorder != null)
                 {
-                    GetSalesOrderTotals02(salesorder.SalesOrderId, Convert.ToDouble(dPayments), ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-                    if ((dPayments + Convert.ToDecimal(payments.Amount)) > Convert.ToDecimal(dBalanceDue))
-                    {
-                        szError = string.Format("Sales Oder No. {0} has a balance due of {1}. Can not apply {2}", payments.SalesOrderNo, dBalanceDue.ToString("C"), Convert.ToDouble(payments.Amount).ToString("C"));
-                        payments.Amount = Convert.ToDecimal(dBalanceDue);
-                        //TempData["PayError"] = string.Format("Sales Oder No. {0} has a balance due of {1}. Can not apply {2}", payments.SalesOrderNo, dBalanceDue.ToString("C"), Convert.ToDouble(payments.Amount).ToString("C"));
-                    }
-                    else
-                    {
                         //Update the Sales order
                         salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
                         if (salesorder != null)
@@ -4638,7 +4627,7 @@ namespace TimelyDepotMVC.Controllers
                             db.SaveChanges();
                         }
 
-                    }
+                  
                 }
 
                 db.Entry(payments).State = EntityState.Modified;

@@ -38,17 +38,18 @@ namespace TimelyDepotMVC.ModelsView
         public DateTime? ShipDate { get; set; }
 
         [Display(Name = "Payment")]
-        [DisplayFormat(DataFormatString = "{0:0.##}", ApplyFormatInEditMode = true)]
-        public double? PaymentAmount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
+        public decimal? PaymentAmount { get; set; }
 
         [Display(Name = "Total Amount")]
-        public double? TotalAmount { get; set; }
+        public decimal? TotalAmount { get; set; }
 
         [Display(Name = "Sales Order Amount")]
-        public double SalesAmount { get; set; }
+        public decimal SalesAmount { get; set; }
 
         [Display(Name = "Balance Due")]
-        public double? BalanceDue { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
+        public decimal? BalanceDue { get; set; }
         
         [Display(Name = "Invoice #")]
         public string InvoiceNo { get; set; }

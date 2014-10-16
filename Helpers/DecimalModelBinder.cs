@@ -16,8 +16,7 @@ namespace TimelyDepotMVC.Helpers
             object actualValue = null;
             try
             {
-                actualValue = Convert.ToDecimal(valueResult.AttemptedValue,
-                    CultureInfo.CurrentCulture);
+                actualValue = Convert.ToDouble(valueResult.AttemptedValue);
             }
             catch (FormatException e)
             {

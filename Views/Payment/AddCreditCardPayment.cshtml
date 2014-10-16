@@ -126,7 +126,7 @@
 
     <p>
         @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber,invoiceId=@Model.InvoiceId }, new { @class = "btn btn-default" }) 
-        <input class="btn btn-default" type="submit" value="Create" />
+        <input class="btn btn-default" type="submit" value="Submit payment" />
     </p>
     @Html.ValidationSummary(true)
 

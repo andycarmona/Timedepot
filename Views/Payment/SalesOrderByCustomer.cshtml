@@ -74,11 +74,13 @@
      
                 </td>
                 <td>
-                    @item.PaymentAmount
+                    @string.Format("{0:N}", @item.PaymentAmount)
+               
       
                 </td>
                 <td>
-                    @item.BalanceDue
+                    @string.Format("{0:N}", @item.BalanceDue)
+                
             
                 </td>
             </tr>
