@@ -1,10 +1,11 @@
 ﻿@{
     ViewBag.Title = "Payment GateWay";
+   
 }
 @Styles.Render("~/Content/FDZstyle.css")
 
 <div class="cf" style="margin: 15px;">
-    <div class="divh2 left" style="margin-right: 15px;">@ViewBag.Title</div>
+    <div class="divh2 left" style="margin-right: 15px;">@ViewBag.Title  <b style="color:red;">Environment:Demo</b></div>
     <div class="divh2 left">
         @ViewBag.PaymentTitle
     </div>
@@ -12,11 +13,12 @@
 <div>
     @using (Html.BeginForm("GetRestData02", "Payment", null, FormMethod.Post, new { id = "formGetRestDataid" }))
     {
+        @Html.Hidden("transactionselectorId","Purchase");
         <div class="error" style="display: none;"><span></span></div>
         <div id="formid" style="width: 500px; margin: 0px auto; border: solid 1px gray; padding: 10px;">
             <div class="clear-fix">
-                <div class="float-left marginR10" style="width: 118px;">Transaction</div>
-                <div>@Html.DropDownList("transaction", (IEnumerable<SelectListItem>)ViewBag.TransactionList, "Transaction", new { id = "transactionselectorId", @class = "marginB10", style = "width:205px;margin-right:10px;" })</div>
+                <div class="float-left marginR10" style="width: 118px;"></div>
+                <div> @*@Html.DropDownList("transaction", (IEnumerable<SelectListItem>)ViewBag.TransactionList, "Transaction", new { id = "transactionselectorId", @class = "marginB10", style = "width:205px;margin-right:10px;" })*@</div>
                 <div style="display: none;">
                     <input id="transaction" name="transaction" class="width200" type="text" />
                 </div>
@@ -24,75 +26,78 @@
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Amount</div>
                 <div>
-                    <input id="amount" name="amount" class="width200" style="margin-right: 10px;" type="text" />
+                
+                    <input id="amount" readonly="readonly" name="amount" class="width200" style="margin-right: 10px;" type="text" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Expiry Date</div>
                 <div>
-                    <input id="expiryDate" name="expiryDate" class="width200" style="margin-right: 10px;" type="text" />
+                    <input id="expiryDate" readonly="readonly" name="expiryDate" class="width200" style="margin-right: 10px;" type="text" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Card Holders Name</div>
                 <div>
-                    <input id="cardHoldersName" name="cardHoldersName" class="width200" type="text" style="margin-right: 10px;" />
+                    <input id="cardHoldersName" readonly="readonly" name="cardHoldersName" class="width200" type="text" style="margin-right: 10px;" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Card Number</div>
                 <div>
-                    <input id="cardNumber" name="cardNumber" class="width200" style="margin-right: 10px;" type="text" value="4111111111111111" />
+                    <input id="cardNumber" readonly="readonly" name="cardNumber" class="width200" style="margin-right: 10px;" type="text" value="4111111111111111" />
                 </div>
                 <div style="display: none;">
-                    <input id="cardNumber02" name="cardNumber02" class="width200" style="margin-right: 10px;" type="text" value="0" />
-                    <input id="paymentid" name="paymentid" class="width200" style="margin-right: 10px;" type="text" value="0" />
+                    <input id="cardNumber02" readonly="readonly" name="cardNumber02" class="width200" style="margin-right: 10px;" type="text" value="0" />
+                    <input id="paymentid" readonly="readonly" name="paymentid" class="width200" style="margin-right: 10px;" type="text" value="0" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Card Type</div>
                 <div>
-                    <input id="cardType" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.CardType" readonly="readonly" />
+                    <input id="cardType" readonly="readonly" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.CardType" readonly="readonly" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Address</div>
                 <div>
-                    <input id="cardAddress" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.CardAddress" readonly="readonly" />
+                    <input id="cardAddress" readonly="readonly"  class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.CardAddress" readonly="readonly" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Zip</div>
                 <div>
-                    <input id="zipAddress" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.ZipAddress" readonly="readonly" />
+                    <input id="zipAddress" readonly="readonly" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.ZipAddress" readonly="readonly" />
                 </div>
             </div>
             <div class="clear-fix">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px;">Expiration Date</div>
                 <div>
-                    <input id="expireDateAddress" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.ExpireDateAddress" readonly="readonly" />
+                    <input id="expireDateAddress" readonly="readonly" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.ExpireDateAddress" readonly="readonly" />
                 </div>
             </div>
-            <div id="authorizationNumberDiv" class="clear-fix" style="display: none;">
+            <div id="authorizationNumberDiv"  class="clear-fix" style="display: none;">
                 <div class="float-left marginR10" style="padding-top: 6px; width: 118px; border: solid 1px red;">Authorization No.</div>
                 <div>
-                    <input id="authorizationNumber" name="authorizationNumber" class="width200" style="margin-right: 10px;" type="text" />
+                    <input id="authorizationNumber" readonly="readonly" name="authorizationNumber" class="width200" style="margin-right: 10px;" type="text" />
                     <div id="authorizationNumberError" class="error" style="color: red; display: none">
                         <label for='authorizationNumber'>The Authorization Number is required.</label>
                     </div>
                 </div>
             </div>
             <div style="display: none;">
-                <input id="InvoicePayment" name="InvoicePayment" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.InvoicePayment" />
+                <input id="InvoicePayment" readonly="readonly" name="InvoicePayment" class="width200" style="margin-right: 10px;" type="text" value="@ViewBag.InvoicePayment" />
             </div>
             <div style="width: 200px; margin: 10px auto;">
-                <input id="btSubmit" class="btNavTimley" type="submit" value="Submit" />
+                <input id="btSubmit" class="btn btn-default" type="submit" value="Submit" />
             </div>
         </div>
         
     }
 
     <div id="restDataDialg" style="width: 900px; padding: 10px; margin: 10px auto; display: none; border: solid 1px blue;"></div>
+    @Html.ActionLink("Back to payments index page", "PaymentIndex", "Payment", null, new { @class = "btn btn-default" })
+    
 </div>
 @section scripts{
     @Scripts.Render("~/Scripts/jquery.validate.js")

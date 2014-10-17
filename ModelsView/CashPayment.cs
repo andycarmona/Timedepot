@@ -11,6 +11,7 @@ namespace TimelyDepotMVC.ModelsView
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Reflection.Emit;
 
     public class CashPayment : IValidatableObject
     {
@@ -52,6 +53,8 @@ namespace TimelyDepotMVC.ModelsView
         public string InvoiceNo { get; set; }
 
         public DateTime? InvoiceDate { get; set; }
+
+        public string ActualEnvironment { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

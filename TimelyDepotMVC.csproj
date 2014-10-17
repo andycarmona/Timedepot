@@ -634,6 +634,26 @@
     <Compile Include="Migrations\201410100646132_AddedCheckNumberToPayment.Designer.cs">
       <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410171118291_NewTableForEnvironmentparameter.cs" />
+    <Compile Include="Migrations\201410171118291_NewTableForEnvironmentparameter.Designer.cs">
+      <DependentUpon>201410171118291_NewTableForEnvironmentparameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410171121551_DescriptionInEnvironmentTable.cs" />
+    <Compile Include="Migrations\201410171121551_DescriptionInEnvironmentTable.Designer.cs">
+      <DependentUpon>201410171121551_DescriptionInEnvironmentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.cs" />
+    <Compile Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.Designer.cs">
+      <DependentUpon>201410171203185_AddKeyIdtoEnviromentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410171839151_ChangeKeyId.cs" />
+    <Compile Include="Migrations\201410171839151_ChangeKeyId.Designer.cs">
+      <DependentUpon>201410171839151_ChangeKeyId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410171840334_ChangeKeyId1.cs" />
+    <Compile Include="Migrations\201410171840334_ChangeKeyId1.Designer.cs">
+      <DependentUpon>201410171840334_ChangeKeyId1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -667,6 +687,7 @@
     <Compile Include="Models\Admin\ClssNos.cs" />
     <Compile Include="Models\Admin\COLLECTION.cs" />
     <Compile Include="Models\Admin\CustomerTransactions.cs" />
+    <Compile Include="Models\Admin\EnvironmentParameters.cs" />
     <Compile Include="Models\Admin\Refunds.cs" />
     <Compile Include="Models\Admin\ShipmentDetails.cs" />
     <Compile Include="Models\Admin\Shipment.cs" />
@@ -2023,6 +2044,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410100646132_AddedCheckNumberToPayment.resx">
       <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410171118291_NewTableForEnvironmentparameter.resx">
+      <DependentUpon>201410171118291_NewTableForEnvironmentparameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410171121551_DescriptionInEnvironmentTable.resx">
+      <DependentUpon>201410171121551_DescriptionInEnvironmentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.resx">
+      <DependentUpon>201410171203185_AddKeyIdtoEnviromentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410171839151_ChangeKeyId.resx">
+      <DependentUpon>201410171839151_ChangeKeyId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410171840334_ChangeKeyId1.resx">
+      <DependentUpon>201410171840334_ChangeKeyId1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

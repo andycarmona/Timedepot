@@ -167,10 +167,14 @@
                 <div style="margin:5px;">
                     <input class="btn btn-default" id="btnSubmit" type="submit" value="Save" />
                     @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo ,invoiceId=-1}, new { @class = "btn btn-default" })
-                    @*@if (ViewBag.TransCode != 2)
-                    {*@
+                    @if (ViewBag.TransCode != 2)
+                    {
                         @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
-                    @*}*@
+                    }
+                    else
+                    {
+       @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id ,invoiceId="False" ,refund="refund"}, new { @class = "btn btn-default" })
+                    }
                 </div>
             </div>
         </fieldset>

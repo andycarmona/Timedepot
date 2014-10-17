@@ -1157,6 +1157,16 @@ namespace TimelyDepotMVC.Controllers
                         if (szTransaction_Type == "04")
                         {
                             DeletePayment(payment.Id);
+                            var aRefund = new Refunds()
+                                              {
+                                                  RefundAmount = (decimal)payment.Amount,
+                                                  Refunddate = DateTime.Now,
+                                                  TransactionId = payment.Id,
+                                                  SalesOrderNo = payment.SalesOrderNo,
+                                                  CustomerNo = payment.CustomerNo
+                                              };
+                            this.db.Refunds.Add(aRefund);
+                            db.SaveChanges();
                         }
                     }
                 }
@@ -1197,7 +1207,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 nId = Convert.ToInt32(szCardNumber02);
             }
-
+            var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             CustomersCreditCardShipping creditcard = db.CustomersCreditCardShippings.Find(nId);
             if (creditcard != null)
             {
@@ -1439,7 +1449,7 @@ namespace TimelyDepotMVC.Controllers
         private void GetRestData01(ref string szError, ref string szRequest, ref string szResponse, ref XmlNodeList xmlchilds)
         {
             string response_string = string.Empty;
-
+            var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             szError = string.Empty;
             //XmlNodeList xmlchilds = null;
 
@@ -1672,6 +1682,7 @@ namespace TimelyDepotMVC.Controllers
 
                 db.Payments.Remove(payment);
                 db.SaveChanges();
+
 
 
             }
@@ -3296,6 +3307,7 @@ namespace TimelyDepotMVC.Controllers
         public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance, int invoiceId, string paymentTypeSelected = "")
         {
             var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
+            var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             Invoice anInvoice = null;
             if (invoiceId > 0)
             {
@@ -3327,6 +3339,7 @@ namespace TimelyDepotMVC.Controllers
                                    PaymentNo = actualPaymentNo,
                                    PaymentType = "CreditCard",
                                    PaymentDate = DateTime.Now,
+                                   ActualEnvironment = environmentParam.Description
                                }).FirstOrDefault();
 
             this.GetSalesOrderTotals(
@@ -3423,7 +3436,7 @@ namespace TimelyDepotMVC.Controllers
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
-       
+                 ViewBag.Environment = aPayment.ActualEnvironment;
                 return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment });
             }
 
