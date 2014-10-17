@@ -10,7 +10,6 @@
     @Html.HiddenFor(model => model.CustomerId)
     @Html.HiddenFor(model => model.ExpirationDate)
     @Html.HiddenFor(model => model.CreditNumber)
-    @Html.HiddenFor(model => model.SecureCode)
 
     long telHlp = 0;
     string telfmt = "000-000-0000";
@@ -114,8 +113,7 @@
                     </div>
                     <div class="viosinput400">
                         <input id="CreditNumber01" name="CreditNumber01" type="text" value="@szDecriptedData" />
-                        @*                        @Html.EditorFor(model => model.CreditNumber)
-                        @Html.ValidationMessageFor(model => model.CreditNumber)*@
+                 
                     </div>
                 </td>
                 <td>
@@ -146,7 +144,9 @@
                                 @Html.LabelFor(model => model.SecureCode)
                             </div>
                             <div class="viosinput180">
-                                <input id="SecureCode01" name="SecureCode01" type="text" value="@szDecriptedCode" />
+                                @Html.EditorFor(model => model.SecureCode)
+                                @Html.ValidationMessageFor(model => model.SecureCode)
+                                @*<input id="SecureCode01" name="SecureCode01" type="text" value="@szDecriptedCode" />*@
                             </div>
                         </div>
                     </div>

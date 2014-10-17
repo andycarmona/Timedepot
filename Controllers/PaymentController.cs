@@ -1943,10 +1943,10 @@ namespace TimelyDepotMVC.Controllers
 
             try
             {
-                if (!IsBase64String(szOriginalData))
-                {
-                    throw new Exception("The cipherText input parameter is not base64 encoded");
-                }
+                //if (!IsBase64String(szOriginalData))
+                //{
+                //    throw new Exception("The cipherText input parameter is not base64 encoded");
+                //}
 
                 if (string.IsNullOrEmpty(szOriginalData))
                 {
@@ -3386,7 +3386,13 @@ namespace TimelyDepotMVC.Controllers
             if (ModelState.IsValid)
             {
                 var creditCardNumber = "No credit card";
+                var aCreditCardType = "CreditCard";
                 var creditcardId = int.Parse(aPayment.CreditCardNumber);
+                var creditcardType = this.db.CustomersCreditCardShippings.SingleOrDefault(x => x.Id == creditcardId);
+                if (creditcardType != null)
+                {
+                  aCreditCardType = creditcardType.CardType;
+                }
                 var customersCreditCardShipping =
                     this.db.CustomersCreditCardShippings.SingleOrDefault(
                         x => x.Id == creditcardId );
@@ -3395,6 +3401,7 @@ namespace TimelyDepotMVC.Controllers
                 creditCardNumber =
                         customersCreditCardShipping.CreditNumber;
                 }
+          
 
                 var customerData = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
                 var aNewPayment = new Payments()
@@ -3403,7 +3410,7 @@ namespace TimelyDepotMVC.Controllers
                     CheckNo = aPayment.CheckNumber,
                     CustomerNo = String.IsNullOrEmpty(customerData.CustomerNo) ? string.Empty : customerData.CustomerNo,
                     SalesOrderNo = aPayment.SalesOrderNo,
-                    PaymentType = aPayment.PaymentType,
+                    PaymentType = aCreditCardType,
                     Amount = (decimal?)aPayment.PaymentAmount,
                     PaymentDate = aPayment.PaymentDate,
                     TransactionCode = 2,
@@ -3416,9 +3423,8 @@ namespace TimelyDepotMVC.Controllers
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
-                return RedirectToAction(
-                    "PaymentTransactionList",
-                    new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = aPayment.InvoiceId });
+       
+                return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment });
             }
 
             var aCustomer = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
@@ -4559,17 +4565,6 @@ namespace TimelyDepotMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                //Verify Payment Type
-                cardtype = db.CustomersCardTypes.Where(cdty => cdty.CardType == payments.PaymentType).FirstOrDefault<CustomersCardType>();
-                if (cardtype == null)
-                {
-                    cardtype = new CustomersCardType();
-                    cardtype.CardType = payments.PaymentType;
-                    db.CustomersCardTypes.Add(cardtype);
-                    db.SaveChanges();
-                }
-
-
                 nPos = -1;
                 if (!string.IsNullOrEmpty(CreditCardNumberHlp))
                 {
@@ -4626,8 +4621,6 @@ namespace TimelyDepotMVC.Controllers
                             db.Entry(invoice).State = EntityState.Modified;
                             db.SaveChanges();
                         }
-
-                  
                 }
 
                 db.Entry(payments).State = EntityState.Modified;

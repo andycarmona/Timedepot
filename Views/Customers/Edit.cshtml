@@ -609,7 +609,7 @@
                 </div>
                 <div class="left">@Html.ActionLink("Order History", "InvoiceListTab", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkinvoicelist", @class = "btNavTimley", target = "_blank" })</div>
                 <div class="left">@Html.ActionLink("Statement", "PaymentListTab", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkpaymentlist", @class = "btNavTimley", target = "_blank" })</div>
-                <div class="left">@Html.ActionLink("Special Note", "SpecialNote", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkspecialnote", @class = "btNavTimley" })</div>
+                <div class="left">@Html.ActionLink("Special Note", "CreateEditNote", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkspecialnote", @class = "btNavTimley" })</div>
             </div>
         </div>
     </div>

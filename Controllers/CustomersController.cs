@@ -146,7 +146,7 @@ namespace TimelyDepotMVC.Controllers
         // GET: /Customer/PreviousItem
         public ActionResult PreviousCustomer(string customerNo, string opcion, int id)
         {
-            string szNextId = "";
+            string szNextId = string.Empty;
 
 
             szNextId = GetPreviousCustomer(customerNo);
@@ -181,10 +181,10 @@ namespace TimelyDepotMVC.Controllers
         private string GetPreviousCustomer(string customerNo)
         {
             int nHas = -1;
-            string szNext = "";
-            string szError = "";
-            string szSql = "";
-            string szConnString = "";
+            string szNext = string.Empty;
+            string szError = string.Empty;
+            string szSql = string.Empty;
+            string szConnString = string.Empty;
             SqlDataSource sqlds = new SqlDataSource();
             DataView dv = null;
             ConnectionStringSettingsCollection connSettings = ConfigurationManager.ConnectionStrings;
@@ -206,7 +206,7 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (Exception exc)
             {
-                szNext = "";
+                szNext = string.Empty;
                 szError = exc.Message;
             }
 
@@ -217,7 +217,7 @@ namespace TimelyDepotMVC.Controllers
         // GET: /Customer/NextItem
         public ActionResult NextCustomer(string customerNo, string opcion, int id)
         {
-            string szNextId = "";
+            string szNextId = string.Empty;
 
             szNextId = GetNextCustomer(customerNo);
             if (string.IsNullOrEmpty(szNextId))
@@ -252,10 +252,10 @@ namespace TimelyDepotMVC.Controllers
         {
             bool bStatus = false;
             int nHas = -1;
-            string szNext = "";
-            string szError = "";
-            string szSql = "";
-            string szConnString = "";
+            string szNext = string.Empty;
+            string szError = string.Empty;
+            string szSql = string.Empty;
+            string szConnString = string.Empty;
             SqlDataSource sqlds = new SqlDataSource();
             DataView dv = null;
             ConnectionStringSettingsCollection connSettings = ConfigurationManager.ConnectionStrings;
@@ -279,7 +279,7 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (Exception exc)
             {
-                szNext = "";
+                szNext = string.Empty;
                 szError = exc.Message;
             }
 
@@ -298,12 +298,12 @@ namespace TimelyDepotMVC.Controllers
             string telfmt = "000-000-0000";
             string telfmtOver = "000-0000000000";
 
-            CompanyName = "";
-            BussinesType = "";
-            State = "";
-            Phone = "";
-            Email = "";
-            ZipCode = "";
+            CompanyName = string.Empty;
+            BussinesType = string.Empty;
+            State = string.Empty;
+            Phone = string.Empty;
+            Email = string.Empty;
+            ZipCode = string.Empty;
 
             Bussines bussines = null;
             CustomersContactAddress maincontact = null;
@@ -401,8 +401,8 @@ namespace TimelyDepotMVC.Controllers
             long faxHlp = 0;
             int nCustomerId = 0;
             string telfmt = "000-000-0000";
-            string szTel = "";
-            string szMsg = "";
+            string szTel = string.Empty;
+            string szMsg = string.Empty;
 
             TimelyDepotContext db01 = new TimelyDepotContext();
 
@@ -518,7 +518,7 @@ namespace TimelyDepotMVC.Controllers
             double dTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szMsg = "";
+            string szMsg = string.Empty;
 
             PurchaseOrdersbyVendor purchaseorderbyvendor = null;
             List<PurchaseOrdersbyVendor> purchaseorderList = new List<PurchaseOrdersbyVendor>();
@@ -626,17 +626,17 @@ namespace TimelyDepotMVC.Controllers
             long faxHlp = 0;
             int nCustomerId = 0;
             string telfmt = "000-000-0000";
-            string szTel = "";
-            string szMsg = "";
-            string szCustomerNo = "";
-            string szInvoiceNo = "";
+            string szTel = string.Empty;
+            string szMsg = string.Empty;
+            string szCustomerNo = string.Empty;
+            string szInvoiceNo = string.Empty;
 
             int nHas = 0;
             int nPos = -1;
-            string szClass = "";
-            string szError = "";
-            string szDecriptedData = "";
-            string szDecriptedCode = "";
+            string szClass = string.Empty;
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szDecriptedCode = string.Empty;
 
             TimelyDepotContext db01 = new TimelyDepotContext();
 
@@ -669,7 +669,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 foreach (var item in qryPOs)
                 {
-                    szError = "";
+                    szError = string.Empty;
                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.PaymentType, ref szError);
                     if (!string.IsNullOrEmpty(szError))
                     {
@@ -776,9 +776,9 @@ namespace TimelyDepotMVC.Controllers
             double dTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szMsg = "";
-            string szCustomerNo = "";
-            string szInvoiceNo = "";
+            string szMsg = string.Empty;
+            string szCustomerNo = string.Empty;
+            string szInvoiceNo = string.Empty;
 
             Invoice invoice = null;
             Customers customer = null;
@@ -875,8 +875,8 @@ namespace TimelyDepotMVC.Controllers
             long faxHlp = 0;
             int nCustomerId = 0;
             string telfmt = "000-000-0000";
-            string szTel = "";
-            string szMsg = "";
+            string szTel = string.Empty;
+            string szMsg = string.Empty;
 
             TimelyDepotContext db01 = new TimelyDepotContext();
 
@@ -986,7 +986,7 @@ namespace TimelyDepotMVC.Controllers
             double dTax = 0;
             double dTotalAmount = 0;
             double dBalanceDue = 0;
-            string szMsg = "";
+            string szMsg = string.Empty;
 
             PurchaseOrdersbyVendor purchaseorderbyvendor = null;
             List<PurchaseOrdersbyVendor> purchaseorderList = new List<PurchaseOrdersbyVendor>();
@@ -1153,8 +1153,8 @@ namespace TimelyDepotMVC.Controllers
             long faxHlp = 0;
             int nCustomerId = 0;
             string telfmt = "000-000-0000";
-            string szTel = "";
-            string szMsg = "";
+            string szTel = string.Empty;
+            string szMsg = string.Empty;
 
             TimelyDepotContext db01 = new TimelyDepotContext();
 
@@ -1236,7 +1236,7 @@ namespace TimelyDepotMVC.Controllers
             int pageIndex = 0;
             int pageSize = PageSize;
             int nCustomerId = 0;
-            string szMsg = "";
+            string szMsg = string.Empty;
 
             PurchaseOrdersbyVendor purchaseorderbyvendor = null;
             List<PurchaseOrdersbyVendor> purchaseorderList = new List<PurchaseOrdersbyVendor>();
@@ -1342,7 +1342,7 @@ namespace TimelyDepotMVC.Controllers
             long telHlp = 0;
             long faxHlp = 0;
             string telfmt = "000-000-0000";
-            string szTel = "";
+            string szTel = string.Empty;
 
             DataTable table = null;
             DataRow row = null;
@@ -1491,8 +1491,8 @@ namespace TimelyDepotMVC.Controllers
         {
             int nCustomerDefault = Convert.ToInt32(customerdefault);
             int nPos = -1;
-            string szError = "";
-            string szEncriptedData = "";
+            string szError = string.Empty;
+            string szEncriptedData = string.Empty;
             DateTime dDate = DateTime.Now;
             CustomerDefaults custdefault = null;
 
@@ -1506,7 +1506,7 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Tel = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
                         db.CustomersCreditCardShippings.Add(customenote);
 
                         //Set Card number
@@ -1522,7 +1522,7 @@ namespace TimelyDepotMVC.Controllers
                                 //Encode the credit card info
                                 if (!string.IsNullOrEmpty(customenote.CreditNumber))
                                 {
-                                    szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(customenote.CreditNumber, ref szError);
+                                    szEncriptedData = PaymentController.EncriptInfo02(customenote.CreditNumber, ref szError);
                                     customenote.CreditNumber = szEncriptedData;
                                 }
                             }
@@ -1533,25 +1533,15 @@ namespace TimelyDepotMVC.Controllers
                         }
 
                         //Set Secure Code
-                        if (!string.IsNullOrEmpty(SecureCode01))
+                        if (!string.IsNullOrEmpty(customenote.SecureCode))
                         {
-                            nPos = -1;
-                            nPos = SecureCode01.IndexOf("*");
-                            if (nPos == -1)
-                            {
-                                customenote.SecureCode = SecureCode01;
-
                                 //Encode the credit card info
                                 if (!string.IsNullOrEmpty(customenote.SecureCode))
                                 {
-                                    szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
+                                    szEncriptedData = PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
                                     customenote.SecureCode = szEncriptedData;
                                 }
-                            }
-                            else
-                            {
-                                //Do not replace the credit card number
-                            }
+                         
                         }
                         db.SaveChanges();
 
@@ -1587,7 +1577,7 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Tel = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
 
                         //Encript the credit card info
                         //use the user supplied data
@@ -1605,41 +1595,25 @@ namespace TimelyDepotMVC.Controllers
                                     customenote.CreditNumber = szEncriptedData;
                                 }
                             }
-                            else
-                            {
-                                //Do not replace the credit card number
-                            }
+                           
                         }
-
-                        if (!string.IsNullOrEmpty(SecureCode01))
-                        {
-                            nPos = -1;
-                            nPos = SecureCode01.IndexOf("*");
-                            if (nPos == -1)
-                            {
-                                customenote.SecureCode = SecureCode01;
 
                                 //Encode the credit card info
                                 if (!string.IsNullOrEmpty(customenote.SecureCode))
                                 {
-                                    szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
+                                    szEncriptedData = PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
                                     customenote.SecureCode = szEncriptedData;
                                 }
-                            }
-                            else
-                            {
-                                //Do not replace the credit card number
-                            }
-                        }
+                       
+                        
 
                         db.Entry(customenote).State = EntityState.Modified;
                         db.SaveChanges();
                     }
+
                     TempData["ActiveTab"] = "4";
-                    //return RedirectToAction("Index");
                     return RedirectToAction("Edit", new { id = Convert.ToInt32(customenote.CustomerId) });
                 }
-
             }
 
             return RedirectToAction("Index");
@@ -1695,8 +1669,8 @@ namespace TimelyDepotMVC.Controllers
         // Get customer email and name
         public static string GetCustomerEmailName(TimelyDepotContext db01, int CustomerId, ref string szName)
         {
-            string szEmail = "";
-            szName = "";
+            string szEmail = string.Empty;
+            szName = string.Empty;
             IQueryable<CustomersContactAddress> qryAddress = null;
             CustomersContactAddress customeraddress = null;
 
@@ -1720,7 +1694,7 @@ namespace TimelyDepotMVC.Controllers
         // Get customer email
         public static string GetCustomerEmail(TimelyDepotContext db01, int CustomerId)
         {
-            string szEmail = "";
+            string szEmail = string.Empty;
             IQueryable<CustomersContactAddress> qryAddress = null;
             CustomersContactAddress customeraddress = null;
 
@@ -1783,8 +1757,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
                         db.CustomersShipAddresses.Add(customenote);
                         db.SaveChanges();
 
@@ -1817,8 +1791,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
                         db.Entry(customenote).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -1838,7 +1812,7 @@ namespace TimelyDepotMVC.Controllers
         public PartialViewResult CreateEditShip(string customerid, int id = 0)
         {
             int nCustomerId = Convert.ToInt32(customerid);
-            string szCustomerInfo = "";
+            string szCustomerInfo = string.Empty;
             //IQueryable<CustomersSalesContact> qryAddress = null;
 
             CustomersShipAddress customernote = null;
@@ -1923,8 +1897,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
 
                         db.CustomersSalesContacts.Add(customenote);
                         db.SaveChanges();
@@ -1957,8 +1931,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
 
                         db.Entry(customenote).State = EntityState.Modified;
                         db.SaveChanges();
@@ -1979,7 +1953,7 @@ namespace TimelyDepotMVC.Controllers
         public PartialViewResult CreateEditSales(string customerid, int id = 0)
         {
             int nCustomerId = Convert.ToInt32(customerid);
-            string szCustomerInfo = "";
+            string szCustomerInfo = string.Empty;
             //IQueryable<CustomersSalesContact> qryAddress = null;
 
             CustomersSalesContact customersalescontact = null;
@@ -2075,8 +2049,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
                         db.CustomersSubsidiaryAddresses.Add(customenote);
                         db.SaveChanges();
 
@@ -2109,8 +2083,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             customenote.Fax = "0";
                         }
-                        customenote.Tel = customenote.Tel.Replace("-", "");
-                        customenote.Fax = customenote.Fax.Replace("-", "");
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        customenote.Fax = customenote.Fax.Replace("-", string.Empty);
                         db.Entry(customenote).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -2131,7 +2105,7 @@ namespace TimelyDepotMVC.Controllers
         public PartialViewResult CreateEditSubsidiary(string customerid, int id = 0)
         {
             int nCustomerId = Convert.ToInt32(customerid);
-            string szCustomerInfo = "";
+            string szCustomerInfo = string.Empty;
             IQueryable<CustomersSubsidiaryAddress> qryAddress = null;
 
             CustomersSubsidiaryAddress customernote = null;
@@ -2217,7 +2191,7 @@ namespace TimelyDepotMVC.Controllers
         public PartialViewResult CreateEditNote(string customerid, int id = 0)
         {
             int nCustomerId = Convert.ToInt32(customerid);
-            string szCustomerInfo = "";
+            string szCustomerInfo = string.Empty;
             IQueryable<CustomersContactAddress> qryAddress = null;
 
             CustomersSpecialNotes customernote = null;
@@ -2297,7 +2271,7 @@ namespace TimelyDepotMVC.Controllers
                     customeraddress.Address2 = cusview.customercredit.Address2;
                     customeraddress.Country = cusview.customercredit.Country;
                     customeraddress.State = cusview.customercredit.State;
-                    customeraddress.Tel = cusview.customercredit.Tel.Replace("-", "");
+                    customeraddress.Tel = cusview.customercredit.Tel.Replace("-", string.Empty);
                     customeraddress.Zip = cusview.customercredit.Zip;
                     customeraddress.CustomerId = cusview.customercredit.CustomerId;
 
@@ -2382,11 +2356,11 @@ namespace TimelyDepotMVC.Controllers
                     customeraddress.Country = cusview.customerbilling.Country;
                     customeraddress.CustomerId = cusview.customerbilling.CustomerId;
                     customeraddress.Email = cusview.customerbilling.Email;
-                    customeraddress.Fax = cusview.customerbilling.Fax.Replace("-", "");
+                    customeraddress.Fax = cusview.customerbilling.Fax.Replace("-", string.Empty);
                     customeraddress.FirstName = cusview.customerbilling.FirstName;
                     customeraddress.LastName = cusview.customerbilling.LastName;
                     customeraddress.State = cusview.customerbilling.State;
-                    customeraddress.Tel = cusview.customerbilling.Tel.Replace("-", "");
+                    customeraddress.Tel = cusview.customerbilling.Tel.Replace("-", string.Empty);
                     customeraddress.Title = cusview.customerbilling.Title;
                     customeraddress.Zip = cusview.customerbilling.Zip;
 
@@ -2485,8 +2459,8 @@ namespace TimelyDepotMVC.Controllers
         [HttpPost]
         public ActionResult UpdateCustomerandAddress(CustomerView cusview)
         {
-            string szError = "";
-            string szMsg = "";
+            string szError = string.Empty;
+            string szMsg = string.Empty;
 
             Customers customers = null;
             Customers customersDup = null;
@@ -2573,8 +2547,8 @@ namespace TimelyDepotMVC.Controllers
                     customeraddress.LastName = cusview.customeraddress.LastName;
                     customeraddress.Note = cusview.customeraddress.Note;
                     customeraddress.State = cusview.customeraddress.State;
-                    customeraddress.Fax = cusview.customeraddress.Fax.Replace("-", "");
-                    customeraddress.Tel = cusview.customeraddress.Tel.Replace("-", "");
+                    customeraddress.Fax = cusview.customeraddress.Fax.Replace("-", string.Empty);
+                    customeraddress.Tel = cusview.customeraddress.Tel.Replace("-", string.Empty);
                     customeraddress.Title = cusview.customeraddress.Title;
                     customeraddress.Website = cusview.customeraddress.Website;
                     customeraddress.Zip = cusview.customeraddress.Zip;
@@ -2596,9 +2570,9 @@ namespace TimelyDepotMVC.Controllers
         {
             int nHas = 0;
             int nPos = -1;
-            string szError = "";
-            string szDecriptedData = "";
-            string szDecriptedCode = "";
+            string szError = string.Empty;
+            string szDecriptedData = string.Empty;
+            string szDecriptedCode = string.Empty;
 
             //int? page = null;
             int pageNote = 0;
@@ -2607,9 +2581,9 @@ namespace TimelyDepotMVC.Controllers
             int pageShipp = 0;
             int pageIndex = 0;
             int pageSize = 10;
-            string szCustomerInfo = "";
-            string szCustomerId = "";
-            string szMsg = "";
+            string szCustomerInfo = string.Empty;
+            string szCustomerId = string.Empty;
+            string szMsg = string.Empty;
 
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
 
@@ -2954,7 +2928,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 foreach (var item in qryCusCre)
                 {
-                    szError = "";
+                    szError = string.Empty;
                     szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.CreditNumber, ref szError);
                     if (!string.IsNullOrEmpty(szError))
                     {
@@ -3125,7 +3099,7 @@ namespace TimelyDepotMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Customers customers)
         {
-            string szError = "";
+            string szError = string.Empty;
 
             IQueryable<Customers> qryCust = null;
 
