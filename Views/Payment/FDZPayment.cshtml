@@ -95,9 +95,12 @@
         
     }
 
-    <div id="restDataDialg" style="width: 900px; padding: 10px; margin: 10px auto; display: none; border: solid 1px blue;"></div>
-    @Html.ActionLink("Back to payments index page", "PaymentIndex", "Payment", null, new { @class = "btn btn-default" })
+    <div id="restDataDialg" style="width: 900px; padding: 10px; margin: 10px auto; display: none; border: solid 1px blue;">
+    </div>
+    @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = @ViewBag.SalesOrderNo, invoiceId = -1 }, new { @class = "btn btn-default" })
+
     
+   
 </div>
 @section scripts{
     @Scripts.Render("~/Scripts/jquery.validate.js")

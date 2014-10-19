@@ -7,13 +7,13 @@ namespace TimelyDepotMVC.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class ChangeKeyId1 : IMigrationMetadata
+    public sealed partial class ChangeEnvironmetSizeFields : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeKeyId1));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeEnvironmetSizeFields));
         
         string IMigrationMetadata.Id
         {
-            get { return "201410171840334_ChangeKeyId1"; }
+            get { return "201410190624281_ChangeEnvironmetSizeFields"; }
         }
         
         string IMigrationMetadata.Source

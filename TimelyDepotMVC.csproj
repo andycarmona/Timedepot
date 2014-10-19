@@ -610,53 +610,18 @@
     <Compile Include="Helpers\CustomErrorHandlerAttribute.cs" />
     <Compile Include="Helpers\DecimalModelBinder.cs" />
     <Compile Include="Helpers\SalesOrderAmountValidatorAttribute.cs" />
-    <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.cs" />
-    <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.Designer.cs">
-      <DependentUpon>201410020747288_AddTransactionListforRefundsAndPayments.cs</DependentUpon>
+    <Compile Include="Migrations\201410190609565_Initial.cs" />
+    <Compile Include="Migrations\201410190609565_Initial.Designer.cs">
+      <DependentUpon>201410190609565_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.cs" />
-    <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.Designer.cs">
-      <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.cs" />
-    <Compile Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.Designer.cs">
-      <DependentUpon>201410051252593_UpdateThe-WayTransactionListHandlesdata.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs" />
-    <Compile Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.Designer.cs">
-      <DependentUpon>201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.cs" />
-    <Compile Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.Designer.cs">
-      <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410100646132_AddedCheckNumberToPayment.cs" />
-    <Compile Include="Migrations\201410100646132_AddedCheckNumberToPayment.Designer.cs">
-      <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410171118291_NewTableForEnvironmentparameter.cs" />
-    <Compile Include="Migrations\201410171118291_NewTableForEnvironmentparameter.Designer.cs">
-      <DependentUpon>201410171118291_NewTableForEnvironmentparameter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410171121551_DescriptionInEnvironmentTable.cs" />
-    <Compile Include="Migrations\201410171121551_DescriptionInEnvironmentTable.Designer.cs">
-      <DependentUpon>201410171121551_DescriptionInEnvironmentTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.cs" />
-    <Compile Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.Designer.cs">
-      <DependentUpon>201410171203185_AddKeyIdtoEnviromentTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410171839151_ChangeKeyId.cs" />
-    <Compile Include="Migrations\201410171839151_ChangeKeyId.Designer.cs">
-      <DependentUpon>201410171839151_ChangeKeyId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201410171840334_ChangeKeyId1.cs" />
-    <Compile Include="Migrations\201410171840334_ChangeKeyId1.Designer.cs">
-      <DependentUpon>201410171840334_ChangeKeyId1.cs</DependentUpon>
+    <Compile Include="Migrations\201410190624281_ChangeEnvironmetSizeFields.cs" />
+    <Compile Include="Migrations\201410190624281_ChangeEnvironmetSizeFields.Designer.cs">
+      <DependentUpon>201410190624281_ChangeEnvironmetSizeFields.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
+    <Compile Include="ModelsView\EnvironmentParamViewModel.cs" />
     <Compile Include="ModelsView\PaymentTransactionList.cs" />
     <Compile Include="ModelsView\PurchaseOrderDetailSRC.cs" />
     <Compile Include="ModelsView\InvoiceDetailSRC.cs" />
@@ -1473,7 +1438,6 @@
     <Content Include="Views\Group_MasterAdmin\Details.cshtml" />
     <Content Include="Views\Group_MasterAdmin\Edit.cshtml" />
     <Content Include="Views\Group_MasterAdmin\Index.cshtml" />
-    <Content Include="Views\Home\Development.cshtml" />
     <Content Include="Views\Home\Index_ORG.cshtml" />
     <Content Include="Views\Home\Quit.cshtml" />
     <Content Include="Views\ImprintitemdetailADMIN\Create.cshtml" />
@@ -1987,6 +1951,7 @@
     <Content Include="Views\Payment\AddGenericPayment.cshtml" />
     <Content Include="Views\Payment\AddCashPayment.cshtml" />
     <Content Include="Views\Payment\SalesOrderForInvoice.cshtml" />
+    <Content Include="Views\Home\Development.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2027,38 +1992,11 @@
     <WCFMetadataStorage Include="Service References\GGE4ServiceReference\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.resx">
-      <DependentUpon>201410020747288_AddTransactionListforRefundsAndPayments.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410190609565_Initial.resx">
+      <DependentUpon>201410190609565_Initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410021511054_AddTranslationCodesTable.resx">
-      <DependentUpon>201410021511054_AddTranslationCodesTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410051252593_UpdateThe-WayTransactionListHandlesdata.resx">
-      <DependentUpon>201410051252593_UpdateThe-WayTransactionListHandlesdata.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.resx">
-      <DependentUpon>201410051256235_RemoveTrnasactionListAndAddTransactioncode in paymentTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410051531254_ChangesForTransactionAndRefunds.resx">
-      <DependentUpon>201410051531254_ChangesForTransactionAndRefunds.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410100646132_AddedCheckNumberToPayment.resx">
-      <DependentUpon>201410100646132_AddedCheckNumberToPayment.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410171118291_NewTableForEnvironmentparameter.resx">
-      <DependentUpon>201410171118291_NewTableForEnvironmentparameter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410171121551_DescriptionInEnvironmentTable.resx">
-      <DependentUpon>201410171121551_DescriptionInEnvironmentTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410171203185_AddKeyIdtoEnviromentTable.resx">
-      <DependentUpon>201410171203185_AddKeyIdtoEnviromentTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410171839151_ChangeKeyId.resx">
-      <DependentUpon>201410171839151_ChangeKeyId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201410171840334_ChangeKeyId1.resx">
-      <DependentUpon>201410171840334_ChangeKeyId1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410190624281_ChangeEnvironmetSizeFields.resx">
+      <DependentUpon>201410190624281_ChangeEnvironmetSizeFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

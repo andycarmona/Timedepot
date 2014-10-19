@@ -43,7 +43,7 @@ namespace TimelyDepotMVC.ModelsView
         public string ReferenceNo { get; set; }
 
         [Display(Name = "Payment amount")]
-        [DisplayFormat(DataFormatString = "{0:n2}")]
+        [DisplayFormat(DataFormatString = "{0:0,0.0}")]
         public double PaymentAmount { get; set; }
 
         public string CheckNumber { get; set; }

@@ -30,7 +30,7 @@
         public string CheckNo { get; set; }
 
         [Display(Name = "Amount")]
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:0,0.0}")]
         public decimal? Amount { get; set; }
 
         [Display(Name = "Date")]

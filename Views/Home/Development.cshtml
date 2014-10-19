@@ -1,6 +1,96 @@
-﻿@{
-    ViewBag.Title = "Page in Construction";
+﻿@model IEnumerable<TimelyDepotMVC.ModelsView.EnvironmentParamViewModel>
+
+@{
+    ViewBag.Title = "Development";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+    int nRow = 0;
+    int nMod = 0;
+    string szClass = "";
 }
 
-<h2>@ViewBag.Title</h2>
-<input id="Radio1" type="radio" />
+<h2>Development</h2>
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+        <tr class="webgrid-header">
+          
+        <th>
+            @Html.DisplayNameFor(model => model.KeyParameter)
+
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ServerUrl)
+
+</th>
+<th>
+    @Html.DisplayNameFor(model => model.Description)
+
+</th>
+<th>
+    @Html.DisplayNameFor(model => model.TransactionUri)
+
+</th>
+<th>
+    @Html.DisplayNameFor(model => model.KeyValue)
+
+</th>
+<th>
+    @Html.DisplayNameFor(model => model.Active)
+
+</th>
+</tr>
+
+
+@foreach (var item in Model)
+{
+
+    nRow++;
+    nMod = (nRow % 2);
+    if (nMod == 0)
+    {
+        szClass = "webgrid-alternating-row timelycustomertr trhlp";
+    }
+    else
+    {
+        szClass = "webgrid-row-style timelycustomertr trhlp";
+    }
+
+    string sztrId = string.Format("row0_{0}", item.ParameterId);
+
+    <tr id="@sztrId" class="@szClass">
+        <td>
+            @Html.EditorFor(x=>item.KeyParameter)
+        </td>
+        <td>
+           @Html.EditorFor(x=>item.ServerUrl)
+
+        </td>
+        <td>
+            @Html.DisplayFor(x=>item.Description)
+
+        </td>
+        <td>
+         
+            @Html.EditorFor(x=>item.TransactionUri)
+
+        </td>
+        <td>
+          @Html.EditorFor(x=>item.KeyValue)
+
+        </td>
+     
+        <td>
+   
+           @Html.EditorFor(x => item.Active)
+
+
+        </td>
+    </tr>
+}
+<tr>
+    <td colspan="7">
+        @Html.ActionLink("Back", "PaymentIndex", "Payment", null, new { @class = "btn btn-default" })
+    </td>
+</tr>
+
+</table>
+</div>

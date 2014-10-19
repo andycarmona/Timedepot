@@ -31,6 +31,8 @@ namespace TimelyDepotMVC.Controllers
     using TimelyDepotMVC.ModelsView;
     using System.Text.RegularExpressions;
 
+    using WebGrease.Css;
+
     public class PaymentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
@@ -769,7 +771,7 @@ namespace TimelyDepotMVC.Controllers
 
         // 
         // GET: //FDZPayment
-        public ActionResult FDZPayment(string id, string invoicepayment, string refund)
+        public ActionResult FDZPayment(string id, string invoicepayment, decimal paymentAmount, string refund)
         {
             int nHas = 0;
             int nPos = -1;
@@ -883,7 +885,7 @@ namespace TimelyDepotMVC.Controllers
 
                 if (salesOrder != null && creditcard != null)
                 {
-                    szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(creditcard.CreditNumber, ref szError);
+                    szDecriptedData = DecodeInfo02(creditcard.CreditNumber, ref szError);
                     szDecriptedData02 = szDecriptedData;
                     if (!string.IsNullOrEmpty(szError))
                     {
@@ -930,13 +932,15 @@ namespace TimelyDepotMVC.Controllers
                 {
                     ViewBag.Transaction = "Purchase";
                 }
-                ViewBag.Amount = dTotalSalesOrder.ToString(string.Empty);
+
+                ViewBag.Amount = paymentAmount.ToString(CultureInfo.InvariantCulture);
                 szYear = dDate.Year.ToString();
                 ViewBag.expiryDate = string.Format("{0}{1}", dDate.Month.ToString("00"), szYear.Substring(2, 2));
                 ViewBag.CardHolderName = creditcard.Name;
                 ViewBag.CardNumber = szDecriptedData;
                 ViewBag.CardNumber02 = creditcard.Id;
                 ViewBag.PaymentId = payment.Id;
+                ViewBag.SalesOrderNo = payment.SalesOrderNo;
 
                 ViewBag.InvoicePayment = invoicepayment;
 
@@ -1095,6 +1099,7 @@ namespace TimelyDepotMVC.Controllers
                         {
                             if (bApproved)
                             {
+                                szAmount = szAmount.Replace('.', ',');
                                 dAmount = Convert.ToDecimal(szAmount);
                                 payment.Amount = dAmount;
                                 payment.ReferenceNo = szAuthorizationNumber;
@@ -1156,7 +1161,7 @@ namespace TimelyDepotMVC.Controllers
                         //Delete the payment when refund
                         if (szTransaction_Type == "04")
                         {
-                            DeletePayment(payment.Id);
+                   
                             var aRefund = new Refunds()
                                               {
                                                   RefundAmount = (decimal)payment.Amount,
@@ -1203,15 +1208,20 @@ namespace TimelyDepotMVC.Controllers
             string szCreditCard = string.Empty;
             string response_string = string.Empty;
 
+
             if (!string.IsNullOrEmpty(szCardNumber02))
             {
                 nId = Convert.ToInt32(szCardNumber02);
             }
+            int paymentId = int.Parse(szPaymentid);
+            var paymentData = this.db.Payments.SingleOrDefault(x => x.Id == paymentId);
+            
             var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             CustomersCreditCardShipping creditcard = db.CustomersCreditCardShippings.Find(nId);
+          
             if (creditcard != null)
             {
-                szCreditCard = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(creditcard.CreditNumber, ref szError); ;
+                szCreditCard = DecodeInfo02(creditcard.CreditNumber, ref szError); ;
             }
 
             if (szCardNumber.Contains("*"))
@@ -1373,10 +1383,14 @@ namespace TimelyDepotMVC.Controllers
 
                     szError = string.Format("{0} - Message: {1} - StackTrace: {2}.", ex.Status, ex.Message, ex.StackTrace);
                 }
+                this.db.Payments.Remove(paymentData);
+                this.db.SaveChanges();
             }
             catch (Exception err)
             {
                 szError = err.Message;
+                this.db.Payments.Remove(paymentData);
+                this.db.SaveChanges();
             }
         }
 
@@ -1672,6 +1686,7 @@ namespace TimelyDepotMVC.Controllers
                             {
                                 invoice.PaymentAmount = null;
                             }
+
                             db.Entry(invoice).State = EntityState.Modified;
                             db.SaveChanges();
 
@@ -1686,7 +1701,13 @@ namespace TimelyDepotMVC.Controllers
 
 
             }
-            return RedirectToAction("Index");
+
+            if (payment != null)
+            {
+                return this.RedirectToAction("PaymentTransactionList", new { salesOrderNo = payment.SalesOrderNo, invoiceId = -1 });
+            }
+
+            return RedirectToAction("PaymentIndex");
         }
 
         //
@@ -2740,7 +2761,7 @@ namespace TimelyDepotMVC.Controllers
                             //Encode the Card Number
                             if (!string.IsNullOrEmpty(CreditCardNumberhlp))
                             {
-                                szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(CreditCardNumberhlp, ref szError);
+                                szEncriptedData = EncriptInfo02(CreditCardNumberhlp, ref szError);
                                 payment.CreditCardNumber = szEncriptedData;
                             }
 
@@ -3437,7 +3458,7 @@ namespace TimelyDepotMVC.Controllers
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
                  ViewBag.Environment = aPayment.ActualEnvironment;
-                return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment });
+                return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment, paymentAmount = aNewPayment.Amount });
             }
 
             var aCustomer = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
@@ -3447,6 +3468,8 @@ namespace TimelyDepotMVC.Controllers
 
             return View(aPayment);
         }
+
+      
 
         private List<SelectListItem> GetListOfCardsByUsers(string customerNo)
         {
@@ -4539,24 +4562,26 @@ namespace TimelyDepotMVC.Controllers
             return View(payments);
         }
 
-        //
+  
         // GET: /Payment/Edit/5
-
+        [NoCache]
         public ActionResult Edit(int TransCode, int paymentId = 0)
         {
-            DateTime dDate = DateTime.Now;
             Payments payments = db.Payments.Find(paymentId);
             if (payments == null)
             {
                 return HttpNotFound();
             }
 
-            dDate = Convert.ToDateTime(payments.PaymentDate);
-            ViewBag.TransCode = TransCode;
+            var refundPayment = this.db.Refunds.Where(x => x.TransactionId == payments.Id);
+            ViewBag.Refunded = refundPayment.Any();
+
+            payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
+   
             return View(payments);
         }
 
-        //
+     
         // POST: /Payment/Edit/5
 
         [HttpPost]
@@ -4564,21 +4589,14 @@ namespace TimelyDepotMVC.Controllers
         {
             int nPos = -1;
             decimal dPayments = 0;
-            double dSalesAmount = 0;
-            double dTax = 0;
-            double dTotalTax = 0;
-            double dTotalAmount = 0;
-            double dBalanceDue = 0;
             string szSalesOrderNo = string.Empty;
             string szEncriptedData = string.Empty;
             string szError = string.Empty;
 
-            CustomersCardType cardtype = null;
             Invoice invoice = null;
 
             if (ModelState.IsValid)
             {
-                nPos = -1;
                 if (!string.IsNullOrEmpty(CreditCardNumberHlp))
                 {
                     nPos = CreditCardNumberHlp.IndexOf("*");
@@ -4587,7 +4605,7 @@ namespace TimelyDepotMVC.Controllers
                         //Encode the Card Number
                         if (!string.IsNullOrEmpty(CreditCardNumberHlp))
                         {
-                            szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(CreditCardNumberHlp, ref szError);
+                            szEncriptedData = EncriptInfo02(CreditCardNumberHlp, ref szError);
                             payments.CreditCardNumber = szEncriptedData;
                         }
 

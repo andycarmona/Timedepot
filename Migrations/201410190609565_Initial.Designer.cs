@@ -7,13 +7,13 @@ namespace TimelyDepotMVC.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class AddTranslationCodesTable : IMigrationMetadata
+    public sealed partial class Initial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTranslationCodesTable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201410021511054_AddTranslationCodesTable"; }
+            get { return "201410190609565_Initial"; }
         }
         
         string IMigrationMetadata.Source

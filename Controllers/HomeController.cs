@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Linq;
+
+    using TimelyDepotMVC.DAL;
+    using TimelyDepotMVC.ModelsView;
+
     //[Authorize(Roles="Owner")]
     //[Authorize]
     public class HomeController : Controller
     {
+        private TimelyDepotContext db = new TimelyDepotContext();
         //
         // GET: /Home/Quit
         public ActionResult Quit()
@@ -22,7 +24,19 @@ namespace TimelyDepotMVC.Controllers
         // GET: /Home/Development
         public ActionResult Development()
         {
-            return View();
+            var environmentVariables = (from envParam in this.db.EnvironmentParameters
+                                        select
+                                            new EnvironmentParamViewModel
+                                                {
+                                                    //ParameterId = envParam.ParameterId,
+                                                    KeyParameter = envParam.KeyParameter,
+                                                    KeyValue = envParam.KeyValue,
+                                                    Description = envParam.Description,
+                                                    Active = envParam.Active,
+                                                    ServerUrl = envParam.ServerUrl,
+                                                    TransactionUri = envParam.TransactionUri
+                                                }).ToList();
+            return View(environmentVariables);
         }
 
 
