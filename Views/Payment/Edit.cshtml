@@ -1,4 +1,5 @@
-﻿@model TimelyDepotMVC.Models.Admin.Payments
+﻿@using TimelyDepotMVC.Models.Admin
+@model TimelyDepotMVC.Models.Admin.Payments
 
 @{
     ViewBag.Title = "Edit Payment";
@@ -60,6 +61,7 @@
             @Html.HiddenFor(model => model.PaymentNo)
             @Html.HiddenFor(model => model.CustomerNo)
             @Html.HiddenFor(model => model.PaymentType)
+            
 
 
 
@@ -95,6 +97,7 @@
                 </div>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ReferenceNo)
+                    <img id="btDialogOpen02" class="btn btn-default" src="~/Images/01.png" / >
                 </div>
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.ReferenceNo)
@@ -175,7 +178,10 @@
             </div>
         </fieldset>
     }
-
+    <div id="specialnotediaog" style="width: 750px; margin: 0px auto;">
+        @Html.DisplayFor(model=>model.PayLog)
+       
+    </div>
     <div style="margin:5px;">
 
     </div>
@@ -187,7 +193,10 @@
 
         function initalizeEditPayment() {
             //debugger;
-
+            //Dialog window
+            jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true });
+            jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
+            jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
             //Set buttons
             jQuery("#btnSubmit").button();
 
@@ -209,7 +218,13 @@
 
             });
         }
-
+        function clickbtDialogCloseNote(src, arg) {
+            jQuery("#specialnotediaog").dialog("close");
+        }
+        function clickbtDialogOpenNote(src, arg) {
+            jQuery("#specialnotediaog").dialog("open");
+        }
+    
 
 
     </script>

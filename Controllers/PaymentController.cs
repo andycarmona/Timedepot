@@ -3365,7 +3365,8 @@ namespace TimelyDepotMVC.Controllers
                                    PaymentNo = actualPaymentNo,
                                    PaymentType = "CreditCard",
                                    PaymentDate = DateTime.Now,
-                                   ActualEnvironment = environmentParam.Description
+                                   ActualEnvironment = environmentParam.Description,
+                                   PayLog = latestPayments.PayLog
                                }).FirstOrDefault();
 
             this.GetSalesOrderTotals(
@@ -4582,6 +4583,7 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.Refunded = refundPayment.Any();
 
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
+            payments.PayLog = Regex.Replace(payments.PayLog, "<*/>"," ");
    
             return View(payments);
         }

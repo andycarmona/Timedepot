@@ -56,6 +56,9 @@ namespace TimelyDepotMVC.ModelsView
 
         public string ActualEnvironment { get; set; }
 
+        [Display(Name = "Payment Log")]
+        public string PayLog { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var balanceDue = this.BalanceDue;

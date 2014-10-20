@@ -133,28 +133,28 @@
 }
 
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript">
-        jQuery(document).ready(initalizeEditPayment);
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript">
+            jQuery(document).ready(initalizeEditPayment);
 
-        function initalizeEditPayment() {
-            //debugger;
+            function initalizeEditPayment() {
+                //debugger;
 
+        
 
+                //Set the datepicker
+                jQuery("#PaymentDate").datepicker({
+                    dateFormat: "mm/dd/yy",
+                    showOn: "button",
+                    buttonImage: "/images/calendar.gif",
+                    buttonImageOnly: true
+                });
 
-            //Set the datepicker
-            jQuery("#PaymentDate").datepicker({
-                dateFormat: "mm/dd/yy",
-                showOn: "button",
-                buttonImage: "/images/calendar.gif",
-                buttonImageOnly: true
-            });
+                var szDate = jQuery("#PaymentDate").val();
+                szDate = jQuery.trim(szDate);
+                jQuery("#PaymentDate").val(szDate);
+            }
 
-            var szDate = jQuery("#PaymentDate").val();
-            szDate = jQuery.trim(szDate);
-            jQuery("#PaymentDate").val(szDate);
-        }
-
-    </script>
-}
+        </script>
+    }
