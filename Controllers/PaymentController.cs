@@ -1261,8 +1261,9 @@ namespace TimelyDepotMVC.Controllers
                     xml_writer.WriteStartElement("Transaction");
                     if (environmentParam != null)
                     {
+                        var decryptedPasswd = DecodeInfo02(environmentParam.Password, ref szError);
                         xml_writer.WriteElementString("ExactID", environmentParam.GatewayId);//Gateway ID
-                        xml_writer.WriteElementString("Password", environmentParam.Password);//Password
+                        xml_writer.WriteElementString("Password",decryptedPasswd );//Password
                     }
                
 

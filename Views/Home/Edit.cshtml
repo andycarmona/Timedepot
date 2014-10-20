@@ -36,19 +36,20 @@
             @Html.ValidationMessageFor(model => model.Description)
         </div>
         <div class="editor-label">
+    @Html.LabelFor(model => model.KeyValue)
+</div>
+<div class="editor-field">
+    @Html.EditorFor(model => model.KeyValue)
+    @Html.ValidationMessageFor(model => model.KeyValue)
+</div>
+        <div class="editor-label">
             @Html.LabelFor(model => model.Password)
         </div>
         <div class="editor-field">
-            @Html.TextBoxFor(model => model.Password)
+            @Html.TextAreaFor(model => model.Password,new{@cols=42,@rows=5})
             @Html.ValidationMessageFor(model => model.Password)
         </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.KeyValue)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.KeyValue)
-            @Html.ValidationMessageFor(model => model.KeyValue)
-        </div>
+      
 
         <div class="editor-label">
             @Html.LabelFor(model => model.KeyParameter)

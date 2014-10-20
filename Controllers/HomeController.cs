@@ -20,7 +20,7 @@ namespace TimelyDepotMVC.Controllers
         // GET: /Home/Quit
         public ActionResult Quit()
         {
-            return View(); 
+            return View();
         }
 
         //
@@ -39,14 +39,14 @@ namespace TimelyDepotMVC.Controllers
                                                     ServerUrl = envParam.ServerUrl,
                                                     TransactionUri = envParam.TransactionUri
                                                 }).ToList();
-        
+
             return View(environmentVariables);
         }
 
         public ActionResult Edit(int id)
         {
             EnvironmentParameters aEnvParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.ParameterId == id);
-           
+
             return View(aEnvParam);
         }
 
@@ -61,10 +61,18 @@ namespace TimelyDepotMVC.Controllers
 
             try
             {
-                aEnvParam.Password = PaymentController.EncriptInfo02(aEnvParam.Password, ref szError);
-                this.db.Entry(aEnvParam).State = EntityState.Modified;
-                this.db.SaveChanges();
+                string szWarning = null;
+                PaymentController.DecodeInfo02(aEnvParam.Password, ref szWarning);
 
+                if (!string.IsNullOrEmpty(szWarning))
+                {
+                    var encryptedPasswd = PaymentController.EncriptInfo02(aEnvParam.Password, ref szError);
+                    aEnvParam.Password = encryptedPasswd;
+                }
+
+                this.db.Entry(aEnvParam).State = EntityState.Modified;
+                    this.db.SaveChanges();
+       
                 if (aEnvParam.Active)
                 {
                     var otherEnvParam =
