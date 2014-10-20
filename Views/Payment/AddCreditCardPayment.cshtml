@@ -31,14 +31,14 @@
             <br />
             <div class="darkerline right" style="width: 40%; padding: 5px;">
 
-
+                <div style="float:right;"><label>Add new card</label><br/><img id="btDialogOpen02" data-url="@Request.RawUrl" data-user="@Model.CustomerId" class="btn btn-default" src="~/Images/creditcard_active.png" /> </div>
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.CreditCardNumber)
+                        @Html.LabelFor(model => model.CreditCardNumber) 
                     </div>
                     <div class="editor-field">
                         @Html.DropDownList("CreditCardNumber")
-
+                        
                     </div>
                 </div>
                 <div class="viosinput400 boxtb3">
@@ -131,7 +131,10 @@
     @Html.ValidationSummary(true)
 
 }
-
+<div id="specialnotediaog" style="width: 750px; margin: 0px auto;">
+   
+    
+</div>
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
@@ -139,9 +142,17 @@
             jQuery(document).ready(initalizeEditPayment);
 
             function initalizeEditPayment() {
+                //Dialog window
+                jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true,width:"80%" });
+                jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
+                jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
                 //debugger;
-
-        
+                $("#specialnotediaog").load("/Customers/CreateEditCreditCard/0?customerid="+jQuery("#btDialogOpen02").data("user"));
+                
+                $('div#specialnotediaog').bind('dialogclose', function (event) {
+                    window.open(jQuery("#btDialogOpen02").data("url"), "_self");
+                   
+                });
 
                 //Set the datepicker
                 jQuery("#PaymentDate").datepicker({
@@ -155,6 +166,11 @@
                 szDate = jQuery.trim(szDate);
                 jQuery("#PaymentDate").val(szDate);
             }
-
+            function clickbtDialogCloseNote(src, arg) {
+                jQuery("#specialnotediaog").dialog("close");
+            }
+            function clickbtDialogOpenNote(src, arg) {
+                jQuery("#specialnotediaog").dialog("open");
+            }
         </script>
     }

@@ -2246,7 +2246,7 @@ namespace TimelyDepotMVC.Controllers
         //
         // POST: /Customers/UpdateCustomerCreditCard
         [HttpPost]
-        public ActionResult UpdateCustomerCreditCard(CustomerView cusview)
+        public void UpdateCustomerCreditCard(CustomerView cusview)
         {
             CustomersCreditCardShipping customeraddress = null;
 
@@ -2281,9 +2281,7 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            TempData["ActiveTab"] = "4";
-            //return RedirectToAction("Index");
-            return RedirectToAction("Edit", new { id = Convert.ToInt32(customeraddress.CustomerId) });
+     
         }
 
         //
