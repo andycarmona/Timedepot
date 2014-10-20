@@ -18,6 +18,11 @@ namespace TimelyDepotMVC
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+             routes.MapRoute(
+                name: "Environment",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Edit", id = UrlParameter.Optional }
+            );
         }
     }
 }

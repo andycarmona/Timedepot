@@ -7,6 +7,10 @@ namespace TimelyDepotMVC.ModelsView
     public class EnvironmentParamViewModel : IEnumerable
     {
         public int ParameterId { get; set; }
+        
+        public string GatewayId { get; set; }
+
+        public string Password { get; set; }
 
         public string KeyValue { get; set; }
 

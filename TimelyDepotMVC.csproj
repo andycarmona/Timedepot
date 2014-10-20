@@ -618,6 +618,10 @@
     <Compile Include="Migrations\201410190624281_ChangeEnvironmetSizeFields.Designer.cs">
       <DependentUpon>201410190624281_ChangeEnvironmetSizeFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410201317187_PasswrodAndGatewayObligated.cs" />
+    <Compile Include="Migrations\201410201317187_PasswrodAndGatewayObligated.Designer.cs">
+      <DependentUpon>201410201317187_PasswrodAndGatewayObligated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -1952,6 +1956,7 @@
     <Content Include="Views\Payment\AddCashPayment.cshtml" />
     <Content Include="Views\Payment\SalesOrderForInvoice.cshtml" />
     <Content Include="Views\Home\Development.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1997,6 +2002,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410190624281_ChangeEnvironmetSizeFields.resx">
       <DependentUpon>201410190624281_ChangeEnvironmetSizeFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410201317187_PasswrodAndGatewayObligated.resx">
+      <DependentUpon>201410201317187_PasswrodAndGatewayObligated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

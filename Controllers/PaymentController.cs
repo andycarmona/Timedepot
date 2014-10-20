@@ -1259,8 +1259,12 @@ namespace TimelyDepotMVC.Controllers
                 {     //build XML string 
                     xml_writer.Formatting = Formatting.Indented;
                     xml_writer.WriteStartElement("Transaction");
-                    xml_writer.WriteElementString("ExactID", "AF2940-05");//Gateway ID
-                    xml_writer.WriteElementString("Password", "q515t487");//Password
+                    if (environmentParam != null)
+                    {
+                        xml_writer.WriteElementString("ExactID", environmentParam.GatewayId);//Gateway ID
+                        xml_writer.WriteElementString("Password", environmentParam.Password);//Password
+                    }
+               
 
                     xml_writer.WriteElementString("Transaction_Type", szTransaction);
                     //xml_writer.WriteElementString("Transaction_Type", "55");
@@ -1281,12 +1285,12 @@ namespace TimelyDepotMVC.Controllers
             string hashed_content = hash.ToLower();
 
             //assign values to hashing and header variables
-            string keyID = "143876";//key ID
-            string key = "d8H7UNVW_nFrLP3uuPwPSg2B2y1JhXu1";//Hmac key
+            string keyID = environmentParam.KeyValue;//key ID
+            string key = environmentParam.KeyParameter;//Hmac key
             string method = "POST\n";
             string type = "application/xml";//REST XML
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-            string uri = "/transaction/v13";
+            string uri = environmentParam.TransactionUri;
             string hash_data = method + type + "\n" + hashed_content + "\n" + time + "\n" + uri;
             //hmac sha1 hash with key + hash_data
             HMAC hmac_sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(key)); //key
@@ -1296,7 +1300,7 @@ namespace TimelyDepotMVC.Controllers
 
             //uri = "/transaction/v131";
 
-            string url = "https://api.demo.globalgatewaye4.firstdata.com" + uri; //DEMO Endpoint
+            string url = environmentParam.ServerUrl + uri; //DEMO Endpoint
 
             //url = "invalid site";
 
