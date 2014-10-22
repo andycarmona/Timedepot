@@ -1093,8 +1093,8 @@ namespace TimelyDepotMVC.Controllers
                         {
                             if (bApproved)
                             {
-                                szAmount = szAmount.Replace('.', ',');
-                                dAmount = Convert.ToDecimal(szAmount);
+                                
+                                dAmount = Convert.ToDecimal(szAmount,new CultureInfo("en-US"));
                                 payment.Amount = dAmount;
                                 payment.ReferenceNo = szAuthorizationNumber;
                                 if (!string.IsNullOrEmpty(szInvoicePayment))
