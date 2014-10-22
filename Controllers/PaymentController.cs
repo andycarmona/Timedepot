@@ -1229,17 +1229,6 @@ namespace TimelyDepotMVC.Controllers
             szResponse = string.Empty;
             szResponse = string.Empty;
 
-            try
-            {
-                szAmount = szAmount.Replace(",", ".");
-                //dHlp = Convert.ToDecimal(szAmount);
-                //szAmount = dHlp.ToString("N2");
-            }
-            catch (Exception err)
-            {
-                szError = err.Message;
-                return;
-            }
 
             if (szExpiryDate.Length > 4)
             {
