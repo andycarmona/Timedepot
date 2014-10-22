@@ -1483,9 +1483,141 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Edit", new { id = nCustomerId });
             //return RedirectToAction("Index");
         }
-
-        //
         // POST: /Customer/UpdateCustomerNote
+        [HttpPost]
+        public ActionResult CreateEditCreditCardFromPayment(CustomersCreditCardShipping customenote, string customerdefault, string ExpirationDateHlp, string CreditNumber01, string SecureCode01, string PaymentUrl = "")
+        {
+            int nCustomerDefault = Convert.ToInt32(customerdefault);
+            int nPos = -1;
+            string szError = string.Empty;
+            string szEncriptedData = string.Empty;
+            DateTime dDate = DateTime.Now;
+            CustomerDefaults custdefault = null;
+
+            if (customenote != null)
+            {
+                if (ModelState.IsValid)
+                {
+                    if (customenote.Id == 0)
+                    {
+                        if (string.IsNullOrEmpty(customenote.Tel))
+                        {
+                            customenote.Tel = "0";
+                        }
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+                        db.CustomersCreditCardShippings.Add(customenote);
+
+                        //Set Card number
+                        //Encript the credit card info
+                        //use the user supplied data
+                        if (!string.IsNullOrEmpty(CreditNumber01))
+                        {
+                            nPos = CreditNumber01.IndexOf("*");
+                            if (nPos == -1)
+                            {
+                                customenote.CreditNumber = CreditNumber01;
+
+                                //Encode the credit card info
+                                if (!string.IsNullOrEmpty(customenote.CreditNumber))
+                                {
+                                    szEncriptedData = PaymentController.EncriptInfo02(customenote.CreditNumber, ref szError);
+                                    customenote.CreditNumber = szEncriptedData;
+                                }
+                            }
+                            else
+                            {
+                                //Do not replace the credit card number
+                            }
+                        }
+
+                        //Set Secure Code
+                        if (!string.IsNullOrEmpty(customenote.SecureCode))
+                        {
+                            //Encode the credit card info
+                            if (!string.IsNullOrEmpty(customenote.SecureCode))
+                            {
+                                szEncriptedData = PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
+                                customenote.SecureCode = szEncriptedData;
+                            }
+
+                        }
+                        db.SaveChanges();
+
+                        //Set the default customer value
+                        custdefault = db.CustomerDefaults.Find(nCustomerDefault);
+                        if (custdefault != null)
+                        {
+                            custdefault.NoteId = customenote.Id;
+                            custdefault.NoteName = string.Format("{0}", customenote.CreditNumber);
+                            db.Entry(custdefault).State = EntityState.Modified;
+                        }
+                        db.SaveChanges();
+
+                    }
+                    else
+                    {
+                        //Set the default customer value
+                        custdefault = db.CustomerDefaults.Find(nCustomerDefault);
+                        if (custdefault != null)
+                        {
+                            custdefault.NoteId = customenote.Id;
+                            custdefault.NoteName = string.Format("{0}", customenote.CreditNumber);
+                            db.Entry(custdefault).State = EntityState.Modified;
+                        }
+
+                        if (!string.IsNullOrEmpty(ExpirationDateHlp))
+                        {
+                            dDate = Convert.ToDateTime(ExpirationDateHlp);
+                            customenote.ExpirationDate = dDate;
+                        }
+
+                        if (string.IsNullOrEmpty(customenote.Tel))
+                        {
+                            customenote.Tel = "0";
+                        }
+                        customenote.Tel = customenote.Tel.Replace("-", string.Empty);
+
+                        //Encript the credit card info
+                        //use the user supplied data
+                        if (!string.IsNullOrEmpty(CreditNumber01))
+                        {
+                            nPos = CreditNumber01.IndexOf("*");
+                            if (nPos == -1)
+                            {
+                                customenote.CreditNumber = CreditNumber01;
+
+                                //Encode the credit card info
+                                if (!string.IsNullOrEmpty(customenote.CreditNumber))
+                                {
+                                    szEncriptedData = TimelyDepotMVC.Controllers.PaymentController.EncriptInfo02(customenote.CreditNumber, ref szError);
+                                    customenote.CreditNumber = szEncriptedData;
+                                }
+                            }
+
+                        }
+
+                        //Encode the credit card info
+                        if (!string.IsNullOrEmpty(customenote.SecureCode))
+                        {
+                            szEncriptedData = PaymentController.EncriptInfo02(customenote.SecureCode, ref szError);
+                            customenote.SecureCode = szEncriptedData;
+                        }
+
+
+
+                        db.Entry(customenote).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+
+                   
+                    
+                }
+            }
+
+
+            return RedirectToAction("AddCreditCardPayment", "Payment", new { salesOrderNumber = 12 });
+
+        }
         [HttpPost]
         public ActionResult UpdateCreditCard(CustomersCreditCardShipping customenote, string customerdefault, string ExpirationDateHlp, string CreditNumber01, string SecureCode01)
         {
@@ -1618,7 +1750,49 @@ namespace TimelyDepotMVC.Controllers
 
             return RedirectToAction("Index");
         }
+        [NoCache]
+        public PartialViewResult CreateEditCreditCardFromPayment(string customerid, int id = 0)
+        {
+            int nCustomerId = Convert.ToInt32(customerid);
+            CustomerDefaults customerDefault = null;
+            CustomersCreditCardShipping customercredit = null;
+            IQueryable<CustomersCardType> qryCardType = null;
 
+            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
+
+            if (id == 0)
+            {
+                customercredit = new CustomersCreditCardShipping();
+                customercredit.CustomerId = nCustomerId;
+                customercredit.ExpirationDate = DateTime.Now;
+            }
+            else
+            {
+                customercredit = db.CustomersCreditCardShippings.Find(id);
+            }
+
+            //Get the customer default id
+            ViewBag.CustomerDefaultId = 0;
+            customerDefault = db.CustomerDefaults.Where(ctdf => ctdf.CustomerId == nCustomerId).FirstOrDefault<CustomerDefaults>();
+            if (customerDefault != null)
+            {
+                ViewBag.CustomerDefaultId = customerDefault.Id;
+            }
+
+            listSelector = new List<KeyValuePair<string, string>>();
+            qryCardType = db.CustomersCardTypes.OrderBy(cucr => cucr.CardType);
+            if (qryCardType.Count() > 0)
+            {
+                foreach (var item in qryCardType)
+                {
+                    listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
+                }
+            }
+            SelectList cardtypelist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.CardTypeList = cardtypelist;
+
+            return PartialView(customercredit);
+        }
         //
         // GET: /Customer/CreateEditCreditCard
         [NoCache]

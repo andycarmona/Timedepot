@@ -181,7 +181,7 @@
                         @Html.LabelFor(model => model.ExpirationDate)
                     </div>
                     <div class="viosinput180">
-                        <input id="ExpirationDateHlp" name="ExpirationDateHlp" style="margin-right:3px;" type="text" value="@Convert.ToDateTime(Model.ExpirationDate).ToString("MM/dd/yyyy")" />
+                        <input id="ExpirationDateHlp" name="ExpirationDateHlp" style="margin-right:3px;" type="text" value="@Convert.ToDateTime(Model.ExpirationDate).ToString("MM/yyyy")" />
                         @*Html.EditorFor(model => model.ExpirationDate)*@
                         @Html.ValidationMessageFor(model => model.ExpirationDate)
                     </div>
@@ -212,8 +212,9 @@
         </table>
         <div style="width: 900px; margin: 5px auto;">
             <input id="btAddCreditCard" class="btNavTimley" type="button" value="Add" />&nbsp;
-        <input type="submit" class="btNavTimley" value="Update" />&nbsp;   
-        @Html.ActionLink("Delete", "DeleteCreditCard", "Customers", new { id = Model.Id, customerdefaultid = ViewBag.CustomerDefaultId }, new { id = "btDeleteSalesContact", @class = "btNavTimley", onclick = "return confirm('Do you want to delete this Credit Card?');" })
+            <input type="submit" class="btNavTimley" value="Update" />&nbsp;   
+            
+            @Html.ActionLink("Delete", "DeleteCreditCard", "Customers", new { id = Model.Id, customerdefaultid = ViewBag.CustomerDefaultId }, new { id = "btDeleteSalesContact", @class = "btNavTimley", onclick = "return confirm('Do you want to delete this Credit Card?');" })
         </div>
 
     </div>
@@ -228,3 +229,4 @@
         @Html.ValidationMessageFor(model => model.Address2)
     </div>*@    
 }
+

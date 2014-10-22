@@ -478,6 +478,11 @@ h5, h6 {
         list-style: none;
     }
 /* Table Grid*/
+
+td.char-align { width: 14em; }
+span.left { float: left; text-align: right; width: 4em; }
+span.right { float: right; width: 3em; text-align: left; }
+
 .webgrid {
     width: 100%;
     border: 0px;

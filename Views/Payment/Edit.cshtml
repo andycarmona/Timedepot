@@ -95,15 +95,17 @@
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.PaymentType)
                 </div>
+                @if (Model.TransactionCode == 2)
+                {
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ReferenceNo)
+
                     <img id="btDialogOpen02" class="btn btn-default" src="~/Images/01.png" / >
                 </div>
                 <div class="editor-field">
                     @Html.DisplayFor(model => model.ReferenceNo)
                 </div>
-                @if (Model.TransactionCode == 2)
-                {
+               
                     <div class="editor-label">
                         @Html.LabelFor(model => model.CreditCardNumber)
                     </div>
@@ -194,7 +196,7 @@
         function initalizeEditPayment() {
             //debugger;
             //Dialog window
-            jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true });
+            jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true,width:"35%" });
             jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
             jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
             //Set buttons

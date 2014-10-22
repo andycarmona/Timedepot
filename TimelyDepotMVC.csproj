@@ -1957,6 +1957,7 @@
     <Content Include="Views\Payment\SalesOrderForInvoice.cshtml" />
     <Content Include="Views\Home\Development.cshtml" />
     <Content Include="Views\Home\Edit.cshtml" />
+    <Content Include="Views\Customers\CreateEditCreditCardFromPayment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

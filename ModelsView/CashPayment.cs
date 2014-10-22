@@ -62,12 +62,16 @@ namespace TimelyDepotMVC.ModelsView
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var balanceDue = this.BalanceDue;
-            if (balanceDue != null && this.PaymentAmount > (double)balanceDue)
+            if (balanceDue != null)
             {
-                yield return new ValidationResult("Payment amount should'n be bigger than the balance due");
+                var roundedBalanceDue = Math.Round((double)balanceDue,2,MidpointRounding.AwayFromZero);
+                if (this.PaymentAmount > roundedBalanceDue)
+                {
+                    yield return new ValidationResult("Payment amount should'n be bigger than the balance due");
+                }
             }
 
-            if (PaymentAmount < 1)
+            if (PaymentAmount < 0.1)
             {
                 yield return new ValidationResult("Please! Write an amount bigger than zero");
             }

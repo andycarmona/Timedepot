@@ -107,8 +107,12 @@
 
                     </td>
                     <td>@item.PaymentType</td>
-                    <td>@string.Format("{0:N}", @item.PaymentAmount)</td>
-                    <td>@item.RefundAmount</td>
+                    <td class="char-align">
+                        <span class="left">@string.Format("{0:N}", @item.PaymentAmount)</span>
+                    </td>
+                    <td class="char-align">
+                        <span class="left">@string.Format("{0:N}", @item.RefundAmount)</span>
+                    </td>
 
                 </tr>
             }
@@ -116,14 +120,14 @@
         <tr>
 
             <td>
-                @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" }) 
-                
-       
+                @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
+
+
             </td>
             <td>@Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })</td>
             <td></td>
             <td></td>
-            <td><b>Due balance= @ViewBag.DueBalance </b></td>
+            <td><b>Due balance= @string.Format("{0:N}", @ViewBag.DueBalance)</b></td>
         </tr>
 
     </table>
@@ -142,7 +146,7 @@
             var splittedId = szId.split('_');
             var transCode = splittedId[splittedId.length - 1];
             szId = splittedId[1];
-            if ((transCode == 4) || (transCode == 1) || (transCode==2)) {
+            if ((transCode == 4) || (transCode == 1) || (transCode == 2)) {
                 window.open("/Payment/Edit?paymentId=" + szId + "&TransCode=" + transCode, "_self");
             }
         }

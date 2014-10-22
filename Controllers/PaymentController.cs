@@ -809,7 +809,7 @@ namespace TimelyDepotMVC.Controllers
             //There is no more payment wizard process
             TempData["Status"] = null;
 
-            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
+            var listSelector = new List<KeyValuePair<string, string>>();
 
             //Set the available transactions
             listSelector.Add(new KeyValuePair<string, string>("00", "Purchase"));
@@ -823,10 +823,10 @@ namespace TimelyDepotMVC.Controllers
             {
                 if (string.IsNullOrEmpty(invoicepayment))
                 {
-                    salesOrder = db.SalesOrders.Where(slor => slor.SalesOrderNo == payment.SalesOrderNo).FirstOrDefault<SalesOrder>();
+                    salesOrder = db.SalesOrders.FirstOrDefault(slor => slor.SalesOrderNo == payment.SalesOrderNo);
                     if (salesOrder != null)
                     {
-                        SalesOrderController salesctrl = new SalesOrderController();
+                        var salesctrl = new SalesOrderController();
                         dTotalSalesOrder = salesctrl.GetSalesOrderAmount(db01, salesOrder.SalesOrderId);
 
                         if (!string.IsNullOrEmpty(refund))
@@ -840,10 +840,10 @@ namespace TimelyDepotMVC.Controllers
                 }
                 else
                 {
-                    salesOrder = db.SalesOrders.Where(slor => slor.SalesOrderNo == payment.SalesOrderNo).FirstOrDefault<SalesOrder>();
+                    salesOrder = db.SalesOrders.FirstOrDefault(slor => slor.SalesOrderNo == payment.SalesOrderNo);
                     if (salesOrder != null)
                     {
-                        invoice = db.Invoices.Where(inv => inv.SalesOrderNo == salesOrder.SalesOrderNo).FirstOrDefault<Invoice>();
+                        invoice = db.Invoices.FirstOrDefault(inv => inv.SalesOrderNo == salesOrder.SalesOrderNo);
                         if (invoice != null)
                         {
                             //Get the totals
@@ -862,23 +862,25 @@ namespace TimelyDepotMVC.Controllers
                     }
                 }
 
-                customer = db.Customers.Where(cst => cst.CustomerNo == payment.CustomerNo).FirstOrDefault<Customers>();
+                customer = db.Customers.FirstOrDefault(cst => cst.CustomerNo == payment.CustomerNo);
                 if (customer != null)
                 {
                     qryCard = db.CustomersCreditCardShippings.Where(cstcrd => cstcrd.CustomerId == customer.Id && cstcrd.CardType == payment.PaymentType);
-                    if (qryCard.Count() > 0)
+                    if (qryCard.Any())
                     {
                         foreach (var item in qryCard)
                         {
-                            if (item.CreditNumber == payment.CreditCardNumber)
+                            if (item.CreditNumber != payment.CreditCardNumber)
                             {
-                                creditcard = item;
-                                ViewBag.CardType = item.CardType;
-                                ViewBag.CardAddress = string.Format("{0} {1}", item.Address1, item.Address2);
-                                ViewBag.ZipAddress = item.Zip;
-                                ViewBag.ExpireDateAddress = string.Format("{0}", Convert.ToDateTime(item.ExpirationDate).ToString("MM/dd/yyyy"));
-                                break;
+                                continue;
                             }
+
+                            creditcard = item;
+                            this.ViewBag.CardType = item.CardType;
+                            this.ViewBag.CardAddress = string.Format("{0} {1}", item.Address1, item.Address2);
+                            this.ViewBag.ZipAddress = item.Zip;
+                            this.ViewBag.ExpireDateAddress = string.Format("{0}", Convert.ToDateTime(item.ExpirationDate).ToString("MM/dd/yyyy"));
+                            break;
                         }
                     }
                 }
@@ -886,7 +888,7 @@ namespace TimelyDepotMVC.Controllers
                 if (salesOrder != null && creditcard != null)
                 {
                     szDecriptedData = DecodeInfo02(creditcard.CreditNumber, ref szError);
-                    szDecriptedData02 = szDecriptedData;
+                   
                     if (!string.IsNullOrEmpty(szError))
                     {
                         nPos = szError.IndexOf("data to decode");
@@ -944,15 +946,7 @@ namespace TimelyDepotMVC.Controllers
 
                 ViewBag.InvoicePayment = invoicepayment;
 
-                if (string.IsNullOrEmpty(invoicepayment))
-                {
-                    ViewBag.PaymentTitle = string.Format("Sales Order No: {0}", payment.SalesOrderNo);
-                }
-                else
-                {
-                    ViewBag.PaymentTitle = string.Format("Invoice No: {0}", invoice.InvoiceNo);
-
-                }
+                this.ViewBag.PaymentTitle = string.IsNullOrEmpty(invoicepayment) ? string.Format("Sales Order No: {0}", payment.SalesOrderNo) : string.Format("Invoice No: {0}", invoice.InvoiceNo);
 
             }
 
@@ -3208,24 +3202,32 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult AddCashPayment(string salesOrderNumber, int transactionCode, decimal? totalBalance, int invoiceId)
         {
-            var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
+            IOrderedQueryable<Payments> paymentList = this.db.Payments.OrderByDescending(x => x.Id);
+            var latestPayments = new Payments();
+            var parsedPaymentNo = 0;
+            var actualPaymentNo = string.Empty;
             Invoice anInvoice = null;
-         
 
-            if (latestPayments == null)
+            if (paymentList.Any())
             {
-                return this.View();
+                latestPayments = paymentList.First();
+                parsedPaymentNo = int.Parse(latestPayments.PaymentNo);
+                parsedPaymentNo++;
             }
+            else
+            {
+                parsedPaymentNo = 1;
+            }
+            
+            actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
+           
 
             if (invoiceId > 0)
             {
                 anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
             }
 
-            var parsedPaymentNo = int.Parse(latestPayments.PaymentNo);
-
-            parsedPaymentNo++;
-            var actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
+           
             double dBalanceDue = 0;
             double dTotalAmount = 0;
             double dTax = 0;
@@ -3330,24 +3332,29 @@ namespace TimelyDepotMVC.Controllers
             return paymentType;
         }
 
-        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance, int invoiceId, string paymentTypeSelected = "")
+        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance=0, int invoiceId=-1, string paymentTypeSelected = "")
         {
-            var latestPayments = this.db.Payments.OrderByDescending(x => x.Id).First();
+            
             var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
+            IOrderedQueryable<Payments> paymentList = this.db.Payments.OrderByDescending(x => x.Id);
+            var latestPayments = new Payments();
+            var parsedPaymentNo = 0;
+            var actualPaymentNo = string.Empty;
             Invoice anInvoice = null;
-            if (invoiceId > 0)
+
+            if (paymentList.Any())
             {
-              anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+                latestPayments = paymentList.First();
+                parsedPaymentNo = int.Parse(latestPayments.PaymentNo);
+                parsedPaymentNo++;
+            }
+            else
+            {
+                parsedPaymentNo = 1;
             }
 
-            if (latestPayments == null)
-            {
-                return this.View();
-            }
-            var parsedPaymentNo = int.Parse(latestPayments.PaymentNo);
+            actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
 
-            parsedPaymentNo++;
-            var actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
             double dBalanceDue = 0;
             double dTotalAmount = 0;
             double dTax = 0;
@@ -3376,6 +3383,11 @@ namespace TimelyDepotMVC.Controllers
                 ref dTax,
                 ref dTotalAmount,
                 ref dBalanceDue);
+
+            if (invoiceId > 0)
+            {
+                anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+            }
 
             if (anInvoice != null)
             {
@@ -3663,7 +3675,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 return this.RedirectToAction("PaymentIndex");
             }
-
+          
             var listOfSalesOrder = (from salesorder in this.db.SalesOrders
                                     where salesorder.CustomerId == nCustomerId
                                     select
@@ -3674,7 +3686,7 @@ namespace TimelyDepotMVC.Controllers
                                                 SalesOrderNo = salesorder.SalesOrderNo,
                                                 SODate = salesorder.SODate,
 
-                                            }).OrderBy(x => x.SODate).ToList();
+                                            }).OrderByDescending(x => x.SalesOrderNo).ToList();
 
             var listOfInvoices = (from invoices in this.db.Invoices
                                   where invoices.CustomerId == nCustomerId
@@ -3686,6 +3698,11 @@ namespace TimelyDepotMVC.Controllers
                                               InvoiceNo = invoices.InvoiceNo
                                           }).ToList();
 
+            var customersContactAddress = this.db.CustomersContactAddresses.SingleOrDefault(x => x.CustomerId == nCustomerId);
+            if (customersContactAddress != null)
+            {
+               ViewBag.CompanyName = customersContactAddress.CompanyName;
+            }
 
             var totalSalesOrderWithInvoice = new List<PurchaseOrderList>();
 
@@ -3731,7 +3748,7 @@ namespace TimelyDepotMVC.Controllers
                     return this.View(totalSalesOrderWithInvoice);
                 }
             }
-
+          
             return this.View(totalSalesOrderWithInvoice);
         }
 
@@ -4583,8 +4600,11 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.Refunded = refundPayment.Any();
 
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
-            payments.PayLog = Regex.Replace(payments.PayLog, "<*/>"," ");
-   
+            if (!string.IsNullOrEmpty(payments.PayLog))
+            {
+                payments.PayLog = Regex.Replace(payments.PayLog, @"<[^>]+?>", " ");
+            }
+
             return View(payments);
         }
 
