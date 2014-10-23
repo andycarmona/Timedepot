@@ -6,7 +6,6 @@
     Layout = "~/Views/Shared/_LayoutModule.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
 
 @{
     int nHas = 0;
@@ -46,188 +45,193 @@
     }
 
 }
-<div style="width: 400px; margin: 0px auto;">
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true)
+<div class="darkerline01">
+    <div style="padding: 10px;">
+        <h3>@ViewBag.Title</h3>
+        </div>
+        <div style="width: 400px; margin: 0px auto;">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
 
-        <fieldset>
-            <legend>Payment</legend>
+                <fieldset>
+                    <legend>Payment</legend>
 
-            @Html.HiddenFor(model => model.Id)
-            @Html.HiddenFor(model => model.SalesOrderNo)
-            @Html.HiddenFor(model => model.TransactionCode)
-            @Html.HiddenFor(model => model.PaymentNo)
-            @Html.HiddenFor(model => model.CustomerNo)
-            @Html.HiddenFor(model => model.PaymentType)
-            
-
-
-
-            <div style="width:80%; margin:0px auto;">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PaymentNo)
-                </div>
-                <div class="editor-field">
-                    @Html.DisplayFor(model => model.PaymentNo)
-
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.CustomerNo)
-                </div>
-                <div class="editor-field">
-                    @Html.DisplayFor(model => model.CustomerNo)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SalesOrderNo)
-                </div>
-                <div class="editor-field">
-                    @Html.DisplayFor(model => model.SalesOrderNo)
-
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PaymentType)
-                </div>
-                <div class="editor-field">
-                    @Html.DisplayFor(model => model.PaymentType)
-                </div>
-                @if (Model.TransactionCode == 2)
-                {
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.ReferenceNo)
-
-                    <img id="btDialogOpen02" class="btn btn-default" src="~/Images/01.png" / >
-                </div>
-                <div class="editor-field">
-                    @Html.DisplayFor(model => model.ReferenceNo)
-                </div>
-               
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.CreditCardNumber)
-                    </div>
-                    <div class="editor-field">
-                        
-                        <p>@szDecriptedData</p>
-                        <text id="CreditCardNumberHlp" readonly="readonly" name="CreditCardNumberHlp" type="text" value="@szDecriptedData" />
-                    </div>
-
-                }
-                @if (Model.TransactionCode != 2)
-                {
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.CheckNo)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.CheckNo)
-                        @Html.ValidationMessageFor(model => model.CheckNo)
-                    </div>
-                }
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.SalesOrderNo)
+                    @Html.HiddenFor(model => model.TransactionCode)
+                    @Html.HiddenFor(model => model.PaymentNo)
+                    @Html.HiddenFor(model => model.CustomerNo)
+                    @Html.HiddenFor(model => model.PaymentType)
 
 
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.Amount)
-                </div>
-                <div class="editor-field">
-                    @if (!ViewBag.Refunded)
-                    {
-                    @Html.EditorFor(model => model.Amount)
-                    @Html.ValidationMessageFor(model => model.Amount)
-                    }
-                    else
-                    {
-                    @Html.DisplayFor(model => model.Amount)
-                    }
-                </div>
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PaymentDate)
-                </div>
-                <div class="editor-field">
-                    @if (!ViewBag.Refunded)
-                    {
-                    @Html.EditorFor(model => model.PaymentDate)
-                    @Html.ValidationMessageFor(model => model.PaymentDate)
-                    }
-                    else
-                    {
-                    @Html.DisplayFor(model=>model.PaymentDate)}
-                </div>
+                    <div style="width:80%; margin:0px auto;">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.PaymentNo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DisplayFor(model => model.PaymentNo)
 
-                <div style="margin:5px;">
-                    <input class="btn btn-default" id="btnSubmit" type="submit" value="Save" />
-                    @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo, invoiceId = -1 }, new { @class = "btn btn-default" })
-                    @if (Model.TransactionCode != 2)
-                    {
-                        @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
-                    }
-                    else
-                    {
-                        if (!ViewBag.Refunded)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.CustomerNo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DisplayFor(model => model.CustomerNo)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.SalesOrderNo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DisplayFor(model => model.SalesOrderNo)
+
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.PaymentType)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DisplayFor(model => model.PaymentType)
+                        </div>
+                        @if (Model.TransactionCode == 2)
                         {
-                            @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id, invoiceId = "False", paymentAmount = @Model.Amount, refund = "refund" }, new { @class = "btn btn-default" })
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.ReferenceNo)
+
+                                <img id="btDialogOpen02" class="btn btn-default" src="~/Images/01.png" /> 
+                            </div>
+                            <div class="editor-field">
+                                @Html.DisplayFor(model => model.ReferenceNo)
+                            </div>
+
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.CreditCardNumber)
+                            </div>
+                            <div class="editor-field">
+
+                                <p>@szDecriptedData</p>
+                                <text id="CreditCardNumberHlp" readonly="readonly" name="CreditCardNumberHlp" type="text" value="@szDecriptedData" />
+                            </div>
+
                         }
-                        else
+                        @if (Model.TransactionCode != 2)
                         {
-                            <p>This payment has been refunded already.</p>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.CheckNo)
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.CheckNo)
+                                @Html.ValidationMessageFor(model => model.CheckNo)
+                            </div>
                         }
-                    }
-                </div>
+
+
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Amount)
+                        </div>
+                        <div class="editor-field">
+                            @if (!ViewBag.Refunded)
+                            {
+                                @Html.EditorFor(model => model.Amount)
+                                @Html.ValidationMessageFor(model => model.Amount)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(model => model.Amount)
+                            }
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.PaymentDate)
+                        </div>
+                        <div class="editor-field">
+                            @if (!ViewBag.Refunded)
+                            {
+                                @Html.EditorFor(model => model.PaymentDate)
+                                @Html.ValidationMessageFor(model => model.PaymentDate)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(model => model.PaymentDate)}
+                        </div>
+
+                        <div style="margin:5px;">
+                            <input class="btn btn-default" id="btnSubmit" type="submit" value="Save" />
+                            @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo, invoiceId = -1 }, new { @class = "btn btn-default" })
+                            @if (Model.TransactionCode != 2)
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
+                            }
+                            else
+                            {
+                                if (!ViewBag.Refunded)
+                                {
+                                    @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id, invoiceId = "False", paymentAmount = @Model.Amount, refund = "refund" }, new { @class = "btn btn-default" })
+                                }
+                                else
+                                {
+                                    <p>This payment has been refunded already.</p>
+                                }
+                            }
+                        </div>
+                    </div>
+                </fieldset>
+            }
+            <div id="specialnotediaog" style="width: 750px; margin: 0px auto;">
+                @Html.DisplayFor(model => model.PayLog)
+
             </div>
-        </fieldset>
+            <div style="margin:5px;">
+
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript">
+            jQuery(document).ready(initalizeEditPayment);
+
+            function initalizeEditPayment() {
+                //debugger;
+                //Dialog window
+                jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true, width: "35%" });
+                jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
+                jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
+                //Set buttons
+                jQuery("#btnSubmit").button();
+
+                //Set the datepicker
+                jQuery("#PaymentDate").datepicker({
+                    dateFormat: "mm/dd/yy",
+                    showOn: "button",
+                    buttonImage: "/images/calendar.gif",
+                    buttonImageOnly: true
+                });
+
+                var szDate = jQuery("#PaymentDate").val();
+                szDate = jQuery.trim(szDate);
+                jQuery("#PaymentDate").val(szDate);
+
+                jQuery("#AmountId").on('change', function () {
+                    var amountVal = this.value;
+                    jQuery("#AmountId").val(amountVal);
+
+                });
+            }
+            function clickbtDialogCloseNote(src, arg) {
+                jQuery("#specialnotediaog").dialog("close");
+            }
+            function clickbtDialogOpenNote(src, arg) {
+                jQuery("#specialnotediaog").dialog("open");
+            }
+
+
+
+        </script>
     }
-    <div id="specialnotediaog" style="width: 750px; margin: 0px auto;">
-        @Html.DisplayFor(model=>model.PayLog)
-       
-    </div>
-    <div style="margin:5px;">
-
-    </div>
-</div>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript">
-        jQuery(document).ready(initalizeEditPayment);
-
-        function initalizeEditPayment() {
-            //debugger;
-            //Dialog window
-            jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true,width:"35%" });
-            jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
-            jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
-            //Set buttons
-            jQuery("#btnSubmit").button();
-
-            //Set the datepicker
-            jQuery("#PaymentDate").datepicker({
-                dateFormat: "mm/dd/yy",
-                showOn: "button",
-                buttonImage: "/images/calendar.gif",
-                buttonImageOnly: true
-            });
-
-            var szDate = jQuery("#PaymentDate").val();
-            szDate = jQuery.trim(szDate);
-            jQuery("#PaymentDate").val(szDate);
-
-            jQuery("#AmountId").on('change', function () {
-                var amountVal = this.value;
-                jQuery("#AmountId").val(amountVal);
-
-            });
-        }
-        function clickbtDialogCloseNote(src, arg) {
-            jQuery("#specialnotediaog").dialog("close");
-        }
-        function clickbtDialogOpenNote(src, arg) {
-            jQuery("#specialnotediaog").dialog("open");
-        }
-    
-
-
-    </script>
-}

@@ -1,43 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using TimelyDepotMVC.Models.Admin;
-using TimelyDepotMVC.DAL;
-using TimelyDepotMVC.CommonCode;
-using PagedList;
-
-using System.IO;
-using System.Text;
-using System.Security.Cryptography;
-using System.Configuration;
-using System.Xml;
-using System.Net;
-
-namespace TimelyDepotMVC.Controllers
+﻿namespace TimelyDepotMVC.Controllers
 {
-    using System.Collections;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Data.Entity;
     using System.Data.Entity.Core;
     using System.Globalization;
-    using System.Net.Mime;
-
-    using PdfReportSamples.Models;
-
-    using PdfRpt.Core.Helper;
-
-    using TimelyDepotMVC.ModelsView;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Text.RegularExpressions;
+    using System.Web.Mvc;
+    using System.Xml;
 
-    using WebGrease.Css;
+    using PagedList;
+
+    using TimelyDepotMVC.CommonCode;
+    using TimelyDepotMVC.DAL;
+    using TimelyDepotMVC.Models.Admin;
+    using TimelyDepotMVC.ModelsView;
 
     public class PaymentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
 
-        //private static byte[] _salt = Encoding.ASCII.GetBytes("o6806642kbM7c5");
+      
+
         private static string _salt = "o6806642kbT7e5";
         internal const string szKey = "560A18CD-6346-4CF0-A2E8-671F9B6B9EA9";
 
@@ -3298,6 +3288,7 @@ namespace TimelyDepotMVC.Controllers
                                                Amount = (decimal?)aPayment.PaymentAmount,
                                                PaymentDate = aPayment.PaymentDate,
                                                TransactionCode = 1,
+                                               PayLog = "Transaction succeed!"
 
                                            };
 
@@ -3751,6 +3742,9 @@ namespace TimelyDepotMVC.Controllers
             double dBalanceDue = 0;
             var companyName = "No company name";
 
+            
+            this.CleanNullPayments();
+
             var customersContactAddress = this.db.CustomersContactAddresses.SingleOrDefault(x => x.CustomerId == salesorderElement.CustomerId);
             if (customersContactAddress != null)
             {
@@ -3784,7 +3778,7 @@ namespace TimelyDepotMVC.Controllers
                                          };
 
                 var queryPaymentList = (from payments in this.db.Payments
-                                        where payments.SalesOrderNo == salesOrderNo
+                                        where payments.SalesOrderNo == salesOrderNo && payments.PayLog != null
                                         select new PaymentTransactionList()
                                                    {
                                                        TransactionId = payments.Id.ToString(),
@@ -3848,6 +3842,12 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.ErrorMessage = "There is no payments for this salesorder.";
 
             return this.View();
+        }
+
+        private void CleanNullPayments()
+        {
+            this.db.Payments.RemoveRange(this.db.Payments.Where(x => x.PayLog == null));
+            this.db.SaveChanges();
         }
 
         [HttpGet]
@@ -4591,7 +4591,10 @@ namespace TimelyDepotMVC.Controllers
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
             if (!string.IsNullOrEmpty(payments.PayLog))
             {
-                payments.PayLog = Regex.Replace(payments.PayLog, @"<[^>]+?>", " ");
+                var manipulateLog = Regex.Replace(payments.PayLog, @"<[^>]+?>", " ");
+                manipulateLog =  Regex.Replace(manipulateLog, @"true", " ");
+                 manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
+                payments.PayLog = manipulateLog;
             }
 
             return View(payments);

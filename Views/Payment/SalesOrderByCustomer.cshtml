@@ -14,102 +14,106 @@
 
 }
 
-<h3>SalesOrder for @companyName</h3>
-<div style="width: auto; margin: 0px auto;">
-    <table class="webgrid" style=" margin: 0px auto;">
+
+<div class="darkerline01">
+    <div style="padding: 10px;">
+        <b>SalesOrder for @companyName</b>
+    </div>
+    <table class="webgrid" style="width: 90%; margin: 0px auto;">
         <tr class="webgrid-header">
             <th>
                 @Html.DisplayNameFor(model => model.SODate)
 
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SalesOrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesOrderNo)
 
-    </th>
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.SalesAmount)
 
             </th>
-<th>
-    @Html.DisplayNameFor(model => model.InvoiceDate)
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceDate)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.InvoiceNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceNo)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.PaymentAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentAmount)
 
-</th>
-<th>
-    @Html.DisplayNameFor(model => model.BalanceDue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceDue)
 
-</th>
-</tr>
-
-
-@foreach (var item in Model)
-{
-
-    nRow++;
-    nMod = (nRow % 2);
-    if (nMod == 0)
-    {
-        szClass = "webgrid-alternating-row timelycustomertr trhlp";
-    }
-    else
-    {
-        szClass = "webgrid-row-style timelycustomertr trhlp";
-    }
-
-    string sztrId = string.Format("row0_{0}", item.SalesOrderNo);
-
-    <tr id="@sztrId" class="@szClass">
-        <td>
-            @Convert.ToDateTime(@item.SODate).ToString("MM/dd/yyyy")
-
-        </td>
-        <td>
-            @item.SalesOrderNo
-
-        </td>
-        <td class="char-align">
-            <span class="left">
-                @string.Format("{0:N}", @item.SalesAmount)
-            </span>
-
-        </td>
-        <td>
-            @Convert.ToDateTime(@item.InvoiceDate).ToString("MM/dd/yyyy")
+            </th>
+        </tr>
 
 
-        </td>
-        <td>
-            @item.InvoiceNo
+        @foreach (var item in Model)
+        {
 
-        </td>
-        <td class="char-align">
-            <span class="left">
-                @string.Format("{0:N}", @item.PaymentAmount)
-            </span>
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row timelycustomertr trhlp";
+            }
+            else
+            {
+                szClass = "webgrid-row-style timelycustomertr trhlp";
+            }
 
-        </td>
-        <td class="char-align">
-            <span class="left">
-                @string.Format("{0:N}", @item.BalanceDue)
-            </span>
+            string sztrId = string.Format("row0_{0}", item.SalesOrderNo);
 
-        </td>
-    </tr>
-}
-<tr>
-    <td colspan="7">
-        @Html.ActionLink("Back", "PaymentIndex", "Payment", null, new { @class = "btn btn-default" })
-    </td>
-</tr>
+            <tr id="@sztrId" class="@szClass">
+                <td>
+                    @Convert.ToDateTime(@item.SODate).ToString("MM/dd/yyyy")
 
-</table>
+                </td>
+                <td>
+                    @item.SalesOrderNo
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.SalesAmount)
+                    </span>
+
+                </td>
+                <td>
+                    @Convert.ToDateTime(@item.InvoiceDate).ToString("MM/dd/yyyy")
+
+
+                </td>
+                <td>
+                    @item.InvoiceNo
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.PaymentAmount)
+                    </span>
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.BalanceDue)
+                    </span>
+
+                </td>
+            </tr>
+        }
+      
+        <tr><td><p></p></td></tr>
+    </table>
+</div>
+<div>
+
+            @Html.ActionLink("Back", "PaymentIndex", "Payment", null, new { @class = "btn" })
+      
 </div>
 @section scripts{
     <script>

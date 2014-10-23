@@ -19,31 +19,30 @@
     }
 }
 
-<h2>Payments transaction list</h2>
-
-
-
-<div style="width: 1240px; margin: 0px auto;">
-    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+<div class="darkerline01">
+    <div style="padding: 10px;">
+        <b>Payments transaction list for @customerData.CompanyName</b>
+    </div>
+    <table class="webgrid" style="width: 90%; margin: 0px auto;">
         @if (!string.IsNullOrEmpty(errorMsg))
         {
             <tr><td><p>Error result: @errorMsg</p></td></tr>
         }
-        <tr><td>@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })</td></tr>
+
         @if (Model != null)
         {
-            <tr class="webgrid-header">
+            <tr>
 
 
-                <td></td>
-
-                <td></td>
-
-
-                <td></td>
                 <td><b>Customer No: </b> @customerData.CustomerNo</td>
 
-                <td><b>Company Name:</b> @customerData.CompanyName</td>
+                <td></td>
+
+
+                <td></td>
+                <td></td>
+
+                <td></td>
 
 
                 <td><b>Sales order No: </b> @customerData.SalesOrderNo</td>
@@ -117,21 +116,19 @@
                 </tr>
             }
         }
-        <tr>
 
-            <td>
-                @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
-
-
-            </td>
-            <td>@Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })</td>
-            <td></td>
-            <td></td>
-            <td><b>Due balance= @string.Format("{0:N}", @ViewBag.DueBalance)</b></td>
-        </tr>
 
     </table>
 </div>
+<div style="float:right;"><p><b>Due balance= </b>@string.Format("{0:N}", @ViewBag.DueBalance)</p></div>
+<div>@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn" })</div>
+<div class="center">
+    
+    @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn" })
+    @Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn" })
+
+</div>
+
 @section scripts{
     <script>
         jQuery(".timelycustomertr td").each(eachtimelycustomertr);

@@ -106,7 +106,26 @@ h5, h6 {
     border-width: 0px 1px 1px 1px;
     border-color: #6B6C69;
 }
+.center {
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
 
+}
+.button  {
+    outline: 0; 
+    margin: 0 4px 0 0;
+    padding: 0 1em;
+    height: 2em;
+    text-decoration: none !important; 
+    cursor: pointer; 
+    position: relative;
+    text-align: center;
+    display: inline-block;
+    background-color:grey;
+    border:1px solid darkgray;
+}
+a.button { color:White;}
 .lnkWhite a {
     color: #FFFFFF;
     padding-left: 3px;
