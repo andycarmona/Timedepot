@@ -170,7 +170,7 @@
                             }
                             else
                             {
-                                if (!ViewBag.Refunded)
+                                if (ViewBag.Refunded)
                                 {
                                     @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id, invoiceId = "False", paymentAmount = @Model.Amount, refund = "refund" }, new { @class = "btn btn-default" })
                                 }

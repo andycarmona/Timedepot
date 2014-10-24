@@ -37,7 +37,7 @@
 
              <div class="cf">
                  <br />
-                 <div class="darkerline right" style="width: 40%; padding: 5px;">
+                 <div class="darkerline right" style="width: 50%; padding: 5px;">
 
                      <div class="viosinput400 boxtb3">
                          <div class="editor-label">
@@ -86,7 +86,7 @@
 
 
                  </div>
-                 <div class="darkerline left" style="width: 40%; padding: 5px;">
+                 <div class="darkerline left" style="width: 50%; padding: 5px;">
 
                      <div class="viosinput400 boxtb3">
                          <div class="editor-label">
@@ -146,15 +146,16 @@
              </div>
          </div>
 
-         <p>
-             @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber,invoiceId=@Model.InvoiceId }, new { @class = "btn btn-default" }) 
-             <input class="btn btn-default" type="submit" value="Record transaction" />
-         </p>
          @Html.ValidationSummary(true)
 
+   
+         <div class="center">
+   
+             @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber, invoiceId = @Model.InvoiceId }, new { @class = "btn" })
+             <input  type="submit" value="Record transaction" />
+         </div>
      }
 }
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 <script type="text/javascript">

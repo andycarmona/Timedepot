@@ -26,7 +26,7 @@
     {
         private TimelyDepotContext db = new TimelyDepotContext();
 
-      
+
 
         private static string _salt = "o6806642kbT7e5";
         internal const string szKey = "560A18CD-6346-4CF0-A2E8-671F9B6B9EA9";
@@ -878,7 +878,7 @@
                 if (salesOrder != null && creditcard != null)
                 {
                     szDecriptedData = DecodeInfo02(creditcard.CreditNumber, ref szError);
-                   
+
                     if (!string.IsNullOrEmpty(szError))
                     {
                         nPos = szError.IndexOf("data to decode");
@@ -933,7 +933,9 @@
                 ViewBag.CardNumber02 = creditcard.Id;
                 ViewBag.PaymentId = payment.Id;
                 ViewBag.SalesOrderNo = payment.SalesOrderNo;
+                var refundPayment = this.CheckSalesAmountIsBiggerThanRefund(payment.Id, payment.SalesOrderNo);
 
+                ViewBag.Refunded = refundPayment > 0;
                 ViewBag.InvoicePayment = invoicepayment;
 
                 this.ViewBag.PaymentTitle = string.IsNullOrEmpty(invoicepayment) ? string.Format("Sales Order No: {0}", payment.SalesOrderNo) : string.Format("Invoice No: {0}", invoice.InvoiceNo);
@@ -1079,12 +1081,12 @@
                     if (payment != null)
                     {
                         //Update payment
-                        if (!string.IsNullOrEmpty(szAmount))
+                        if (!string.IsNullOrEmpty(szAmount) && (szTransaction_Type == "00"))
                         {
                             if (bApproved)
                             {
-                                
-                                dAmount = Convert.ToDecimal(szAmount,new CultureInfo("en-US"));
+
+                                dAmount = Convert.ToDecimal(szAmount, new CultureInfo("en-US"));
                                 payment.Amount = dAmount;
                                 payment.ReferenceNo = szAuthorizationNumber;
                                 if (!string.IsNullOrEmpty(szInvoicePayment))
@@ -1145,10 +1147,10 @@
                         //Delete the payment when refund
                         if (szTransaction_Type == "04")
                         {
-                   
+                            var convertedAmount = Convert.ToDecimal(szAmount, new CultureInfo("en-US"));
                             var aRefund = new Refunds()
                                               {
-                                                  RefundAmount = (decimal)payment.Amount,
+                                                  RefundAmount = convertedAmount,
                                                   Refunddate = DateTime.Now,
                                                   TransactionId = payment.Id,
                                                   SalesOrderNo = payment.SalesOrderNo,
@@ -1199,10 +1201,10 @@
             }
             int paymentId = int.Parse(szPaymentid);
             var paymentData = this.db.Payments.SingleOrDefault(x => x.Id == paymentId);
-            
+
             var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             CustomersCreditCardShipping creditcard = db.CustomersCreditCardShippings.Find(nId);
-          
+
             if (creditcard != null)
             {
                 szCreditCard = DecodeInfo02(creditcard.CreditNumber, ref szError); ;
@@ -1236,9 +1238,9 @@
                     {
                         var decryptedPasswd = DecodeInfo02(environmentParam.Password, ref szError);
                         xml_writer.WriteElementString("ExactID", environmentParam.GatewayId);//Gateway ID
-                        xml_writer.WriteElementString("Password",decryptedPasswd );//Password
+                        xml_writer.WriteElementString("Password", decryptedPasswd);//Password
                     }
-               
+
 
                     xml_writer.WriteElementString("Transaction_Type", szTransaction);
                     //xml_writer.WriteElementString("Transaction_Type", "55");
@@ -1348,7 +1350,7 @@
                         {
                             string remote_ex = reader.ReadToEnd();
                             //error.Text = remote_ex;
-                            szError = remote_ex;
+                            szError = ex.Message;
                         }
                     }
                 }
@@ -1369,6 +1371,7 @@
                 szError = err.Message;
                 this.db.Payments.Remove(paymentData);
                 this.db.SaveChanges();
+
             }
         }
 
@@ -3197,16 +3200,16 @@
             {
                 parsedPaymentNo = 1;
             }
-            
+
             actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
-           
+
 
             if (invoiceId > 0)
             {
                 anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
             }
 
-           
+
             double dBalanceDue = 0;
             double dTotalAmount = 0;
             double dTax = 0;
@@ -3297,7 +3300,7 @@
                 db.SaveChanges();
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = -1 });
             }
-           
+
             ViewBag.PaymentType = SelectPayTypeListItems();
             return View(aPayment);
         }
@@ -3312,9 +3315,9 @@
             return paymentType;
         }
 
-        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance=0, int invoiceId=-1, string paymentTypeSelected = "")
+        public ActionResult AddCreditCardPayment(string salesOrderNumber, decimal totalBalance = 0, int invoiceId = -1, string paymentTypeSelected = "")
         {
-            
+
             var environmentParam = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
             IOrderedQueryable<Payments> paymentList = this.db.Payments.OrderByDescending(x => x.Id);
             var latestPayments = new Payments();
@@ -3423,17 +3426,17 @@
                 var creditcardType = this.db.CustomersCreditCardShippings.SingleOrDefault(x => x.Id == creditcardId);
                 if (creditcardType != null)
                 {
-                  aCreditCardType = creditcardType.CardType;
+                    aCreditCardType = creditcardType.CardType;
                 }
                 var customersCreditCardShipping =
                     this.db.CustomersCreditCardShippings.SingleOrDefault(
-                        x => x.Id == creditcardId );
+                        x => x.Id == creditcardId);
                 if (customersCreditCardShipping != null)
                 {
-                creditCardNumber =
-                        customersCreditCardShipping.CreditNumber;
+                    creditCardNumber =
+                            customersCreditCardShipping.CreditNumber;
                 }
-          
+
 
                 var customerData = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
                 var aNewPayment = new Payments()
@@ -3446,7 +3449,8 @@
                     Amount = (decimal?)aPayment.PaymentAmount,
                     PaymentDate = aPayment.PaymentDate,
                     TransactionCode = 2,
-                    CreditCardNumber = creditCardNumber};
+                    CreditCardNumber = creditCardNumber
+                };
 
                 if (!string.IsNullOrEmpty(aPayment.InvoiceNo) || (aPayment.InvoiceId != -1))
                 {
@@ -3455,7 +3459,7 @@
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
-                 ViewBag.Environment = aPayment.ActualEnvironment;
+                ViewBag.Environment = aPayment.ActualEnvironment;
                 return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment, paymentAmount = aNewPayment.Amount });
             }
 
@@ -3467,7 +3471,7 @@
             return View(aPayment);
         }
 
-      
+
 
         private List<SelectListItem> GetListOfCardsByUsers(string customerNo)
         {
@@ -3655,7 +3659,7 @@
             {
                 return this.RedirectToAction("PaymentIndex");
             }
-          
+
             var listOfSalesOrder = (from salesorder in this.db.SalesOrders
                                     where salesorder.CustomerId == nCustomerId
                                     select
@@ -3681,7 +3685,7 @@
             var customersContactAddress = this.db.CustomersContactAddresses.SingleOrDefault(x => x.CustomerId == nCustomerId);
             if (customersContactAddress != null)
             {
-               ViewBag.CompanyName = customersContactAddress.CompanyName;
+                ViewBag.CompanyName = customersContactAddress.CompanyName;
             }
 
             var totalSalesOrderWithInvoice = new List<PurchaseOrderList>();
@@ -3728,7 +3732,7 @@
                     return this.View(totalSalesOrderWithInvoice);
                 }
             }
-          
+
             return this.View(totalSalesOrderWithInvoice);
         }
 
@@ -3742,13 +3746,13 @@
             double dBalanceDue = 0;
             var companyName = "No company name";
 
-            
+
             this.CleanNullPayments();
 
             var customersContactAddress = this.db.CustomersContactAddresses.SingleOrDefault(x => x.CustomerId == salesorderElement.CustomerId);
             if (customersContactAddress != null)
             {
-                var customerData =customersContactAddress.CompanyName;
+                var customerData = customersContactAddress.CompanyName;
                 if (!string.IsNullOrEmpty(customerData))
                 {
                     companyName = customerData;
@@ -3820,7 +3824,7 @@
                 if (paymentTransactionLists.Any())
                 {
                     var sumPayment = (from paymentslist in paymentTransactionLists
-                                      where paymentslist.TransactionCode == 2 || paymentslist.TransactionCode == 1 || paymentslist.TransactionCode == 3
+                                      where paymentslist.TransactionCode != 3
                                       select paymentslist.PaymentAmount).Sum();
 
                     var sumRefunds = (from refundlist in paymentTransactionLists
@@ -4574,7 +4578,7 @@
             return View(payments);
         }
 
-  
+
         // GET: /Payment/Edit/5
         [NoCache]
         public ActionResult Edit(int TransCode, int paymentId = 0)
@@ -4585,22 +4589,52 @@
                 return HttpNotFound();
             }
 
-            var refundPayment = this.db.Refunds.Where(x => x.TransactionId == payments.Id);
-            ViewBag.Refunded = refundPayment.Any();
-
+            var refundPayment = this.CheckSalesAmountIsBiggerThanRefund(paymentId, payments.SalesOrderNo);
+          
+             ViewBag.Refunded = refundPayment > 0;
+            
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
             if (!string.IsNullOrEmpty(payments.PayLog))
             {
                 var manipulateLog = Regex.Replace(payments.PayLog, @"<[^>]+?>", " ");
-                manipulateLog =  Regex.Replace(manipulateLog, @"true", " ");
-                 manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
+                manipulateLog = Regex.Replace(manipulateLog, @"true", " ");
+                manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
                 payments.PayLog = manipulateLog;
             }
 
             return View(payments);
         }
 
-     
+        private decimal? CheckSalesAmountIsBiggerThanRefund(int paymentId, string SalesOrderNo)
+        {
+            decimal? refundPayment = -1;      
+            var salesorderData = this.db.SalesOrders.SingleOrDefault(x => x.SalesOrderNo == SalesOrderNo);
+            if (salesorderData == null)
+            {
+                return refundPayment;
+            }
+
+            refundPayment = salesorderData.PaymentAmount;
+
+            var refunds = from refundlist in this.db.Refunds
+                                 where refundlist.SalesOrderNo == SalesOrderNo
+                                 select refundlist.RefundAmount;
+
+            var payments = from paymentlist in this.db.Payments
+                          where paymentlist.SalesOrderNo == SalesOrderNo
+                          select paymentlist.Amount;
+
+            if (!refunds.Any() || !payments.Any())
+            {
+                return refundPayment;
+            }
+
+            var sumRefunds = refunds.Sum();
+            var sumpayments = payments.Sum();
+            refundPayment = sumpayments - sumRefunds;
+            return refundPayment;
+        }
+
         // POST: /Payment/Edit/5
 
         [HttpPost]
@@ -4640,42 +4674,42 @@
                 SalesOrder salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
                 if (salesorder != null)
                 {
-                        //Update the Sales order
-                        salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
-                        if (salesorder != null)
+                    //Update the Sales order
+                    salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
+                    if (salesorder != null)
+                    {
+                        szSalesOrderNo = salesorder.SalesOrderNo;
+                        //salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) - Convert.ToDecimal(payments.Amount);
+                        salesorder.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
+                        salesorder.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
+                        if (Convert.ToDecimal(salesorder.PaymentAmount) < 0)
                         {
-                            szSalesOrderNo = salesorder.SalesOrderNo;
-                            //salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) - Convert.ToDecimal(payments.Amount);
-                            salesorder.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
-                            salesorder.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
-                            if (Convert.ToDecimal(salesorder.PaymentAmount) < 0)
-                            {
-                                salesorder.PaymentAmount = null;
-                            }
-
-                            db.Entry(salesorder).State = EntityState.Modified;
-                            db.SaveChanges();
+                            salesorder.PaymentAmount = null;
                         }
 
-                        //Update the invoice
-                        invoice = db.Invoices.Where(invc => invc.SalesOrderNo == szSalesOrderNo).FirstOrDefault<Invoice>();
-                        if (invoice != null)
+                        db.Entry(salesorder).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+
+                    //Update the invoice
+                    invoice = db.Invoices.Where(invc => invc.SalesOrderNo == szSalesOrderNo).FirstOrDefault<Invoice>();
+                    if (invoice != null)
+                    {
+                        //invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) - Convert.ToDecimal(payments.Amount);
+                        invoice.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
+                        invoice.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
+                        if (Convert.ToDecimal(invoice.PaymentAmount) < 0)
                         {
-                            //invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) - Convert.ToDecimal(payments.Amount);
-                            invoice.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
-                            invoice.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
-                            if (Convert.ToDecimal(invoice.PaymentAmount) < 0)
-                            {
-                                invoice.PaymentAmount = null;
-                            }
-                            db.Entry(invoice).State = EntityState.Modified;
-                            db.SaveChanges();
+                            invoice.PaymentAmount = null;
                         }
+                        db.Entry(invoice).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
                 }
 
                 db.Entry(payments).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo,invoiceId=-1 });
+                return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo, invoiceId = -1 });
             }
             return View(payments);
         }
@@ -4725,7 +4759,7 @@
             Payments payments = db.Payments.Find(id);
             db.Payments.Remove(payments);
             db.SaveChanges();
-            return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo ,invoiceId=-1});
+            return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo, invoiceId = -1 });
         }
 
         protected override void Dispose(bool disposing)
