@@ -3298,6 +3298,17 @@
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
+
+                var salesorder = db.SalesOrders.FirstOrDefault(slod => slod.SalesOrderNo == aNewPayment.SalesOrderNo);
+                if (salesorder != null)
+                {
+                    
+                        salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
+                        salesorder.PaymentDate = Convert.ToDateTime(aNewPayment.PaymentDate);
+                        db.Entry(salesorder).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                }
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = -1 });
             }
 
@@ -3835,7 +3846,8 @@
 
                     if ((sumPayment != null) && (sumRefunds != null))
                     {
-                        this.ViewBag.DueBalance = dTotalAmount - (double)sumPayment + (double)sumRefunds;
+                        var balance=(dTotalAmount - (double)sumPayment) + (double)sumRefunds;
+                        this.ViewBag.DueBalance = balance;
                     }
 
                     ViewBag.InvoiceId = invoiceId;
@@ -4661,7 +4673,6 @@
                             szEncriptedData = EncriptInfo02(CreditCardNumberHlp, ref szError);
                             payments.CreditCardNumber = szEncriptedData;
                         }
-
                         //Add the card number to the customer cards
                         AddCardNumber(payments, CreditCardNumberHlp);
                     }

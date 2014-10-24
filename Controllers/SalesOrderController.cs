@@ -2065,6 +2065,7 @@ namespace TimelyDepotMVC.Controllers
             //Get the trade data
 
             //Get the totals
+            
             GetSalesOrderTotals(salesorder.SalesOrderId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
             ViewBag.SalesAmount = dSalesAmount.ToString("C");
             ViewBag.TotalTax = dTotalTax.ToString("C");
@@ -2208,70 +2209,80 @@ namespace TimelyDepotMVC.Controllers
             dTotalAmount = 0;
             dBalanceDue = 0;
             dTotalTax = 0;
-
-            initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
-            if (initialinfo == null)
+            try
             {
-                initialinfo = new InitialInfo();
-                initialinfo.InvoiceNo = 0;
-                initialinfo.PaymentNo = 0;
-                initialinfo.PurchaseOrderNo = 0;
-                initialinfo.SalesOrderNo = 1;
-                initialinfo.TaxRate = 0;
-                db.InitialInfoes.Add(initialinfo);
-                dTax = initialinfo.TaxRate;
-            }
-            else
-            {
-                dTax = initialinfo.TaxRate;
-            }
+                initialinfo = db.InitialInfoes.FirstOrDefault<InitialInfo>();
 
-            //Each sales order should save it own tax information. Also the tax should be on product only, no tax on service.
-            SalesOrder salesorder = db.SalesOrders.Find(nSalesOrderId);
-            if (salesorder != null)
-            {
-                dShipping = Convert.ToDouble(salesorder.ShippingHandling);
-                dPayment = Convert.ToDouble(salesorder.PaymentAmount);
 
-                //Use the sales order tax information
-                if (salesorder.Tax_rate != null)
+                if (initialinfo == null)
                 {
-                    if (Convert.ToDecimal(salesorder.Tax_rate) >= 0)
-                    {
-                        dTax = Convert.ToDouble(salesorder.Tax_rate);
-                    }
+                    initialinfo = new InitialInfo();
+                    initialinfo.InvoiceNo = 0;
+                    initialinfo.PaymentNo = 0;
+                    initialinfo.PurchaseOrderNo = 0;
+                    initialinfo.SalesOrderNo = 1;
+                    initialinfo.TaxRate = 0;
+                    db.InitialInfoes.Add(initialinfo);
+                    dTax = initialinfo.TaxRate;
                 }
-                dSOTax = dTax;
-
-                qryDetails = db.SalesOrderDetails.Where(sldt => sldt.SalesOrderId == salesorder.SalesOrderId);
-                if (qryDetails.Count() > 0)
+                else
                 {
-                    foreach (var item in qryDetails)
-                    {
-                        ////use the tax on product
-                        //if (item.Tax != null)
-                        //{
-                        //    if (Convert.ToDecimal(item.Tax) >= 0)
-                        //    {
-                        //        dTax = Convert.ToDouble(item.Tax);
-                        //    }
-                        //}
+                    dTax = initialinfo.TaxRate;
+                }
 
-                        dSalesAmount = dSalesAmount + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice));
-                        //use the tax on product
-                        if (!string.IsNullOrEmpty(item.Sub_ItemID))
+
+
+                SalesOrder salesorder = db.SalesOrders.Find(nSalesOrderId);
+                if (salesorder != null)
+                {
+                    dShipping = Convert.ToDouble(salesorder.ShippingHandling);
+                    dPayment = Convert.ToDouble(salesorder.PaymentAmount,CultureInfo.CurrentCulture);
+
+                    //Use the sales order tax information
+                    if (salesorder.Tax_rate != null)
+                    {
+                        if (Convert.ToDecimal(salesorder.Tax_rate) >= 0)
                         {
-                            dTotalTax = dTotalTax + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice) * (dTax / 100));
+                            dTax = Convert.ToDouble(salesorder.Tax_rate);
                         }
                     }
+                    dSOTax = dTax;
+
+                    qryDetails = db.SalesOrderDetails.Where(sldt => sldt.SalesOrderId == salesorder.SalesOrderId);
+                    if (qryDetails.Count() > 0)
+                    {
+                        foreach (var item in qryDetails)
+                        {
+                            ////use the tax on product
+                            //if (item.Tax != null)
+                            //{
+                            //    if (Convert.ToDecimal(item.Tax) >= 0)
+                            //    {
+                            //        dTax = Convert.ToDouble(item.Tax);
+                            //    }
+                            //}
+
+                            dSalesAmount = dSalesAmount + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice));
+                            //use the tax on product
+                            if (!string.IsNullOrEmpty(item.Sub_ItemID))
+                            {
+                                dTotalTax = dTotalTax + (Convert.ToDouble(item.Quantity) * Convert.ToDouble(item.UnitPrice) * (dTax / 100));
+                            }
+                        }
+                    }
+
+                    dTotalAmount = dSalesAmount + dTotalTax + dShipping;
+                    dBalanceDue = dTotalAmount - dPayment;
+
+                    //Set the sales order tax again
+                    dTax = dSOTax;
                 }
-
-                dTotalAmount = dSalesAmount + dTotalTax + dShipping;
-                dBalanceDue = dTotalAmount - dPayment;
-
-                //Set the sales order tax again
-                dTax = dSOTax;
             }
+            catch (Exception e)
+            {
+
+            }
+
         }
 
         //
