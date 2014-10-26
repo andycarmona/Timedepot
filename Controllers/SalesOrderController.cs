@@ -1883,7 +1883,15 @@ namespace TimelyDepotMVC.Controllers
             {
                 return HttpNotFound();
             }
-
+            decimal sumRefunds = 0;
+            var listOfRefund = (from refundlist in this.db.Refunds
+                              where refundlist.SalesOrderNo == salesorder.SalesOrderNo
+                              select refundlist.RefundAmount).ToList();
+            if (listOfRefund.Any())
+            {
+                sumRefunds= listOfRefund.Sum();
+            }
+           
             //Get the dropdown data
             qryTrade = db.Trades.OrderBy(trd => trd.TradeName);
             if (qryTrade.Count() > 0)
@@ -2062,7 +2070,8 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            //Get the trade data
+            //Get refunds
+
 
             //Get the totals
             
@@ -2071,7 +2080,8 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.TotalTax = dTotalTax.ToString("C");
             ViewBag.Tax = dTax.ToString("F2");
             ViewBag.TotalAmount = dTotalAmount.ToString("C");
-            ViewBag.BalanceDue = dBalanceDue.ToString("C");
+            ViewBag.BalanceDue = (dBalanceDue - (double)sumRefunds).ToString("C");
+            ViewBag.Refunds = sumRefunds.ToString("C");
 
             // Get the Ship From and Ship to address if needed
             if (string.IsNullOrEmpty(salesorder.FromCompany))

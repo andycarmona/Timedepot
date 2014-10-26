@@ -646,10 +646,17 @@
                         <div>Order Total:</div>
                     </div>
                 </div>
+              
                 <div style="margin-bottom: 5px;">
                     <div>
                         <div class="right">@Html.DisplayFor(model => model.PaymentAmount)</div>
                         <div>@Html.ActionLink("Payment:","PaymentTransactionList","Payment", new { salesOrderNo = Model.SalesOrderNo,invoiceId=-1 },null)</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <div>
+                        <div class="right">@ViewBag.Refunds</div>
+                        <div>Refunds:</div>
                     </div>
                 </div>
                 <div style="margin-bottom: 5px;">
