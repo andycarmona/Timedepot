@@ -2080,7 +2080,7 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.TotalTax = dTotalTax.ToString("C");
             ViewBag.Tax = dTax.ToString("F2");
             ViewBag.TotalAmount = dTotalAmount.ToString("C");
-            ViewBag.BalanceDue = (dBalanceDue - (double)sumRefunds).ToString("C");
+            ViewBag.BalanceDue = (dBalanceDue + (double)sumRefunds).ToString("C");
             ViewBag.Refunds = sumRefunds.ToString("C");
 
             // Get the Ship From and Ship to address if needed

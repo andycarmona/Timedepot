@@ -1940,6 +1940,9 @@ namespace TimelyDepotMVC.Controllers
             {
                 return HttpNotFound();
             }
+            decimal sumRefunds = 0;
+
+          
 
             //Get the dropdown data
             qryTrade = db.Trades.OrderBy(trd => trd.TradeName);
@@ -2169,14 +2172,23 @@ namespace TimelyDepotMVC.Controllers
             {
                 ViewBag.SalesOrderDate = string.Empty;
             }
+            var listOfRefund = (from refundlist in this.db.Refunds
+                                where refundlist.SalesOrderNo == salesorder.SalesOrderNo
+                                select refundlist.RefundAmount).ToList();
 
+            if (listOfRefund.Any())
+            {
+                sumRefunds = listOfRefund.Sum();
+            }
             //Get the totals
             GetInvoiceTotals(invoice.InvoiceId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
             ViewBag.SalesAmount = dSalesAmount.ToString("C");
             ViewBag.TotalTax = dTotalTax.ToString("C");
             ViewBag.Tax = dTax.ToString("F2");
             ViewBag.TotalAmount = dTotalAmount.ToString("C");
-            ViewBag.BalanceDue = dBalanceDue.ToString("C");
+            ViewBag.BalanceDue = (dBalanceDue + (double)sumRefunds).ToString("C");
+            ViewBag.Refunds = sumRefunds.ToString("C");
+
 
             //Get the terms data
             listSelector = new List<KeyValuePair<string, string>>();
