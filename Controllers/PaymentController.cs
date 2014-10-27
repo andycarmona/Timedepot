@@ -3823,7 +3823,7 @@
                                                    SalesOrderNo = refunds.SalesOrderNo,
                                                    TransactionCode = 3,
                                                    TransactionDate = refunds.Refunddate,
-                                                   PaymentType = null,
+                                                   PaymentType = "Credit Card Refund",
                                                    PaymentAmount = 0,
                                                    RefundAmount = refunds.RefundAmount
                                                }).ToList();

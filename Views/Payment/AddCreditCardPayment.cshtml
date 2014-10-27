@@ -13,7 +13,7 @@
 
 
 
-    <legend>Add credit card payment <b style="color: red">( Environment @Model.ActualEnvironment)</b></legend>
+    <legend style="text-align:center;">Add credit card payment <b style="color: red">( Environment @Model.ActualEnvironment)</b></legend>
 
 
     @Html.HiddenFor(model => model.CustomerId)
@@ -31,7 +31,8 @@
             <br />
             <div class="right" style="width:50%; padding: 5px;">
 
-                <div style="float:right;"><label>Add new card</label><br /><img id="btDialogOpen02" data-url="@Request.RawUrl" data-user="@Model.CustomerId" class="btn btn-default" src="~/Images/creditcard_active.png" /> </div>
+                <div style="float:right;"><label>Add new card</label><br />
+                <img id="btDialogOpen02" data-url="@Request.RawUrl" data-user="@Model.CustomerId" class="btn btn-default" src="~/Images/creditcard_active.png" /> </div>
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
                         @Html.LabelFor(model => model.CreditCardNumber)
@@ -122,10 +123,10 @@
             </div>
 
         </div>
+        @Html.ValidationSummary(true)
     </div>
 
 
-    @Html.ValidationSummary(true)
 
 
     <div class="center">
@@ -173,6 +174,9 @@
         }
         function clickbtDialogOpenNote() {
             jQuery("#specialnotediaog").dialog("open");
+            jQuery("#btAddCreditCard").hide();
+            jQuery("#btDeleteSalesContact").hide();
+            jQuery("#UpdateCreditCardid").val("Save");
         }
     </script>
 }

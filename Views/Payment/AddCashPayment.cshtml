@@ -22,7 +22,7 @@
 
 
 
-        <legend>Add cash payment</legend>
+    <legend style="text-align:center;">Add cash payment</legend>
 
 
         @Html.HiddenFor(model => model.CustomerId)
@@ -144,9 +144,10 @@
                 </div>
 
             </div>
+            @Html.ValidationSummary(true)
         </div>
 
-        @Html.ValidationSummary(true)
+      
 
 
         <div class="center">
