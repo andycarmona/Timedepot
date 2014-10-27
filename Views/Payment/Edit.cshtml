@@ -162,17 +162,17 @@
                         </div>
 
                         <div style="margin:5px;">
-                            <input id="btnSubmit" type="submit" value="Save" />
-                            @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo, invoiceId = -1 }, new { @class = "btn" })
+                            <input id="btnSubmit" class="btn btn-default" type="submit" value="Save" />
+                            @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo, invoiceId = -1 }, new { @class = "btn btn-default" })
                             @if (Model.TransactionCode != 2)
                             {
-                                @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn" })
+                                @Html.ActionLink("Delete", "Delete", "Payment", new { id = @Model.Id }, new { @class = "btn btn-default" })
                             }
                             else
                             {
                                 if (ViewBag.Refunded)
                                 {
-                                    @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id, invoiceId = "False", paymentAmount = @Model.Amount, refund = "refund" }, new { @class = "btn" })
+                                    @Html.ActionLink("Refund", "FDZPayment", "Payment", new { id = @Model.Id, invoiceId = "False", paymentAmount = @Model.Amount, refund = "refund" }, new { @class = "btn btn-default" })
                                 }
                                 else
                                 {

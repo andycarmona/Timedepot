@@ -22,26 +22,26 @@
     @Html.HiddenFor(model => model.SalesAmount)
     @Html.HiddenFor(model => model.PaymentType)
     @Html.HiddenFor(model => model.BalanceDue)
-     @Html.HiddenFor(model => model.InvoiceDate)
-         @Html.HiddenFor(model => model.InvoiceNo)
+    @Html.HiddenFor(model => model.InvoiceDate)
+    @Html.HiddenFor(model => model.InvoiceNo)
 
-    <div class="darkerline cf" style="width:auto;margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
+    <div class="darkerline cf" style="width:60%;margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
 
         <div class="cf">
             <br />
             <div class="right" style="width:50%; padding: 5px;">
 
-                <div style="float:right;"><label>Add new card</label><br/><img id="btDialogOpen02" data-url="@Request.RawUrl" data-user="@Model.CustomerId" class="btn btn-default" src="~/Images/creditcard_active.png" /> </div>
+                <div style="float:right;"><label>Add new card</label><br /><img id="btDialogOpen02" data-url="@Request.RawUrl" data-user="@Model.CustomerId" class="btn btn-default" src="~/Images/creditcard_active.png" /> </div>
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
-                        @Html.LabelFor(model => model.CreditCardNumber) 
+                        @Html.LabelFor(model => model.CreditCardNumber)
                     </div>
                     <div class="editor-field">
                         @Html.DropDownList("CreditCardNumber")
-                        
+
                     </div>
                 </div>
-                <div class="viosinput400 boxtb3">
+                <div class="viosinput300 boxtb3">
 
                     <div class="editor-label">
                         @Html.LabelFor(model => model.PaymentDate)
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                <div class="viosinput400 boxtb3">
+                <div class="viosinput300 boxtb3">
 
                     <div class="editor-label">
                         @Html.LabelFor(model => model.PaymentAmount)
@@ -65,7 +65,7 @@
                 </div>
 
             </div>
-            <div class=" left" style="float:right;width: 45%; padding: 5px;">
+            <div class=" left" style="text-align: center;float:right;width: 45%; padding: 5px;">
 
                 <div class="viosinput400 boxtb3">
                     <div class="editor-label">
@@ -128,50 +128,51 @@
     @Html.ValidationSummary(true)
 
 
-<div class="center">
-    @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber, invoiceId = @Model.InvoiceId }, new { @class = "btn" })
-    <input type="submit" value="Submit payment" />
-</div>}
-<div id="specialnotediaog" style="width: 750px; margin: 0px auto;">
-   
-    
+    <div class="center">
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber, invoiceId = @Model.InvoiceId }, new { @class = "btn btn-default" })
+        <input class="btn btn-default" type="submit" value="Submit payment" />
+    </div>
+}
+<div id="specialnotediaog" style="width: 750px; margin: 0 auto;">
+
+
 </div>
 
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-        <script type="text/javascript">
-            jQuery(document).ready(initalizeEditPayment);
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        jQuery(document).ready(initalizeEditPayment);
 
-            function initalizeEditPayment() {
-                //Dialog window
-                jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true,width:"80%" });
-                jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
-                jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
-                //debugger;
-                $("#specialnotediaog").load("/Customers/CreateEditCreditCardFromPayment/0?customerid=" + jQuery("#btDialogOpen02").data("user"));
-                
-                $('div#specialnotediaog').bind('dialogclose', function (event) {
-                    window.open(jQuery("#btDialogOpen02").data("url"), "_self");
-                   
-                });
+        function initalizeEditPayment() {
+            //Dialog window
+            jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true, width: "80%" });
+            jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
+            jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
+            //debugger;
+            $("#specialnotediaog").load("/Customers/CreateEditCreditCardFromPayment/0?customerid=" + jQuery("#btDialogOpen02").data("user"));
 
-                //Set the datepicker
-                jQuery("#PaymentDate").datepicker({
-                    dateFormat: "mm/dd/yy",
-                    showOn: "button",
-                    buttonImage: "/images/calendar.gif",
-                    buttonImageOnly: true
-                });
+            $('div#specialnotediaog').bind('dialogclose', function () {
+                window.open(jQuery("#btDialogOpen02").data("url"), "_self");
 
-                var szDate = jQuery("#PaymentDate").val();
-                szDate = jQuery.trim(szDate);
-                jQuery("#PaymentDate").val(szDate);
-            }
-            function clickbtDialogCloseNote(src, arg) {
-                jQuery("#specialnotediaog").dialog("close");
-            }
-            function clickbtDialogOpenNote(src, arg) {
-                jQuery("#specialnotediaog").dialog("open");
-            }
-        </script>
-    }
+            });
+
+            //Set the datepicker
+            jQuery("#PaymentDate").datepicker({
+                dateFormat: "mm/dd/yy",
+                showOn: "button",
+                buttonImage: "/images/calendar.gif",
+                buttonImageOnly: true
+            });
+
+            var szDate = jQuery("#PaymentDate").val();
+            szDate = jQuery.trim(szDate);
+            jQuery("#PaymentDate").val(szDate);
+        }
+        function clickbtDialogCloseNote() {
+            jQuery("#specialnotediaog").dialog("close");
+        }
+        function clickbtDialogOpenNote() {
+            jQuery("#specialnotediaog").dialog("open");
+        }
+    </script>
+}

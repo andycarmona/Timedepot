@@ -121,11 +121,11 @@
     </table>
 </div>
 <div style="float:right;"><p><b>Due balance= </b>@string.Format("{0:N}", @ViewBag.DueBalance)</p></div>
-<div class="center">@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn" })
+<div class="centerAmplied">@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })
 
     
-    @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn" })
-    @Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn" })
+    @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
 
 </div>
 
