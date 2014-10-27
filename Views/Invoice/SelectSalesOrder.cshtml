@@ -18,8 +18,8 @@
                     <td>
                         <input id="searchSOEmail" name="searchEmail" type="text" value="@ViewBag.SearchEmail" /></td>
                     <td>
-                        <input id="btNavTimleyid" class="btNavTimley" type="submit" value="Search" />
-                        @Html.ActionLink("Reset", "SelectSalesOrder", "Invoice", null, new { id = "lnkResetSelectSOId", @class = "btNavTimley" })</td>
+                        <input id="btn btn-defaultid" class="btn btn-default" type="submit" value="Search" />
+                        @Html.ActionLink("Reset", "SelectSalesOrder", "Invoice", null, new { id = "lnkResetSelectSOId", @class = "btn btn-default" })</td>
                 </tr>
             </table>
 
@@ -93,7 +93,7 @@
             @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
 
         </td>
-        <td><input id="btDialogClose" class="btNavTimley" type="button" value="Close" /></td>
+        <td><input id="btDialogClose" class="btn btn-default" type="button" value="Close" /></td>
     </tr>
 
 </table>

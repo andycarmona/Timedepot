@@ -193,7 +193,7 @@
 
     </div>
     <div style="margin: 5px; text-align: center;">
-        <input class="btNavTimley" type="submit" value="Save" />&nbsp;<a href="#" class="btNavTimley">Email</a>&nbsp;@Html.ActionLink("Print (Pdf)", "POReport", "iTextReports", new { id = Model.PurchaseOrderId }, new { @class = "btNavTimley", target = "_blank" })&nbsp;@Html.ActionLink("Quit", "Index", null, new { @class = "btNavTimley" })
+        <input class="btn btn-default" type="submit" value="Save" />&nbsp;<a href="#" class="btn btn-default">Email</a>&nbsp;@Html.ActionLink("Print (Pdf)", "POReport", "iTextReports", new { id = Model.PurchaseOrderId }, new { @class = "btn btn-default", target = "_blank" })&nbsp;@Html.ActionLink("Quit", "Index", null, new { @class = "btn btn-default" })
     </div>
     <div style="display: none;">
         @Html.ActionLink("Get Purchase order detail", "GetPODetail", "PurchaseOrder", new { purchaseorderid = Model.PurchaseOrderId }, new { id = "getpodetailsid" })
@@ -210,7 +210,7 @@
         function initializeEditPO() {
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers
             jQuery("#getpodetailsid").click(clickgetpodetailsid);
@@ -269,7 +269,7 @@
             HideLoadingDialog();
 
             //Set the buttons lnkResetId
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
@@ -365,7 +365,7 @@
             HideLoadingDialog();
 
             //Set the buttons 
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
             jQuery(".btnSubmitSearch").button();
 
             //Attach handlers 

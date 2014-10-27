@@ -8,10 +8,10 @@
             <div class="left" style="margin-right: 5px;">
                 <div class="left" style="margin-right: 3px; padding-top: 10px;">Search by item:</div>
                 <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
-                <input id="btnSubmitSearch" class="btNavTimley" type="submit" value="Search" />
+                <input id="btnSubmitSearch" class="btn btn-default" type="submit" value="Search" />
             </div>
             <div class="lnkResetId">
-                @Html.ActionLink("Reset", "SelectItem", "UPSRatingPackage", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkResetselectItemIdHlp", @class = "btNavTimley" })
+                @Html.ActionLink("Reset", "SelectItem", "UPSRatingPackage", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkResetselectItemIdHlp", @class = "btn btn-default" })
             </div>
         </div>    
     }
@@ -146,7 +146,7 @@
 
         </td>
         <td>
-            <input id="btDialogClose" class="btNavTimley" type="button" value="Close" />
+            <input id="btDialogClose" class="btn btn-default" type="button" value="Close" />
         </td>
     </tr>
 

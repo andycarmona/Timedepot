@@ -12,8 +12,8 @@
             @Html.LabelFor(model => model.CustomerNo)<span style="font-weight: bold; margin-left: 5px;">@Html.DisplayFor(model => model.CustomerNo)</span>
         </div>
         <div class="left" style="width: 500px; margin-left: 300px;">
-            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
-            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
         </div>
         <div class="right">
             @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
@@ -35,7 +35,7 @@
         function initializeSalesOrderTab() {
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Initialize fields
             SetActiveInactiveSelector();

@@ -14,7 +14,7 @@
         function initializeCustomerEdit() {
 
             //Create buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery(".lnkCreateEditNoteCustomer").each(eachlnkCreateEditNoteCustomer);
@@ -113,7 +113,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose").click(clickbtDialogClose);
@@ -172,7 +172,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogCloseSubsidiary").click(clickbtDialogCloseSubsidiary);
@@ -230,7 +230,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogCloseSales").click(clickbtDialogCloseSales);
@@ -288,7 +288,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogCloseSales").click(clickbtDialogCloseSales);
@@ -357,7 +357,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             SetSalesContactIndex();
 
@@ -599,7 +599,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers
@@ -662,7 +662,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers
@@ -766,8 +766,8 @@
             }
         </div>
         <div class="left" style="width: 500px; margin-left: 300px;">
-            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
-            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
         </div>
         <div class="right">
             @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
@@ -1141,15 +1141,15 @@
                         </div>                                                                       
                         <div class="cf" style="margin: 16px auto 3px auto; width: 450px;">
                             <div class="left" style="margin-right: 5px;">
-                                @Html.ActionLink("Add Vendor", "Create01", null, new { id = "lnkAddCustomerId", @class = "btNavTimley" })
+                                @Html.ActionLink("Add Vendor", "Create01", null, new { id = "lnkAddCustomerId", @class = "btn btn-default" })
                             </div>
                             <div class="left" style="margin-right: 5px;">
-                                <input type="submit" class="btNavTimley" value="Update" />
+                                <input type="submit" class="btn btn-default" value="Update" />
                             </div>
                             <div class="left" style="margin-right: 5px;">
-                                @Html.ActionLink("Delete", "Delete", new { id = Model.vendor.Id }, new { onclick = "return confirm('Are you sure you want to delete this Vendor?');", @class = "btNavTimley" })
+                                @Html.ActionLink("Delete", "Delete", new { id = Model.vendor.Id }, new { onclick = "return confirm('Are you sure you want to delete this Vendor?');", @class = "btn btn-default" })
                             </div>
-                            <div class="left" style="display: block;">@Html.ActionLink("Quit", "Index", "Vendors", null, new { @class = "btNavTimley", id = "lnkQuitEditVendor" })</div>
+                            <div class="left" style="display: block;">@Html.ActionLink("Quit", "Index", "Vendors", null, new { @class = "btn btn-default", id = "lnkQuitEditVendor" })</div>
                         </div>
                     }
                 </div>
@@ -1238,7 +1238,7 @@
                             </tr>
                         </table>
                         <div style="width: 900px; margin: 0px auto; padding: 5px;">
-                            <input type="submit" class="btNavTimley" value="Update" />
+                            <input type="submit" class="btn btn-default" value="Update" />
                         </div>
                 
                     }
@@ -1249,19 +1249,19 @@
     <div style="padding: 5px; border: 1px solid #000000; width: 780px; margin: 0px auto;">
         <div class="cf">
             <div class="left" style="margin-right: 0.5em;">
-                @Html.ActionLink("Open Purchase Order", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btNavTimley", target = "_blank" })
+                @Html.ActionLink("Open Purchase Order", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btn btn-default", target = "_blank" })
             </div>
             <div class="left" style="margin-right: 0.5em; display: none;">
-                @Html.ActionLink("Outstanding Invoice", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btNavTimley", target = "_blank" })
+                @Html.ActionLink("Outstanding Invoice", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btn btn-default", target = "_blank" })
             </div>
             <div class="left" style="margin-right: 0.5em; display: none;">
-                @Html.ActionLink("Order History", "ReceivedPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkReceivedPurchaseOrder", @class = "btNavTimley", target = "_blank" })
+                @Html.ActionLink("Order History", "ReceivedPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkReceivedPurchaseOrder", @class = "btn btn-default", target = "_blank" })
             </div>
             <div class="left" style="margin-right: 0.5em; display: none;">
-                @Html.ActionLink("Statement", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btNavTimley", target = "_blank" })
+                @Html.ActionLink("Statement", "OpenPurchaseOrderbyVendor", "Vendors", new { id = Model.vendor.VendorNo }, new { id = "lnkOpenPurchaseOrder", @class = "btn btn-default", target = "_blank" })
             </div>
             <div class="left">
-                @Html.ActionLink("Special Note", "CreateEditNote", "Vendors", new { id = Model.vendornote.Id, customerid = ViewBag.VendorId }, new { @class = "btNavTimley", id = "lnkVendorNoteid" })
+                @Html.ActionLink("Special Note", "CreateEditNote", "Vendors", new { id = Model.vendornote.Id, customerid = ViewBag.VendorId }, new { @class = "btn btn-default", id = "lnkVendorNoteid" })
             </div>
         </div>
     </div>
@@ -1293,7 +1293,7 @@
                 </td>
                 <td>
                     <div style="width: 220px; margin: 0px auto; padding: 5px;">
-                        <input type="submit" class="btNavTimley" value="Update" />
+                        <input type="submit" class="btn btn-default" value="Update" />
                     </div>
                 </td>
             </tr>

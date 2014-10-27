@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="left">
-                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0" }, new { id = "btUpsRate", @class = "btNavTimley" })
+                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0" }, new { id = "btUpsRate", @class = "btn btn-default" })
                     </div>
                 </div>
                 <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
@@ -133,7 +133,7 @@
         function initializeShipment() {
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
@@ -412,7 +412,7 @@
             HideLoadingDialog();
 
             //Set the buttons lnkResetId
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //var szckCriteria = '@ViewBag.ckCriteriaHlp';
             var szckCriteria = jQuery("#ckCriteriaHlp").val();
@@ -571,7 +571,7 @@
             HideLoadingDialog();
 
             //Set the buttons 
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Move trade selector
             //jQuery("#tradeeditselector01id").remove();
@@ -640,7 +640,7 @@
             jQuery(".detailShipmentUpdate a").each(eachdetailShipmentUpdate);
 
             //Set the buttons 
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery(".pagination ul li a").each(eachlnknavigationDetails);
@@ -753,7 +753,7 @@
             HideLoadingDialog();
 
             //Set the buttons 
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
             //jQuery(".btnSubmitSearch").button();
 
             ////Attach handlers 
@@ -840,7 +840,7 @@
             HideLoadingDialog();
 
             //Set the buttons 
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
             jQuery(".btnSubmitSearch").button();
 
             //Attach handlers 
@@ -1121,7 +1121,7 @@
             HideLoadingDialog();
 
             //Set the buttons lnkResetId
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose").click(clickbtDialogClose);

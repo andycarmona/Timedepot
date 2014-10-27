@@ -12,8 +12,8 @@
             @Html.LabelFor(model => model.CustomerNo)<span style="font-weight: bold; margin-left: 5px;">@Html.DisplayFor(model => model.CustomerNo)</span>
         </div>
         <div class="left" style="width: 500px; margin-left: 300px;">
-            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
-            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
         </div>
         <div class="right">
             @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
@@ -28,7 +28,7 @@
     Open Sales Orders
 </div>
 <div style="display: block;">
-    <div style="width:50px; margin:5px auto;">@Html.ActionLink("Quit", "Edit", "Customers", new { id = Model.Id }, new { id = "lnkCloseSOT", @class = "btNavTimley" })</div>
+    <div style="width:50px; margin:5px auto;">@Html.ActionLink("Quit", "Edit", "Customers", new { id = Model.Id }, new { id = "lnkCloseSOT", @class = "btn btn-default" })</div>
 </div>
 <div style="display:none;">
     @Html.ActionLink("Payment List", "PaymentList", "Customers", new { customerid = Model.Id }, new { id = "lnkpaymentlist" })
@@ -42,7 +42,7 @@
         function initializePaymentTab() {
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Initialize fields
             SetActiveInactiveSelector();
@@ -104,7 +104,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers

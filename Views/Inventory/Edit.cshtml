@@ -14,8 +14,8 @@
             Item&nbsp;No.:&nbsp;<span style="font-weight: bold;">@Html.DisplayFor(model => model.item.ItemID)</span>
         </div>
         <div class="left" style="width: 500px; margin-left: 300px;">
-            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
-            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
         </div>
         <div class="right">
             @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
@@ -625,7 +625,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="4" style="text-align: center;">
-                                            <input class="btNavTimley" type="submit" value="Update" /></td>
+                                            <input class="btn btn-default" type="submit" value="Update" /></td>
                                     </tr>
                                 </table>
                             }
@@ -761,7 +761,7 @@
                                 </table>
                             </div>            
                             <div style="margin: 5px; text-align: center;">
-                                <input type="submit" class="btNavTimley" value="Update" />
+                                <input type="submit" class="btn btn-default" value="Update" />
                             </div>
                         }
                     </div>
@@ -792,19 +792,19 @@
             </div>
         </div>
         <div style="width: 650px; margin: 5px auto;">
-            @Html.ActionLink("SalesHistory", "SalesHistorybyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkSalesHistory", @class = "btNavTimley", target = "_blank" })
-            @Html.ActionLink("OpenOrder", "OpenSalesOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenSalesOrder", @class = "btNavTimley", target = "_blank" })
-            @Html.ActionLink("OpenPurchaseOrder", "OpenPurchaseOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenPurchaseOrder", @class = "btNavTimley", target = "_blank" })
-            @Html.ActionLink("Vendor", "CreateVendorTab", "Inventory", new { szItemId = Model.item.ItemID }, new { id = "createvendorid", @class = "btNavTimley", target = "_blank" })
-            @Html.ActionLink("Note", "Note", "Inventory", new { Id = Model.item.ItemID }, new { id = "lnkNote", @class = "btNavTimley", target = "_blank" })
+            @Html.ActionLink("SalesHistory", "SalesHistorybyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkSalesHistory", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("OpenOrder", "OpenSalesOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenSalesOrder", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("OpenPurchaseOrder", "OpenPurchaseOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenPurchaseOrder", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("Vendor", "CreateVendorTab", "Inventory", new { szItemId = Model.item.ItemID }, new { id = "createvendorid", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("Note", "Note", "Inventory", new { Id = Model.item.ItemID }, new { id = "lnkNote", @class = "btn btn-default", target = "_blank" })
         </div>
     </div>
     <div style="width: 500px; margin: 5px auto;">
-        @Html.ActionLink("Add", "Create", "Inventory", null, new { id = "lnkInventoryId", @class = "btNavTimley" })
-        <input id="btSave" class="btNavTimley" type="button" value="Save" />
-        @Html.ActionLink("Delete", "DeleteConfirmed", new { id = Model.item.ItemID }, new { onclick = "return confirm('Are you sure you want to delete this Item?');", @class = "btNavTimley" })
-        @*<input id="btQuit" class="btNavTimley" type="button" value="Quit" />*@
-        @Html.ActionLink("Quit", "Index", "Inventory", null, new { @class = "btNavTimley" })
+        @Html.ActionLink("Add", "Create", "Inventory", null, new { id = "lnkInventoryId", @class = "btn btn-default" })
+        <input id="btSave" class="btn btn-default" type="button" value="Save" />
+        @Html.ActionLink("Delete", "DeleteConfirmed", new { id = Model.item.ItemID }, new { onclick = "return confirm('Are you sure you want to delete this Item?');", @class = "btn btn-default" })
+        @*<input id="btQuit" class="btn btn-default" type="button" value="Quit" />*@
+        @Html.ActionLink("Quit", "Index", "Inventory", null, new { @class = "btn btn-default" })
     </div>
 </div>
 
@@ -832,7 +832,7 @@
             //debugger;
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Intialize fields
             SetActiveInactiveSelector();
@@ -991,11 +991,11 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose02").click(clickbtDialogClose);
@@ -1064,7 +1064,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Initialize fields 
             //var objSel = jQuery("#vendorNoselectorId");
@@ -1094,7 +1094,7 @@
             //jQuery("#btUpdateVendor").click(clickbtUpdateVendor);
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose01").click(clickbtDialogClose);
@@ -1276,7 +1276,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogCloseCreateInventory").click(clickbtDialogCloseCreateInventory);
@@ -1351,7 +1351,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose").click(clickbtDialogClose);
@@ -1414,7 +1414,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Attach handlers 
             jQuery("#btDialogClose").click(clickbtDialogClose);
@@ -1773,7 +1773,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers
@@ -1836,7 +1836,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers
@@ -1898,7 +1898,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers

@@ -12,8 +12,8 @@
             Item&nbsp;No.:&nbsp;<span style="font-weight: bold;">@Html.DisplayFor(model => model.ItemID)</span>
         </div>
         <div class="left" style="width: 500px; margin-left: 300px;">
-            <input id="btPrevious" class="btNavTimley" type="button" value="Previous" />
-            <input id="btNext" class="btNavTimley" style="margin-left: 50px;" type="button" value="Next" />
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
         </div>
         <div class="right">
             @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
@@ -27,7 +27,7 @@
         Open Sales Orders
     </div>
     <div style="width: 50px; margin: 5px auto;">
-        <input id="btQuit" class="btNavTimley" type="button" value="Quit" />
+        <input id="btQuit" class="btn btn-default" type="button" value="Quit" />
     </div>
 </div>
 <div style="display: none;">
@@ -43,7 +43,7 @@
         function initializeOpenSales() {
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
             //Intialize fields
             SetActiveInactiveSelector();
@@ -90,7 +90,7 @@
             HideLoadingDialog();
 
             //Set the buttons
-            jQuery(".btNavTimley").button();
+            jQuery(".btn btn-default").button();
 
 
             //Attach handlers

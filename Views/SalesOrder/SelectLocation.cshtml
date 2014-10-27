@@ -4,9 +4,9 @@
 <div style="margin: 0px auto; width: 90%">
     <div class="left" style="margin-right: 3px; padding-top: 10px;">Search by Address:</div>
     <input id="searchLocation" name="searchLocation" type="text" value="@ViewBag.SearchLocation" />
-    <input id="btnSubmitSearchLocationid" class="btNavTimley" type="button" value="Search" />
+    <input id="btnSubmitSearchLocationid" class="btn btn-default" type="button" value="Search" />
     <span class="btnSubmitSearchLocationlnk">
-        @Html.ActionLink("Reset", "SelectLocation", "SalesOrder", new { customerid = ViewBag.CustomerId }, new { id = "lnkResetLocationId", @class = "btNavTimley" })
+        @Html.ActionLink("Reset", "SelectLocation", "SalesOrder", new { customerid = ViewBag.CustomerId }, new { id = "lnkResetLocationId", @class = "btn btn-default" })
     </span>
 </div>
 
@@ -128,7 +128,7 @@
     </tr>
     <tr>
         <td colspan="4" style="padding: 5px;">
-            <input id="btDialogClose" class="btNavTimley" type="button" value="Close" /></td>
+            <input id="btDialogClose" class="btn btn-default" type="button" value="Close" /></td>
     </tr>
 
 </table>
