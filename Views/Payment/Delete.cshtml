@@ -64,6 +64,6 @@
     @Html.AntiForgeryToken()
     <p>
         <input class="btn btn-default" type="submit" value="Delete" /> 
-        @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo }, new { @class = "btn btn-default" })
+        @Html.ActionLink("Quit", "PaymentTransactionList", "Payment", new { salesOrderNo = @Model.SalesOrderNo, invoiceId = -1 }, new { @class = "btn btn-default" })
     </p>
 }

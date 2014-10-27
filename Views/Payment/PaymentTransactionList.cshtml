@@ -119,8 +119,9 @@
 
 
     </table>
+    <div class="rightBottom"><p><b>Due balance= </b>@string.Format("{0:N}", @ViewBag.DueBalance)</p></div>
 </div>
-<div style="float:right;"><p><b>Due balance= </b>@string.Format("{0:N}", @ViewBag.DueBalance)</p></div>
+
 <div class="centerAmplied">@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })
 
     
