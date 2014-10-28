@@ -3323,13 +3323,16 @@
             this.db.SaveChanges();
         }
 
-        private static List<SelectListItem> SelectPayTypeListItems()
+        private List<SelectListItem> SelectPayTypeListItems()
         {
-            var paymentType = new List<SelectListItem>()
-                                  {
-                                      new SelectListItem() { Text = "Cash", Value = "1" },
-                                      new SelectListItem() { Text = "Check", Value = "4" }
-                                  };
+            var excludedTransCodes = new List<int> { 2, 3};
+            var paymentType = new List<SelectListItem>();
+            var transactionCodes = this.db.TransactionCodes.Where(i => !excludedTransCodes.Contains(i.TransactionCode));
+            foreach (var aTransactionsCode in transactionCodes)
+            {
+                paymentType.Add(new SelectListItem() { Text = aTransactionsCode.CodeDescription, Value = aTransactionsCode.TransactionCode.ToString()});
+            }
+                                 
             return paymentType;
         }
 
