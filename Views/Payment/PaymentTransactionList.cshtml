@@ -122,11 +122,12 @@
     <div class="rightBottom"><p><b>Due balance= </b>@string.Format("{0:N}", @ViewBag.DueBalance)</p></div>
 </div>
 
-<div class="centerAmplied">@Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })
+<div class="centerAmplied">
+    @Html.ActionLink("Back", "SalesOrderByCustomer", new { nCustomerId = @customerData.CustomerId }, new { @class = "btn btn-default" })
 
-    
-    @Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
+
+@Html.ActionLink("Add a Credit card payment", "AddCreditCardPayment", new { salesOrderNumber = @customerData.SalesOrderNo, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
+@Html.ActionLink("Add payment", "AddCashPayment", new { salesOrderNumber = @customerData.SalesOrderNo, transactionCode = 4, totalBalance = @ViewBag.DueBalance, invoiceId = @anInvoiceId }, new { @class = "btn btn-default" })
 
 </div>
 
@@ -144,7 +145,9 @@
             var splittedId = szId.split('_');
             var transCode = splittedId[splittedId.length - 1];
             szId = splittedId[1];
-            if ((transCode == 4) || (transCode == 1) || (transCode == 2)) {
+            if ((transCode == 1) || (transCode == 4) || (transCode == 5)) {
+                window.open("/Payment/EditCashPayments?paymentId=" + szId, "_self");
+            } else {
                 window.open("/Payment/Edit?paymentId=" + szId + "&TransCode=" + transCode, "_self");
             }
         }

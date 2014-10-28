@@ -1958,6 +1958,7 @@
     <Content Include="Views\Home\Development.cshtml" />
     <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\Customers\CreateEditCreditCardFromPayment.cshtml" />
+    <Content Include="Views\Payment\EditCashPayments.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -4627,7 +4627,27 @@
                 manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
                 payments.PayLog = manipulateLog;
             }
+          
+            return View(payments);
+        }
+        [NoCache]
+        public ActionResult EditCashPayments(int paymentId = 0)
+        {
+            Payments payments = db.Payments.Find(paymentId);
+            if (payments == null)
+            {
+                return HttpNotFound();
+            }
+            var convertedDecimal = Convert.ToDecimal(payments.Amount, new CultureInfo("en-US"));
+            payments.Amount = convertedDecimal;
 
+            var refundPayment = this.CheckSalesAmountIsBiggerThanRefund(paymentId, payments.SalesOrderNo);
+
+            ViewBag.Refunded = refundPayment > 0;
+
+            payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
+           
+            ViewBag.PaymentType = SelectPayTypeListItems();
             return View(payments);
         }
 
@@ -4664,37 +4684,19 @@
         // POST: /Payment/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(Payments payments, string CreditCardNumberHlp)
+        public ActionResult EditCashPayments(Payments payments,decimal? oldAmount)
         {
             int nPos = -1;
             decimal dPayments = 0;
             string szSalesOrderNo = string.Empty;
             string szEncriptedData = string.Empty;
             string szError = string.Empty;
-
             Invoice invoice = null;
 
             if (ModelState.IsValid)
             {
-                if (!string.IsNullOrEmpty(CreditCardNumberHlp))
-                {
-                    nPos = CreditCardNumberHlp.IndexOf("*");
-                    if (nPos == -1)
-                    {
-                        //Encode the Card Number
-                        if (!string.IsNullOrEmpty(CreditCardNumberHlp))
-                        {
-                            szEncriptedData = EncriptInfo02(CreditCardNumberHlp, ref szError);
-                            payments.CreditCardNumber = szEncriptedData;
-                        }
-                        //Add the card number to the customer cards
-                        AddCardNumber(payments, CreditCardNumberHlp);
-                    }
-                }
-
-
                 //Verify that the payment is less than the balance due
-                dPayments = GetSalesOrderPayments(payments.SalesOrderNo, payments);
+                //dPayments = GetSalesOrderPayments(payments.SalesOrderNo, payments);
                 //dPayments = dPayments + Convert.ToDecimal(payments.Amount);
                 SalesOrder salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
                 if (salesorder != null)
@@ -4703,13 +4705,14 @@
                     salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payments.SalesOrderNo).FirstOrDefault<SalesOrder>();
                     if (salesorder != null)
                     {
+                        dPayments = (decimal)salesorder.PaymentAmount;
                         szSalesOrderNo = salesorder.SalesOrderNo;
                         //salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) - Convert.ToDecimal(payments.Amount);
-                        salesorder.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
+                        salesorder.PaymentAmount = (dPayments - oldAmount) + Convert.ToDecimal(payments.Amount);
                         salesorder.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
                         if (Convert.ToDecimal(salesorder.PaymentAmount) < 0)
                         {
-                            salesorder.PaymentAmount = null;
+                            salesorder.PaymentAmount = 0;
                         }
 
                         db.Entry(salesorder).State = EntityState.Modified;
@@ -4721,21 +4724,31 @@
                     if (invoice != null)
                     {
                         //invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) - Convert.ToDecimal(payments.Amount);
-                        invoice.PaymentAmount = dPayments + Convert.ToDecimal(payments.Amount);
+                        invoice.PaymentAmount = (dPayments - oldAmount) + Convert.ToDecimal(payments.Amount);
                         invoice.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
                         if (Convert.ToDecimal(invoice.PaymentAmount) < 0)
                         {
-                            invoice.PaymentAmount = null;
+                            invoice.PaymentAmount = 0;
                         }
+
                         db.Entry(invoice).State = EntityState.Modified;
                         db.SaveChanges();
                     }
+                }
+                payments.PayLog = "Succeed!! Payment data changed.";
+                var paymentCode = int.Parse(payments.PaymentType);
+                var transactionRequest = this.db.TransactionCodes.FirstOrDefault(x => x.TransactionCode == paymentCode);
+                if (transactionRequest != null)
+                {
+                    var transactionDecription = transactionRequest.CodeDescription;
+                    payments.PaymentType = transactionDecription;
                 }
 
                 db.Entry(payments).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo, invoiceId = -1 });
             }
+            ViewBag.PaymentType = SelectPayTypeListItems();
             return View(payments);
         }
 
