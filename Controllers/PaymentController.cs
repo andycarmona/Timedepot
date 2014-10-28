@@ -1098,46 +1098,27 @@
                             db.Entry(payment).State = EntityState.Modified;
                         }
 
-
                         if (bApproved)
                         {
-                            szSalesOrderNo = payment.SalesOrderNo;
-
                             //Update the Sales order
                             if (string.IsNullOrEmpty(szInvoicePayment))
                             {
-                                salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == payment.SalesOrderNo).FirstOrDefault<SalesOrder>();
-                                if (salesorder != null)
-                                {
+                               
                                     if (szTransaction_Type == "00")
                                     {
-                                        salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) + Convert.ToDecimal(payment.Amount);
-                                        salesorder.PaymentDate = Convert.ToDateTime(payment.PaymentDate);
-                                        db.Entry(salesorder).State = EntityState.Modified;
+                                     this.AddPaymentAmountSalesOrder(payment);
 
                                     }
-                                    //db.SaveChanges();
-                                }
-
                             }
                             else
                             {
                                 if (szInvoicePayment.ToUpper() == "TRUE")
                                 {
                                     //Update the invoice
-                                    invoice = db.Invoices.Where(invc => invc.SalesOrderNo == szSalesOrderNo).FirstOrDefault<Invoice>();
-                                    if (invoice != null)
-                                    {
                                         if (szTransaction_Type == "00")
                                         {
-                                            invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) + Convert.ToDecimal(payment.Amount);
-                                            invoice.PaymentDate = Convert.ToDateTime(payment.PaymentDate);
-                                            db.Entry(invoice).State = EntityState.Modified;
-
+                                         this.AddPaymentAmountInvoice(payment);
                                         }
-                                        //db.SaveChanges();
-                                    }
-
                                 }
                             }
                         }
@@ -1148,6 +1129,7 @@
                         if (szTransaction_Type == "04")
                         {
                             var convertedAmount = Convert.ToDecimal(szAmount, new CultureInfo("en-US"));
+                            UpdateSalesOrderPaymentAmount(payment.SalesOrderNo, convertedAmount);
                             var aRefund = new Refunds()
                                               {
                                                   RefundAmount = convertedAmount,
@@ -3204,10 +3186,7 @@
             actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
 
 
-            if (invoiceId > 0)
-            {
-                anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
-            }
+          
 
 
             double dBalanceDue = 0;
@@ -3230,6 +3209,11 @@
                                               PaymentNo = actualPaymentNo,
                                               PaymentDate = DateTime.Now
                                           }).FirstOrDefault();
+
+            if (invoiceId > 0)
+            {
+                anInvoice = this.db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+            }
 
             if (anInvoice != null)
             {
@@ -3292,28 +3276,51 @@
                                                PaymentDate = aPayment.PaymentDate,
                                                TransactionCode = 1,
                                                PayLog = "Transaction succeed!"
-
                                            };
 
+                if (!string.IsNullOrEmpty(aPayment.InvoiceNo) || (aPayment.InvoiceId != -1))
+                {
+                    aNewPayment.InvoicePayment = "True";
+                }
 
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
 
-                var salesorder = db.SalesOrders.FirstOrDefault(slod => slod.SalesOrderNo == aNewPayment.SalesOrderNo);
-                if (salesorder != null)
-                {
-                    
-                        salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
-                        salesorder.PaymentDate = Convert.ToDateTime(aNewPayment.PaymentDate);
-                        db.Entry(salesorder).State = EntityState.Modified;
-                    db.SaveChanges();
+                this.AddPaymentAmountSalesOrder(aNewPayment);
+                this.AddPaymentAmountInvoice(aNewPayment);
 
-                }
                 return RedirectToAction("PaymentTransactionList", new { salesOrderNo = aPayment.SalesOrderNo, invoiceId = -1 });
             }
 
             ViewBag.PaymentType = SelectPayTypeListItems();
             return View(aPayment);
+        }
+
+        private void AddPaymentAmountSalesOrder(Payments aNewPayment)
+        {
+            var salesorder = this.db.SalesOrders.FirstOrDefault(slod => slod.SalesOrderNo == aNewPayment.SalesOrderNo);
+            if (salesorder == null)
+            {
+                return;
+            }
+
+            salesorder.PaymentAmount = Convert.ToDecimal(salesorder.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
+            salesorder.PaymentDate = Convert.ToDateTime(aNewPayment.PaymentDate);
+            this.db.Entry(salesorder).State = EntityState.Modified;
+            this.db.SaveChanges();
+        }
+        private void AddPaymentAmountInvoice(Payments aNewPayment)
+        {
+            var invoice = this.db.Invoices.FirstOrDefault(slod => slod.SalesOrderNo == aNewPayment.SalesOrderNo);
+            if (invoice == null)
+            {
+                return;
+            }
+
+           invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
+            invoice.PaymentDate = Convert.ToDateTime(aNewPayment.PaymentDate);
+            this.db.Entry(invoice).State = EntityState.Modified;
+            this.db.SaveChanges();
         }
 
         private static List<SelectListItem> SelectPayTypeListItems()
@@ -3388,6 +3395,7 @@
                 paymentCash.InvoiceDate = anInvoice.InvoiceDate;
                 paymentCash.InvoiceNo = anInvoice.InvoiceNo;
                 paymentCash.InvoiceId = anInvoice.InvoiceId;
+                paymentCash.InvoicePayment = true;
             }
 
             paymentCash.SalesAmount = (decimal)dSalesAmount;
@@ -3471,7 +3479,7 @@
                 db.Payments.Add(aNewPayment);
                 db.SaveChanges();
                 ViewBag.Environment = aPayment.ActualEnvironment;
-                return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aNewPayment.InvoicePayment, paymentAmount = aNewPayment.Amount });
+                return RedirectToAction("FDZPayment", new { id = aNewPayment.Id, invoiceId = aPayment.InvoiceId, invoicepayment = aNewPayment.InvoicePayment, paymentAmount = aNewPayment.Amount });
             }
 
             var aCustomer = this.db.Customers.SingleOrDefault(x => x.Id == aPayment.CustomerId);
@@ -3707,13 +3715,16 @@
 
                 try
                 {
-                    var aInvoice = listOfInvoices.Single(x => x.SalesOrderNo == salesorder.SalesOrderNo);
-                    var sumPayment = (from paymentslist in this.db.Payments
+                    var aInvoice = listOfInvoices.SingleOrDefault(x => x.SalesOrderNo == salesorder.SalesOrderNo);
+
+                    var listPayment = from paymentslist in this.db.Payments
                                       where paymentslist.SalesOrderNo == salesorder.SalesOrderNo
-                                      select paymentslist.Amount).Sum();
-                    if (sumPayment == null)
+                                      select paymentslist.Amount;
+
+                    decimal? sumPayment = 0;
+                    if (listPayment.Any())
                     {
-                        sumPayment = 0;
+                        sumPayment = listPayment.Sum();
                     }
 
                     if (aInvoice != null)
@@ -4768,11 +4779,42 @@
         public ActionResult DeleteConfirmed(int id)
         {
             Payments payments = db.Payments.Find(id);
+
+            UpdateInvoicePaymentAmount(payments.SalesOrderNo, payments.Amount);
+            UpdateSalesOrderPaymentAmount(payments.SalesOrderNo, payments.Amount);
             db.Payments.Remove(payments);
             db.SaveChanges();
+         
             return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo, invoiceId = -1 });
         }
 
+        private void UpdateSalesOrderPaymentAmount(string salesOrderNo,decimal? amountToSubstract)
+        {
+            var salesorder = this.db.SalesOrders.SingleOrDefault(x => x.SalesOrderNo == salesOrderNo);
+            if (salesorder != null)
+            {
+                var paymentAmount = salesorder.PaymentAmount;
+                var totalPayment = paymentAmount - amountToSubstract;
+                salesorder.PaymentAmount = totalPayment;
+            }
+
+            db.Entry(salesorder).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        private void UpdateInvoicePaymentAmount(string salesOrderNo, decimal? amountToSubstract)
+        {
+            var invoice = this.db.Invoices.SingleOrDefault(x => x.SalesOrderNo == salesOrderNo);
+            if (invoice != null)
+            {
+                var paymentAmount = invoice.PaymentAmount;
+                var totalPayment = paymentAmount - amountToSubstract;
+               invoice.PaymentAmount = totalPayment;
+            }
+
+            db.Entry(invoice).State = EntityState.Modified;
+            db.SaveChanges();
+        }
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

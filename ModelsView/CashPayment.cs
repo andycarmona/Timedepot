@@ -54,6 +54,8 @@ namespace TimelyDepotMVC.ModelsView
 
         public DateTime? InvoiceDate { get; set; }
 
+        public bool InvoicePayment { get; set; }
+
         public string ActualEnvironment { get; set; }
 
         [Display(Name = "Payment Log")]
