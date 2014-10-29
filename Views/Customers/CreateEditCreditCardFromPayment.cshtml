@@ -1,7 +1,7 @@
 ﻿@model TimelyDepotMVC.Models.Admin.CustomersCreditCardShipping
 <div id="UpdateCreditCardForm">
     <div id="contactFormContainer">
-        @using (Html.BeginForm("CreateEditCreditCardFromPayment", "Customers", new { customerdefault = "0" }, FormMethod.Post, new { id = "UpdateCreditCardForm" }))
+        @using (Html.BeginForm("CreateEditCreditCardFromPayment", "Customers", new { customerdefault = "0", salesOrderNo = @ViewBag.SalesOrderNo }, FormMethod.Post, new { id = "UpdateCreditCardForm" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)

@@ -147,11 +147,12 @@
 
         function initalizeEditPayment() {
             //Dialog window
+  
             jQuery("#specialnotediaog").dialog({ autoOpen: false, modal: true, width: "80%" });
             jQuery("#btDialogClose02").click(clickbtDialogCloseNote);
             jQuery("#btDialogOpen02").click(clickbtDialogOpenNote);
             //debugger;
-            $("#specialnotediaog").load("/Customers/CreateEditCreditCardFromPayment/0?customerid=" + jQuery("#btDialogOpen02").data("user"));
+            $("#specialnotediaog").load("/Customers/CreateEditCreditCardFromPayment/0?customerid=" + jQuery("#btDialogOpen02").data("user") + "&salesOrderNo=" +   jQuery("#SalesOrderNo").val());
 
             $('div#specialnotediaog').bind('dialogclose', function () {
                 window.open(jQuery("#btDialogOpen02").data("url"), "_self");
@@ -165,7 +166,7 @@
                 buttonImage: "/images/calendar.gif",
                 buttonImageOnly: true
             });
-
+          
             var szDate = jQuery("#PaymentDate").val();
             szDate = jQuery.trim(szDate);
             jQuery("#PaymentDate").val(szDate);
@@ -174,10 +175,11 @@
             jQuery("#specialnotediaog").dialog("close");
         }
         function clickbtDialogOpenNote() {
-            jQuery("#specialnotediaog").dialog("open");
+        
             jQuery("#btAddCreditCard").hide();
             jQuery("#btDeleteSalesContact").hide();
             jQuery("#UpdateCreditCardid").val("Save");
+            jQuery("#specialnotediaog").dialog("open");
         }
     </script>
 }

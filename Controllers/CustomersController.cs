@@ -1485,7 +1485,7 @@ namespace TimelyDepotMVC.Controllers
         }
         // POST: /Customer/UpdateCustomerNote
         [HttpPost]
-        public ActionResult CreateEditCreditCardFromPayment(CustomersCreditCardShipping customenote, string customerdefault, string ExpirationDateHlp, string CreditNumber01, string SecureCode01, string PaymentUrl = "")
+        public ActionResult CreateEditCreditCardFromPayment(CustomersCreditCardShipping customenote, string customerdefault, string salesOrderNo,  string ExpirationDateHlp, string CreditNumber01, string SecureCode01, string PaymentUrl = "")
         {
             int nCustomerDefault = Convert.ToInt32(customerdefault);
             int nPos = -1;
@@ -1608,16 +1608,14 @@ namespace TimelyDepotMVC.Controllers
                         db.Entry(customenote).State = EntityState.Modified;
                         db.SaveChanges();
                     }
-
-                   
-                    
                 }
             }
 
-
-            return RedirectToAction("AddCreditCardPayment", "Payment", new { salesOrderNumber = 12 });
-
+            return !string.IsNullOrEmpty(salesOrderNo) ? 
+                this.RedirectToAction("AddCreditCardPayment", "Payment", new { salesOrderNumber = salesOrderNo }) : 
+                this.RedirectToAction("Edit", new { id = customenote.CustomerId});
         }
+
         [HttpPost]
         public ActionResult UpdateCreditCard(CustomersCreditCardShipping customenote, string customerdefault, string ExpirationDateHlp, string CreditNumber01, string SecureCode01)
         {
@@ -1751,7 +1749,7 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index");
         }
         [NoCache]
-        public PartialViewResult CreateEditCreditCardFromPayment(string customerid, int id = 0)
+        public PartialViewResult CreateEditCreditCardFromPayment(string customerid, string salesOrderNo,int id = 0)
         {
             int nCustomerId = Convert.ToInt32(customerid);
             CustomerDefaults customerDefault = null;
@@ -1788,8 +1786,9 @@ namespace TimelyDepotMVC.Controllers
                     listSelector.Add(new KeyValuePair<string, string>(item.CardType, item.CardType));
                 }
             }
-            SelectList cardtypelist = new SelectList(listSelector, "Key", "Value");
+            var cardtypelist = new SelectList(listSelector, "Key", "Value");
             ViewBag.CardTypeList = cardtypelist;
+            ViewBag.SalesOrderNo = salesOrderNo;
 
             return PartialView(customercredit);
         }
