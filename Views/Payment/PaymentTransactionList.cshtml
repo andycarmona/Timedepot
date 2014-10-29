@@ -147,8 +147,11 @@
             szId = splittedId[1];
             if ((transCode == 1) || (transCode == 4) || (transCode == 5)) {
                 window.open("/Payment/EditCashPayments?paymentId=" + szId, "_self");
-            } else {
+            } else if(transCode==2){
                 window.open("/Payment/Edit?paymentId=" + szId + "&TransCode=" + transCode, "_self");
+            }
+            else if (transCode == 3) {
+                window.open("/Payment/ViewRefund?refundId=" + szId, "_self");
             }
         }
 

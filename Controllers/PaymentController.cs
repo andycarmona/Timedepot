@@ -1103,22 +1103,22 @@
                             //Update the Sales order
                             if (string.IsNullOrEmpty(szInvoicePayment))
                             {
-                               
-                                    if (szTransaction_Type == "00")
-                                    {
-                                     this.AddPaymentAmountSalesOrder(payment);
 
-                                    }
+                                if (szTransaction_Type == "00")
+                                {
+                                    this.AddPaymentAmountSalesOrder(payment);
+
+                                }
                             }
                             else
                             {
                                 if (szInvoicePayment.ToUpper() == "TRUE")
                                 {
                                     //Update the invoice
-                                        if (szTransaction_Type == "00")
-                                        {
-                                         this.AddPaymentAmountInvoice(payment);
-                                        }
+                                    if (szTransaction_Type == "00")
+                                    {
+                                        this.AddPaymentAmountInvoice(payment);
+                                    }
                                 }
                             }
                         }
@@ -1136,7 +1136,10 @@
                                                   Refunddate = DateTime.Now,
                                                   TransactionId = payment.Id,
                                                   SalesOrderNo = payment.SalesOrderNo,
-                                                  CustomerNo = payment.CustomerNo
+                                                  CustomerNo = payment.CustomerNo,
+                                                  PayLog = szMsg,
+                                                  ReferenceNo = szAuthorizationNumber,
+                                                  CreditCardNo = szCardNumber
                                               };
                             this.db.Refunds.Add(aRefund);
                             db.SaveChanges();
@@ -3186,7 +3189,7 @@
             actualPaymentNo = parsedPaymentNo.ToString(CultureInfo.InvariantCulture);
 
 
-          
+
 
 
             double dBalanceDue = 0;
@@ -3317,7 +3320,7 @@
                 return;
             }
 
-           invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
+            invoice.PaymentAmount = Convert.ToDecimal(invoice.PaymentAmount) + Convert.ToDecimal(aNewPayment.Amount);
             invoice.PaymentDate = Convert.ToDateTime(aNewPayment.PaymentDate);
             this.db.Entry(invoice).State = EntityState.Modified;
             this.db.SaveChanges();
@@ -3325,14 +3328,14 @@
 
         private List<SelectListItem> SelectPayTypeListItems()
         {
-            var excludedTransCodes = new List<int> { 2, 3};
+            var excludedTransCodes = new List<int> { 2, 3 };
             var paymentType = new List<SelectListItem>();
             var transactionCodes = this.db.TransactionCodes.Where(i => !excludedTransCodes.Contains(i.TransactionCode));
             foreach (var aTransactionsCode in transactionCodes)
             {
-                paymentType.Add(new SelectListItem() { Text = aTransactionsCode.CodeDescription, Value = aTransactionsCode.TransactionCode.ToString()});
+                paymentType.Add(new SelectListItem() { Text = aTransactionsCode.CodeDescription, Value = aTransactionsCode.TransactionCode.ToString() });
             }
-                                 
+
             return paymentType;
         }
 
@@ -3860,7 +3863,7 @@
 
                     if ((sumPayment != null) && (sumRefunds != null))
                     {
-                        var balance=(dTotalAmount - (double)sumPayment) + (double)sumRefunds;
+                        var balance = (dTotalAmount - (double)sumPayment) + (double)sumRefunds;
                         this.ViewBag.DueBalance = balance;
                     }
 
@@ -4616,9 +4619,9 @@
             }
 
             var refundPayment = this.CheckSalesAmountIsBiggerThanRefund(paymentId, payments.SalesOrderNo);
-          
-             ViewBag.Refunded = refundPayment > 0;
-            
+
+            ViewBag.Refunded = refundPayment > 0;
+
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
             if (!string.IsNullOrEmpty(payments.PayLog))
             {
@@ -4627,8 +4630,29 @@
                 manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
                 payments.PayLog = manipulateLog;
             }
-          
+
             return View(payments);
+        }
+        [NoCache]
+        public ActionResult ViewRefund(int refundId = 0)
+        {
+            Refunds refund = db.Refunds.Find(refundId);
+            if (refund == null)
+            {
+                return HttpNotFound();
+            }
+
+
+            refund.Refunddate = Convert.ToDateTime(refund.Refunddate);
+            if (!string.IsNullOrEmpty(refund.PayLog))
+            {
+                var manipulateLog = Regex.Replace(refund.PayLog, @"<[^>]+?>", " ");
+                manipulateLog = Regex.Replace(manipulateLog, @"true", " ");
+                manipulateLog = Regex.Replace(manipulateLog, @"false", " ");
+                refund.PayLog = manipulateLog;
+            }
+
+            return View(refund);
         }
         [NoCache]
         public ActionResult EditCashPayments(int paymentId = 0)
@@ -4646,14 +4670,14 @@
             ViewBag.Refunded = refundPayment > 0;
 
             payments.PaymentDate = Convert.ToDateTime(payments.PaymentDate);
-           
+
             ViewBag.PaymentType = SelectPayTypeListItems();
             return View(payments);
         }
 
         private decimal? CheckSalesAmountIsBiggerThanRefund(int paymentId, string SalesOrderNo)
         {
-            decimal? refundPayment = -1;      
+            decimal? refundPayment = -1;
             var salesorderData = this.db.SalesOrders.SingleOrDefault(x => x.SalesOrderNo == SalesOrderNo);
             if (salesorderData == null)
             {
@@ -4663,12 +4687,12 @@
             refundPayment = salesorderData.PaymentAmount;
 
             var refunds = from refundlist in this.db.Refunds
-                                 where refundlist.SalesOrderNo == SalesOrderNo
-                                 select refundlist.RefundAmount;
+                          where refundlist.SalesOrderNo == SalesOrderNo
+                          select refundlist.RefundAmount;
 
             var payments = from paymentlist in this.db.Payments
-                          where paymentlist.SalesOrderNo == SalesOrderNo
-                          select paymentlist.Amount;
+                           where paymentlist.SalesOrderNo == SalesOrderNo
+                           select paymentlist.Amount;
 
             if (!refunds.Any() || !payments.Any())
             {
@@ -4684,7 +4708,7 @@
         // POST: /Payment/Edit/5
 
         [HttpPost]
-        public ActionResult EditCashPayments(Payments payments,decimal? oldAmount)
+        public ActionResult EditCashPayments(Payments payments, decimal? oldAmount)
         {
             int nPos = -1;
             decimal dPayments = 0;
@@ -4800,11 +4824,11 @@
             UpdateSalesOrderPaymentAmount(payments.SalesOrderNo, payments.Amount);
             db.Payments.Remove(payments);
             db.SaveChanges();
-         
+
             return RedirectToAction("PaymentTransactionList", new { salesOrderNo = payments.SalesOrderNo, invoiceId = -1 });
         }
 
-        private void UpdateSalesOrderPaymentAmount(string salesOrderNo,decimal? amountToSubstract)
+        private void UpdateSalesOrderPaymentAmount(string salesOrderNo, decimal? amountToSubstract)
         {
             var salesorder = this.db.SalesOrders.SingleOrDefault(x => x.SalesOrderNo == salesOrderNo);
             if (salesorder != null)
@@ -4825,7 +4849,7 @@
             {
                 var paymentAmount = invoice.PaymentAmount;
                 var totalPayment = paymentAmount - amountToSubstract;
-               invoice.PaymentAmount = totalPayment;
+                invoice.PaymentAmount = totalPayment;
             }
 
             db.Entry(invoice).State = EntityState.Modified;

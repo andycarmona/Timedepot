@@ -622,6 +622,14 @@
     <Compile Include="Migrations\201410201317187_PasswrodAndGatewayObligated.Designer.cs">
       <DependentUpon>201410201317187_PasswrodAndGatewayObligated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410290930180_AddFieldsToRefundEntity.cs" />
+    <Compile Include="Migrations\201410290930180_AddFieldsToRefundEntity.Designer.cs">
+      <DependentUpon>201410290930180_AddFieldsToRefundEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201410290944367_AddCreditCardColumnToRefundEntity.cs" />
+    <Compile Include="Migrations\201410290944367_AddCreditCardColumnToRefundEntity.Designer.cs">
+      <DependentUpon>201410290944367_AddCreditCardColumnToRefundEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -1959,6 +1967,7 @@
     <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\Customers\CreateEditCreditCardFromPayment.cshtml" />
     <Content Include="Views\Payment\EditCashPayments.cshtml" />
+    <Content Include="Views\Payment\ViewRefund.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2007,6 +2016,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410201317187_PasswrodAndGatewayObligated.resx">
       <DependentUpon>201410201317187_PasswrodAndGatewayObligated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410290930180_AddFieldsToRefundEntity.resx">
+      <DependentUpon>201410290930180_AddFieldsToRefundEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201410290944367_AddCreditCardColumnToRefundEntity.resx">
+      <DependentUpon>201410290944367_AddCreditCardColumnToRefundEntity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
