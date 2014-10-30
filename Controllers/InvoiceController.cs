@@ -2182,14 +2182,8 @@ namespace TimelyDepotMVC.Controllers
             {
                 ViewBag.SalesOrderDate = string.Empty;
             }
-            var listOfRefund = (from refundlist in this.db.Refunds
-                                where refundlist.SalesOrderNo == salesorder.SalesOrderNo
-                                select refundlist.RefundAmount).ToList();
+         
 
-            if (listOfRefund.Any())
-            {
-                sumRefunds = listOfRefund.Sum();
-            }
             //Get the totals
            GetSalesOrderTotals(
                salesorder.SalesOrderId,
