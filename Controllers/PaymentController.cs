@@ -15,6 +15,8 @@
     using System.Web.Mvc;
     using System.Xml;
 
+    using Microsoft.Ajax.Utilities;
+
     using PagedList;
 
     using TimelyDepotMVC.CommonCode;
@@ -924,7 +926,11 @@
                 {
                     ViewBag.Transaction = "Purchase";
                 }
-
+                var environment = this.db.EnvironmentParameters.SingleOrDefault(x => x.Active);
+                if (environment != null)
+                {
+                    ViewBag.Environment = environment.Description;
+                }
                 ViewBag.Amount = paymentAmount.ToString(CultureInfo.InvariantCulture);
                 szYear = dDate.Year.ToString();
                 ViewBag.expiryDate = string.Format("{0}{1}", dDate.Month.ToString("00"), szYear.Substring(2, 2));
@@ -938,7 +944,7 @@
                 ViewBag.Refunded = refundPayment > 0;
                 ViewBag.InvoicePayment = invoicepayment;
 
-                this.ViewBag.PaymentTitle = string.IsNullOrEmpty(invoicepayment) ? string.Format("Sales Order No: {0}", payment.SalesOrderNo) : string.Format("Invoice No: {0}", invoice.InvoiceNo);
+                this.ViewBag.PaymentTitle = payment.SalesOrderNo;
 
             }
 
@@ -1064,7 +1070,7 @@
                 szMsg = szError;
                 szError = string.Empty;
             }
-
+        
 
             //Update payment
             if (string.IsNullOrEmpty(szError))
@@ -1078,6 +1084,7 @@
                 {
                     nId = Convert.ToInt32(szPaymentid);
                     payment = db.Payments.Find(nId);
+                    var anInvoice = this.db.Invoices.SingleOrDefault(x => x.SalesOrderNo == payment.SalesOrderNo);
                     if (payment != null)
                     {
                         //Update payment
@@ -1106,18 +1113,17 @@
                                     this.AddPaymentAmountSalesOrder(payment);
 
                                 }
-                            
-                           if (string.IsNullOrEmpty(szInvoicePayment))
+
+                       
+                            if (anInvoice != null)
                             {
-                                if (szInvoicePayment.ToUpper() == "TRUE")
+                                //Update the invoice
+                                if (szTransaction_Type == "00")
                                 {
-                                    //Update the invoice
-                                    if (szTransaction_Type == "00")
-                                    {
-                                        this.AddPaymentAmountInvoice(payment);
-                                    }
+                                    this.AddPaymentAmountInvoice(payment);
                                 }
                             }
+
                         }
 
                         db.SaveChanges();
@@ -1127,6 +1133,10 @@
                         {
                             var convertedAmount = Convert.ToDecimal(szAmount, new CultureInfo("en-US"));
                             UpdateSalesOrderPaymentAmount(payment.SalesOrderNo, convertedAmount);
+                            if (anInvoice != null)
+                            {
+                                this.UpdateInvoicePaymentAmount(payment.SalesOrderNo, convertedAmount);
+                            }
                             var aRefund = new Refunds()
                                               {
                                                   RefundAmount = convertedAmount,
@@ -3687,6 +3697,36 @@
         {
             return this.View();
         }
+        private decimal? GetSumGenRefunds(string salesOrderNo)
+        {
+            decimal sumRefunds = 0;
+            var listRefunds = 
+                from refundslist in this.db.Refunds
+                 where refundslist.SalesOrderNo == salesOrderNo
+                 select refundslist.RefundAmount;
+            if (listRefunds.Any())
+            {
+                sumRefunds = listRefunds.Sum();
+            }
+
+            return sumRefunds;
+        }
+
+        private decimal? GetSumGenPayment(string salesOrderNo)
+        {
+            decimal sumPayment = 0;
+            var listPayments=
+                from paymentslist in this.db.Payments
+                 where paymentslist.SalesOrderNo == salesOrderNo
+                 select paymentslist.Amount;
+
+            if (listPayments.Any())
+            {
+                sumPayment = (decimal)listPayments.Sum();
+            }
+
+            return sumPayment;
+        }
 
         [HttpGet]
         public ActionResult SalesOrderByCustomer(int nCustomerId)
@@ -3740,16 +3780,6 @@
                 {
                     var aInvoice = listOfInvoices.SingleOrDefault(x => x.SalesOrderNo == salesorder.SalesOrderNo);
 
-                    var listPayment = from paymentslist in this.db.Payments
-                                      where paymentslist.SalesOrderNo == salesorder.SalesOrderNo
-                                      select paymentslist.Amount;
-
-                    decimal? sumPayment = 0;
-                    if (listPayment.Any())
-                    {
-                        sumPayment = listPayment.Sum();
-                    }
-
                     if (aInvoice != null)
                     {
                         aPurchaseList.InvoiceDate = aInvoice.InvoiceDate;
@@ -3764,10 +3794,13 @@
                         ref dTax,
                         ref dTotalAmount,
                         ref dBalanceDue);
+                    var sumRefund = this.GetSumGenRefunds(salesorder.SalesOrderNo);
+                    var sumPayment = this.GetSumGenPayment(salesorder.SalesOrderNo);
+
 
                     aPurchaseList.SalesAmount = (decimal)dTotalAmount;
-                    aPurchaseList.BalanceDue = (decimal)dTotalAmount - sumPayment;
-                    aPurchaseList.PaymentAmount = sumPayment;
+                    aPurchaseList.BalanceDue = ((decimal)dTotalAmount - sumPayment) + sumRefund;
+                    aPurchaseList.PaymentAmount = salesorder.PaymentAmount;
 
                     totalSalesOrderWithInvoice.Add(aPurchaseList);
                 }
