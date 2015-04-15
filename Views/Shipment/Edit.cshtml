@@ -1,5 +1,11 @@
 ﻿@model TimelyDepotMVC.Models.Admin.Invoice
-
+<style>
+    .labelClass
+    {
+        width: 65px;
+        padding-top: 10px;
+    }
+</style>
 @using (Html.BeginForm("Edit", "Shipment", null, FormMethod.Post, new { id = "editsalesorderid" }))
 {
     @Html.AntiForgeryToken()
@@ -12,8 +18,7 @@
     @Html.HiddenFor(model => model.SalesOrderNo)
     @Html.HiddenFor(model => model.InvoiceDate)
     @Html.HiddenFor(model => model.PaymentAmount)
-    @Html.HiddenFor(model => model.PaymentDate)
-
+    @Html.HiddenFor(model => model.PaymentDate)    
 
     TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
     string szAsi = "";
@@ -214,7 +219,7 @@
     szSalesOrderContact = TimelyDepotMVC.Controllers.InvoiceController.GetOrderContact01(Convert.ToInt32(Model.CustomerId));
     
     <div class="darkerline" style="padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 1em; padding-right: 1em; margin-top: 0.5em; margin-bottom: 0.5em;">
-        <div class="TEdiv">
+        @*<div class="TEdiv">
             <div class="cf">
                 <div class="left" style="margin-right: 10em;">
                     <div id="tradeeditselector01id">
@@ -225,83 +230,121 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
         <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
             <div id="addressvalidationdiv"></div>
-            <div style="text-align: center;">Shipment Information</div>
+            <div style="text-align: center;"><h3>Shipment Information</h3></div>            
             <div class="cf">
                 <div class="darkerline right" style="width: 40%; padding: 5px;">
-                    <div>Ship to</div>
-                    <div class="viosinput400 boxtb3">
+                    <div><h4>Ship To :</h4></div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.ToCompany)
                         @Html.ValidationMessageFor(model => model.ToCompany)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Company")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.ToName)
                         @Html.ValidationMessageFor(model => model.ToName)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Name")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.ToAddress1)
                         @Html.ValidationMessageFor(model => model.ToAddress1)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Address")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.ToAddress2)
                         @Html.ValidationMessageFor(model => model.ToAddress2)
                     </div>
-                    <div>
+                    <div class="labelClass">
+                        @Html.Label("Street")
+                    </div>
+                    <div class="right">
                         <div class="left viosinput120 boxtb3">
-                            @Html.EditorFor(model => model.ToCity)
+                            @Html.TextBoxFor(model => model.ToCity, new { @placeholder = "City" })
                             @Html.ValidationMessageFor(model => model.ToCity)
                         </div>
                         <div class="left viosinput40 boxtb3">
-                            @Html.EditorFor(model => model.ToState)
+                            @Html.TextBoxFor(model => model.ToState, new { @placeholder = "State" })
                             @Html.ValidationMessageFor(model => model.ToState)
                         </div>
                         <div class="left viosinput60 boxtb3">
-                            @Html.EditorFor(model => model.ToZip)
+                            @Html.TextBoxFor(model => model.ToZip, new { @placeholder = "Zip" })
                             @Html.ValidationMessageFor(model => model.ToZip)
                         </div>
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("City/State/Zip")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.ToCountry)
                         @Html.ValidationMessageFor(model => model.ToCountry)
                     </div>
+                    <div class="labelClass">
+                        @Html.Label("Country")
+                    </div>
                 </div>
                 <div class="darkerline left" style="width: 40%; padding: 5px;">
-                    <div>Ship From:</div>
-                    <div class="viosinput400 boxtb3">
+                    <div>
+                        <h4>Ship From :</h4>
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.FromCompany)
                         @Html.ValidationMessageFor(model => model.FromCompany)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Company")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.FromName)
                         @Html.ValidationMessageFor(model => model.FromName)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Name")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.FromAddress1)
                         @Html.ValidationMessageFor(model => model.FromAddress1)
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("Address")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.FromAddress2)
                         @Html.ValidationMessageFor(model => model.FromAddress2)
                     </div>
-                    <div class="cf">
+                    <div class="labelClass">
+                        @Html.Label("Street")
+                    </div>
+                    <div class="cf right">
                         <div class="left viosinput120 boxtb3">
-                            @Html.EditorFor(model => model.FromCity)
+                            @Html.TextBoxFor(model => model.FromCity, new { @placeholder = "City" })
                             @Html.ValidationMessageFor(model => model.FromCity)
                         </div>
                         <div class="left viosinput40 boxtb3">
-                            @Html.EditorFor(model => model.FromState)
+                            @Html.TextBoxFor(model => model.FromState, new { @placeholder = "State" })
                             @Html.ValidationMessageFor(model => model.FromState)
                         </div>
                         <div class="left viosinput60 boxtb3">
-                            @Html.EditorFor(model => model.FromZip)
+                            @Html.TextBoxFor(model => model.FromZip, new { @placeholder = "Zip" })
                             @Html.ValidationMessageFor(model => model.FromZip)
                         </div>
                     </div>
-                    <div class="viosinput400 boxtb3">
+                    <div class="labelClass">
+                        @Html.Label("City/State/Zip")
+                    </div>
+                    <div class="viosinput400 boxtb3 right">
                         @Html.EditorFor(model => model.FromCountry)
                         @Html.ValidationMessageFor(model => model.FromCountry)
+                    </div>
+                    <div class="labelClass">
+                        @Html.Label("Country")
                     </div>
                 </div>
             </div>
@@ -311,20 +354,31 @@
             </div>
         </div>
     </div> 
-    <div class="TEdiv" style="width: 550px; margin: 0.5em auto;">
-        <input class="btnEditSO btn btn-default" type="submit" value="Save" />&nbsp;@Html.ActionLink("Ship All", "ShipAll", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;@Html.ActionLink("Validate Address", "ValidateAddressTE", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;@Html.ActionLink("Quit", "Index", null, new { @class = "btnEditSO btn btn-default" })
+    <div class="TEdiv" style="width: 376px; margin: 0.5em auto;">
+        @*<input class="btnEditSO btn btn-default" type="submit" value="Save" />&nbsp;*@
+        @Html.ActionLink("Create Shipment", "ShipAll", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
+        @Html.ActionLink("Validate Address", "ValidateAddressTE", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
+        @Html.ActionLink("Quit", "Index", null, new { @class = "btnEditSO btn btn-default" })
     </div>   
 
 }
 <div id="selectvendorDialog">
     Select item here
 </div>
-<div id="hasShipmentDiv" style="display:none;">
+<div id="hasShipmentDiv" style="display: none;">
     @ViewBag.HayShipments
 </div>
 <div style="display: none;">
     @Html.ActionLink("Blind Ship", "BlindShip", "Invoice", new { salesorderid = @Model.SalesOrderId, invoiceid = @Model.InvoiceId }, new { id = "lnkBlindShip" })
 </div>
+
+<script>
+    $(document).ready(function () {        
+        // Addey by SANOOP            
+        $('#tradeselector01id').text('     Company Name : @Model.CustomerShipLocation')        
+    });
+
+</script>
 
 
 

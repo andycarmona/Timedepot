@@ -1,0 +1,152 @@
+﻿@model TimelyDepotMVC.ModelsView.CashPayment
+
+@{
+
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+    var salesOrderNumber = Model.SalesOrderNo;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+
+    <legend>Add cash payment</legend>
+
+
+    @Html.HiddenFor(model => model.CustomerId)
+    @Html.HiddenFor(model => model.SalesOrderNo)
+    @Html.HiddenFor(model => model.PaymentNo)
+    @Html.HiddenFor(model => model.SalesAmount)
+    @Html.HiddenFor(model => model.PaymentType)
+    @Html.HiddenFor(model => model.BalanceDue)
+    <div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
+
+        <div class="cf">
+            <br />
+            <div class="darkerline right" style="width: 40%; padding: 5px;">
+
+             
+            
+                <div class="viosinput400 boxtb3">
+
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentDate)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PaymentDate)<br />
+                        @Html.ValidationMessageFor(model => model.PaymentDate)
+                    </div>
+                </div>
+                @if (Model.TransactionCode == 4)
+                {
+                    <div class="viosinput400 boxtb3">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.CheckNumber)
+                        </div>
+                        <div class="editor-field">
+
+                            @Html.EditorFor(model => model.CheckNumber)
+                            @Html.ValidationMessageFor(model => model.CheckNumber)
+                        </div>
+                    </div>
+                }
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentAmount)
+                    </div>
+                    <div class="editor-field">
+
+                        @Html.TextBoxFor(model => model.PaymentAmount)
+                        @Html.ValidationMessageFor(model => model.PaymentAmount)
+                    </div>
+                </div>
+
+
+
+
+            </div>
+            <div class="darkerline left" style="width: 40%; padding: 5px;">
+
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.PaymentNo)
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentType)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.PaymentType)
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SalesAmount)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.SalesAmount)
+
+                    </div>
+                </div>
+                <div class="viosinput400 boxtb3">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SalesOrderNo)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.SalesOrderNo)
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div style="float:right;" class="viosinput400 boxtb3">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.BalanceDue):@Html.DisplayFor(model => model.BalanceDue)
+            </div>
+
+        </div>
+    </div>
+
+    <p>
+        @Html.ActionLink("Back to List", "PaymentTransactionList", "Payment", new { salesOrderNo = salesOrderNumber }, new { @class = "btn btn-default" }) <input class="btn btn-default" type="submit" value="Create" />
+    </p>
+    @Html.ValidationSummary(true)
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+    jQuery(document).ready(initalizeEditPayment);
+
+    function initalizeEditPayment() {
+        //debugger;
+
+
+
+        //Set the datepicker
+        jQuery("#PaymentDate").datepicker({
+            dateFormat: "mm/dd/yy",
+            showOn: "button",
+            buttonImage: "/images/calendar.gif",
+            buttonImageOnly: true
+        });
+
+        var szDate = jQuery("#PaymentDate").val();
+        szDate = jQuery.trim(szDate);
+        jQuery("#PaymentDate").val(szDate);
+    }
+
+</script>
+
+}

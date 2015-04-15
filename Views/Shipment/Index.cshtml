@@ -14,16 +14,20 @@
         <div id="tabs-1">
             <div>
                 <div class="cf">
-                    <div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
+                    @*<div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>*@
                     <div class="left boxl5">Invoice #</div>
                     <div class="left boxl5">
-                        <input id="invoiceNoid" type="text" readonly="readonly" />
+                        <input id="invoiceNoid" type="text" />
                     </div>
-                    <div class="left boxl5">Available default Address</div>
+                    @*<div class="left boxl5">Available default Address</div>*@
+                    <div class="left telink">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
                     <div id="tradeselector01id" class="left boxl5"></div>
                 </div>
                 <div id="editInvoicediv">
                 </div>
+            </div>
+            <br />
+            <div id="shipmentDialog">
             </div>
         </div>
         <div id="tabs-2">
@@ -33,6 +37,41 @@
         <div id="tabs-3">
             <div>
                 <div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
+                <div class="cf">
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Bill To:
+                            </div>
+                            <div class="boxMR10">
+                                @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
+                                <div style="display: none;">
+                                    <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                UPS Account:
+                            </div>
+                            <div class="boxMR10">
+                                <input id="txtUPSAccountNumber" type="text" value="@ViewBag.ShipperNumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left">
+                        <div class="cf">
+                            <div class="left boxMR5">
+                                Validate Account:
+                            </div>      
+                            <div class="boxMR10">
+                                <input type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
+                            </div>                      
+                        </div>
+                    </div>
+                    </div>
                 <div class="cf">
                     <div class="left">
                         <div class="cf">
@@ -103,7 +142,7 @@
                     </div>
                 </div>
                 <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
-                    <textarea id="txtapiresultsid" cols="80" rows="5"></textarea>
+                    @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
                 </div>
             </div>
         </div>
@@ -148,8 +187,7 @@
         </div>
     </div>
 </div>
-<div id="shipmentDialog">
-</div>
+
 <div style="display: none;">
     @Html.ActionLink("Edit", "Edit", "Shipment", new { id = "0" }, new { id = "editlnk" })
     @Html.ActionLink("Get Sales Details", "GetSalesDetailsSRC", "Invoice", new { salesorderid = "0" }, new { id = "getsalesdetailsId" })
@@ -185,7 +223,7 @@
 
             //Prepare the dialogs 
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
-            jQuery("#shipmentDialog").dialog({ autoOpen: false, modal: true });
+            //jQuery("#shipmentDialog").dialog({ autoOpen: false, modal: true });
 
 
 
@@ -200,7 +238,51 @@
             var szckCriteriaLogo = jQuery("#ckCriteriaHlpLog").val();
             SetDefaultLogCheckBox(szckCriteriaLogo);
 
+            $('#ddlBillTo').val('Shipper');
+
+            $('#ddlBillTo').change(function () {
+                var selectedValue = $('#ddlBillTo :selected').text();
+                if (selectedValue != 'Shipper')
+                    $('#txtUPSAccountNumber').val('');
+                else
+                    $('#txtUPSAccountNumber').val($('#shipperNumber').val());
+                
+            });
+
         }
+
+        function validateUPSAccount() {
+            var accountNumber = $('#txtUPSAccountNumber').val();
+            
+            szUrl = '@Url.Action("ValidateUPSAccount", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+                if (szUrl != "") {
+                    szUrl = szUrl + '?accountNumber=' + accountNumber;
+                }
+
+            //Display load image
+                ShowLoadingDialog();
+
+            //Get the UPS Rate
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: validateUPSAccountSuccess
+                });
+        }
+        function validateUPSAccountSuccess(response, statusCode) {
+
+            var szResult = eval("(" + response + ")");
+            alert(szResult);
+
+            //Hide load image
+            HideLoadingDialog();
+
+        }
+
         function clickbtnSubmitSearchLog(src, arg) {
             src.preventDefault();
 
@@ -335,6 +417,7 @@
         }
 
         function clickbtUpsRate(src, arg) {
+            debugger;
             src.preventDefault();
 
             var szMsg = "";
@@ -348,8 +431,18 @@
 
                 szMsg = "=" + szInvoiceId + '&ValidateAddresResult=' + szAddressResult
 
-                szUrl = src.target.parentNode.href;
-                szUrl = szUrl.replace("=0", szMsg)
+                // Commented By SANOOP
+                //szUrl = src.target.parentNode.href;
+                //szUrl = szUrl.replace("=0", szMsg)
+
+                // Added by SANOOP
+                var itemId = 'CK831';
+                var quantity = $('#txtShipQuantity1').val();
+                var toZip = $('#ToZip').val();
+                szUrl = '@Url.Action("GetUPSRateTE", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+                if (szUrl != "") {
+                    szUrl = szUrl + '?ItemId=' + itemId + '&quantity=' + quantity + '&shipToPostalCode=' + toZip;
+                }
 
                 //Display load image
                 ShowLoadingDialog();
@@ -368,8 +461,9 @@
         }
         function upsRateSuccess(response, statusCode) {
 
-            var szResult = eval("(" + response + ")");
-            jQuery("#txtapiresultsid").val(szResult);
+            //var szResult = eval("(" + response + ")");
+            //jQuery("#txtapiresultsid").val(szResult);
+            $('#apiresultsid').html(response);
 
             //Hide load image
             HideLoadingDialog();
@@ -557,12 +651,18 @@
             //Display load image
             ShowLoadingDialog();
 
-
-            //Delete trade  selector
-            jQuery("#tradeselector01id").html("");
+            //Get search criteria
+            var szSealesOrderNo = $('#invoiceNoid').val();//"0";//jQuery("#searchItem").val();
+            var szCustomer = "false";//jQuery("#ckActiveHlp").val();
+            var szEmail = "invoice";//jQuery("#ckCriteriaHlp").val();
 
             //Get the partial view
-            var szUrl = jQuery(src.target).attr("href");
+            //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
+            var szUrl = jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+            if (szUrl != "") {
+                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + '';
+            }
+
             jQuery.ajax({
                 type: 'GET',
                 url: szUrl,
@@ -572,7 +672,73 @@
                 error: AjaxFailed,
                 success: selectInvoiceSuccess
             });
+
+            return false;
+
+            //Delete trade  selector
+            //jQuery("#tradeselector01id").html("");
+
+            //Get the partial view
+            //var szUrl = jQuery(src.target).attr("href");
+            //jQuery.ajax({
+            //    type: 'GET',
+            //    url: szUrl,
+            //    data: null,
+            //    //contentType: 'application/json; charset=utf-8',
+            //    dataType: 'html',
+            //    error: AjaxFailed,
+            //    success: selectInvoiceSuccess
+            //});
         }
+
+        // Sorting.
+        function sortInvoiceData(sortOrder) {
+            debugger;
+            //src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get search criteria
+            var szSealesOrderNo = $('#invoiceNoid').val();//"0";//jQuery("#searchItem").val();
+            var szCustomer = "false";//jQuery("#ckActiveHlp").val();
+            var szEmail = "invoice";//jQuery("#ckCriteriaHlp").val();
+
+            //Get the partial view
+            //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
+            var szUrl = '@Url.Action("SelectInvoice", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+            if (szUrl != "") {
+                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + sortOrder;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectInvoiceSuccess
+            });
+
+            return false;
+
+            //Delete trade  selector
+            //jQuery("#tradeselector01id").html("");
+
+            //Get the partial view
+            //var szUrl = jQuery(src.target).attr("href");
+            //jQuery.ajax({
+            //    type: 'GET',
+            //    url: szUrl,
+            //    data: null,
+            //    //contentType: 'application/json; charset=utf-8',
+            //    dataType: 'html',
+            //    error: AjaxFailed,
+            //    success: selectInvoiceSuccess
+            //});
+        }
+
         function AjaxFailed(response, statusCode, optionerror) {
             //debugger;
             //var response = ajaxContext.get_response();
@@ -584,6 +750,7 @@
             var objRes = response;
 
             //Display the response data
+            $("#shipmentDialog").show();
             jQuery("#shipmentDialog").html(objRes);
 
             //Hide load image
@@ -626,23 +793,28 @@
 
             //Get the title 
             //debugger;
-            var szTitle = "Invoice";
+            //var szTitle = "Invoice";
 
             //Show the dialog (used with the BuscarDepartamento call)
-            jQuery("#shipmentDialog").dialog("option", "title", "Select " + szTitle);
+            //jQuery("#shipmentDialog").dialog("option", "title", "Select " + szTitle);
 
             //setter
-            jQuery("#shipmentDialog").dialog("option", "width", 950);
+            //jQuery("#shipmentDialog").dialog("option", "width", 950);
 
             //display the popup dialog
-            jQuery("#shipmentDialog").dialog("open");
+            //jQuery("#shipmentDialog").dialog("open");
 
         }
         function eacheditInvoicelnk(nPos, src) {
             jQuery(src).click(clickeditInvoicelnk);
         }
         function clickeditInvoicelnk(src, arg) {
+            debugger;
             src.preventDefault();
+            //alert('test');
+            // Hide the grid
+            $("#shipmentDialog").hide();
+
             var szHref = src.target.href;
             var szHlp = szHref.split('/');
             var szId = szHlp[szHlp.length - 1];
@@ -650,13 +822,14 @@
             szInvNo = jQuery.trim(szInvNo);
 
             jQuery("#invoiceNoid").val(szInvNo);
-            jQuery("#shipmentDialog").dialog("close");
+            //jQuery("#shipmentDialog").dialog("close");
 
             //Load selected Invoice
             LoadInvoice(szId);
+
         }
         function clickbtDialogClose(src, arg) {
-            jQuery("#shipmentDialog").dialog("close");
+            //jQuery("#shipmentDialog").dialog("close");
         }
         function clicklnkResetSelectSOId(src, arg) {
             //debugger;
@@ -738,8 +911,35 @@
                 success: selectEditInvoiceSuccess
             });
         }
+
+        //Load Invoice
+        function loadInvoiceDetails(id) {
+            $("#shipmentDialog").hide();
+
+            var szUrl = '@Url.Action("Edit","Shipment")' + '?id=' + id;
+
+            var szInvNoDet = "=" + id;
+            var szHrefDet = jQuery("#getsalesdetailsId").attr("href");
+            szHrefDet = szHrefDet.replace("=0", szInvNoDet);
+            jQuery("#getsalesdetailsId").attr("href", szHrefDet);
+
+            //Display load image
+            ShowLoadingDialog();
+
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectEditInvoiceSuccess
+            });
+        }
+
         function selectEditInvoiceSuccess(response, statusCode) {
-            //debugger;
+            debugger;
             var objRes = response;
 
             //Display the response data
@@ -753,7 +953,10 @@
 
             //Move trade selector
             //jQuery("#tradeeditselector01id").remove();
-            jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
+            //jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
+
+            // Addey by SANOOP            
+            jQuery("#tradeeditselector01id").html($('#divCompanyName').text().trim());
 
             //Mark error message
             var szMsg = jQuery("#addressresultdiv").html();
@@ -785,7 +988,7 @@
             //Load InvoiceDetail
             //Display load image
             ShowLoadingDialog();
-
+            debugger;
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
 
             jQuery.ajax({
@@ -841,19 +1044,19 @@
             //Display required fields
             jQuery(".lnkShipItem a").each(eachlnkShipItem);
 
-            //Mark shipped items
-            var szShiped = jQuery("#shippeditemsdiv").html();
-            szShiped = jQuery.trim(szShiped);
-            if (szShiped != "") {
-                var szShipedHlp = szShiped.split(';');
-                for (var i = 0; i < szShipedHlp.length; i++) {
-                    //Remove Update, ship item links
-                    jQuery("#" + szShipedHlp[i]).empty();
-                    var szShippedDiv = "<div style='margin-bottom:15px;'><span style='color: #FFFFFF; background-color: #009933; padding:10px;'>SHIPPED</span></div>";
-                    jQuery(szShippedDiv).appendTo("#" + szShipedHlp[i]);
-                }
+            //Mark shipped items -- Commented below code by SANOOP.
+            //var szShiped = jQuery("#shippeditemsdiv").html();
+            //szShiped = jQuery.trim(szShiped);
+            //if (szShiped != "") {
+            //    var szShipedHlp = szShiped.split(';');
+            //    for (var i = 0; i < szShipedHlp.length; i++) {
+            //        //Remove Update, ship item links
+            //        jQuery("#" + szShipedHlp[i]).empty();
+            //        var szShippedDiv = "<div style='margin-bottom:15px;'><span style='color: #FFFFFF; background-color: #009933; padding:10px;'>SHIPPED</span></div>";
+            //        jQuery(szShippedDiv).appendTo("#" + szShipedHlp[i]);
+            //    }
 
-            }
+            //}
 
             //Center other fields
             jQuery(".edititemhlpdiv").css("width", "600px");

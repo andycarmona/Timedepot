@@ -2,7 +2,14 @@
 @using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
 @model IEnumerable<TimelyDepotMVC.Models.Admin.Invoice>
 
-<div style="margin: 0px auto; width: 900px; padding: 5px;">
+<style>
+    .sortingColumn
+    {
+        COLOR: blue;
+        CURSOR: pointer;
+    }
+</style>
+@*<div style="margin: 0px auto; width: 900px; padding: 5px;">
     @using (Html.BeginForm("SelectInvoice", "Shipment", FormMethod.Post, new { id = "searchsalesorderformid" }))
     {
         <div style="margin: 0 auto; width: 600px;">
@@ -15,9 +22,9 @@
                         <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
                     </div>
                     <div>
-                        <input id="btnSubmitSearch" class="btnSubmitSearch btn btn-default" type="submit" value="Search" />
-                        @*@Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId", @class = "btnSubmitSearch btn btn-default" })*@
-                    </div>
+                        <input id="btnSubmitSearch" class="btnSubmitSearch btn btn-default" type="submit" value="Search" />*@
+@*@Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId", @class = "btnSubmitSearch btn btn-default" })*@
+@*</div>
                 </div>
             </div>
             <div class="cf">
@@ -48,26 +55,26 @@
         </div>    
       
     }
-</div>
+</div>*@
 
 <table class="webgrid" style="width: 900px; margin: 0px auto;">
     <tr class="webgrid-header">
-        <th></th>
-        <th style="text-align: left;">
+        @*<th></th>*@
+        <th style="text-align: left;" class="sortingColumn" onclick="sortInvoiceData('@ViewBag.InvoiceNoSortOrder')">
             @Html.DisplayNameFor(model => model.InvoiceNo)
         </th>
-        <th style="text-align: left;">
+        <th style="text-align: left;" class="sortingColumn" onclick="sortInvoiceData('@ViewBag.SalesOrderNoSortOrder')">
             @Html.DisplayNameFor(model => model.SalesOrderNo)
         </th>
-        <th style="text-align: left;">
+        <th style="text-align: left;" class="sortingColumn" onclick="sortInvoiceData('@ViewBag.CustomerNameSortOrder')">
             @*@Html.DisplayNameFor(model => model.CustomerId)*@
             Customer name
         </th>
-        <th style="text-align: left; display:none;">Shipped Date</th>
+        <th style="text-align: left; display: none;">Shipped Date</th>
         <th style="text-align: left;">
             @Html.DisplayNameFor(model => model.InvoiceDate)
         </th>
-        <th style="text-align: left; display:none;">
+        <th style="text-align: left; display: none;">
             @Html.DisplayNameFor(model => model.PaymentAmount)
         </th>
         <th style="text-align: left;">
@@ -115,31 +122,31 @@
         TimelyDepotMVC.Controllers.InvoiceController.GetCustomerEmail(db01, ref szName, ref szEmail, Convert.ToInt32(item.CustomerId));
         
         <tr class="@szClass">
-            <td class = "editInvoicelnk">
+           @* <td class="editInvoicelnk">
                 @Html.ActionLink("Select", "Edit", new { id = item.InvoiceId })
-            </td>
-            <td id="@szInvoiceNo">
+            </td>*@
+            <td id="@szInvoiceNo" onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @Html.DisplayFor(modelItem => item.InvoiceNo)
             </td>
-            <td>
+            <td onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @Html.DisplayFor(modelItem => item.SalesOrderNo)
             </td>
-            <td>
+            <td onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @*@Html.DisplayFor(modelItem => item.CustomerId)*@
                 @szName
             </td>
-            <td style="display:none;">
+            <td style="display: none;" onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @*@Html.DisplayFor(modelItem => item.ShipDate)*@
                 @szShippDate
             </td>
-            <td>
+            <td onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @*@Html.DisplayFor(modelItem => item.InvoiceDate)*@
                 @szInvoiceDate
             </td>
-            <td style="display:none;">
+            <td style="display: none;" onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @Html.DisplayFor(modelItem => item.PaymentAmount)
             </td>
-            <td>
+            <td onclick="loadInvoiceDetails('@item.InvoiceId')">
                 @Html.DisplayFor(modelItem => item.TrackingNo)
             </td>
         </tr>
@@ -153,11 +160,11 @@
     </tr>
 
 </table>
-<div>
+@*<div>
     <div style="width:150px; margin:0px auto;">
         <input id="btDialogClose" class="btn btn-default" type="button" value="Cerrar" />
     </div>
-</div>
+</div>*@
 <div id="salesorderdialogid" style="display: none;">
     Sales Order Data here
 </div>

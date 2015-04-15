@@ -22,7 +22,8 @@ namespace TimelyDepotMVC.Models.Admin
         [Display(Name = "Box #")]
         public string BoxNo { get; set; }
 
-        [Display(Name = "Sub_ItemID")]
+        //[Display(Name = "Sub_ItemID")]
+        [Display(Name = "Item")]
         public string Sub_ItemID { get; set; }
 
         [Display(Name = "Qty")]
