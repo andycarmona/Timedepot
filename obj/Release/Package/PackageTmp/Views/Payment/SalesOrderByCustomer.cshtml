@@ -1,0 +1,134 @@
+﻿@model IEnumerable<TimelyDepotMVC.ModelsView.PurchaseOrderList>
+
+@{
+
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+    int nRow = 0;
+    int nMod = 0;
+    string szClass = "";
+    var companyName = "Customer";
+    if (ViewBag.CompanyName != null)
+    {
+        companyName = ViewBag.CompanyName;
+    }
+
+}
+
+
+<div class="darkerline01">
+    <div style="text-align:center;padding: 10px;">
+        <b>SalesOrder for @companyName</b>
+    </div>
+    <table class="webgrid" style="width: 90%; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th>
+                @Html.DisplayNameFor(model => model.SODate)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesOrderNo)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesAmount)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceDate)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceNo)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentAmount)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceDue)
+
+            </th>
+        </tr>
+
+
+        @foreach (var item in Model)
+        {
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row timelycustomertr trhlp";
+            }
+            else
+            {
+                szClass = "webgrid-row-style timelycustomertr trhlp";
+            }
+
+            string sztrId = string.Format("row0_{0}", item.SalesOrderNo);
+
+            <tr id="@sztrId" class="@szClass">
+                <td>
+                    @Convert.ToDateTime(@item.SODate).ToString("MM/dd/yyyy")
+
+                </td>
+                <td>
+                    @item.SalesOrderNo
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.SalesAmount)
+                    </span>
+
+                </td>
+                <td>
+                    @Convert.ToDateTime(@item.InvoiceDate).ToString("MM/dd/yyyy")
+
+
+                </td>
+                <td>
+                    @item.InvoiceNo
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.PaymentAmount)
+                    </span>
+
+                </td>
+                <td class="char-align">
+                    <span class="left">
+                        @string.Format("{0:N}", @item.BalanceDue)
+                    </span>
+
+                </td>
+            </tr>
+        }
+      
+        <tr><td><p></p></td></tr>
+    </table>
+</div>
+<div class="centerMinified">
+
+    @Html.ActionLink("Back", "PaymentIndex", "Payment", null, new { @class = "btn btn-default" })
+
+</div>
+@section scripts{
+    <script>
+        jQuery(".timelycustomertr td").each(eachtimelycustomertr);
+        function eachtimelycustomertr(nPos, src) {
+            jQuery(src).click(clicktimelycustomertr);
+            jQuery(src).mouseover(mouseovertimelycustomertr);
+        }
+        function clicktimelycustomertr(src, arg) {
+            var szId = src.target.parentNode.id;
+            szId = szId.replace("row0_", "");
+            window.open("/Payment/PaymentTransactionList?salesOrderNo=" + szId + "&invoiceId=-1", "_self");
+        }
+        function mouseovertimelycustomertr(src, arg) {
+            jQuery(src.target).css("cursor", "pointer");
+        }
+    </script>
+}

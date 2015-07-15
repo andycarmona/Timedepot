@@ -1,0 +1,5 @@
+C:\TrabajosCS\FREE4634523\Materiales\PDFAyuda\pdfreport-35614\bin\PdfReportSamples.dll
+C:\TrabajosCS\FREE4634523\Materiales\PDFAyuda\pdfreport-35614\bin\PdfReportSamples.pdb
+C:\TrabajosCS\FREE4634523\Materiales\PDFAyuda\pdfreport-35614\Samples\PdfReportSamples\obj\Release\PdfReportSamples.csprojResolveAssemblyReference.cache
+C:\TrabajosCS\FREE4634523\Materiales\PDFAyuda\pdfreport-35614\Samples\PdfReportSamples\obj\Release\PdfReportSamples.dll
+C:\TrabajosCS\FREE4634523\Materiales\PDFAyuda\pdfreport-35614\Samples\PdfReportSamples\obj\Release\PdfReportSamples.pdb

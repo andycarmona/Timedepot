@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Content/mystyleMVC.css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+        <table style="width: 100%;">
+            <tr>
+                <td id="tdHomeImage" class="lnkHome" onclick="goHome()">
+                    <a href="#">
+                        <img alt="The Esssence of Time" src="@Url.Content("~/Images/timely/index_01.gif")" />
+                    </a>
+                </td>
+                <td>
+                    <div style="text-align: right; vertical-align: middle; padding-right: 50px;">
+                        <section id="login">
+                            @Html.Partial("_LoginPartial")
+                        </section>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </header>
+    <div id="mainMenuMVC" class="lnkWhite" style="color: white">
+        Main Menu
+    </div>
+    <div style="padding-left:20px; padding-right:20px;">
+        @RenderBody()
+    </div>
+    <footer>
+        <div class="left" style="margin-right: 10px; padding-left: 20px;">
+            Copyright 2013, The Essence of Time 
+        </div>
+        <div class="lnkWhite" style="color: white">
+            | @Html.ActionLink("Home", "Index", "Home", null, new { id = "lnkHomeid" }) |  @Html.ActionLink("Tables Admin", "Index", "TablesAdmin") |
+        </div>
+        <div class="clear"></div>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(initializeLayout);
+
+        function initializeLayout() {
+            //Attach handlers
+            jQuery("#lnkHomeid").click(homeHlp);
+        }
+
+        function homeHlp(src, arg) {
+            //debugger;
+        }
+
+        function goHome() {
+            //debugger;
+
+            window.location.assign("http://localhost:51034/")
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

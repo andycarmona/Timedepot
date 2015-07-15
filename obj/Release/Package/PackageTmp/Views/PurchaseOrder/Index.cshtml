@@ -1,0 +1,364 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@*@model IEnumerable<TimelyDepotMVC.Models.Admin.PurchaseOrders>*@
+@model IEnumerable<TimelyDepotMVC.ModelsView.PurchaseOrderListHlp>
+
+@{
+    ViewBag.Title = "Purchase Order";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializePOIndex);
+
+        function initializePOIndex() {
+
+            //set buttons
+            jQuery(".btnSubmitSearch").button();
+
+            var szckCriteria = '@ViewBag.ckCriteriaHlp';
+            SetDefaultCheckBox(szckCriteria);
+
+            var szckActiveHlp = '@ViewBag.ckActiveHlp';
+            if (szckActiveHlp == "true") {
+                jQuery("#ckActive").prop("checked", true);
+            }
+            else {
+                jQuery("#ckActive").prop("checked", false);
+            }
+
+            //Attach handlers
+            jQuery("#ckActive").click(clickckActive);
+            jQuery("#ckcust").click(clickckcust);
+            jQuery("#ckcomp").click(clickckcomp);
+            jQuery("#ckphon").click(clickckphon);
+            jQuery("#ckemai").click(clickcckemai);
+            jQuery("#ckcode").click(clickckcode);
+            jQuery("#ckstate").click(clickckstate);
+        }
+        function SetDefaultCheckBox(szckCriteria) {
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "purchaseorder":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "vendor":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "requireddate":
+                    jQuery("#ckemai").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+        function clickckstate(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("itemno");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+            }
+        }
+        function clickckcode(src, arg) {
+            //debugger;
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                //jQuery("#searchItem").val("");
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                else {
+                    jQuery("#searchItem").val("");
+                }
+                jQuery("#ckCriteriaHlp").val("shippeddate");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+            }
+        }
+        function clickcckemai(src, arg) {
+            //debugger;
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                //jQuery("#searchItem").val("");
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                else {
+                    jQuery("#searchItem").val("");
+                }
+                jQuery("#ckCriteriaHlp").val("requireddate");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+            }
+        }
+
+        function clickckphon(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("vendor");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+            }
+        }
+        function clickckcomp(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("salesorder");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+            }
+        }
+        function clickckcust(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("purchaseorder");
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+            }
+        }
+
+        function clickckActive(src, arg) {
+            var bChkActive = (src.target.checked);
+            if (bChkActive) {
+                jQuery("#ckActiveHlp").val("true");
+            }
+            else {
+                jQuery("#ckActiveHlp").val("false");
+            }
+        }
+    </script>
+}
+<div class="divh1">@ViewBag.Title</div>
+<div style="width: 1240px; margin: 0px auto; padding: 5px;">
+    @Html.ActionLink("Add Purchase Order", "Create")
+</div>
+<div style="width: 1240px; margin: 0px auto; padding: 5px;">
+    @using (Html.BeginForm("Index", "PurchaseOrder", FormMethod.Post))
+    {       
+        <div style="margin: 0 auto; width: 600px;">
+            <div class="cf">
+                <div class="left" style="width: 120px; padding: 5px;">
+                    <div style="margin-top: 5px;"><span>Open Only</span><input id="ckActive" type="checkbox" checked /></div>
+                </div>
+                <div class="cf right" style="margin: 5px;">
+                    <div class="left" style="margin-right: 5px; margin-top: 5px;">
+                        <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
+                    </div>
+                    <div>
+                        <input id="btnSubmitSearch" class="btnSubmitSearch" type="submit" value="Search" />
+                        @Html.ActionLink("Reset", "Index", "PurchaseOrder", null, new { id = "lnkResetId", @class = "btnSubmitSearch" })
+                    </div>
+                </div>
+            </div>
+            <div class="cf">
+                <div class="left" style="margin: 5px; width: 96px;">Search by:</div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Purchase Order No.</span><input id="ckcust" style="margin-left: 14px;" type="checkbox" checked /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Sales Order No.</span><input id="ckcomp" style="margin-left: 38px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Vendor No.</span><input id="ckphon" style="margin-left: 62px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Required Date</span><input id="ckemai" style="margin-left: 45px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Shipped Date</span><input id="ckcode" style="margin-left: 50px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
+                    <div><span>Item No</span><input id="ckstate" style="margin-left: 82px;" type="checkbox" /></div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <input id="ckActiveHlp" name="ckActive" type="text" value="@ViewBag.ckActiveHlp" />
+            <input id="ckCriteriaHlp" name="ckCriteria" type="text" value="@ViewBag.ckCriteriaHlp" />
+        </div>    
+   
+    }
+
+</div>
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid">
+        <tr class="webgrid-header">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesOrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VendorId)
+            </th>
+            <th>Vendor Name</th>
+            <th>
+                @Html.DisplayNameFor(model => model.RequiredDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShipDate)
+            </th>
+            <th>Amount
+            </th>
+            <th>Item No
+            </th>
+            @* <th>
+            @Html.DisplayNameFor(model => model.Logo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImprintColor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsBlindShip)
+        </th>*@
+        </tr>
+        @{
+            TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+            string szTradeName = "";
+            string szReceive = "block";
+
+            string CompanyName = "";
+            string FirstName = "";
+            string LastName = "";
+            string Title = "";
+            string Address1 = "";
+            string Address2 = "";
+            string Address3 = "";
+            string City = "";
+            string State = "";
+            string Zip = "";
+            string Country = "";
+            string Tel = "";
+            string Fax = "";
+            string Email = "";
+            string Website = "";
+            string Tel1 = "";
+            string Tel2 = "";
+        }
+
+        @foreach (var item in Model)
+        {
+            TimelyDepotMVC.Controllers.PurchaseOrderController.GetVendorData(db01, item.VendorId, ref CompanyName, ref FirstName, ref LastName, ref Title, ref Address1,
+                ref Address2, ref Address3, ref City, ref State, ref Zip, ref Country, ref Tel, ref Fax, ref Email, ref Website, ref Tel1, ref Tel2);
+            szTradeName = TimelyDepotMVC.Controllers.PurchaseOrderController.GetTradeName(db01, Convert.ToInt32(item.TradeId));
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row";
+            }
+            else
+            {
+                szClass = "webgrid-row-style";
+            }
+            <tr class="@szClass">
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.PurchaseOrderId }) |
+                    @Html.ActionLink("Delete", "DeletePurchaseOrder", new { id = item.PurchaseOrderId }, new { onclick = "return confirm('Are you sure you want to delete this Purchase Order?');" }) |
+                    @Html.ActionLink("Print (Pdf)", "POReport", "iTextReports", new { id = item.PurchaseOrderId }, new { target = "_blank" })
+                    @if (!string.IsNullOrEmpty(item.ReceiveStatus))
+                    {
+                        szReceive = "none";
+                    }
+                    else
+                    {
+                        szReceive = "block";
+                    }
+                    <span style="display: @szReceive">
+                        <span>| </span>@Html.ActionLink("Receive", "ReceivePurchaseOrder", new { id = item.PurchaseOrderId }, new { onclick = "return confirm('Confirm the reception of this Purchase Order?');" })
+                    </span>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchaseOrderNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SalesOrderNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VendorId)
+                </td>
+                <td>@CompanyName</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RequiredDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShipDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemNo)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => item.Logo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImprintColor)
+        </td>*@
+            </tr>
+        }
+        <tr>
+            <td colspan="7">
+                <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page, searchPONo = ViewBag.SearchPONo }))
+
+            </td>
+        </tr>
+
+    </table>
+</div>

@@ -1,0 +1,55 @@
+﻿@model TimelyDepotMVC.Models.Admin.Shipment
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Shipment</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.InvoiceNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.InvoiceNo)
+            @Html.ValidationMessageFor(model => model.InvoiceNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipmentDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipmentDate)
+            @Html.ValidationMessageFor(model => model.ShipmentDate)
+        </div>
+
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RateResults)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RateResults)
+            @Html.ValidationMessageFor(model => model.RateResults)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

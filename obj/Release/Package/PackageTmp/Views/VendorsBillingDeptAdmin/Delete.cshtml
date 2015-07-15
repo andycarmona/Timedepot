@@ -1,0 +1,62 @@
+﻿@model TimelyDepotMVC.Models.Admin.VendorsBillingDept
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>VendorsBillingDept</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.VendorId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VendorId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Beneficiary)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Beneficiary)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BeneficiaryAccountNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BeneficiaryAccountNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SWIFT)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SWIFT)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BankName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BankName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BankAddress)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BankAddress)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

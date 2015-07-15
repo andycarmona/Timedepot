@@ -1,0 +1,79 @@
+﻿@model TimelyDepotMVC.Models.Admin.VendorsBillingDept
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>VendorsBillingDept</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VendorId)
+            @Html.ValidationMessageFor(model => model.VendorId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Beneficiary)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Beneficiary)
+            @Html.ValidationMessageFor(model => model.Beneficiary)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BeneficiaryAccountNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BeneficiaryAccountNo)
+            @Html.ValidationMessageFor(model => model.BeneficiaryAccountNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SWIFT)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SWIFT)
+            @Html.ValidationMessageFor(model => model.SWIFT)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BankName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BankName)
+            @Html.ValidationMessageFor(model => model.BankName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BankAddress)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BankAddress)
+            @Html.ValidationMessageFor(model => model.BankAddress)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,282 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.Vendors>
+
+@{
+    ViewBag.Title = "Vendors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="divh1">@ViewBag.Title</div>
+
+<div style="margin: 0px auto; width: 1240px;">
+    <div style="display:none;">
+        @Html.ActionLink("Add Vendor", "Create", null, new { id = "lnkAddCustomerId" })
+    </div>
+    <div style="margin: 0px auto; width: 1240px; padding: 5px;">
+        @using (Html.BeginForm("Index", "Customers", FormMethod.Post))
+        {
+            <div style="margin: 0 auto; width: 600px;">
+                <div class="cf">
+                    <div class="left" style="width: 120px; padding: 5px;">
+                        <div style="margin-top: 5px;"><span>Active Only</span><input id="ckActive" type="checkbox" checked /></div>
+                    </div>
+                    <div class="cf right" style="margin: 5px;">
+                        <div class="left" style="margin-right: 5px; margin-top: 5px;">
+                            <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
+                        </div>
+                        <div>
+                            <input id="btnSubmitSearch" class="btnSubmitSearch" type="submit" value="Search" />
+                            @Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId", @class = "btnSubmitSearch" })
+                        </div>
+                    </div>
+                </div>
+                <div class="cf">
+                    <div class="left" style="margin: 5px; width: 96px;">Search by:</div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Vendor No.</span><input id="ckcust" style="margin-left: 62px;" type="checkbox" checked /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Company Name</span><input id="ckcomp" style="margin-left: 35px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Telphone No.</span><input id="ckphon" style="margin-left: 51px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Email</span><input id="ckemai" style="margin-left: 100px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Vendor Type</span><input id="ckstate" style="margin-left: 53px;" type="checkbox" /></div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: block">
+                <input id="ckActiveHlp" name="ckActive" type="text" value="@ViewBag.ckActiveHlp" />
+                <input id="ckCriteriaHlp" name="ckCriteria" type="text" value="@ViewBag.ckCriteriaHlp" />
+            </div>    
+      
+        }
+    </div>
+    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.VendorNo)
+            </th>
+            <th>Company Name</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BussinesType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Origin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreditLimit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentTerms)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BussinesSice)
+            </th>
+        </tr>
+        @{
+            TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+            string szCompanyName = "";
+        }
+
+        @foreach (var item in Model)
+        {
+            szCompanyName = TimelyDepotMVC.Controllers.VendorsController.GetCompanyName(db01, item.Id.ToString());
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row";
+            }
+            else
+            {
+                szClass = "webgrid-row-style";
+            }
+            <tr class="@szClass">
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this Vendor?');" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VendorNo)
+                </td>
+                <td>
+                    @szCompanyName
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BussinesType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Origin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreditLimit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentTerms)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BussinesSice)
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="8">
+                <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+            </td>
+        </tr>
+
+    </table>
+    <div style="text-align: center">
+        @Html.ActionLink("Back", "Index", "Vendors")
+    </div>
+</div>
+<div id="addcustomerDialog">
+    Vendor data here
+</div>
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeVendorIndex);
+
+        function initializeVendorIndex() {
+            debugger;
+            //Set the buttons
+            jQuery(".btnSubmitSearch").button();
+
+            var szckCriteria = '@ViewBag.ckCriteriaHlp';
+            SetDefaultCheckBox(szckCriteria);
+
+            var szckActiveHlp = '@ViewBag.ckActiveHlp';
+            if (szckActiveHlp == "true") {
+                jQuery("#ckActive").prop("checked", true);
+            }
+            else {
+                jQuery("#ckActive").prop("checked", false);
+            }
+
+
+            //Attach handlers
+            jQuery("#lnkAddCustomerId").click(clicklnkAddCustomerId);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#addcustomerDialog").dialog({ autoOpen: false, modal: true });
+        }
+        function SetDefaultCheckBox(szckCriteria) {
+            debugger;
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "customer":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "company":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "phone":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "email":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "areacode":
+                    jQuery("#ckcode").prop("checked", true);
+                    break;
+                case "state":
+                    jQuery("#ckupcode").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+
+        function clicklnkAddCustomerId(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorSuccess
+            });
+
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function vendorSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#addcustomerDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            //jQuery("#lnkserachUserID").click(clicklnkserachUserID);
+            //jQuery("#lnkserachPais").click(clicklnkserachPais);
+            //jQuery("#lnkserachDepartamento").click(clicklnkserachDepartamento);
+            //jQuery("#lnkserachCiudad").click(clicklnkserachCiudad);
+            //jQuery(".verDepartamentosLnk a").each(eachverDepartamentosLnk);
+            //jQuery(".verCiudadLnk a").each(eachverCiudadLnk);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Vendor";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#addcustomerDialog").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#addcustomerDialog").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#addcustomerDialog").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#addcustomerDialog").dialog("close");
+        }
+    </script>
+}

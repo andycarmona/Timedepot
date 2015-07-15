@@ -1,0 +1,102 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.ModelsView.VendorList>
+<div style="padding: 10px;">
+    @Html.ActionLink("Vendor List (Excel)", "VendorListExcel", "Vendors")
+</div>
+<table class="webgrid" style="width: 1100px; margin: 0px auto;">
+    <tr class="webgrid-header">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.VendorNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+        <th>Contact&nbsp;Name
+            @*@Html.DisplayNameFor(model => model.FirstName)*@
+        </th>
+        @*        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Tel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+    </tr>
+    @{
+        long telHlp = 0;
+        long faxHlp = 0;
+        string telfmt = "000-000-0000";
+        string szTel = "";
+
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+    }
+
+    @foreach (var item in Model)
+    {
+        if (string.IsNullOrEmpty(item.Tel))
+        {
+            szTel = "0";
+        }
+        else
+        {
+            szTel = item.Tel;
+        }
+        telHlp = Convert.ToInt64(szTel);
+        szTel = telHlp.ToString(telfmt);
+
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row";
+        }
+        else
+        {
+            szClass = "webgrid-row-style";
+        }
+        <tr class="@szClass">
+            <td>
+                @Html.ActionLink("Details", "Edit", "Vendors", new { id = item.Id }, null)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VendorNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)&nbsp;@Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            @*            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>*@
+            <td>
+                @szTel
+                @*@Html.DisplayFor(modelItem => item.Tel)*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="7">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("VendorList", new { page }))
+
+        </td>
+    </tr>
+
+</table>

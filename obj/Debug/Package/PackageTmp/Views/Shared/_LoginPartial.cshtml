@@ -1,0 +1,24 @@
+﻿@if (Request.IsAuthenticated)
+{
+    <text>
+        Hello, @Html.ActionLink(User.Identity.Name, "ChangePassword", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "Administrar" })&nbsp;!
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+        }
+        @if (Roles.IsUserInRole("Owner"))
+        {
+            <div>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "register01Link" })</div>
+        }        
+    </text>
+}
+else
+{
+    <ul>
+        @*<li>@Html.ActionLink("Register", "Register", "Account01", routeValues: null, htmlAttributes: new { id = "register01Link" })</li>*@
+        @*<li>@Html.ActionLink("Login", "Login", "Account01", routeValues: null, htmlAttributes: new { id = "login01Link" })</li>*@
+        <li>@Html.ActionLink("Login", "LogOn", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@*@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "register01Link" })*@</li>
+    </ul>
+}

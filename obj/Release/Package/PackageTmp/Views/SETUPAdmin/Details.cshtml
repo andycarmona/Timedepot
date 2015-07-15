@@ -1,0 +1,58 @@
+﻿@model TimelyDepotMVC.Models.Admin.SETUP
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SETUP</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Run_charge)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Run_charge)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SetupCost)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetupCost)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Discount_Code)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Discount_Code)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Min)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Min)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Dial)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Dial)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.SetupID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

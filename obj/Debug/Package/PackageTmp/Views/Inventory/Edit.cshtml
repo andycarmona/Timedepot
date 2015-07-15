@@ -1,0 +1,1936 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model TimelyDepotMVC.ModelsView.ItemView
+
+@{
+    ViewBag.Title = "Inventory File";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+<div class="divh1">@ViewBag.Title</div>
+
+<div style="border: 1px solid #6B6C69; padding: 5px 50px 5px 50px;">
+    <div class="cf">
+        <div class="editor-label left">
+            Item&nbsp;No.:&nbsp;<span style="font-weight: bold;">@Html.DisplayFor(model => model.item.ItemID)</span>
+        </div>
+        <div class="left" style="width: 500px; margin-left: 300px;">
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
+        </div>
+        <div class="right">
+            @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
+            <div class="editor-field" style="display: none;">
+                @Html.EditorFor(model => model.item.Inactive)
+                @Html.ValidationMessageFor(model => model.item.Inactive)
+            </div>
+        </div>
+    </div>
+
+    <div style="border: 1px solid #6B6C69; margin: 5px; padding: 5px;">
+        <div class="cf">
+            <div class="left" style="width: 400px; padding: 5px;">
+                @using (Html.BeginForm("UpdateItem", "Inventory", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(model => model.item.ItemID)
+                    @Html.HiddenFor(model => model.item.PicID)
+                    @Html.HiddenFor(model => model.item.Pic2ID)
+                    @Html.HiddenFor(model => model.item.Pic3ID)
+
+                    <div class="cf">
+                        <div class="cf left" style="margin-right: 10px;">
+                            <div class="left editor-label">
+                                @Html.LabelFor(model => model.item.DeptoNo)
+                            </div>
+                            <div class="editor-field">
+                                @Html.DropDownList("DeptoNo", (IEnumerable<SelectListItem>)ViewBag.DeptoList, "Select Depto No", new { id = "selectdeptonoid" })
+                                <div style="display: none;">
+                                    @Html.EditorFor(model => model.item.DeptoNo)
+                                    @Html.ValidationMessageFor(model => model.item.DeptoNo)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cf">
+                            <div class="left editor-label">
+                                @Html.LabelFor(model => model.item.ClassNo)
+                            </div>
+                            <div class="editor-field">
+                                @Html.DropDownList("ClassNo", (IEnumerable<SelectListItem>)ViewBag.ClassList, "Select Class No", new { id = "selectclassnoid" })
+                                <div style="display: none;">
+                                    @Html.EditorFor(model => model.item.ClassNo)
+                                    @Html.ValidationMessageFor(model => model.item.ClassNo)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cf">
+                        <div class="cf left" style="margin-right: 10px;">
+                            <div class="left editor-label">
+                                @Html.LabelFor(model => model.item.YearProduct)
+                            </div>
+                            <div class="editor-field100">
+                                @Html.DropDownList("YearProduct", (IEnumerable<SelectListItem>)ViewBag.YearProductList, "Year", new { id = "selectyearproductid" })
+                                <div style="display: none;">
+                                    @Html.EditorFor(model => model.item.YearProduct)
+                                    @Html.ValidationMessageFor(model => model.item.YearProduct)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cf">
+                            <div class="left editor-label">
+                                @Html.LabelFor(model => model.item.UPCCode)
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.item.UPCCode)
+                                @Html.ValidationMessageFor(model => model.item.UPCCode)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="darkerline">
+                        <div style="width: 160px; margin: 20px auto;">
+                            <img id="picImageId" alt="@Model.item.ItemID" src="@ViewBag.PicPath" />
+                        </div>
+                        <div style="padding: 5px;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="text-align: center;">@Html.ActionLink("Pic 1", "Pic1", "Inventory", null, new { id = "pic1Id", title = Model.item.ItemID })</td>
+                                    <td style="text-align: center;">| </td>
+                                    <td style="text-align: center;">@Html.ActionLink("Pic 2", "Pic2", "Inventory", null, new { id = "pic2Id", title = Model.item.ItemID })</td>
+                                    <td style="text-align: center;">| </td>
+                                    <td style="text-align: center;">@Html.ActionLink("Pic 3", "Pic3", "Inventory", null, new { id = "pic3Id", title = Model.item.ItemID })</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="display: none">
+                        <input id="SubmitForm1" type="submit" value="Submit" />
+                    </div>
+                    int nPos01 = 0;
+                    string[] stringSeparators = new string[] { "<br />" };
+                    string szDesA = Model.item.DescA;
+                    string[] szDescaHlp = null;
+                    szDescaHlp = szDesA.Split(stringSeparators, System.StringSplitOptions.None);
+                    szDesA = "";
+                    foreach (string szitem in szDescaHlp)
+                    {
+                        if (nPos01 == 0)
+                        {
+                            szDesA = string.Format("{0}|", szitem);
+                            nPos01++;
+                        }
+                        else
+                        {
+                            szDesA = string.Format("{0}{1}|", szDesA, szitem);
+                        }
+                    }
+                    ViewBag.DescA = szDesA;
+
+                    szDesA = Model.item.DescB;
+                    szDescaHlp = null;
+                    szDescaHlp = szDesA.Split(stringSeparators, System.StringSplitOptions.None);
+                    szDesA = "";
+                    foreach (string szitem in szDescaHlp)
+                    {
+                        if (nPos01 == 0)
+                        {
+                            szDesA = string.Format("{0}|", szitem);
+                            nPos01++;
+                        }
+                        else
+                        {
+                            szDesA = string.Format("{0}{1}|", szDesA, szitem);
+                        }
+                    }
+                    ViewBag.DescB = szDesA;
+
+
+                    <div style="display: none">
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.item.title)
+                            @Html.EditorFor(model => model.item.DescA)
+                            @Html.EditorFor(model => model.item.DescB)
+                        </div>
+
+                    </div>
+                }
+            </div>
+            <div style="margin-left: 410px; padding: 5px;">
+                <div>
+                    <div class="left editor-label">
+                        @Html.LabelFor(model => model.item.title)
+                    </div>
+                    <div class="editor-field">
+                        <input id="titleHlp" style="width: 500px;" type="text" />
+                        @Html.ValidationMessageFor(model => model.item.title)
+                    </div>
+                </div>
+                <div id="tabs">
+                    <ul style="height: 48px;">
+                        <li><a href="#tabs-1">Price</a></li>
+                        <li><a href="#tabs-2">On Hand</a></li>
+                        <li><a href="#tabs-3">Setup Fee</a></li>
+                        <li><a href="#tabs-4">Weight Dimension</a></li>
+                        <li><a href="#tabs-5">Web</a></li>
+                    </ul>
+                    <div id="tabs-1" style="padding: 0;">
+                        <div style="padding: 5px;">
+                            @{
+                                double dNetPrice = 0;
+                                string szItemA = "";
+                                string szIdA = "0";
+                                string szRowA0 = "";
+                                string szRowA1 = "";
+                                string szDiscountSelector = "";
+                            }
+                            <table class="tblPrice">
+                                <tr>
+                                    <td>Discount Code</td>
+                                    @foreach (var item in Model.setupforpriceList)
+                                    {
+                                        szRowA1 = string.Format("DisCode_{0}", item.Id);
+                                        szRowA0 = string.Format("DisCode_{0}", "0");
+                                        szDiscountSelector = string.Format("dicountselectorId_{0}", item.Id);
+                                        szItemA = "R";                         
+                                        <td class="td2">
+                                            @Html.DropDownList(szRowA1, (IEnumerable<SelectListItem>)ViewBag.DiscountList, "Discount", new { id = szDiscountSelector, @class = "disccodeselector" })
+                                            <div>
+                                                <input id="@szRowA1" name="@szRowA1" type="text"  value="@item.Discount_Code" />
+                                            </div>
+                                        </td>
+                                    }
+                                    <td class="td2 editor-label">
+                                        @Html.DropDownList(szRowA0, (IEnumerable<SelectListItem>)ViewBag.DiscountList, "Discount", new { id = "dicountselectorId_0", @class = "disccodeselector" })
+                                        <div>
+                                            <input id="@szRowA0" type="text"  name="@szRowA0" value="@szItemA"  />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Quantity</td>
+                                    @foreach (var item in Model.setupforpriceList)
+                                    {
+                                        szRowA1 = string.Format("Qty_{0}", item.Id);
+                                        szRowA0 = string.Format("Qty_{0}", "0");
+                                        szItemA = "0";                         
+                                        <td id="@szRowA1" class="td2">
+                                            <input type="text"  name="name" value="@item.Qty" /></td>
+                                    }
+                                    <td id="@szRowA0" class="td2 editor-label">
+                                        <input type="text"  name="name" value="@szItemA"  /></td>
+                                </tr>
+                                <tr>
+                                    <td>Gross Price</td>
+                                    @foreach (var item in Model.setupforpriceList)
+                                    {
+                                        szRowA1 = string.Format("GP_{0}", item.Id);
+                                        szRowA0 = string.Format("GP_{0}", "0");
+                                        szItemA = "0";                         
+                                        <td id="@szRowA1" class="td2">
+                                            <input type="text" name="name" value="@item.thePrice.ToString("F2")" /></td>
+                                    }
+                                    <td id="@szRowA0" class="td2 editor-label">
+                                        <input type="text"  name="name" value="@szItemA"  /></td>
+                                </tr>
+                                <tr>
+                                    <td>Net Price</td>
+                                    @{
+                                        TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+                                    }
+                                    @foreach (var item in Model.setupforpriceList)
+                                    {
+                                        double dDiscount = TimelyDepotMVC.Controllers.InventoryController.GetDiscount(db01, item.Discount_Code);
+                                        double dNPrice = Convert.ToDouble(item.thePrice) * (1 - dDiscount);
+                                        szRowA1 = string.Format("NP_{0}", item.Id);
+                                        szRowA0 = string.Format("NP_{0}", "0");
+                                        szItemA = "0";                         
+                                        <td id="@szRowA1" class="td2">
+                                            <input type="text" name="name" value="@dNPrice.ToString("F2")" /></td>
+                                    }
+                                    <td id="@szRowA0" class="td2 editor-label">
+                                        <input type="text" name="name" value="@szItemA" /></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    @foreach (var item in Model.setupforpriceList)
+                                    {
+                                        <td class="lnbtAddUpdatePrice">@Html.ActionLink("Update", "UpdateAddPrice", "Inventory", new { id = item.Id }, null)&nbsp;
+                                @Html.ActionLink("Delete", "DeletePrice", "Inventory", new { id = item.Id }, new { onclick = "return confirm('Do you want to delete this Price?');" })
+                                        </td>
+                                    }
+                                    <td class="lnbtAddUpdatePrice">@Html.ActionLink("Add", "UpdateAddPrice", "Inventory", new { id = szIdA }, null)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tabs-2" style="padding: 0;">
+                        <div>
+                            <div style="padding: 5px;">
+                                @{
+                                    double dOnHand = 0;
+                                    double dSO = 0;
+                                    double dPO = 0;
+                                    double dVenStock = 0;
+                                    int nSILHas = Model.subitemsList.Count;
+                                    int nPos = 0;
+                                    int nPosHlp = 0;
+                                    int nHlp = 0;
+                                    string szItem = "";
+                                    string szId = "0";
+                                    string szRow0 = "";
+                                    string szRow1 = "";
+
+                                    double dhlpMod = 0;
+
+                                    int nCols = nSILHas / 4;
+                                    dhlpMod = Convert.ToDouble(nSILHas) % Convert.ToDouble(4);
+                                    if (dhlpMod != 0)
+                                    {
+                                        nCols++;
+                                    }
+
+                                    TimelyDepotMVC.Models.Admin.SUB_ITEM subitem = null;         
+                                }
+                                @for (int i = 0; i < nCols; i++)
+                                {
+                                    nPos = nPosHlp;
+                                    <table class="tblPrice">
+                                        <tr>
+                                            <td>Sub_Item</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+                                                szRow1 = string.Format("subitem_{0}", subitem.Id);
+                                                szRow0 = string.Format("subitem_{0}", "0");
+                                                szItem = subitem.ItemID;                         
+                                                <td id="@szRow1" class="td3 editor-label" >
+                                                    <input type="text" style="font-size:12px;" name="name" value="@subitem.Sub_ItemID" /></td>
+                                
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0" class="td3 editor-label">
+                                                    <input type="text" style="font-size:12px;" name="name" value="@szItem" /></td>                                
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>Description</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("desc_{0}", subitem.Id);
+                                                szRow0 = string.Format("desc_{0}", "0");
+                                                <td id="@szRow1" class="td3 editor-label">
+                                                    <input type="text" style="font-size:12px;" name="name" value="@subitem.Description" /></td>
+                                
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0" class="td3">
+                                                    <input type="text" style="font-size: 12px;" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>On hand</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("onhand_{0}", subitem.Id);
+                                                szRow0 = string.Format("onhand_{0}", "0");
+                                                dOnHand = Convert.ToDouble(subitem.OnHand_Db) - Convert.ToDouble(subitem.OnHand_Cr);                      
+                                                <td id="@szRow1" class=td3 "editor-label" >
+                                                    <input type="text" name="name" value="@dOnHand" /></td>
+                                
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0" class="td3">
+                                                    <input type="text" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>Open S/O</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("oSO_{0}", subitem.Id);
+                                                szRow0 = string.Format("oSO_{0}", "0");
+                                                dSO = Convert.ToDouble(subitem.OpenSO_Db) - Convert.ToDouble(subitem.OpenSO_Cr);  
+                                                
+                                                //Open S/O: should be total sales order outstanding qty
+                                                dSO = TimelyDepotMVC.Controllers.InventoryController.GetTotalSOOutstanding(db01, subitem.Sub_ItemID);
+                                                                    
+                                                <td id="@szRow1" class="td3 editor-label">
+                                                    <input type="text" name="name" value="@dSO" /></td>
+                                
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0"  class="td3">
+                                                    <input type="text" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>Open P/O</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("oPO_{0}", subitem.Id);
+                                                szRow0 = string.Format("oPO_{0}", "0");
+                                                dPO = Convert.ToDouble(subitem.OpenPO_Db) - Convert.ToDouble(subitem.OpenPO_Cr);  
+                                                
+                                                //Open P/O, should show total purchase outstanding qty.
+                                                dPO = TimelyDepotMVC.Controllers.InventoryController.GetTotalPOOutstanding(db01, subitem.Sub_ItemID);
+                                                                    
+                                                <td id="@szRow1" class="td3 editor-label">
+                                                    <input type="text" name="name" value="@dPO" /></td>
+                                    
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0"  class="td3">
+                                                    <input type="text" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>Part No.</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("PartNo_{0}", subitem.Id);
+                                                szRow0 = string.Format("PartNo_{0}", "0");
+                                                <td id="@szRow1" class="td3 editor-label">
+                                                    <input type="text" name="name" value="@subitem.PartNo" /></td>
+                                    
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0"  class="td3">
+                                                    <input type="text" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>Vendor Stock</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                szRow1 = string.Format("VendorStock_{0}", subitem.Id);
+                                                szRow0 = string.Format("VendorStock_{0}", "0");
+                                                if (subitem.VendorStock == null)
+                                                {
+                                                    dVenStock = 0;
+                                                }
+                                                else
+                                                {
+                                                    dVenStock = Convert.ToDouble(subitem.VendorStock);
+                                                }
+                                                <td id="@szRow1" class="td3 editor-label" >
+                                                    <input type="text" name="name" value="@dVenStock" /></td>
+                                    
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td id="@szRow0"  class="td3">
+                                                    <input type="text" name="name" value="" /></td>
+                                            }
+                                        </tr>
+                                        @{ nPos = nPosHlp; }
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            @for (int j = 0; j < 4; j++)
+                                            {
+                                                subitem = Model.subitemsList[nPos];
+
+                                                <td class="lnbtAddUpdate" style="border: 1px solid #000; padding-left: 3px; padding-right: 3px;">@Html.ActionLink("Update", "UpdateAddSubitem", "Inventory", new { id = subitem.Id }, null)&nbsp;
+                                        @Html.ActionLink("Delete", "DeleteSubItem", "Inventory", new { id = subitem.Id }, new { onclick = "return confirm('Do you want to delete this sub_item?');" })
+                                                </td>
+                                    
+                                                nPos++;
+                                                if (nPos == nSILHas)
+                                                {
+                                                    nPos = nPosHlp;
+                                                    break;
+                                                }
+                                            }
+                                            @if (i + 1 == nCols)
+                                            {
+                                                <td class="lnbtAddUpdate" style="border: 1px solid #000;">@Html.ActionLink("Add", "UpdateAddSubitem", "Inventory", new { id = szId }, null)</td>
+                                            }
+                                        </tr>
+                                    </table>
+                                    <br />
+                                            nPosHlp = nPos;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tabs-3">
+                        <div style="width: 560px; padding: 5px; margin: 5px auto; border: 0px solid #000; padding-top: 5px;">
+                            @using (Html.BeginForm("UpdateSetupChargeDetail", "Inventory", null, FormMethod.Post, null))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true)
+
+
+                                @Html.HiddenFor(model => model.setupchragedetail.Id)
+                                @Html.HiddenFor(model => model.setupchragedetail.itemid)
+
+                                double dDiscount = TimelyDepotMVC.Controllers.InventoryController.GetDiscount(db01, Model.setupchragedetail.RunChargeDiscountCode);
+                                double dNPrice = Convert.ToDouble(Model.setupchragedetail.RunCharge) * (1 - dDiscount);
+                                dDiscount = TimelyDepotMVC.Controllers.InventoryController.GetDiscount(db01, Model.setupchragedetail.SetupChargeDiscountCode);
+                                double dNPrice2 = Convert.ToDouble(Model.setupchragedetail.SetUpCharge) * (1 - dDiscount);
+                                dDiscount = TimelyDepotMVC.Controllers.InventoryController.GetDiscount(db01, Model.setupchragedetail.ReSetupChargeDiscountCode);
+                                double dNPrice3 = Convert.ToDouble(Model.setupchragedetail.ReSetupCharge) * (1 - dDiscount);
+                    
+                                <table style="border: 0px solid #FF3399;">
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>Gross</td>
+                                        <td>Net</td>
+                                        <td>Code</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.setupchragedetail.RunCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="viosinput120" style="font-size: 14px;">
+                                                @Html.EditorFor(model => model.setupchragedetail.RunCharge)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.RunCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="text-align:right; width:120px;font-size:14px; padding:5px;" name="name" value="@dNPrice.ToString("F2")" /></td>
+                                        <td>
+                                            @Html.DropDownList("setupchragedetail.RunChargeDiscountCode", (IEnumerable<SelectListItem>)ViewBag.DiscountList, "Select Discount", new { id = "RunChargeDiscountCodeSelector", @class = "disccodeselector" })
+                                            <div class="viosinput120" style="display: none;">
+                                                @Html.EditorFor(model => model.setupchragedetail.RunChargeDiscountCode)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.RunChargeDiscountCode)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.setupchragedetail.SetUpCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="viosinput120" style="font-size: 14px;">
+                                                @Html.EditorFor(model => model.setupchragedetail.SetUpCharge)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.SetUpCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="text-align:right; width:120px;font-size:14px; padding:5px;" name="name" value="@dNPrice2.ToString("F2")" /></td>
+                                        <td>
+                                            @Html.DropDownList("setupchragedetail.SetupChargeDiscountCode", (IEnumerable<SelectListItem>)ViewBag.DiscountList, "Select Discount", new { id = "SetupChargeDiscountCodeSelector", @class = "disccodeselector" })
+                                            <div class="viosinput120" style="display: none;">
+                                                @Html.EditorFor(model => model.setupchragedetail.SetupChargeDiscountCode)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.SetupChargeDiscountCode)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.setupchragedetail.ReSetupCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="viosinput120" style="font-size: 14px;">
+                                                @Html.EditorFor(model => model.setupchragedetail.ReSetupCharge)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.ReSetupCharge)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="text-align:right; width:120px;font-size:14px; padding:5px;" name="name" value="@dNPrice3.ToString("F2")" /></td>
+                                        <td>
+                                            @Html.DropDownList("setupchragedetail.ReSetupChargeDiscountCode", (IEnumerable<SelectListItem>)ViewBag.DiscountList, "Select Discount", new { id = "ReSetupChargeDiscountCodeSelector", @class = "disccodeselector" })
+                                            <div class="viosinput120" style="display: none;">
+                                                @Html.EditorFor(model => model.setupchragedetail.ReSetupChargeDiscountCode)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.ReSetupChargeDiscountCode)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.setupchragedetail.FirstSetupFree)
+                                            </div>
+                                        </td>
+                                        <td colspan="3">
+                                            @Html.DropDownList("setupchragedetail_FirstSetupFree", (IEnumerable<SelectListItem>)ViewBag.YesNoList, "Select Discount", new { id = "FirstSetupFreeSelector", @class = "disccodeselector" })
+                                            <div class="editor-field" style="display: none;">
+                                                @Html.EditorFor(model => model.setupchragedetail.FirstSetupFree)
+                                                @Html.ValidationMessageFor(model => model.setupchragedetail.FirstSetupFree)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">
+                                            <input class="btn btn-default" type="submit" value="Update" /></td>
+                                    </tr>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                    <div id="tabs-4">
+                        @using (Html.BeginForm("UpdateItemInfo", "Inventory", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            @Html.HiddenFor(model => model.item.ItemID)
+                            <div style="width: 950px; margin: 5px auto; border: 0px solid #000; padding: 5px;">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.item.UnitWeight)
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <div class="editor-field">
+                                                @Html.EditorFor(model => model.item.UnitWeight)
+                                                @Html.ValidationMessageFor(model => model.item.UnitWeight)
+                                            </div>
+                                        </td>
+                                        <td>&nbsp;
+                                        </td>
+                                        <td colspan="3" rowspan="5" style="vertical-align: top; width: 600px;">&nbsp;
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Unit Dimension</td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td>L</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.DimensionL)
+                                                            @Html.ValidationMessageFor(model => model.item.DimensionL)
+                                                        </div>
+                                                    </td>
+                                                    <td>W</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.DimensionD)
+                                                            @Html.ValidationMessageFor(model => model.item.DimensionD)
+                                                        </div>
+                                                    </td>
+                                                    <td>H</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.DimensionH)
+                                                            @Html.ValidationMessageFor(model => model.item.DimensionH)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.item.UnitPerCase)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="editor-field">
+                                                @Html.EditorFor(model => model.item.UnitPerCase)
+                                                @Html.ValidationMessageFor(model => model.item.UnitPerCase)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.item.CaseWeight)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="editor-field">
+                                                @Html.EditorFor(model => model.item.CaseWeight)
+                                                @Html.ValidationMessageFor(model => model.item.CaseWeight)
+                                            </div>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Case Dimension</td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td>L</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.CaseDimensionL)
+                                                            @Html.ValidationMessageFor(model => model.item.CaseDimensionL)
+                                                        </div>
+                                                    </td>
+                                                    <td>W</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.CaseDimensionW)
+                                                            @Html.ValidationMessageFor(model => model.item.CaseDimensionW)
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>H</td>
+                                                    <td>
+                                                        <div class="viosinput40">
+                                                            @Html.EditorFor(model => model.item.CaseDimensionH)
+                                                            @Html.ValidationMessageFor(model => model.item.CaseDimensionH)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="display: none;">
+                                            <div class="editor-label">
+                                                @Html.LabelFor(model => model.item.Note)
+                                            </div>
+                                            <div class="editor-field">
+                                                <textarea id="item.Note" name="item.Note" cols="120" rows="6">@Model.item.Note</textarea>
+                                                @*                        @Html.EditorFor(model => model.Note)
+                        @Html.ValidationMessageFor(model => model.Note)*@
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>            
+                            <div style="margin: 5px; text-align: center;">
+                                <input type="submit" class="btn btn-default" value="Update" />
+                            </div>
+                        }
+                    </div>
+                    <div id="tabs-5">Web</div>
+                </div>
+                <div id="descriptiontabs">
+                    <ul style="height: 48px;">
+                        <li><a href="#tabsDT-1">Description</a></li>
+                        <li><a href="#tabsDT-2">Product Detail</a></li>
+                        <li><a href="#tabsDT-3">Add</a></li>
+                    </ul>
+                    <div id="tabsDT-1">
+                        <div class="viosinput400">
+                            <textarea id="DescAHlp" name="item.DescA" cols="65" rows="10"></textarea>
+                            @Html.ValidationMessageFor(model => model.item.DescA)
+                        </div>
+                    </div>
+                    <div id="tabsDT-2">
+                        <div class="viosinput400">
+                            <textarea id="DescBHlp" name="item.DescB" cols="65" rows="10"></textarea>
+                            @Html.ValidationMessageFor(model => model.item.DescB)
+                        </div>
+                    </div>
+                    <div id="tabsDT-3">
+                        Add
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="width: 650px; margin: 5px auto;">
+            @Html.ActionLink("SalesHistory", "SalesHistorybyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkSalesHistory", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("OpenOrder", "OpenSalesOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenSalesOrder", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("OpenPurchaseOrder", "OpenPurchaseOrderbyItemTab", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenPurchaseOrder", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("Vendor", "CreateVendorTab", "Inventory", new { szItemId = Model.item.ItemID }, new { id = "createvendorid", @class = "btn btn-default", target = "_blank" })
+            @Html.ActionLink("Note", "Note", "Inventory", new { Id = Model.item.ItemID }, new { id = "lnkNote", @class = "btn btn-default", target = "_blank" })
+        </div>
+    </div>
+    <div style="width: 500px; margin: 5px auto;">
+        @Html.ActionLink("Add", "Create", "Inventory", null, new { id = "lnkInventoryId", @class = "btn btn-default" })
+        <input id="btSave" class="btn btn-default" type="button" value="Save" />
+        @Html.ActionLink("Delete", "DeleteConfirmed", new { id = Model.item.ItemID }, new { onclick = "return confirm('Are you sure you want to delete this Item?');", @class = "btn btn-default" })
+        @*<input id="btQuit" class="btn btn-default" type="button" value="Quit" />*@
+        @Html.ActionLink("Quit", "Index", "Inventory", null, new { @class = "btn btn-default" })
+    </div>
+</div>
+
+<div id="editvendoritedialogid">
+    Vendor item data here
+</div>
+<div id="addinventorydialogId">
+    Inventory data here
+</div>
+<div style="display: none;">
+    @*@Html.ActionLink("Vendor", "CreateVendor", "Inventory", new { szItemId = Model.item.ItemID, Id = "0" }, new { id = "createvendorid" })*@
+    @Html.ActionLink("OpenPurchaseOrder", "OpenPurchaseOrderbyItem", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenPurchaseOrder" })
+    @Html.ActionLink("OpenOrder", "OpenSalesOrderbyItem", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkOpenSalesOrder" })
+    @Html.ActionLink("SalesHistory", "SalesHistorybyItem", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkSalesHistory" })
+    @Html.ActionLink("Previous", "PreviousItem", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkPrevious" })
+    @Html.ActionLink("Next", "NextItem", "Inventory", new { id = Model.item.ItemID }, new { id = "lnkNext" })
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.watermark.min.js")"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(intializeEditVendorItem);
+
+        function intializeEditVendorItem() {
+            //debugger;
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Intialize fields
+            SetActiveInactiveSelector();
+            SetTitelDescription();
+
+            var szUrl = jQuery("#lnkQuitid").attr("href")
+            szUrl = '@Url.Content("~/Inventory/index")';
+            jQuery("#lnkQuitid").attr("href", szUrl);
+            szUrl = jQuery("#lnkQuitid").attr("href");
+
+
+            //Attach handlers 
+            jQuery(".lnkCreateEditVICustomer").each(eachlnkCreateEditVICustomer);
+            jQuery(".lnkCreateEditSubItem").each(eachlnkCreateEditSubItem);
+            jQuery("#pic1Id").click(clicklnkCreatepic1Id);
+            jQuery("#pic2Id").click(clicklnkCreatepic2Id);
+            jQuery("#pic3Id").click(clicklnkCreatepic3Id);
+            jQuery(".lnbtAddUpdate a").each(eachlnbtAddUpdate);
+            jQuery(".lnbtAddUpdatePrice a").each(eachlnbtAddUpdatePrice);
+            jQuery(".disccodeselector").each(eachdisccodeselector);
+            jQuery("#FirstSetupFreeSelector").change(changeFirstSetupFreeSelector);
+            jQuery("#selectiteminactiveid").change(changeselectiteminactiveid);
+
+
+            jQuery("#btPrevious").click(clickbtPrevious);
+            jQuery("#btNext").click(clickbtNext);
+            jQuery("#btQuit").click(clickbtQuit);
+            jQuery("#lnkInventoryId").click(clicklnkInventoryId);
+
+            jQuery("#titleHlp").change(changetitleHlp);
+            jQuery("#DescAHlp").change(changeDescAHlp);
+            jQuery("#DescBHlp").change(changeDescBHlp);
+            jQuery("#SubmitForm1").click(clickSubmitForm1);
+            jQuery("#btSave").click(clickbtSave);
+
+            jQuery("#createvendorid").click(clickcreatevendorid);
+            jQuery("#lnkNote").click(lnkNote);
+
+            jQuery("#selectdeptonoid").change(changeselectdeptonoid);
+            jQuery("#selectclassnoid").change(changeselectclassnoid);
+            jQuery("#selectyearproductid").change(changeselectyearproductid);
+
+
+            //Set the selectors
+            SetSelectors();
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#editvendoritedialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#addinventorydialogId").dialog({ autoOpen: false, modal: true });
+
+            //Create the tabs
+            jQuery("#descriptiontabs").tabs();
+            jQuery("#tabs").tabs({ beforeActivate: bfactabs });
+            jQuery("#summarytabs").tabs({ beforeActivate: bfacsummarytabs });
+
+            //Load initial partial views
+            ////LoadVendor();
+
+            //The active tab
+            //debugger;
+            var szActiveTab = '@ViewBag.ActiveTab';
+            if (szActiveTab != "") {
+                jQuery("#tabs").tabs("option", "active", szActiveTab);
+            }
+
+            //Activate the vendor dialog
+            var szEditVendor = '@ViewBag.EditVendor';
+            if (szEditVendor == "EditVendor") {
+                jQuery("#createvendorid").click();
+            }
+        }
+        function SetSelectors() {
+            var szMsg = jQuery("#item_DeptoNo").val();
+            if (szMsg != "") {
+                jQuery("#selectdeptonoid").val(szMsg);
+            }
+            szMsg = jQuery("#item_ClassNo").val();
+            if (szMsg != "") {
+                jQuery("#selectclassnoid").val(szMsg);
+            }
+            szMsg = jQuery("#item_YearProduct").val();
+            if (szMsg != "") {
+                jQuery("#selectyearproductid").val(szMsg);
+            }
+            //alert('aqui ' + szMsg);
+        }
+        function changeselectdeptonoid(src, arg) {
+            var szOption = jQuery(src.target).val();
+            if (szOption != "") {
+                jQuery("#item_DeptoNo").val(szOption);
+            }
+            else {
+                jQuery("#item_DeptoNo").val("");
+            }
+        }
+        function changeselectclassnoid(src, arg) {
+            var szOption = jQuery(src.target).val();
+            if (szOption != "") {
+                jQuery("#item_ClassNo").val(szOption);
+            }
+            else {
+                jQuery("#item_ClassNo").val("");
+            }
+        }
+        function changeselectyearproductid(src, arg) {
+            var szOption = jQuery(src.target).val();
+            if (szOption != "") {
+                jQuery("#item_YearProduct").val(szOption);
+            }
+            else {
+                jQuery("#item_YearProduct").val("");
+            }
+        }
+        function lnkNote(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szVendorID = '@ViewBag.VendorItemID';
+            var szUrl = src.target.parentNode.href;
+
+            //if (szUrl === undefined) {
+            //    szUrl = src.target.href;
+            //    szUrl = szUrl.replace("CreateVendorTab", "CreateVendor");
+            //}
+            //else {
+            //    szUrl = szUrl.replace("CreateVendorTab", "CreateVendor");
+            //}
+            ////Get the partial view
+            //if (szVendorID != "") {
+            //    //szUrl = szUrl.replace("/0?", "/" + szVendorID + "?");
+            //    szUrl = szUrl + '&Id=' + szVendorID;
+            //}
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: noteSuccess
+            });
+        }
+        function noteSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editvendoritedialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose02").click(clickbtDialogClose);
+
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Item " + '@Model.item.ItemID';
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editvendoritedialogid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editvendoritedialogid").dialog("option", "width", 860);
+
+            //display the popup dialog
+            jQuery("#editvendoritedialogid").dialog("open");
+
+        }
+
+        function clickcreatevendorid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szVendorID = '@ViewBag.VendorItemID';
+            var szUrl = src.target.parentNode.href;
+
+            if (szUrl === undefined) {
+                szUrl = src.target.href;
+                szUrl = szUrl.replace("CreateVendorTab", "CreateVendor");
+            }
+            else {
+                szUrl = szUrl.replace("CreateVendorTab", "CreateVendor");
+            }
+
+
+            //Get the partial view
+            if (szVendorID != "") {
+                //szUrl = szUrl.replace("/0?", "/" + szVendorID + "?");
+                szUrl = szUrl + '&Id=' + szVendorID;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorSuccess
+            });
+
+        }
+        function vendorSuccess(response, statusCode) {
+
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editvendoritedialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Initialize fields 
+            //var objSel = jQuery("#vendorNoselectorId");
+            var objSelHlp = "@ViewBag.VendorItemListHas";
+            var objSel = Number(objSelHlp);
+            if (objSel > 0) {
+                jQuery("#btCreateVendorHlpId").css("display", "block");
+                jQuery("#selectvendordivid").css("display", "none");
+                jQuery("#btUpdateVendor").css("display", "block");
+            }
+            else {
+                jQuery("#btCreateVendorHlpId").css("display", "none");
+                jQuery("#selectvendordivid").css("display", "block");
+            }
+            jQuery("#VendorNo").attr("readonly", "readonly");
+
+
+            //Initialize fields
+            jQuery("#LeadTime").watermark("00:00:00")
+
+            //Attach handlers 
+            jQuery("#btAddVendor").click(clickbtAddVendor);
+            jQuery("#vendorNoselectorId").change(changevendorNoselectorId);
+            jQuery("#vendorIdselectorId").change(changevendorIdselectorId);
+            jQuery("#updatevendoritemHlpId").click(clickupdatevendoritemHlpId);
+
+            //jQuery("#btUpdateVendor").click(clickbtUpdateVendor);
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose01").click(clickbtDialogClose);
+
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Vendor";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editvendoritedialogid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editvendoritedialogid").dialog("option", "width", 960);
+
+            //display the popup dialog
+            jQuery("#editvendoritedialogid").dialog("open");
+
+        }
+        //function clickbtUpdateVendor(src, arg) {
+        //    //src.preventDefault();
+
+        //    var szAction = jQuery("#formCreateEditVendorid").prop("action");
+
+        //    var vaObj = new Object();
+        //    vaObj.Id = jQuery("#formCreateEditVendorid #venaddId").val();
+        //    vaObj.CompanyName = jQuery("#formCreateEditVendorid #CompanyName").val();
+
+        //    //szAction = szAction + '?vendorAddress=' + vaObj
+
+        //    //alert('Aqui ' + szAction + ' ' + vaObj.CompanyName);
+
+        //    //jQuery("#formCreateEditVendorid").prop("action", szAction);
+
+        //}
+        function SetActiveInactiveSelector() {
+            //debugger;
+
+
+            var szActiveInactive = jQuery("#item_Inactive").val();
+
+            var ddlHlp = jQuery("#selectiteminactiveid")[0];
+            if (szActiveInactive == "") {
+                ddlHlp.selectedIndex = 1;
+            }
+            else {
+                if (szActiveInactive == "Y") {
+                    ddlHlp.selectedIndex = 2;
+                }
+                else {
+                    ddlHlp.selectedIndex = 1;
+                }
+            }
+        }
+
+        function SetTitelDescription() {
+            //debugger;
+            var szMsg = jQuery("#item_title").val();
+            jQuery("#titleHlp").val(szMsg);
+
+            //szMsg = jQuery("#item_DescA").val();
+            var nPos = -1;
+            var szMsg1 = '@ViewBag.DescA';
+            while (nPos == -1) {
+                nPos = szMsg1.indexOf('|');
+                if (nPos != -1) {
+                    szMsg1 = szMsg1.replace('|', '\n');
+                    nPos = -1;
+                }
+                else {
+                    break;
+                }
+            }
+            npos = -1;
+            while (nPos == -1) {
+                nPos = szMsg1.indexOf('&quot;');
+                if (nPos != -1) {
+                    szMsg1 = szMsg1.replace('&quot;', '\"');
+                    nPos = -1;
+                }
+                else {
+                    break;
+                }
+            }
+            jQuery("#DescAHlp").val(szMsg1);
+
+            //szMsg = jQuery("#item_DescB").val();
+            nPos = -1;
+            szMsg1 = '@ViewBag.DescB';
+            while (nPos == -1) {
+                nPos = szMsg1.indexOf('|');
+                if (nPos != -1) {
+                    szMsg1 = szMsg1.replace('|', '\n');
+                    nPos = -1;
+                }
+                else {
+                    break;
+                }
+            }
+            npos = -1;
+            while (nPos == -1) {
+                nPos = szMsg1.indexOf('&quot;');
+                if (nPos != -1) {
+                    szMsg1 = szMsg1.replace('&quot;', '\"');
+                    nPos = -1;
+                }
+                else {
+                    break;
+                }
+            }
+            jQuery("#DescBHlp").val(szMsg1);
+        }
+
+        function clickbtQuit(src, arg) {
+            window.close();
+        }
+        function clickbtPrevious(src, arg) {
+            var szUrl = jQuery("#lnkPrevious").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtNext(src, arg) {
+            var szUrl = jQuery("#lnkNext").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function changetitleHlp(src, arg) {
+            var szMsg = jQuery(src.target).val();
+            jQuery("#item_title").val(szMsg);
+        }
+        function changeDescAHlp(src, arg) {
+            var szMsg = jQuery(src.target).val();
+            jQuery("#item_DescA").val(szMsg);
+        }
+        function changeDescBHlp(src, arg) {
+            var szMsg = jQuery(src.target).val();
+            jQuery("#item_DescB").val(szMsg);
+        }
+        function clickSubmitForm1(src, arg) {
+            //debugger;
+        }
+        function clickbtSave(src, arg) {
+            //debugger;
+            jQuery("#SubmitForm1").trigger('click');
+        }
+        function clicklnkInventoryId(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: inventorySuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function inventorySuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#addinventorydialogId").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogCloseCreateInventory").click(clickbtDialogCloseCreateInventory);
+            //jQuery("#lnkserachUserID").click(clicklnkserachUserID);
+            //jQuery("#lnkserachPais").click(clicklnkserachPais);
+            //jQuery("#lnkserachDepartamento").click(clicklnkserachDepartamento);
+            //jQuery("#lnkserachCiudad").click(clicklnkserachCiudad);
+            //jQuery(".verDepartamentosLnk a").each(eachverDepartamentosLnk);
+            //jQuery(".verCiudadLnk a").each(eachverCiudadLnk);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Item";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#addinventorydialogId").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#addinventorydialogId").dialog("option", "width", 800);
+
+            //display the popup dialog
+            jQuery("#addinventorydialogId").dialog("open");
+
+        }
+        function clickbtDialogCloseCreateInventory(src, arg) {
+            jQuery("#addinventorydialogId").dialog("close");
+        }
+
+        function loadTab(event, ui) {
+            //debugger;
+
+            //Use the required ui
+            if (ui.index == 1) {
+                //Create the buttons
+                jQuery(".divButtons a").button();
+            }
+        }
+
+        function eachlnkCreateEditVICustomer(nPos, src) {
+            jQuery(src).click(clicklnkCreateEditVICustomer);
+        }
+
+        function clicklnkCreateEditVICustomer(src, arg) {
+            //debugger;
+            src.preventDefault();
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendoritemSuccess
+            });
+        }
+        function vendoritemSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editvendoritedialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+
+            //Initialize fields
+
+            //Attach handlers
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Vendor";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editvendoritedialogid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editvendoritedialogid").dialog("option", "width", 400);
+
+            //display the popup dialog
+            jQuery("#editvendoritedialogid").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#editvendoritedialogid").dialog("close");
+        }
+
+        function eachlnkCreateEditSubItem(nPos, src) {
+            jQuery(src).click(clicklnkCreateEditSubItem);
+        }
+
+        function clicklnkCreateEditSubItem(src, arg) {
+            //debugger;
+            src.preventDefault();
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: subitemSuccess
+            });
+        }
+
+        function subitemSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editvendoritedialogid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Sub Item";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editvendoritedialogid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editvendoritedialogid").dialog("option", "width", 560);
+
+            //display the popup dialog
+            jQuery("#editvendoritedialogid").dialog("open");
+
+        }
+
+        function clicklnkCreatepic1Id(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var szPicPathHlp = "";
+            var szImageId = src.target.title;
+            var szPicPath = jQuery("#picImageId").attr("src");
+            var nPos = szPicPath.indexOf(szImageId);
+            if (nPos != -1) {
+                szPicPathHlp = szPicPath.substring(0, nPos);
+                szPicPathHlp = szPicPathHlp + szImageId + '.gif';
+                jQuery("#picImageId").attr("src", szPicPathHlp);
+            }
+        }
+
+        function clicklnkCreatepic2Id(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var szPicPathHlp = "";
+            var szImageId = src.target.title;
+            var szPicPath = jQuery("#picImageId").attr("src");
+            var nPos = szPicPath.indexOf(szImageId);
+            if (nPos != -1) {
+                szPicPathHlp = szPicPath.substring(0, nPos);
+                szPicPathHlp = szPicPathHlp + szImageId + '_2.gif';
+                jQuery("#picImageId").attr("src", szPicPathHlp);
+            }
+        }
+
+        function clicklnkCreatepic3Id(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            var szPicPathHlp = "";
+            var szImageId = src.target.title;
+            var szPicPath = jQuery("#picImageId").attr("src");
+            var nPos = szPicPath.indexOf(szImageId);
+            if (nPos != -1) {
+                szPicPathHlp = szPicPath.substring(0, nPos);
+                szPicPathHlp = szPicPathHlp + szImageId + '_3.gif';
+                jQuery("#picImageId").attr("src", szPicPathHlp);
+            }
+        }
+        function clickbtAddVendor(src, arg) {
+            //debugger;
+
+            //Intialize thr form
+            var szIdHlp = jQuery("#Id").val();
+            jQuery("#Id").val("0");
+
+            jQuery("#CompanyName").val("");
+            jQuery("#FirstName").val("");
+            jQuery("#LastName").val("");
+            jQuery("#Tel1").val("");
+            jQuery("#Tel2").val("");
+            jQuery("#Tel").val("");
+            jQuery("#Fax").val("");
+            jQuery("#Address").val("");
+            jQuery("#Note").val("");
+            jQuery("#Addres3").val("");
+            jQuery("#City").val("");
+            jQuery("#State").val("");
+            jQuery("#Zip").val("");
+            jQuery("#Country").val("");
+            jQuery("#Email").val("");
+            jQuery("#Website").val("");
+
+            jQuery("#VendorNo").val("");
+            jQuery("#VendorPartNo").val("");
+            jQuery("#UpdateDate").val("");
+            jQuery("#Cost").val("");
+            jQuery("#CostBlind").val("");
+            jQuery("#RunCharge").val("");
+            jQuery("#SetupCharge").val("");
+            jQuery("#ReSetupCharge").val("");
+            jQuery("#LeadTime").val("");
+
+            jQuery("#btCreateVendorHlpId").css("display", "none");
+
+            jQuery("#divSelector1id").css("display", "none");
+            jQuery("#divSelector2id").css("display", "block");
+
+
+
+            //Display load image
+            //ShowLoadingDialog();
+
+
+            ////Get the partial view
+            //var szUrl = jQuery("#createvendorid").attr("href");
+
+            //jQuery.ajax({
+            //    type: 'GET',
+            //    url: szUrl,
+            //    data: null,
+            //    //contentType: 'application/json; charset=utf-8',
+            //    dataType: 'html',
+            //    error: AjaxFailed,
+            //    success: vendorSuccess
+            //});
+        }
+
+        function changevendorNoselectorId(src, arg) {
+            //debugger;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            if (nId != "") {
+                var szItemId = jQuery("#item_ItemID").val();
+                jQuery("#vendoritemidHlp #VendorNo").val(nId);
+                jQuery("#formCreateEditVendorid #VendorNoselectedid").val(nId);
+                jQuery("#formCreateEditVendorid #itemselectedid").val(szItemId);
+                jQuery("#formCreateEditVendorid").submit();
+            }
+        }
+
+        function changevendorIdselectorId(src, arg) {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szTxt = src.target[nSelected].text;
+            var nPos = szTxt.indexOf("-(");
+            if (nPos != -1) {
+                szTxt = szTxt.substring(nPos + 2);
+                szTxt = szTxt.replace(")", "");
+            }
+
+
+            //var szVendorID = '@ViewBag.VendorItemID';
+            var szVendorID = szTxt;
+
+            //Get the partial view
+            var szUrl = jQuery("#createvendorid").attr("href");
+            if (szVendorID != "") {
+                szUrl = szUrl.replace("/0?", "/" + szVendorID + "?");
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorSuccess
+            });
+        }
+
+
+
+        function eachlnbtAddUpdate(nPos, src) {
+            jQuery(src).click(clicklnbtAddUpdate);
+        }
+        function clicklnbtAddUpdate(src, arg) {
+            //debugger;
+
+            var hRefHlp = src.target.href;
+            var szMsg = hRefHlp.split('/');
+            szId = szMsg[szMsg.length - 1];
+
+            var szMsg = "#subitem_" + szId + ' input';
+            var szSubItem = jQuery(szMsg).val();
+            szMsg = "#desc_" + szId + ' input';
+            var szDesc = jQuery(szMsg).val();
+            szMsg = "#onhand_" + szId + ' input';
+            var szOnhand = jQuery(szMsg).val();
+            szMsg = "#oSO_" + szId + ' input';
+            var szOSO = jQuery(szMsg).val();
+            szMsg = "#oPO_" + szId + ' input';
+            var szOPO = jQuery(szMsg).val();
+            szMsg = "#PartNo_" + szId + ' input';
+            var szPartNo = jQuery(szMsg).val();
+            szMsg = "#VendorStock_" + szId + ' input';
+            var szVenStock = jQuery(szMsg).val();
+
+            var szItemId = jQuery("#itemIdHlpId").html();
+            szItemId = jQuery.trim(szItemId);
+
+            hRefHlp = hRefHlp + '?itemID=' + szItemId + '&subitemId=' + szSubItem + '&description=' + szDesc + '&onhand=' + szOnhand + '&oSO=' + szOSO + '&oPO=' + szOPO + '&partno=' + szPartNo + '&vendorstock=' + szVenStock;
+            src.target.href = hRefHlp;
+        }
+        function eachlnbtAddUpdatePrice(nPos, src) {
+            jQuery(src).click(clicklnbtAddUpdatePrice);
+        }
+        function clicklnbtAddUpdatePrice(src, arg) {
+            //debugger;
+
+            var hRefHlp = src.target.href;
+            var szMsg = hRefHlp.split('/');
+            szId = szMsg[szMsg.length - 1];
+
+            var szMsg = "#DisCode_" + szId;
+            var szSubItem = jQuery(szMsg).val();
+            szMsg = "#Qty_" + szId + ' input';
+            var szDesc = jQuery(szMsg).val();
+            szMsg = "#GP_" + szId + ' input';
+            var szOnhand = jQuery(szMsg).val();
+
+            var szItemId = jQuery("#itemIdHlpId").html();
+            szItemId = jQuery.trim(szItemId);
+
+            hRefHlp = hRefHlp + '?itemID=' + szItemId + '&discountcode=' + szSubItem + '&qty=' + szDesc + '&grossprice=' + szOnhand;
+            src.target.href = hRefHlp;
+        }
+
+        function eachdisccodeselector(nPos, src) {
+            jQuery(src).change(changedisccodeselector);
+        }
+
+        function changedisccodeselector(src, arg) {
+            //debugger;
+            var szId = src.target.id;
+            szId = szId.replace("dicountselectorId_", "");
+            var szCodeId = "#DisCode_" + szId;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szTxt = src.target[nSelected].text;
+            jQuery(szCodeId).val(szTxt);
+        }
+
+        function changeFirstSetupFreeSelector(src, arg) {
+            //debugger;
+
+            var szId = src.target.id;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            if (nId == "1") {
+                jQuery("#setupchragedetail_FirstSetupFree").attr("checked", true);
+            }
+            else {
+                jQuery("#setupchragedetail_FirstSetupFree").attr("checked", false);
+            }
+        }
+
+        function changeselectiteminactiveid(src, arg) {
+            //debugger;
+
+            var szId = src.target.id;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].text;
+            if (nId == "") {
+                jQuery("#item_Inactive").val("N");
+            }
+            else {
+                if (nId == "Inactive") {
+                    jQuery("#item_Inactive").val("Y");
+                }
+                else {
+                    jQuery("#item_Inactive").val("N");
+                }
+            }
+        }
+        function clickupdatevendoritemHlpId(src, arg) {
+            //debugger;
+            var hrefHlp = src.target.parentNode.href;
+
+            var szVendorNo = jQuery("#VendorNo").val();
+            hrefHlp = hrefHlp + '&vendorno=' + szVendorNo;
+            var szCost = jQuery("#Cost").val();
+            hrefHlp = hrefHlp + '&Cost=' + szCost;
+            var szCostBlind = jQuery("#CostBlind").val();
+            hrefHlp = hrefHlp + '&CostBlind=' + szCostBlind;
+            var szRunCharge = jQuery("#RunCharge").val();
+            hrefHlp = hrefHlp + '&RunCharge=' + szRunCharge;
+            var szSetupCharge = jQuery("#SetupCharge").val();
+            hrefHlp = hrefHlp + '&SetupCharge=' + szSetupCharge;
+            var szReSetupCharge = jQuery("#ReSetupCharge").val();
+            hrefHlp = hrefHlp + '&ReSetupCharge=' + szReSetupCharge;
+            var szLeadTimeHrs = jQuery("#LeadTimeHrs").val();
+            hrefHlp = hrefHlp + '&LeadTimeHrs=' + szLeadTimeHrs;
+            var szLeadTimeMin = jQuery("#LeadTimeMin").val();
+            hrefHlp = hrefHlp + '&LeadTimeMin=' + szLeadTimeMin;
+            var szLeadTimeSec = jQuery("#LeadTimeSec").val();
+            hrefHlp = hrefHlp + '&LeadTimeSec=' + szLeadTimeSec;
+            var szLeadTime = jQuery("#LeadTime").val();
+            hrefHlp = hrefHlp + '&LeadTime=' + szLeadTime;
+
+            src.target.parentNode.href = hrefHlp;
+            //alert('clickupdatevendoritemHlpId ' + hrefHlp);
+        }
+        function bfactabs(event, ui) {
+            //debugger
+            if (ui.newPanel.selector == "#tabs-5") {
+                //debugger;
+                //LoadOpenPurchaseOrder();
+                LoadSalesHistory();
+
+            }
+        }
+        function bfacsummarytabs(event, ui) {
+            if (ui.newPanel.selector == "#summtabs-1") {
+                //debugger;
+                LoadSalesHistory();
+            }
+            if (ui.newPanel.selector == "#summtabs-2") {
+                //debugger;
+                LoadSalesOrder();
+            }
+            if (ui.newPanel.selector == "#summtabs-3") {
+                //debugger;
+                LoadOpenPurchaseOrder();
+            }
+        }
+        function LoadOpenPurchaseOrder() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkOpenPurchaseOrder").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: OpenPurchaseOrderSuccess
+            });
+        }
+        function OpenPurchaseOrderSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#openpurchaseorderid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigation);
+
+        }
+        function eachlnknavigation(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectPOOpenpage);
+            }
+        }
+        function clicklnkselectPOOpenpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: OpenPurchaseOrderSuccess
+            });
+        }
+        //
+        function LoadSalesOrder() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkOpenSalesOrder").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesOrderSuccess
+            });
+        }
+        function salesOrderSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#openorderid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationreceived);
+
+        }
+        function eachlnknavigationreceived(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectPOReceivedpage);
+            }
+        }
+        function clicklnkselectPOReceivedpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesOrderSuccess
+            });
+        }
+        function LoadSalesHistory() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkSalesHistory").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: saleshistorySuccess
+            });
+        }
+        function saleshistorySuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#saleshistoryid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationsaleshistory);
+
+        }
+        function eachlnknavigationsaleshistory(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectsaleshistorypage);
+            }
+        }
+        function clicklnkselectsaleshistorypage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: saleshistorySuccess
+            });
+        }
+
+    </script>
+}
+

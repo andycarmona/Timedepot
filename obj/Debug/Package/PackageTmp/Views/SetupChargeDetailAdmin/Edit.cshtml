@@ -1,0 +1,95 @@
+﻿@model TimelyDepotMVC.Models.Admin.SetupChargeDetail
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>SetupChargeDetail</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SetUpCharge)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SetUpCharge)
+            @Html.ValidationMessageFor(model => model.SetUpCharge)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RunCharge)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RunCharge)
+            @Html.ValidationMessageFor(model => model.RunCharge)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.itemid)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.itemid)
+            @Html.ValidationMessageFor(model => model.itemid)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReSetupCharge)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ReSetupCharge)
+            @Html.ValidationMessageFor(model => model.ReSetupCharge)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReSetupChargeDiscountCode)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ReSetupChargeDiscountCode)
+            @Html.ValidationMessageFor(model => model.ReSetupChargeDiscountCode)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RunChargeDiscountCode)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RunChargeDiscountCode)
+            @Html.ValidationMessageFor(model => model.RunChargeDiscountCode)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SetupChargeDiscountCode)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SetupChargeDiscountCode)
+            @Html.ValidationMessageFor(model => model.SetupChargeDiscountCode)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstSetupFree)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstSetupFree)
+            @Html.ValidationMessageFor(model => model.FirstSetupFree)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

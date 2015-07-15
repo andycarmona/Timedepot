@@ -1,0 +1,382 @@
+﻿@model TimelyDepotMVC.Models.Admin.PurchaseOrders
+
+@{
+    ViewBag.Title = "Add Purchase Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(initailizaPOIndex);
+
+        function initailizaPOIndex() {
+
+            //set buttons
+            jQuery(".btnSubmitSearch").button();
+
+            //Attach handlers
+            jQuery("#selectSalesOrderid").click(clickselectSalesOrderid);
+            jQuery("#selectVendorid").click(clickselectVendorid);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#createPurchaseOrderDialog").dialog({ autoOpen: false, modal: true });
+
+        }
+
+        function clickselectSalesOrderid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectsalesorderSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function selectsalesorderSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#createPurchaseOrderDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers lnkSelectVendor
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#lnkResetId").click(clicklnkResetId);
+            jQuery("#SelectSalesOrderFormid").submit(submitSelectSalesOrderFormid);
+            jQuery(".pagination ul li a").each(eachlnknavigation);
+            jQuery(".lnkSelectSO a").each(eachlnkSelectSO);
+            //jQuery("#btnSubmitSearchVendorid").click(clickbtnSubmitSearchVendorid);
+            //jQuery(".btnSubmitSearchVendor a").each(eachbtnSubmitSearchVendor);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Sales Order";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#createPurchaseOrderDialog").dialog("option", "title", "Select " + szTitle);
+
+            //setter
+            jQuery("#createPurchaseOrderDialog").dialog("option", "width", 1000);
+
+            //display the popup dialog
+            jQuery("#createPurchaseOrderDialog").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#createPurchaseOrderDialog").dialog("close");
+        }
+
+        function clicklnkResetId(src, arg) {
+            src.preventDefault();
+
+            //Get the partial view
+            //var szUrl = jQuery(src.target).attr("href");
+            var szUrl = jQuery("#selectSalesOrderid").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectsalesorderSuccess
+            });
+        }
+
+        function submitSelectSalesOrderFormid(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Get the serach criteria
+            var szSalesOrderNo = jQuery("#searchOrderNo").val();
+            var szCustomer = jQuery("#searchCustomer").val();
+            var szEmail = jQuery("#searchEmail").val();
+
+            //Get the partial view
+            var szUrl = jQuery("#selectSalesOrderid").attr("href");
+            szUrl = szUrl + '?searchOrderNo=' + szSalesOrderNo + '&searchCustomer=' + szCustomer + '&searchEmail=' + szEmail;
+
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectsalesorderSuccess
+            });
+        }
+
+        function eachlnknavigation(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectSO);
+            }
+        }
+        function clicklnkselectSO(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectsalesorderSuccess
+            });
+        }
+
+        function eachlnkSelectSO(nPos, src) {
+            jQuery(src).click(clicklnkSelectSO);
+        }
+
+        function clicklnkSelectSO(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+            var szSONo = "";
+            var szHrefHlp = src.target.href;
+            var szMsg = szHrefHlp.split('/');
+            var szId = szMsg[szMsg.length - 1];
+            if (szId != "") {
+                szSONo = jQuery("#soid_" + szId).html();
+                szSONo = jQuery.trim(szSONo);
+                jQuery("#SalesOrderNo").val(szSONo);
+                jQuery("#createPurchaseOrderDialog").dialog("close");
+            }
+        }
+
+        function clickselectVendorid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectvendorSuccess
+            });
+        }
+        function selectvendorSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#createPurchaseOrderDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons lnkResetId
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers lnkSelectVendor
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery("#lnkResetVendorId").click(clicklnkResetVendorId);
+            jQuery("#SelectVendorFormid").submit(submitSelectVendorFormid);
+            jQuery(".lnkSelectVendor a").each(eachlnkSelectVendor);
+            jQuery(".pagination ul li a").each(eachlnknavigation);
+
+            //jQuery("#btnSubmitSearchVendorid").click(clickbtnSubmitSearchVendorid);
+            //jQuery(".btnSubmitSearchVendor a").each(eachbtnSubmitSearchVendor);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Vendor No.";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#createPurchaseOrderDialog").dialog("option", "title", "Select " + szTitle);
+
+            //setter
+            jQuery("#createPurchaseOrderDialog").dialog("option", "width", 1000);
+
+            //display the popup dialog
+            jQuery("#createPurchaseOrderDialog").dialog("open");
+
+        }
+        function clicklnkResetVendorId(src, arg) {
+            debugger;
+            src.preventDefault();
+
+            //Get the partial view
+            //var szUrl = jQuery(src.target).attr("href");
+            var szUrl = jQuery("#selectVendorid").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectvendorSuccess
+            });
+        }
+        function submitSelectVendorFormid(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Get the serach criteria
+            var szVendorNo = jQuery("#searchVendorNo").val();
+
+            //Get the partial view
+            var szUrl = jQuery("#selectVendorid").attr("href");
+            szUrl = szUrl + '?searchVendorNo=' + szVendorNo;
+
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectvendorSuccess
+            });
+        }
+        function eachlnkSelectVendor(nPos, src) {
+            jQuery(src).click(clicklnkSelectVendor);
+        }
+
+        function clicklnkSelectVendor(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+            var szSONo = "";
+            var szHrefHlp = src.target.href;
+            var szMsg = szHrefHlp.split('/');
+            var szId = szMsg[szMsg.length - 1];
+            if (szId != "") {
+                szSONo = jQuery("#vdno_" + szId).html();
+                szSONo = jQuery.trim(szSONo);
+                jQuery("#VendorId").val(szSONo);
+                jQuery("#createPurchaseOrderDialog").dialog("close");
+            }
+        }
+
+    </script>
+}
+
+<div class="divh1">@ViewBag.Title</div>
+
+<div style="width: 400px; margin: 5px auto;">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.PurchaseOrderId)
+        @Html.HiddenFor(model => model.PODate)
+
+        DateTime dDate = Convert.ToDateTime(Model.PODate);
+
+        <div style="margin: 5px auto; width: 400px;">
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.PurchaseOrderNo)
+            </div>
+            <div class="editor-field boxtb3">
+                @Html.EditorFor(model => model.PurchaseOrderNo)
+                @Html.ValidationMessageFor(model => model.PurchaseOrderNo)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.PODate)
+            </div>
+            <div class="editor-field boxtb3">
+                <input id="PODateHlp" name="PODateHlp" type="text" value="@dDate.ToString("MM/dd/yyyy")" />
+                @*                @Html.EditorFor(model => model.PODate)
+                @Html.ValidationMessageFor(model => model.PODate)*@
+            </div>
+
+            <div class="editor-label">
+                @*@Html.LabelFor(model => model.SalesOrderNo)*@
+                @Html.ActionLink("Select Sales Order No", "SelectSalesOrder", "PurchaseOrder", null, new { id = "selectSalesOrderid" })
+            </div>
+            <div class="editor-field boxtb3">
+                @Html.EditorFor(model => model.SalesOrderNo)
+                @Html.ValidationMessageFor(model => model.SalesOrderNo)
+            </div>
+
+            <div class="editor-label">
+                @*@Html.LabelFor(model => model.VendorId)*@
+                @Html.ActionLink("Select Vendor","SelectVendor","PurchaseOrder", null, new{ id = "selectVendorid"})
+            </div>
+            <div class="editor-field boxtb3">
+                <div>
+                    @Html.EditorFor(model => model.VendorId)
+                    @Html.ValidationMessageFor(model => model.VendorId)
+                </div>
+            </div>
+
+            <div class="editor-label">
+                @*@Html.LabelFor(model => model.TradeId)*@
+                Trade
+            </div>
+            <div class="viosinput300 boxtb3">
+                @Html.DropDownList("TradeId", (IEnumerable<SelectListItem>)ViewBag.TradeList, "Select Trade", new { id = "tradeisselectorId" })
+                <div style="display: none;">
+                    @Html.EditorFor(model => model.TradeId)
+                    @Html.ValidationMessageFor(model => model.TradeId)
+                </div>
+            </div>
+
+
+            <div class="boxtb3" style="margin-top: 5px;">
+                <input class="btnSubmitSearch" type="submit" value="Update" />
+            </div>
+        </div>
+    }
+</div>
+
+<div id="createPurchaseOrderDialog">
+    Purchase order select data here
+</div>

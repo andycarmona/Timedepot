@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/themes/base/css")
+    @Styles.Render("~/Content/mystyleMVC.css")
+    @Styles.Render("~/Content/PagedList.css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+        <table style="width: 100%;">
+            <tr>
+                <td id="tdHomeImage" class="lnkHome" onclick="goHome()">
+                    <a href="#">
+                        <img alt="The Esssence of Time" src="@Url.Content("~/Images/timely/index_01.gif")" />
+                    </a>
+                </td>
+                <td>
+                    <div style="text-align: right; vertical-align: middle; padding-right: 50px;">
+                        <section id="login">
+                            @Html.Partial("_LoginPartial")
+                        </section>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </header>
+    <div id="mainMenuMVC" class="lnkWhite" style="color: white">
+        @Html.ActionLink("Customers", "Index", "Customers", null, new { target = "_blank" }) | @Html.ActionLink("Vendors", "Index", "Vendors", null, new { target = "_blank" }) | @Html.ActionLink("Inventory", "Index", "Inventory", null, new { target = "_blank" }) | 
+        @Html.ActionLink("Quotes", "Index", "Quotes", null, new { target = "_blank" }) | @Html.ActionLink("Sales Order", "Index", "SalesOrder", null, new { target = "_blank" }) |@Html.ActionLink("Payment ", "Index", "Payment", null, new { target = "_blank" }) |
+        @Html.ActionLink("Purchase Order", "Index", "PurchaseOrder", null, new { target = "_blank" }) | @Html.ActionLink("Invoice", "Index", "Invoice", null, new { target = "_blank" }) | @Html.ActionLink("Report", "Index", "ReportsExcel", null, new { target = "_blank" }) |
+        @Html.ActionLink("Shipment", "Development", "Home", null, new { target = "_blank" }) | @Html.ActionLink("Maintenance", "Development", "Home", null, new { target = "_blank" }) | @Html.ActionLink("Web Setup", "Development", "Home", null, new { target = "_blank" }) |
+        @Html.ActionLink("Misc. Utility", "Development", "Home", null, new { target = "_blank" }) | @Html.ActionLink("Tables Admin", "Index", "TablesAdmin") |
+    </div>
+    <div id="body" style="padding-left: 20px; padding-right: 20px;">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+    <footer>
+        <div class="left" style="margin-right: 10px; padding-left: 20px;">
+            Copyright 2013, The Essence of Time 
+        </div>
+        <div class="lnkWhite" style="color: white">
+            | @Html.ActionLink("Home", "Index", "Home", null, new { id = "lnkHomeid" }) |  
+        </div>
+        <div class="clear"></div>
+    </footer>
+    <div id="loadingHlpDialogid">
+        <div class="viosbox" id="waitLoadingImage" style="display: none; text-align: center; margin-top: 15px;">
+            <img alt="Loading" src="@Url.Content("~/Images/ajaxanim.gif")" />&nbsp;<span>Loading ...</span>
+        </div>
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-ui-1.8.24.js")"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(initializeLayout);
+
+        function initializeLayout() {
+            //Attach handlers
+            jQuery("#lnkHomeid").click(homeHlp);
+        }
+
+        function homeHlp(src, arg) {
+            //debugger;
+            var hrefHlp = src.target.href;
+            window.location.assign(hrefHlp);
+        }
+
+        function goHome() {
+            //debugger;
+
+            //window.location.assign("http://localhost:51034/")
+            jQuery("#lnkHomeid").trigger('click');
+
+        }
+    </script>
+    @Scripts.Render("~/Scripts/TimelyMVC/Timely-common.js")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,11 @@
+            if (User.IsInRole("Owner"))
+            {
+                return View();
+            }
+            if (User.IsInRole("Admin"))
+            {
+                return View();
+            }
+
+            return RedirectToAction("LogOn", "Account");
+            //return View();

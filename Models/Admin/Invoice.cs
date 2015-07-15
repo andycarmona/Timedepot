@@ -16,6 +16,13 @@ namespace TimelyDepotMVC.Models.Admin
         [Display(Name = "Invoice No")]
         public string InvoiceNo { get; set; }
 
+        public int InvoiceNoSortData { 
+            get
+            {
+                return Convert.ToInt32(InvoiceNo);
+            }
+        }
+
         public int? SalesOrderId { get; set; }
 
         [Display(Name = "Sales Order No")]

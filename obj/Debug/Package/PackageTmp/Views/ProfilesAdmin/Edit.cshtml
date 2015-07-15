@@ -1,0 +1,62 @@
+﻿@model TimelyDepotMVC.Models.Admin.Profiles
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Profiles</legend>
+
+        @Html.HiddenFor(model => model.UserId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PropertyNames)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PropertyNames)
+            @Html.ValidationMessageFor(model => model.PropertyNames)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PropertyValueStrings)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PropertyValueStrings)
+            @Html.ValidationMessageFor(model => model.PropertyValueStrings)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PropertyValueBinary)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PropertyValueBinary)
+            @Html.ValidationMessageFor(model => model.PropertyValueBinary)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastUpdatedDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastUpdatedDate)
+            @Html.ValidationMessageFor(model => model.LastUpdatedDate)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

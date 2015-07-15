@@ -1,0 +1,188 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.CustomersCreditCardShipping>
+
+@{
+    ViewBag.Title = "Customers Credit Card Shiping";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreditNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CardType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SecureCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Zip)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+    </tr>
+    @{
+        int nHas = 0;
+        int nPos = -1;
+        string szError = "";
+        string szDecriptedData = "";
+        string szDecriptedCode = "";
+        string szMsg = "";
+    }
+    @foreach (var item in Model)
+    {
+
+        szError = "";
+        szDecriptedData = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.CreditNumber, ref szError);
+        if (!string.IsNullOrEmpty(szError))
+        {
+            nPos = szError.IndexOf("data to decode");
+            if (nPos != -1)
+            {
+                szDecriptedData = string.Empty;
+            }
+            else
+            {
+                szDecriptedData = string.Format("******");
+            }
+        }
+        else
+        {
+            //Mask the card number
+            nHas = szDecriptedData.Length;
+            if (nHas > 4)
+            {
+                szMsg = szDecriptedData.Substring(nHas - 4, 4);
+                szDecriptedData = string.Format("******{0}", szMsg);
+            }
+            else
+            {
+                szDecriptedData = string.Format("******");
+            }
+        }
+
+        szDecriptedCode = TimelyDepotMVC.Controllers.PaymentController.DecodeInfo02(item.SecureCode, ref szError);
+        if (!string.IsNullOrEmpty(szError))
+        {
+            nPos = szError.IndexOf("data to decode");
+            if (nPos != -1)
+            {
+                szDecriptedCode = string.Empty;
+            }
+            else
+            {
+                szDecriptedCode = string.Format("***");
+            }
+        }
+        else
+        {
+            //Mask the card number
+            nHas = szDecriptedCode.Length;
+            if (nHas > 3)
+            {
+                szMsg = szDecriptedCode.Substring(nHas - 3, 3);
+                szDecriptedData = string.Format("******{0}", szMsg);
+                szDecriptedData = string.Format("***");
+            }
+            else
+            {
+                szDecriptedCode = string.Format("******");
+            }
+        }
+    
+        <tr>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.CreditNumber)*@
+                @szDecriptedData
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CardType)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.SecureCode)*@
+                @szDecriptedCode
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="15">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+        </td>
+    </tr>
+
+</table>

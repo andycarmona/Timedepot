@@ -1,0 +1,164 @@
+﻿@model TimelyDepotMVC.Models.Admin.ITEM
+
+@{
+    ViewBag.Title = "Inventory File";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+<div class="divh1">@ViewBag.Title&nbsp;-&nbsp;Open Sales Orders</div>
+
+<div style="border: 1px solid #6B6C69; padding: 5px 50px 5px 50px;">
+    <div class="cf">
+        <div class="editor-label left">
+            Item&nbsp;No.:&nbsp;<span style="font-weight: bold;">@Html.DisplayFor(model => model.ItemID)</span>
+        </div>
+        <div class="left" style="width: 500px; margin-left: 300px;">
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
+        </div>
+        <div class="right">
+            @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
+            <div class="editor-field" style="display: none;">
+                @Html.EditorFor(model => model.Inactive)
+                @Html.ValidationMessageFor(model => model.Inactive)
+            </div>
+        </div>
+    </div>
+    <div id="openorderid">
+        Open Sales Orders
+    </div>
+    <div style="width: 50px; margin: 5px auto;">
+        <input id="btQuit" class="btn btn-default" type="button" value="Quit" />
+    </div>
+</div>
+<div style="display: none;">
+    @Html.ActionLink("Previous", "PreviousSalesHistorybyItemTab", "Inventory", new { id = Model.ItemID, opcion = "1" }, new { id = "lnkPrevious" })
+    @Html.ActionLink("Next", "NextSalesHistorybyItemTab", "Inventory", new { id = Model.ItemID, opcion = "1"  }, new { id = "lnkNext" })
+    @Html.ActionLink("OpenOrder", "OpenSalesOrderbyItem", "Inventory", new { id = Model.ItemID }, new { id = "lnkOpenSalesOrder" })
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        jQuery(document).ready(initializeOpenSales);
+
+        function initializeOpenSales() {
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Intialize fields
+            SetActiveInactiveSelector();
+            jQuery("#selectiteminactiveid").attr("disabled", "disabled");
+
+            //Attach handlers 
+            jQuery("#btPrevious").click(clickbtPrevious);
+            jQuery("#btNext").click(clickbtNext);
+            jQuery("#btQuit").click(clickbtQuit);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+
+            //Load sales history
+            LoadSalesOrder();
+        }
+        function LoadSalesOrder() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkOpenSalesOrder").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesOrderSuccess
+            });
+        }
+        function salesOrderSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#openorderid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationreceived);
+
+        }
+        function eachlnknavigationreceived(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectPOReceivedpage);
+            }
+        }
+        function clicklnkselectPOReceivedpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesOrderSuccess
+            });
+        }
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function SetActiveInactiveSelector() {
+            //debugger;
+
+            var szActiveInactive = jQuery("#item_Inactive").val();
+
+            var ddlHlp = jQuery("#selectiteminactiveid")[0];
+            if (szActiveInactive == "") {
+                ddlHlp.selectedIndex = 1;
+            }
+            else {
+                if (szActiveInactive == "Y") {
+                    ddlHlp.selectedIndex = 2;
+                }
+                else {
+                    ddlHlp.selectedIndex = 1;
+                }
+            }
+        }
+        function clickbtPrevious(src, arg) {
+            var szUrl = jQuery("#lnkPrevious").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtNext(src, arg) {
+            var szUrl = jQuery("#lnkNext").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtQuit(src, arg) {
+            window.close();
+        }
+
+    </script>
+}

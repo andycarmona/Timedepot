@@ -1,0 +1,57 @@
+﻿@model TimelyDepotMVC.Models.Admin.aspnet_Users
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>aspnet_Users</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ApplicationId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ApplicationId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.UserName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UserName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LoweredUserName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LoweredUserName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MobileAlias)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MobileAlias)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsAnonymous)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsAnonymous)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastActivityDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastActivityDate)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.UserId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,135 @@
+﻿@model TimelyDepotMVC.Models.Admin.SUB_ITEM
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SUB_ITEM</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ItemID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ItemID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Sub_ItemID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sub_ItemID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Field1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Field1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Sub_GroupID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sub_GroupID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OnHand_Db)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OnHand_Db)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OnHand_Cr)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OnHand_Cr)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OpenSO_Db)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpenSO_Db)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OpenSO_Cr)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpenSO_Cr)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OpenPO_Db)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpenPO_Db)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OpenPO_Cr)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpenPO_Cr)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Qty_Db)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty_Db)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Qty_Cr)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty_Cr)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GrossPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GrossPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NetPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NetPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PartNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PartNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.VendorStock)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VendorStock)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

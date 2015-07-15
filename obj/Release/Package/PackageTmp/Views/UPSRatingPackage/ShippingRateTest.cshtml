@@ -1,0 +1,571 @@
+﻿@{
+    ViewBag.Title = "ShippingRateTest";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeShippingRate);
+
+        function initializeShippingRate() {
+
+            //Set button
+            jQuery("#Submit1").button();
+
+            //Attach handlers
+            jQuery("#lnkselectitemid").click(clicklnkselectitemid);
+            jQuery("#getshippingcostformid").submit(submitgetshippingcostformid);
+            jQuery("#lnkseelogid").click(clicklnkseelogid);
+            jQuery("#lnkParametersId").click(clicklnkParametersId);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#selectitemdialog").dialog({ autoOpen: false, modal: true });
+
+            //Load parameters
+            LoadParameters();
+        }
+
+        function clicklnkResetselectItemIdHlp(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target.parentNode).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectitemSuccess
+            });
+        }
+
+        function clicklnkselectitemid(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+
+            //Get qty
+            var szQty = jQuery("#qty").val();
+
+            //Hide table with costs
+            jQuery("#shippingrateresultsid").css("display", "none");
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+            if (szQty != "") {
+                szUrl = szUrl + '?qty=' + szQty;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectitemSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function selectitemSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#selectitemdialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            jQuery(".pagination ul li a").each(eachlnknavigationDetails);
+            jQuery("#lnkResetselectItemIdHlp").click(clicklnkResetselectItemIdHlp);
+            jQuery("#searchselectitemid").submit(submitsearchselectitemid);
+            jQuery(".lnkselectitemid a").each(eachlnkselectitemid);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Item";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#selectitemdialog").dialog("option", "title", "Select " + szTitle);
+
+            //setter
+            jQuery("#selectitemdialog").dialog("option", "width", 1000);
+
+            //display the popup dialog
+            jQuery("#selectitemdialog").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#selectitemdialog").dialog("close");
+        }
+
+        function eachlnknavigationDetails(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnknavigationDetails);
+            }
+        }
+
+        function clicklnknavigationDetails(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get qty
+            var szQty = jQuery("#qty").val();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+            if (szQty != "") {
+                szUrl = szUrl + '&qty=' + szQty;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectitemSuccess
+            });
+        }
+        function submitsearchselectitemid(src, arg) {
+            //debugger;
+
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get qty
+            var szQty = jQuery("#qty").val();
+
+            //Get Itemid
+            var szItemId = jQuery("#searchItem").val();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkResetselectItemIdHlp").attr("href");
+            if (szQty != "") {
+                szUrl = szUrl + '?qty=' + szQty + '&itemId=' + szItemId;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectitemSuccess
+            });
+        }
+
+        function eachlnkselectitemid(nPos, src) {
+            jQuery(src).click(clickeachlnkselectitemid);
+        }
+        function clickeachlnkselectitemid(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+            var szCaseDimensionH = "";
+            var szCaseDimensionW = "";
+            var szCaseDimensionL = "";
+            var szCaseWeight = "";
+            var szUnitPerCase = "";
+            var szUnitWeightid = "";
+            var szItemId = "";
+            var szMsg;
+            var szHref = src.target.href;
+            if (szHref != "") {
+                szMsg = szHref.split('/');
+                szItemId = szMsg[szMsg.length - 1];
+                if (szItemId != "") {
+                    jQuery("#itemId").val(szItemId);
+
+                    szMsg = '#UW_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#UnitWeightid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#UpC_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#UnitPerCaseid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#CW_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#CaseWeightid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#CDL_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#CaseDimensionLid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#CDW_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#CaseDimensionWid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#CDH_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#CaseDimensionHid").val(szUnitWeightid);
+                    }
+
+                    szMsg = '#UnitPrice_' + szItemId;
+                    szUnitWeightid = jQuery(szMsg).html();
+                    szUnitWeightid = jQuery.trim(szUnitWeightid);
+                    if (szUnitWeightid != "") {
+                        jQuery("#UnitPriceid").val(szUnitWeightid);
+                    }
+                }
+            }
+
+            jQuery("#itemdataid").css("display", "block");
+
+            jQuery("#selectitemdialog").dialog("close");
+
+        }
+        function submitgetshippingcostformid(src, arg) {
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //debugger;
+            var actionHlp = src.target.action;
+
+            //Get qty
+            var szQty = jQuery("#qty").val();
+
+            //Get Itemid
+            var szItemId = jQuery("#itemId").val();
+
+            //Get zip code
+            var szZipCode = jQuery("#zipcode").val();
+
+            //Declare value
+            var szDeclareValue = jQuery("#chkDeclarevalue").attr("checked");
+
+            //Negociated rate
+            var szNegociatedRate = jQuery("#chkNegotiatedRates").attr("checked");
+
+
+            //Get the partial view
+            var szUrl = actionHlp;
+            if (szQty != "") {
+                szUrl = szUrl + '?qty=' + szQty + '&itemId=' + szItemId + '&zipcode=' + szZipCode;
+                if (szDeclareValue == "checked") {
+                    szUrl = szUrl + '&declarevalue=true';
+                }
+                if (szNegociatedRate == "checked") {
+                    szUrl = szUrl + '&negociatednrate=true';
+                }
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: getshippingcostSuccess
+            });
+        }
+        function getshippingcostSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#shippingrateresultsid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Display table cost 
+            jQuery("#shippingrateresultsid").css("display", "block");
+            jQuery("#lnkseeratelogid").css("display", "block");
+            jQuery("#lnkBackid").css("display", "block");
+        }
+
+        function clicklnkseelogid(src, arg) {
+            //debugger;
+
+            //Get Itemid
+            var szItemId = jQuery("#ratelogidHlp").html();
+            szItemId = jQuery.trim(szItemId);
+
+            var hrefHlp = src.target.href;
+            if (szItemId != "") {
+                hrefHlp = hrefHlp + '?id=' + szItemId;
+                src.target.href = hrefHlp;
+            }
+        }
+
+        function clicklnkParametersId(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = src.target.href;
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: parametersSuccess
+            });
+        }
+        function parametersSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#rateparametersid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+        }
+
+        function LoadParameters() {
+            jQuery("#lnkParametersId").trigger('click');
+        }
+    </script>
+}
+
+<div class="divh1">@ViewBag.Title</div>
+
+@{
+    List<string> errorList = null;
+    if (ViewBag.errorList != null)
+    {
+        errorList = ViewBag.errorList;
+
+    }    
+}
+<div id="rateparametersid">
+
+</div>
+<div class="error" style="width: 600px; margin: 5px auto;">
+    @ViewBag.ErrorMsg
+    @if (errorList != null)
+    {
+        foreach (var item in errorList)
+        {
+        @item
+        }
+    }
+</div>
+<div style="margin: 10px auto; width: 1000px;">
+    <div>
+        @using (Html.BeginForm("GetShippingCost", "UPSRatingPackage", null, FormMethod.Post, new { id = "getshippingcostformid" }))
+        {
+            <div>
+                <div class="left" style="margin: 5px;">
+                    <div class="left" style="margin-right: 5px;">@Html.ActionLink("Select item", "SelectItem", "UPSRatingPackage", null, new { id = "lnkselectitemid" })</div>
+                    <div class="left" style="margin-right: 5px;">Item:</div>
+                    <input id="itemId" name="itemId" type="text" value="DF4011" title="Please enter or select the ItemId" />
+
+                </div>
+                <div class="left" style="margin: 5px;">
+                    <div class="left" style="margin-right: 5px;">Quantity:</div>
+                    <input id="qty" name="qty" type="text" value="150" title="Please enter a value > 50" />
+                </div>
+                <div class="left" style="margin: 5px;">
+                    <div class="left" style="margin-right: 5px;">Zip Code:</div>
+                    <input id="zipcode" name="zipcode" type="text" value="@ViewBag.ShipToPostalCode" title="Please enter Zip Code" />
+                </div>
+                <div class="left" style="margin: 5px;">
+                    <div class="left">Declare value is zero</div>
+                    <input id="chkDeclarevalue" name="chkDeclarevalue" type="checkbox" />
+                </div>
+                <div class="left" style="margin: 5px;">
+                    <div class="left">Negotiated Rates</div>
+                    <input id="chkNegotiatedRates" name="chkNegotiatedRates" type="checkbox" checked="checked" />
+                </div>
+            </div> 
+            <br />           
+            <div style="margin: 5px; padding-top: 3px;">
+                <input id="Submit1" type="submit" value="Get Cost" />
+            </div>
+        }
+    </div>
+    <div id="itemdataid" style="width: 360px; margin: 5px auto; border: 2px solid #000; padding: 5px; display: none;">
+        <table>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Unit&nbsp;Weight
+                    </div>
+
+                </td>
+                <td>
+                    <div class="editor-field">
+                        <input id="UnitWeightid" type="text" />
+                    </div>
+                </td>
+                <td>&nbsp;
+                </td>
+                <td colspan="3" rowspan="5" style="vertical-align: top; width: 600px;">&nbsp;
+                </td>
+            </tr>
+            @*            <tr>
+                <td>Unit Dimension</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>L</td>
+                            <td>
+                                <div class="viosinput40">
+                                    @Html.EditorFor(model => model.item.DimensionL)
+                                    @Html.ValidationMessageFor(model => model.item.DimensionL)
+                                </div>
+                            </td>
+                            <td>W</td>
+                            <td>
+                                <div class="viosinput40">
+                                    @Html.EditorFor(model => model.item.DimensionD)
+                                    @Html.ValidationMessageFor(model => model.item.DimensionD)
+                                </div>
+                            </td>
+                            <td>H</td>
+                            <td>
+                                <div class="viosinput40">
+                                    @Html.EditorFor(model => model.item.DimensionH)
+                                    @Html.ValidationMessageFor(model => model.item.DimensionH)
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>*@
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Unit&nbsp;Per&nbsp;Case
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        <input id="UnitPerCaseid" type="text" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Case&nbsp;Weight
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        <input id="CaseWeightid" type="text" />
+                    </div>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Case Dimension</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>L</td>
+                            <td>
+                                <div class="viosinput40">
+                                    <input id="CaseDimensionLid" type="text" />
+                                </div>
+                            </td>
+                            <td>W</td>
+                            <td>
+                                <div class="viosinput40">
+                                    <input id="CaseDimensionWid" type="text" />
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>H</td>
+                            <td>
+                                <div class="viosinput40">
+                                    <input id="CaseDimensionHid" type="text" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Unit&nbsp;Price
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        <input id="UnitPriceid" type="text" />
+                    </div>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+    <div id="shippingrateresultsid">
+    </div>
+    <div style="margin: 10px;">
+        <div id="lnkBackid" class="left" style="margin:5px; display:none;">@Html.ActionLink("Back", "Index", "UPSRatingPackage")</div>
+        <div id="lnkseeratelogid" style="padding-left: 100px; padding-top:3px; display: none;">@Html.ActionLink("See Rate Log", "Index", "PackageRateLogAdmin", null, new { id = "lnkseelogid" })</div>
+    </div>
+</div>
+<div id="selectitemdialog">
+    Select Item data here
+</div>
+<div id="lnkParameters" style="display:none;">
+    @Html.ActionLink("Parameters", "Parameters","UPSRatingPackage", null, new { id="lnkParametersId"})
+</div>

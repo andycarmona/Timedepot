@@ -1,0 +1,173 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.Invoice>
+
+@{
+    ViewBag.Title = "Invoice";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>InvoiceId</th>
+        <th>
+            @Html.DisplayNameFor(model => model.SalesOrderNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShipVia)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShipDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TradeId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerShiptoId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerShipLocation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VendorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BussinesType)
+        </th>
+@*        <th>
+            @Html.DisplayNameFor(model => model.VendorAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentTerms)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippingHandling)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreaditCardNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsBlindShip)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SalesRep)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TrackingNo)
+        </th>*@
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.InvoiceId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.InvoiceId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.InvoiceId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InvoiceId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SalesOrderNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InvoiceNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InvoiceDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShipVia)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShipDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TradeId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerShiptoId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerShipLocation)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VendorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BussinesType)
+        </td>
+@*        <td>
+            @Html.DisplayFor(modelItem => item.VendorAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PurchaseOrderNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaymentTerms)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaymentDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaymentAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShippingHandling)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreaditCardNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Note)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsBlindShip)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SalesRep)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TrackingNo)
+        </td>*@
+    </tr>
+}
+    <tr>
+        <td colspan="10">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+        </td>
+    </tr>
+
+</table>

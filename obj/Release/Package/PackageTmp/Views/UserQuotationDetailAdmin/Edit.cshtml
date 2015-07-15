@@ -1,0 +1,95 @@
+﻿@model TimelyDepotMVC.Models.Admin.UserQuotationDetail
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>UserQuotationDetail</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DetailId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.DetailId)
+            @Html.ValidationMessageFor(model => model.DetailId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProductType)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ProductType)
+            @Html.ValidationMessageFor(model => model.ProductType)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Quantity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Quantity)
+            @Html.ValidationMessageFor(model => model.Quantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShippedQuantity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShippedQuantity)
+            @Html.ValidationMessageFor(model => model.ShippedQuantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BOQuantity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BOQuantity)
+            @Html.ValidationMessageFor(model => model.BOQuantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Amount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Amount)
+            @Html.ValidationMessageFor(model => model.Amount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ItemID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ItemID)
+            @Html.ValidationMessageFor(model => model.ItemID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Status)
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

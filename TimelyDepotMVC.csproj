@@ -878,7 +878,30 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="UPSWrappers\ResultData.cs" />
+    <Compile Include="UPSWrappers\ShipmentModule.cs" />
+    <Compile Include="UPSWrappers\UPSConstants.cs" />
+    <Compile Include="UPSWrappers\UPSRateServiceWrapper.cs" />
+    <Compile Include="UPSWrappers\UPSShipServiceWrapper.cs" />
+    <Compile Include="UPSWrappers\UPSTimeInTransitWrapper.cs" />
+    <Compile Include="UPSWrappers\UPSUtility.cs" />
     <Compile Include="UPSWrappers\UPSXAVService.cs" />
+    <Compile Include="Web References\UPSRateService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\UPSShipService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\UPSTimeInTransit\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\XAVService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -990,6 +1013,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
+    <None Include="Properties\PublishProfiles\tst.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\01.png" />
     <Content Include="Images\05.png" />
@@ -1094,6 +1118,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
+    <Content Include="Scripts\jquery.jqGrid.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -1968,6 +1993,76 @@
     <Content Include="Views\Customers\CreateEditCreditCardFromPayment.cshtml" />
     <Content Include="Views\Payment\EditCashPayments.cshtml" />
     <Content Include="Views\Payment\ViewRefund.cshtml" />
+    <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
+    <None Include="Web References\UPSRateService\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSRateService\Error1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web References\UPSRateService\RateResponse1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\UPSRateService\RateWebServiceSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSRateService\RateWS.wsdl" />
+    <None Include="Web References\UPSRateService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\UPSRateService\UPSSecurity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSShipService\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSShipService\Error1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSShipService\IFWS.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web References\UPSShipService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\UPSShipService\Ship.wsdl" />
+    <Content Include="Web References\UPSShipService\ShipAcceptResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\UPSShipService\ShipConfirmResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\UPSShipService\ShipmentResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\UPSShipService\ShipWebServiceSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSShipService\UPSSecurity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSTimeInTransit\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSTimeInTransit\Error1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web References\UPSTimeInTransit\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\UPSTimeInTransit\TimeInTransit.wsdl" />
+    <Content Include="Web References\UPSTimeInTransit\TimeInTransitResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\UPSTimeInTransit\TimeInTransitWebServiceSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\UPSTimeInTransit\UPSSecurity.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2002,6 +2097,39 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>TimelyDepotMVC_XAVService_XAVService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\RateWebReference\RateWS.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\UPSRateService\</RelPath>
+      <UpdateFromURL>D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\RateWebReference\RateWS.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TimelyDepotMVC_RateService_RateService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\ShipServiceWebReference\Ship.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\UPSShipService\</RelPath>
+      <UpdateFromURL>D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\ShipServiceWebReference\Ship.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TimelyDepotMVC_UPSShipService_ShipService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\TimeInTransitWebReference\TNTWS.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\UPSTimeInTransit\</RelPath>
+      <UpdateFromURL>D:\Work\UPS Shipment\Source\TimelyDepotMVC\Web References\TimeInTransitWebReference\TNTWS.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TimelyDepotMVC_UPSTimeInTransit_TimeInTransitService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>

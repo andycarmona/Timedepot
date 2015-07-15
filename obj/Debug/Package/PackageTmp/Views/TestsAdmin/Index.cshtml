@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Import inventory.xls data";
+    Layout = "~/Views/Shared/_LayoutTest.cshtml";
+}
+@*    @section scripts{
+        <script type="text/javascript">
+            jQuery(document).ready(initialiazieLayout);
+
+            function initialiazieLayout() {
+                alert('initialiazieLayout');
+            }
+        </script>
+    }*@
+<div class="divh1">@ViewBag.Title</div>
+<div class="error" style="width: 600px; margin: 5px auto;">
+    @ViewBag.ImportMessage
+</div>
+<div style="width: 600px; margin: 5px auto;">
+    @Html.ActionLink("Import inventory.xls", "ImportInventory", "TestsAdmin")&nbsp;@Html.ActionLink("PDF Reports", "Index", "PDFReports", null, new { target = "_blank" })
+</div>
+<div>
+    <table>
+        <tr>
+            <td>@Html.ActionLink("iText Tests", "Index", "iTextReports")</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>

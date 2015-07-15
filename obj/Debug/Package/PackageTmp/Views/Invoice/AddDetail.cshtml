@@ -1,0 +1,84 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.SUB_ITEM>
+
+<div>
+    <div style="width: 90%; margin: 0px auto 5px auto">
+        @using (Html.BeginForm("AddDetail", "Invoice", new { salesorderid = ViewBag.SalesOrderId, itemPos = ViewBag.ItemPos, itemOrder = ViewBag.ItemOrder }, FormMethod.Get, new { id = "searchsubitemid" }))
+        {
+            <div style="margin: 0px auto; width: 100%">
+                <div class="left" style="margin-right:5px;">
+                    <div class="left" style="margin-right: 3px; padding-top: 10px;">Search by item:</div>
+                    <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
+                    <input id="btnSubmitSearch" class="btnSubmitSearch" type="submit" value="Search" />
+                </div>
+                <div class="lnkResetId">
+                    @Html.ActionLink("Reset", "AddDetail", "Invoice", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkResetIdHlp", @class = "btnSubmitSearch" })
+                </div>
+            </div>    
+        }
+
+    </div>
+    <table class="webgrid" style="width: 90%; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sub_ItemID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GrossPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NetPrice)
+            </th>
+        </tr>
+        @{
+
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+        }
+
+        @foreach (var item in Model)
+        {
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row";
+            }
+            else
+            {
+                szClass = "webgrid-row-style";
+            }
+            <tr class="@szClass">
+                <td class="adddetailShipment">
+                    @Html.ActionLink("Select", "AddSalesOrderDetails", "Invoice" ,new { id = item.Id, salesorderId = ViewBag.SalesOrderId, itemPos = ViewBag.ItemPos, itemOrder = ViewBag.ItemOrder }, null) |
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sub_ItemID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GrossPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NetPrice)
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="5" class="lnkNavAddDetails">
+                <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("AddDetail", new { page, salesorderid = ViewBag.SalesOrderId, searchitem = ViewBag.SearchItem, itemPos = ViewBag.ItemPos, itemOrder = ViewBag.ItemOrder }))
+
+            </td>
+        </tr>
+
+    </table>
+</div>

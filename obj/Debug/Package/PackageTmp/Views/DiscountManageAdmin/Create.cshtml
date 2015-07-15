@@ -1,0 +1,54 @@
+﻿@model TimelyDepotMVC.Models.Admin.DiscountManage
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>DiscountManage</legend>
+
+        <div style="display:none">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.id)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.id)
+                @Html.ValidationMessageFor(model => model.id)
+            </div>
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DiscountName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.DiscountName)
+            @Html.ValidationMessageFor(model => model.DiscountName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DiscountPercentage)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.DiscountPercentage)
+            @Html.ValidationMessageFor(model => model.DiscountPercentage)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,64 @@
+﻿@model TimelyDepotMVC.Models.Admin.Payments
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Payments</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CustomerNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CustomerNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesOrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesOrderNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentType)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReferenceNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReferenceNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Amount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Amount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentDate)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

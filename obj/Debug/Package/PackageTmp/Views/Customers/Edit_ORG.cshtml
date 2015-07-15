@@ -1,0 +1,2073 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model TimelyDepotMVC.ModelsView.CustomerView
+
+@{
+    ViewBag.Title = "Customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeCustomerEdit);
+
+        function initializeCustomerEdit() {
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery(".lnkCreateEditNoteCustomer").each(eachlnkCreateEditNoteCustomer);
+            jQuery(".lnkCreateEditSubsidiaryCustomer").each(eachlnkCreateEditSubsidiaryCustomer);
+            jQuery(".lnkCreateEditSaleCustomer").each(eachlnkCreateEditSaleCustomer);
+            jQuery(".lnkCreateEditShipCustomer").each(eachlnkCreateEditShipCustomer);
+            jQuery("#salescontactselectorId").change(changesalescontactselectorId);
+            jQuery("#subsidiaryselectorId").change(changesubsidiaryselectorId);
+            jQuery("#shipselectorId").change(changeshipselectorId);
+            jQuery("#creditcardselectorId").change(changecreditcardselectorId);
+            jQuery("#samebillingasmainid").click(clicksamebillingasmainid);
+
+            //Create the tabs
+            //jQuery("#tabs").tabs({ load: loadTab });
+            jQuery("#tabs").tabs({ beforeActivate: bfactabs });
+            jQuery("#summarytabs").tabs({ beforeActivate: bfacsummarytabs });
+            //jQuery("#summarytabs").tabs();
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#editcustomerdialoid").dialog({ autoOpen: false, modal: true });
+
+            //Load the forms used in the tabs
+            LoadSalesContact();
+            LoadSubsidiary();
+            LoadShiptoAddress();
+            LoadCreditCard();
+            SetTabIndex();
+            SetBilling();
+
+            //The active tab
+            //debugger;
+            var szActiveTab = '@ViewBag.ActiveTab';
+            if (szActiveTab != "") {
+                jQuery("#tabs").tabs("option", "active", szActiveTab);
+            }
+        }
+
+        function SetBilling() {
+            //debugger;
+            //var objHlp = jQuery("#customerbilling_Address1").css("font-size");
+            jQuery("#customerbilling_Address1").css("font-size", "0.95em");
+            jQuery("#customerbilling_Address1").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Address1").css("padding-top", "8px");
+            jQuery("#customerbilling_Address1").css("padding-left", "8px");
+            jQuery("#customerbilling_Address1").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Title").css("font-size", "0.95em");
+            jQuery("#customerbilling_Title").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Title").css("padding-top", "8px");
+            jQuery("#customerbilling_Title").css("padding-left", "8px");
+            jQuery("#customerbilling_Title").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_FirstName").css("font-size", "0.95em");
+            jQuery("#customerbilling_FirstName").css("padding-bottom", "8px");
+            jQuery("#customerbilling_FirstName").css("padding-top", "8px");
+            jQuery("#customerbilling_FirstName").css("padding-left", "8px");
+            jQuery("#customerbilling_FirstName").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_LastName").css("font-size", "0.95em");
+            jQuery("#customerbilling_LastName").css("padding-bottom", "8px");
+            jQuery("#customerbilling_LastName").css("padding-top", "8px");
+            jQuery("#customerbilling_LastName").css("padding-left", "8px");
+            jQuery("#customerbilling_LastName").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Address2").css("font-size", "0.95em");
+            jQuery("#customerbilling_Address2").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Address2").css("padding-top", "8px");
+            jQuery("#customerbilling_Address2").css("padding-left", "8px");
+            jQuery("#customerbilling_Address2").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Tel").css("font-size", "0.95em");
+            jQuery("#customerbilling_Tel").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Tel").css("padding-top", "8px");
+            jQuery("#customerbilling_Tel").css("padding-left", "8px");
+            jQuery("#customerbilling_Tel").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Fax").css("font-size", "0.95em");
+            jQuery("#customerbilling_Fax").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Fax").css("padding-top", "8px");
+            jQuery("#customerbilling_Fax").css("padding-left", "8px");
+            jQuery("#customerbilling_Fax").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_City").css("font-size", "0.95em");
+            jQuery("#customerbilling_City").css("padding-bottom", "8px");
+            jQuery("#customerbilling_City").css("padding-top", "8px");
+            jQuery("#customerbilling_City").css("padding-left", "8px");
+            jQuery("#customerbilling_City").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_State").css("font-size", "0.95em");
+            jQuery("#customerbilling_State").css("padding-bottom", "8px");
+            jQuery("#customerbilling_State").css("padding-top", "8px");
+            jQuery("#customerbilling_State").css("padding-left", "8px");
+            jQuery("#customerbilling_State").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Email").css("font-size", "0.95em");
+            jQuery("#customerbilling_Email").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Email").css("padding-top", "8px");
+            jQuery("#customerbilling_Email").css("padding-left", "8px");
+            jQuery("#customerbilling_Email").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Zip").css("font-size", "0.95em");
+            jQuery("#customerbilling_Zip").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Zip").css("padding-top", "8px");
+            jQuery("#customerbilling_Zip").css("padding-left", "8px");
+            jQuery("#customerbilling_Zip").css("padding-rigth", "8px");
+
+            jQuery("#customerbilling_Country").css("font-size", "0.95em");
+            jQuery("#customerbilling_Country").css("padding-bottom", "8px");
+            jQuery("#customerbilling_Country").css("padding-top", "8px");
+            jQuery("#customerbilling_Country").css("padding-left", "8px");
+            jQuery("#customerbilling_Country").css("padding-rigth", "8px");
+        }
+
+        function loadTab(event, ui) {
+            //debugger;
+
+            //Use the required ui
+            if (ui.index == 1) {
+                //Create the buttons
+                jQuery(".divButtons a").button();
+            }
+        }
+
+        function eachlnkCreateEditNoteCustomer(nPos, src) {
+            jQuery(src).click(clicklnkCreateEditNoteCustomer);
+        }
+
+        function clicklnkCreateEditNoteCustomer(src, arg) {
+            //debugger;
+            src.preventDefault();
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: customerNoteSuccess
+            });
+        }
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function customerNoteSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editcustomerdialoid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            //jQuery("#lnkserachUserID").click(clicklnkserachUserID);
+            //jQuery("#lnkserachPais").click(clicklnkserachPais);
+            //jQuery("#lnkserachDepartamento").click(clicklnkserachDepartamento);
+            //jQuery("#lnkserachCiudad").click(clicklnkserachCiudad);
+            //jQuery(".verDepartamentosLnk a").each(eachverDepartamentosLnk);
+            //jQuery(".verCiudadLnk a").each(eachverCiudadLnk);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Customers";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editcustomerdialoid").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#editcustomerdialoid").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#editcustomerdialoid").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#editcustomerdialoid").dialog("close");
+        }
+
+        function eachlnkCreateEditSubsidiaryCustomer(Npo, src) {
+            jQuery(src).click(clicklnkCreateEditSubsidiaryCustomer);
+        }
+
+        function clicklnkCreateEditSubsidiaryCustomer(src, arg) {
+            //debugger;
+            src.preventDefault();
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: subsidiaryNoteSuccess
+            });
+        }
+
+        function subsidiaryNoteSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editcustomerdialoid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogCloseSubsidiary").click(clickbtDialogCloseSubsidiary);
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Subsidiary";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editcustomerdialoid").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#editcustomerdialoid").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#editcustomerdialoid").dialog("open");
+        }
+
+        function clickbtDialogCloseSubsidiary(src, arg) {
+            jQuery("#editcustomerdialoid").dialog("close");
+        }
+
+        function eachlnkCreateEditSaleCustomer(nPos, src) {
+            jQuery(src).click(clicklnkCreateEditSaleCustomer);
+        }
+
+        function clicklnkCreateEditSaleCustomer(src, arg) {
+            //debugger;
+            src.preventDefault();
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salesSuccess
+            });
+        }
+
+        function salesSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editcustomerdialoid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Set the tabinddexvalue
+            var objHlp = jQuery("#salescontactdataid");
+            var objHlp1 = jQuery("#salescontactdataid #FirstName");
+
+            //Attach handlers 
+            jQuery("#btDialogCloseSales").click(clickbtDialogCloseSales);
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Sales Contact";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editcustomerdialoid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editcustomerdialoid").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#editcustomerdialoid").dialog("open");
+        }
+
+        function clickbtDialogCloseSales(src, arg) {
+            jQuery("#editcustomerdialoid").dialog("close");
+        }
+
+        function eachlnkCreateEditShipCustomer(nPos, src) {
+            jQuery(src).click(clicklnkCreateEditShipCustomer);
+        }
+
+        function clicklnkCreateEditShipCustomer(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shipSuccess
+            });
+        }
+
+        function shipSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#editcustomerdialoid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogCloseSales").click(clickbtDialogCloseSales);
+
+            //Get the title 
+            //debugger;
+            var szTitle = "Ship to Address";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#editcustomerdialoid").dialog("option", "title", " " + szTitle);
+
+            //setter
+            jQuery("#editcustomerdialoid").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#editcustomerdialoid").dialog("open");
+        }
+
+        function LoadSalesContact() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkCreateEditSaleCustomer01").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salescontactSuccess
+            });
+        }
+
+        function salescontactSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#salescontactdataid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Set the tabindex
+            jQuery("#salescontactdataid #FirstName").attr("tabindex", "3");
+            jQuery("#salescontactdataid #LastName").attr("tabindex", "3");
+            jQuery("#salescontactdataid #Title").attr("tabindex", "3");
+            jQuery("#salescontactdataid #Tel").attr("tabindex", "3");
+            jQuery("#salescontactdataid #Fax").attr("tabindex", "3");
+            jQuery("#salescontactdataid #Email").attr("tabindex", "3");
+
+            jQuery("#salescontactdataid #Address").attr("tabindex", "4");
+            jQuery("#salescontactdataid #Note").attr("tabindex", "4");
+            jQuery("#salescontactdataid #City").attr("tabindex", "4");
+            jQuery("#salescontactdataid #State").attr("tabindex", "4");
+            jQuery("#salescontactdataid #Zip").attr("tabindex", "4");
+            jQuery("#salescontactdataid #Country").attr("tabindex", "4");
+
+            //Attach handlers 
+            jQuery("#samecustomerasmainid").click(clicksamecustomerasmainid);
+
+            //Set the dropdown selector 
+            var szMsg = "";
+            var szSalesContactIdHlp = jQuery("#salescontactId").val();
+            var ddlSalesContact = jQuery("#salescontactselectorId");
+            for (var i = 0; i < ddlSalesContact[0].length; i++) {
+                szMsg = ddlSalesContact[0][i].value;
+                if (szSalesContactIdHlp == szMsg) {
+                    //When this is enabled gives de efect of 'no sincorinized'
+                    //ddlSalesContact[0].selectedIndex = ddlSalesContact[0][i].index;
+                }
+            }
+
+            var nIndice = ddlSalesContact[0].selectedIndex;
+
+            //Attach handlers 
+            jQuery("#btAddSalesContact").click(clickbtAddSalesContact);
+            jQuery("#UpdateCustomerSalesid").submit(submitUpdateCustomerSalesid)
+
+            ////Get the title 
+            ////debugger;
+            //var szTitle = "Sales Contact";
+
+            ////Show the dialog (used with the BuscarDepartamento call)
+            //jQuery("#editcustomerdialoid").dialog("option", "title", " " + szTitle);
+
+            ////setter
+            //jQuery("#editcustomerdialoid").dialog("option", "width", 700);
+
+            ////display the popup dialog
+            //jQuery("#editcustomerdialoid").dialog("open");
+        }
+
+        function clickbtAddSalesContact(src, arg) {
+            //debugger;
+
+            //Display load image
+            //ShowLoadingDialog();
+
+            //Get the partial view
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditSaleCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + '0?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salescontactSuccess
+            });
+        }
+
+        function submitUpdateCustomerSalesid(src, arg) {
+            //debugger;
+            var szCustomerDefaultid = '@Model.customerdefaults.Id';
+            var hrefaction = src.target.action;
+            var nPos = hrefaction.lastIndexOf("?");
+            if (nPos != -1) {
+                hrefaction = hrefaction.substring(0, nPos + 1);
+                hrefaction = hrefaction + 'customerdefault=' + szCustomerDefaultid;
+            }
+            src.target.action = hrefaction;
+        }
+
+        function changesalescontactselectorId(src, arg) {
+            //debugger;
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditSaleCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + nId + '?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: salescontactSuccess
+            });
+        }
+
+        function clicksamecustomerasmainid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Copy from main contact createeditsalesid
+            var szObj = jQuery("#customeraddress_FirstName").val();
+            //jQuery("#FirstName").val(szObj);
+            jQuery("#createeditsalesid #FirstName").val(szObj);
+
+            jQuery("#createeditsalesid #LastName").val(jQuery("#customeraddress_LastName").val());
+            jQuery("#createeditsalesid #Address").val(jQuery("#customeraddress_Address").val());
+            jQuery("#createeditsalesid #Note").val(jQuery("#customeraddress_Note").val());
+
+            jQuery("#createeditsalesid #Tel").val(jQuery("#customeraddress_Tel").val());
+            jQuery("#createeditsalesid #Fax").val(jQuery("#customeraddress_Fax").val());
+            jQuery("#createeditsalesid #Zip").val(jQuery("#customeraddress_Zip").val());
+            jQuery("#createeditsalesid #Country").val(jQuery("#customeraddress_Country").val());
+
+            jQuery("#createeditsalesid #Title").val(jQuery("#customeraddress_Title").val());
+            jQuery("#createeditsalesid #City").val(jQuery("#customeraddress_City").val());
+            jQuery("#createeditsalesid #State").val(jQuery("#customeraddress_State").val());
+            jQuery("#createeditsalesid #Email").val(jQuery("#customeraddress_Email").val());
+        }
+
+        function LoadSubsidiary() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkCreateEditSubsidiaryCustomer01").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: subsidiarySuccess
+            });
+        }
+
+        function subsidiarySuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#subsidiarypartialid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Set the tabindex
+            jQuery("#subsidiarypartialid #CompanyName").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #FirstName").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #LastName").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #Title").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #Tel").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #Fax").attr("tabindex", "5");
+            jQuery("#subsidiarypartialid #Email").attr("tabindex", "5");
+
+            jQuery("#subsidiarypartialid #Address").attr("tabindex", "6");
+            jQuery("#subsidiarypartialid #Note").attr("tabindex", "6");
+            jQuery("#subsidiarypartialid #City").attr("tabindex", "6");
+            jQuery("#subsidiarypartialid #State").attr("tabindex", "6");
+            jQuery("#subsidiarypartialid #Zip").attr("tabindex", "6");
+            jQuery("#subsidiarypartialid #Country").attr("tabindex", "6");
+
+            //Attach handlers 
+            jQuery("#samesubsidiaryasmainid").click(clicksamesubsidiaryasmainid);
+
+            //Set the dropdown selector 
+            var szMsg = "";
+            var szSalesContactIdHlp = jQuery("#salescontactId").val();
+            var ddlSalesContact = jQuery("#salescontactselectorId");
+            for (var i = 0; i < ddlSalesContact[0].length; i++) {
+                szMsg = ddlSalesContact[0][i].value;
+                if (szSalesContactIdHlp == szMsg) {
+                    //When this is enabled gives de efect of 'no sincorinized'
+                    //ddlSalesContact[0].selectedIndex = ddlSalesContact[0][i].index;
+                }
+            }
+
+            var nIndice = ddlSalesContact[0].selectedIndex;
+
+            //Attach handlers 
+            jQuery("#btAddSubsidiary").click(clickbtAddSubsidiary);
+            jQuery("#UpdateCustomerSubsidiaryid").submit(submitUpdateCustomerSubsidiaryid)
+
+        }
+
+        function clicksamesubsidiaryasmainid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Copy from main contact createeditsalesid
+            var szObj = jQuery("#customeraddress_FirstName").val();
+            //jQuery("#FirstName").val(szObj);
+            jQuery("#subsidiarypartialid #FirstName").val(szObj);
+
+            jQuery("#subsidiarypartialid #LastName").val(jQuery("#customeraddress_LastName").val());
+            jQuery("#subsidiarypartialid #Address").val(jQuery("#customeraddress_Address").val());
+            jQuery("#subsidiarypartialid #Note").val(jQuery("#customeraddress_Note").val());
+
+            jQuery("#subsidiarypartialid #Tel").val(jQuery("#customeraddress_Tel").val());
+            jQuery("#subsidiarypartialid #Fax").val(jQuery("#customeraddress_Fax").val());
+            jQuery("#subsidiarypartialid #Zip").val(jQuery("#customeraddress_Zip").val());
+            jQuery("#subsidiarypartialid #Country").val(jQuery("#customeraddress_Country").val());
+
+            jQuery("#subsidiarypartialid #Title").val(jQuery("#customeraddress_Title").val());
+            jQuery("#subsidiarypartialid #City").val(jQuery("#customeraddress_City").val());
+            jQuery("#subsidiarypartialid #State").val(jQuery("#customeraddress_State").val());
+            jQuery("#subsidiarypartialid #Email").val(jQuery("#customeraddress_Email").val());
+        }
+
+        function submitUpdateCustomerSubsidiaryid(src, arg) {
+            //debugger;
+            var szCustomerDefaultid = '@Model.customerdefaults.Id';
+            var hrefaction = src.target.action;
+            var nPos = hrefaction.lastIndexOf("?");
+            if (nPos != -1) {
+                hrefaction = hrefaction.substring(0, nPos + 1);
+                hrefaction = hrefaction + 'customerdefault=' + szCustomerDefaultid;
+            }
+            src.target.action = hrefaction;
+        }
+
+        function clickbtAddSubsidiary(src, arg) {
+            //debugger;
+
+            //Display load image
+            //ShowLoadingDialog();
+
+            //Get the partial view
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditSubsidiaryCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + '0?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: subsidiarySuccess
+            });
+        }
+
+        function changesubsidiaryselectorId(src, arg) {
+            //debugger;
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditSubsidiaryCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + nId + '?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: subsidiarySuccess
+            });
+        }
+
+        function LoadShiptoAddress() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkCreateEditShipCustomer01").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shiptoaddressSuccess
+            });
+        }
+
+        function shiptoaddressSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#shiptoaddresspartialid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Set the tabindex
+            jQuery("#shiptoaddresspartialid #ShipperAccount").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #ShippingPreference").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #FirstName").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #LastName").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #Title").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #Tel").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #Fax").attr("tabindex", "7");
+            jQuery("#shiptoaddresspartialid #Email").attr("tabindex", "7");
+
+            jQuery("#shiptoaddresspartialid #Address1").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #Address2").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #Note").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #City").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #State").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #Zip").attr("tabindex", "8");
+            jQuery("#shiptoaddresspartialid #Country").attr("tabindex", "8");
+
+
+            //Attach handlers 
+            jQuery("#sameshipasmainid").click(clicksameshipasmainid);
+
+            //Set the dropdown selector 
+            var szMsg = "";
+            var szSalesContactIdHlp = jQuery("#salescontactId").val();
+            var ddlSalesContact = jQuery("#salescontactselectorId");
+            for (var i = 0; i < ddlSalesContact[0].length; i++) {
+                szMsg = ddlSalesContact[0][i].value;
+                if (szSalesContactIdHlp == szMsg) {
+                    //When this is enabled gives de efect of 'no sincorinized'
+                    //ddlSalesContact[0].selectedIndex = ddlSalesContact[0][i].index;
+                }
+            }
+
+            var nIndice = ddlSalesContact[0].selectedIndex;
+
+            //Attach handlers 
+            jQuery("#btAddShiptoAddres").click(clickbtAddShiptoAddres);
+            jQuery("#UpdateCustomerShipid").submit(submitUpdateCustomerShipid)
+
+        }
+
+        function clicksameshipasmainid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Copy from main contact createeditsalesid
+            var szObj = jQuery("#customeraddress_FirstName").val();
+            //jQuery("#FirstName").val(szObj);
+            jQuery("#shiptoaddresspartialid #FirstName").val(szObj);
+
+            jQuery("#shiptoaddresspartialid #LastName").val(jQuery("#customeraddress_LastName").val());
+            jQuery("#shiptoaddresspartialid #Address1").val(jQuery("#customeraddress_Address").val());
+            jQuery("#shiptoaddresspartialid #Address2").val(jQuery("#customeraddress_Note").val());
+
+            jQuery("#shiptoaddresspartialid #Tel").val(jQuery("#customeraddress_Tel").val());
+            jQuery("#shiptoaddresspartialid #Fax").val(jQuery("#customeraddress_Fax").val());
+            jQuery("#shiptoaddresspartialid #Zip").val(jQuery("#customeraddress_Zip").val());
+            jQuery("#shiptoaddresspartialid #Country").val(jQuery("#customeraddress_Country").val());
+
+            jQuery("#shiptoaddresspartialid #Title").val(jQuery("#customeraddress_Title").val());
+            jQuery("#shiptoaddresspartialid #City").val(jQuery("#customeraddress_City").val());
+            jQuery("#shiptoaddresspartialid #State").val(jQuery("#customeraddress_State").val());
+            jQuery("#shiptoaddresspartialid #Email").val(jQuery("#customeraddress_Email").val());
+        }
+
+        function submitUpdateCustomerShipid(src, arg) {
+            //debugger;
+            var szCustomerDefaultid = '@Model.customerdefaults.Id';
+            var hrefaction = src.target.action;
+            var nPos = hrefaction.lastIndexOf("?");
+            if (nPos != -1) {
+                hrefaction = hrefaction.substring(0, nPos + 1);
+                hrefaction = hrefaction + 'customerdefault=' + szCustomerDefaultid;
+            }
+            src.target.action = hrefaction;
+        }
+
+        function clickbtAddShiptoAddres(src, arg) {
+            //debugger;
+
+            //Display load image
+            //ShowLoadingDialog();
+
+            //Get the partial view
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditShipCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + '0?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shiptoaddressSuccess
+            });
+        }
+
+        function changeshipselectorId(src, arg) {
+            //debugger;
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkCreateEditShipCustomer01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + nId + '?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shiptoaddressSuccess
+            });
+        }
+
+        function clicksamebillingasmainid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Copy from main contact createeditsalesid
+            var szObj = jQuery("#customeraddress_FirstName").val();
+            //jQuery("#FirstName").val(szObj);
+            jQuery("#customerbilling_FirstName").val(szObj);
+
+            jQuery("#customerbilling_LastName").val(jQuery("#customeraddress_LastName").val());
+            jQuery("#customerbilling_Address1").val(jQuery("#customeraddress_Address").val());
+            jQuery("#customerbilling_Addres2").val(jQuery("#customeraddress_Note").val());
+
+            jQuery("#customerbilling_Tel").val(jQuery("#customeraddress_Tel").val());
+            jQuery("#customerbilling_Fax").val(jQuery("#customeraddress_Fax").val());
+            jQuery("#customerbilling_Zip").val(jQuery("#customeraddress_Zip").val());
+            jQuery("#customerbilling_Country").val(jQuery("#customeraddress_Country").val());
+
+            jQuery("#customerbilling_Title").val(jQuery("#customeraddress_Title").val());
+            jQuery("#customerbilling_City").val(jQuery("#customeraddress_City").val());
+            jQuery("#customerbilling_State").val(jQuery("#customeraddress_State").val());
+            jQuery("#customerbilling_Email").val(jQuery("#customeraddress_Email").val());
+        }
+
+        function LoadCreditCard() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkcustomercredit01").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: creditcardSuccess
+            });
+        }
+        function creditcardSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#creditcardpartialid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Set the tabindex
+            jQuery("#creditcardpartialid #FirstName").attr("tabindex", "11");
+            jQuery("#creditcardpartialid #LastName").attr("tabindex", "11");
+            jQuery("#creditcardpartialid #Title").attr("tabindex", "11");
+            jQuery("#creditcardpartialid #Tel").attr("tabindex", "11");
+            jQuery("#creditcardpartialid #Fax").attr("tabindex", "11");
+            jQuery("#creditcardpartialid #Email").attr("tabindex", "11");
+
+            jQuery("#creditcardpartialid #Address1").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #Address2").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #Note").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #City").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #State").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #Zip").attr("tabindex", "12");
+            jQuery("#creditcardpartialid #Country").attr("tabindex", "12");
+
+
+            //Attach handlers 
+            //jQuery("#sameshipasmainid").click(clicksameshipasmainid);
+
+            //Set the dropdown selector 
+            var szMsg = "";
+            var szSalesContactIdHlp = jQuery("#salescontactId").val();
+            var ddlSalesContact = jQuery("#salescontactselectorId");
+            for (var i = 0; i < ddlSalesContact[0].length; i++) {
+                szMsg = ddlSalesContact[0][i].value;
+                if (szSalesContactIdHlp == szMsg) {
+                    //When this is enabled gives de efect of 'no sincorinized'
+                    //ddlSalesContact[0].selectedIndex = ddlSalesContact[0][i].index;
+                }
+            }
+
+            var nIndice = ddlSalesContact[0].selectedIndex;
+
+            //Attach handlers 
+            jQuery("#btAddCreditCard").click(clickbtAddCreditCard);
+            jQuery("#UpdateCreditCardid").submit(submitUpdateCreditCardid)
+
+        }
+        function submitUpdateCreditCardid(src, arg) {
+            //debugger;
+            var szCustomerDefaultid = '@Model.customerdefaults.Id';
+            var hrefaction = src.target.action;
+            var nPos = hrefaction.lastIndexOf("?");
+            if (nPos != -1) {
+                hrefaction = hrefaction.substring(0, nPos + 1);
+                hrefaction = hrefaction + 'customerdefault=' + szCustomerDefaultid;
+            }
+            src.target.action = hrefaction;
+        }
+        function clickbtAddCreditCard(src, arg) {
+            //debugger;
+
+            //Display load image
+            //ShowLoadingDialog();
+
+            //Get the partial view
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkcustomercredit01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + '0?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: creditcardSuccess
+            });
+        }
+
+        function changecreditcardselectorId(src, arg) {
+            //debugger;
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szMsg1 = "";
+            var szMsg2 = "";
+            var szUrl = jQuery("#lnkcustomercredit01").attr("href");
+            var nPos1 = szUrl.lastIndexOf("/");
+            var nPos2 = szUrl.lastIndexOf("=");
+            if (nPos1 != -1 && nPos2 != -1) {
+                szMsg1 = szUrl.substring(0, nPos1 + 1);
+                szMsg2 = szUrl.substring(nPos2 + 1);
+                szUrl = szMsg1 + nId + '?customerid=' + szMsg2;
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: creditcardSuccess
+            });
+        }
+
+        function SetTabIndex() {
+            jQuery("#customeraddress_CompanyName").attr("tabindex", "1");
+            jQuery("#customeraddress_FirstName").attr("tabindex", "1");
+            jQuery("#customeraddress_LastName").attr("tabindex", "1");
+            jQuery("#customeraddress_Title").attr("tabindex", "1");
+            jQuery("#customeraddress_Tel").attr("tabindex", "1");
+            jQuery("#customeraddress_Fax").attr("tabindex", "1");
+            jQuery("#customeraddress_Email").attr("tabindex", "1");
+
+            jQuery("#customeraddress_Address").attr("tabindex", "2");
+            jQuery("#customeraddress_Note").attr("tabindex", "2");
+            jQuery("#customeraddress_City").attr("tabindex", "2");
+            jQuery("#customeraddress_State").attr("tabindex", "2");
+            jQuery("#customeraddress_Zip").attr("tabindex", "2");
+            jQuery("#customeraddress_Country").attr("tabindex", "2");
+            jQuery("#customeraddress_Website").attr("tabindex", "2");
+
+            //Set the tabindex
+            jQuery("#customerbilling_FirstName").attr("tabindex", "9");
+            jQuery("#customerbilling_LastName").attr("tabindex", "9");
+            jQuery("#customerbilling_Title").attr("tabindex", "9");
+            jQuery("#customerbilling_Tel").attr("tabindex", "9");
+            jQuery("#customerbilling_Fax").attr("tabindex", "9");
+            jQuery("#customerbilling_Email").attr("tabindex", "9");
+
+            jQuery("#customerbilling_Address1").attr("tabindex", "10");
+            jQuery("#customerbilling_Address2").attr("tabindex", "10");
+            jQuery("#customerbilling_Note").attr("tabindex", "10");
+            jQuery("#customerbilling_City").attr("tabindex", "10");
+            jQuery("#customerbilling_State").attr("tabindex", "10");
+            jQuery("#customerbilling_Zip").attr("tabindex", "10");
+            jQuery("#customerbilling_Country").attr("tabindex", "10");
+
+        }
+        function bfactabs(event, ui) {
+            //debugger
+            if (ui.newPanel.selector == "#tabs-6") {
+                //debugger;
+                LoadSalesHistory();
+
+            }
+        }
+        function bfacsummarytabs(event, ui) {
+            if (ui.newPanel.selector == "#summtabs-1") {
+                //debugger;
+                LoadSalesHistory();
+            }
+            if (ui.newPanel.selector == "#summtabs-2") {
+                //debugger;
+                LoadInvoiceList();
+            }
+            if (ui.newPanel.selector == "#summtabs-3") {
+                //debugger;
+                LoadPaymentList();
+            }
+            if (ui.newPanel.selector == "#summtabs-4") {
+                //debugger;
+                LoadOutstandingInvoice();
+            }
+        }
+        function LoadSalesHistory() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkoutsandingdalesorder").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: saleshistorySuccess
+            });
+        }
+        function saleshistorySuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#salesorderid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationsaleshistory);
+
+        }
+        function eachlnknavigationsaleshistory(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectsaleshistorypage);
+            }
+        }
+        function clicklnkselectsaleshistorypage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: saleshistorySuccess
+            });
+        }
+        function LoadInvoiceList() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkinvoicelist").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: invoicelistSuccess
+            });
+        }
+        function invoicelistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#invoiceid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationinvoicelist);
+
+        }
+        function eachlnknavigationinvoicelist(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectinvoicepage);
+            }
+        }
+        function clicklnkselectinvoicepage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: invoicelistSuccess
+            });
+        }
+        function LoadPaymentList() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkpaymentlist").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: paymentlistSuccess
+            });
+        }
+        function paymentlistSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#paymentid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationpaymentlist);
+
+        }
+        function eachlnknavigationpaymentlist(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectpaymentpage);
+            }
+        }
+        function clicklnkselectpaymentpage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: paymentlistSuccess
+            });
+        }
+        function LoadOutstandingInvoice() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkoutstandinginvoice").attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: outstandinginvoiceSuccess
+            });
+        }
+        function outstandinginvoiceSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#outstandinginvoiceid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+
+            //Attach handlers
+            jQuery(".pagination ul li a").each(eachlnknavigationoutstandinginvoice);
+
+        }
+        function eachlnknavigationoutstandinginvoice(nPos, src) {
+            if (src.href != "") {
+                jQuery(src).click(clicklnkselectoutstandinginvoicepage);
+            }
+        }
+        function clicklnkselectoutstandinginvoicepage(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: outstandinginvoiceSuccess
+            });
+        }
+    </script>
+}
+@{
+    long telHlp = 0;
+    long faxHlp = 0;
+    string telfmt = "000-000-0000";
+}
+<div class="divh1">@ViewBag.Title&nbsp;@ViewBag.VendorInfo</div>
+<div style="border: 0px solid #FF3399;">
+    <div id="maincontentcustomerid" style="width: 100%; padding: 5px; margin: 0px auto; border: 0px solid #0094ff;">
+        @using (Html.BeginForm("UpdateCustomerandAddress", "Customers", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.customer.Id)
+            <div class="error" style="text-align: center;">@ViewBag.Error</div>    
+            <table style="width: 900px; border-collapse: collapse; margin: 0px auto;">
+                <tr>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.CustomerNo)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.CustomerNo)
+                            @Html.ValidationMessageFor(model => model.customer.CustomerNo)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.DeptoNo)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.DropDownList("customer.DeptoNo", (IEnumerable<SelectListItem>)ViewBag.DeptosList, "Select Depto No.", new { id = "deptoNoselectorId" })
+                            <div style="display: none;">
+                                @Html.EditorFor(model => model.customer.DeptoNo)
+                                @Html.ValidationMessageFor(model => model.customer.DeptoNo)
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.BussinesType)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field" style="padding-left: 14px;">
+                            @Html.DropDownList("customer.BussinesType", (IEnumerable<SelectListItem>)ViewBag.BussinesList, "Select Bussines Type", new { id = "bussinestypeselectorId" })
+                            <div style="display: none;">
+                                @Html.EditorFor(model => model.customer.BussinesType)
+                                @Html.ValidationMessageFor(model => model.customer.BussinesType)
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.Status)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.Status)
+                            @Html.ValidationMessageFor(model => model.customer.Status)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.Origin)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.DropDownList("customer.Origin", (IEnumerable<SelectListItem>)ViewBag.OriginList, "Select Origin", new { id = "OriginselectorId" })
+                            <div style="display: none;">
+                                @Html.EditorFor(model => model.customer.Origin)
+                                @Html.ValidationMessageFor(model => model.customer.Origin)
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.PaymentTerms)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.DropDownList("customer.PaymentTerms", (IEnumerable<SelectListItem>)ViewBag.TermsList, "Select Payment Terms", new { id = "PaymentTermsselectorId" })
+                            <div style="display: none;">
+                                @Html.EditorFor(model => model.customer.PaymentTerms)
+                                @Html.ValidationMessageFor(model => model.customer.PaymentTerms)
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="4">
+                        <div class="editor-label left" style="margin-right: 5px; width: 105px;">
+                            @Html.LabelFor(model => model.customer.SellerPermintNo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.SellerPermintNo)
+                            @Html.ValidationMessageFor(model => model.customer.SellerPermintNo)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.BussinesSice)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.BussinesSice)
+                            @Html.ValidationMessageFor(model => model.customer.BussinesSice)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.CreditLimit)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.CreditLimit)
+                            @Html.ValidationMessageFor(model => model.customer.CreditLimit)
+                        </div>
+                    </td>
+                    <td colspan="4">
+                        <div class="editor-label left" style="margin-right: 5px; width: 105px;">
+                            @Html.LabelFor(model => model.customer.ASINo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.ASINo)
+                            @Html.ValidationMessageFor(model => model.customer.ASINo)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.customer.SalesPerson)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field">
+                            @*@Html.DropDownList("customer.SalesPerson", (IEnumerable<SelectListItem>)ViewBag.SalesPersonsList, "Select Sales Person", new { id = "SalesPersonselectorId" })*@
+                            <div style="display: block;">
+                                @Html.EditorFor(model => model.customer.SalesPerson)
+                                @Html.ValidationMessageFor(model => model.customer.SalesPerson)
+                            </div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="4">
+                        <div class="editor-label left" style="margin-right: 5px; width: 105px;">
+                            @Html.LabelFor(model => model.customer.SageNo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.SageNo)
+                            @Html.ValidationMessageFor(model => model.customer.SageNo)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="editor-label">
+                            &nbsp;
+                        </div>
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="4">
+                        <div class="editor-label left" style="margin-right: 5px; width: 105px;">
+                            @Html.LabelFor(model => model.customer.PPAINo)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.customer.PPAINo)
+                            @Html.ValidationMessageFor(model => model.customer.PPAINo)
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="customeraddressidHlp" style="margin-top: 5px; border: 0px solid #FB3399;">
+                @Html.HiddenFor(model => model.customeraddress.Id)
+                @Html.HiddenFor(model => model.customeraddress.CustomerId)
+                <table style="width: 900px; border-collapse: collapse; margin: 0px auto; border: 1px solid #000000;">
+                    <tr>
+                        <td colspan="2" style="text-align: center;"><span style="font-weight: bold">Main Contact</span></td>
+                    </tr>
+                    <tr>
+                        <td class="boxlr5">
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.customeraddress.CompanyName)
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.CompanyName)
+                                @Html.ValidationMessageFor(model => model.customeraddress.CompanyName)
+                            </div>
+                        </td>
+                        <td class="boxlr5">
+                            <div class="editor-label">
+                                Address 1
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.Address)
+                                @Html.ValidationMessageFor(model => model.customeraddress.Address)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boxlr5">
+                            <div class="editor-label">
+                                Contact
+                            </div>
+                            <div>
+                                <div class="viosinput180 left">
+                                    @Html.EditorFor(model => model.customeraddress.FirstName)
+                                    @Html.ValidationMessageFor(model => model.customeraddress.FirstName)
+                                </div>
+                                <div class="viosinput180">
+                                    @Html.EditorFor(model => model.customeraddress.LastName)
+                                    @Html.ValidationMessageFor(model => model.customeraddress.LastName)
+                                </div>
+                            </div>
+                        </td>
+                        <td class="boxlr5">
+                            <div class="editor-label">
+                                Address 2
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.Note)
+                                @Html.ValidationMessageFor(model => model.customeraddress.Note)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boxlr5">
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.customeraddress.Title)
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.Title)
+                                @Html.ValidationMessageFor(model => model.customeraddress.Title)
+                            </div>
+                        </td>
+                        <td class="boxlr5">
+                            <div>
+                                <div class="left" style="margin-right: 10px;">
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.City)
+                                    </div>
+                                    <div class="viosinput180">
+                                        @Html.EditorFor(model => model.customeraddress.City)
+                                        @Html.ValidationMessageFor(model => model.customeraddress.City)
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.State)
+                                    </div>
+                                    <div class="viosinput180">
+                                        @Html.EditorFor(model => model.customeraddress.State)
+                                        @Html.ValidationMessageFor(model => model.customeraddress.State)
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boxlr5">
+                            <div>
+                                <div class="left" style="margin-right: 10px;">
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.Tel)
+                                    </div>
+                                    @{
+            telHlp = Convert.ToInt64(Model.customeraddress.Tel);
+            faxHlp = Convert.ToInt64(Model.customeraddress.Fax);                                        
+                                    }
+                                    <div class="viosinput180">
+                                        <input id="customeraddress_Tel" name="customeraddress.Tel" type="text" value="@telHlp.ToString(telfmt)" />
+                                        @*                                        @Html.EditorFor(model => model.customeraddress.Tel)*@
+                                        @Html.ValidationMessageFor(model => model.customeraddress.Tel)
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.Fax)
+                                    </div>
+                                    <div class="viosinput180">
+                                        <input id="customeraddress_Fax" name="customeraddress.Fax" type="text" value="@faxHlp.ToString(telfmt)" />
+                                        @*@Html.EditorFor(model => model.customeraddress.Fax)*@
+                                        @Html.ValidationMessageFor(model => model.customeraddress.Fax)
+                                    </div>
+
+                                </div>
+                            </div>
+                        </td>
+                        <td class="boxlr5">
+                            <div>
+                                <div class="left" style="margin-right: 10px;">
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.Zip)
+                                    </div>
+                                    <div class="viosinput180">
+                                        @Html.EditorFor(model => model.customeraddress.Zip)
+                                        @Html.ValidationMessageFor(model => model.customeraddress.Zip)
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="editor-label">
+                                        @Html.LabelFor(model => model.customeraddress.Country)
+                                    </div>
+                                    <div class="viosinput180">
+                                        @Html.EditorFor(model => model.customeraddress.Country)
+                                        @Html.ValidationMessageFor(model => model.customeraddress.Country)
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boxlr5" style="padding-bottom: 8px;">
+                            <div class="editor-label">
+                                @*@Html.LabelFor(model => model.customeraddress.Email)*@
+                                E-mail address
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.Email)
+                                @Html.ValidationMessageFor(model => model.customeraddress.Email)
+                            </div>
+
+                        </td>
+                        <td class="boxlr5" style="padding-bottom: 8px;">
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.customeraddress.Website)
+                            </div>
+                            <div class="viosinput400">
+                                @Html.EditorFor(model => model.customeraddress.Website)
+                                @Html.ValidationMessageFor(model => model.customeraddress.Website)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            
+            <div style="text-align: center; margin-top: 3px; margin-bottom: 3px;">
+                <input type="submit" class="btn btn-default" value="Update" />&nbsp;
+                @Html.ActionLink("Back", "Index", "Customers", null, new { @class = "btn btn-default" })
+            </div>
+        }
+        @{
+            string modomultiple = "";
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+        }
+        <div id="tabs">
+            <ul>
+                <li></li>
+                <li><a href="#tabs-1">Sales Contact</a></li>
+                <li><a href="#tabs-2">Subsidiary</a></li>
+                <li><a href="#tabs-3">Ship to Address</a></li>
+                <li><a href="#tabs-4">Billing</a></li>
+                <li><a href="#tabs-5">Payment</a></li>
+                <li><a href="#tabs-6">Report</a></li>
+                <li><a href="#tabs-7">Special Notes</a></li>
+            </ul>
+            @{
+                TimelyDepotMVC.Models.Admin.CustomersSalesContact customersalescontactHlp = Model.customersalescontact;                
+            }
+            <div id="tabs-1">
+                <div style="padding: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <div class="left">
+                            <label>Sales Contact</label>
+                            @Html.DropDownList("salescontactId", (IEnumerable<SelectListItem>)ViewBag.SalesContactList, "Select Sales Contact", new { id = "salescontactselectorId" })
+                            <input id="salescontactId" name="salescontactId" type="hidden" value="@Model.customerdefaults.SalesContactId" />
+                        </div>
+                    </div>
+                    <div id="salescontactdataid">
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-2">
+                <div style="padding: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <label>Subsidiary</label>
+                        @Html.DropDownList("subsidiaryddlHlpId", (IEnumerable<SelectListItem>)ViewBag.SubsidiaryList, "Select Subsidiary", new { id = "subsidiaryselectorId" })
+                        <input id="subsidiaryddlHlpId" name="subsidiaryddlHlpId" type="hidden" value="@Model.customerdefaults.SubsidiaryId" />
+                    </div>
+                    <div id="subsidiarypartialid">
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-3">
+                <div style="padding: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <label>Ship to address</label>
+                        @Html.DropDownList("shipddlHlpId", (IEnumerable<SelectListItem>)ViewBag.ShipList, "Select Ship to address", new { id = "shipselectorId" })
+                        <input id="shiptoaddressddlHlpId" name="subsidiaryddlHlpId" type="hidden" value="@Model.customerdefaults.ShiptoAddressId" />
+                    </div>
+                    <div id="shiptoaddresspartialid">
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-4">
+                <div style="padding: 5px;">
+                    @using (Html.BeginForm("UpdateCustomerBilling", "Customers", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(model => model.customerbilling.Id)
+                        @Html.HiddenFor(model => model.customerbilling.CustomerId)
+
+                        telHlp = Convert.ToInt64(Model.customerbilling.Tel);
+                        faxHlp = Convert.ToInt64(Model.customerbilling.Fax);                                        
+
+                        <div style="margin-top: 28px;">
+                            <table id="createeditsalesid" style="width: 960px; border-collapse: collapse; margin: 0px auto; border: 1px solid #000000;">
+                                <tr>
+                                    <td colspan="2" style="padding-right: 50px;">
+                                        <div style="text-align: right;">@Html.ActionLink("Same as main", "Edit", "Customers", null, new { id = "samebillingasmainid" })</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="editor-label">
+                                            Contact
+                                        </div>
+                                        <div>
+                                            <div class="viosinput200 left">
+                                                @Html.EditorFor(model => model.customerbilling.FirstName)
+                                                @Html.ValidationMessageFor(model => model.customerbilling.FirstName)
+                                            </div>
+                                            <div class="viosinput200">
+                                                @Html.EditorFor(model => model.customerbilling.LastName)
+                                                @Html.ValidationMessageFor(model => model.customerbilling.LastName)
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="editor-label">
+                                            Address 1
+                                        </div>
+                                        <div class="viosinput400">
+                                            @Html.EditorFor(model => model.customerbilling.Address1)
+                                            @Html.ValidationMessageFor(model => model.customerbilling.Address1)
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="boxlr5">
+                                        <div class="editor-label">
+                                            @Html.LabelFor(model => model.customerbilling.Title)
+                                        </div>
+                                        <div class="viosinput400">
+                                            @Html.EditorFor(model => model.customerbilling.Title)
+                                            @Html.ValidationMessageFor(model => model.customerbilling.Title)
+                                        </div>
+                                    </td>
+                                    <td class="boxlr5">
+                                        <div class="editor-label">
+                                            Address 2
+                                        </div>
+                                        <div class="viosinput400">
+                                            @Html.EditorFor(model => model.customerbilling.Address2)
+                                            @Html.ValidationMessageFor(model => model.customerbilling.Address2)
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="boxlr5">
+                                        <div>
+                                            <div class="left" style="margin-right: 10px;">
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.Tel)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    <input  id="customerbilling_Tel" name="customerbilling.Tel" type="text" value="@telHlp.ToString(telfmt)" />
+                                                    @*@Html.EditorFor(model => model.customerbilling.Tel)*@
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.Tel)
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.Fax)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    <input  id="customerbilling_Fax" name="customerbilling.Fax" type="text" value="@faxHlp.ToString(telfmt)" />
+                                                    @*@Html.EditorFor(model => model.customerbilling.Fax)*@
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.Fax)
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="boxlr5">
+                                        <div>
+                                            <div class="left" style="margin-right: 10px;">
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.City)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    @Html.EditorFor(model => model.customerbilling.City)
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.City)
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.State)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    @Html.EditorFor(model => model.customerbilling.State)
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.State)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="boxlr5">
+                                        <div class="editor-label">
+                                            @*@Html.LabelFor(model => model.customeraddress.Email)*@
+                                            E-mail address
+                                        </div>
+                                        <div class="viosinput400">
+                                            @Html.EditorFor(model => model.customerbilling.Email)
+                                            @Html.ValidationMessageFor(model => model.customerbilling.Email)
+                                        </div>
+                                    </td>
+                                    <td class="boxlr5">
+                                        <div>
+                                            <div class="left" style="margin-right: 10px;">
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.Zip)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    @Html.EditorFor(model => model.customerbilling.Zip)
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.Zip)
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="editor-label">
+                                                    @Html.LabelFor(model => model.customerbilling.Country)
+                                                </div>
+                                                <div class="viosinput200">
+                                                    @Html.EditorFor(model => model.customerbilling.Country)
+                                                    @Html.ValidationMessageFor(model => model.customerbilling.Country)
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="width: 900px; margin: 5px auto;">
+                                @*<input id="btAddSalesContact" class="btn btn-default" type="button" value="Add" />&nbsp;*@
+                                <input type="submit" class="btn btn-default" value="Update" />&nbsp;   
+                            @*@Html.ActionLink("Delete", "DeleteSales", "Customers", new { id = Model.customerbilling.Id, customerdefaultid = ViewBag.CustomerDefaultId }, new { id = "btDeleteSalesContact", @class = "btn btn-default", onclick = "return confirm('Do you want to delete this Sales Contact');" })*@
+                            </div>
+                        </div>                                          
+                    }
+                </div>
+            </div>
+            <div id="tabs-5">
+                <div style="padding: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <label>Ship to address</label>
+                        @Html.DropDownList("creditcardddlHlpId", (IEnumerable<SelectListItem>)ViewBag.CreditCardList, "Select Credit Card", new { id = "creditcardselectorId" })
+                        <input id="creditcardddlHlpId" name="creditcardddlHlpId" type="hidden" value="@Model.customerdefaults.NoteId" />
+                    </div>
+                    <div id="creditcardpartialid">
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-6">
+                <div style="padding: 5px;">
+                    @*
+                    @using (Html.BeginForm("UpdateCustomerHistory", "Customers", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(model => model.customerhistory.Id)
+                        @Html.HiddenFor(model => model.customerhistory.CustomerId)
+                        <table style="width: 600px; border-collapse: collapse; margin: 0px auto;">
+                            <tr>
+                                <td>
+                                    <div class="editor-label" style="width: 160px;">
+                                        @Html.LabelFor(model => model.customerhistory.OutstandingBalance)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.customerhistory.OutstandingBalance)
+                                        @Html.ValidationMessageFor(model => model.customerhistory.OutstandingBalance)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="editor-label" style="width: 180px;">
+                                        @Html.LabelFor(model => model.customerhistory.OpenPurchaseOrder)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.customerhistory.OpenPurchaseOrder)
+                                        @Html.ValidationMessageFor(model => model.customerhistory.OpenPurchaseOrder)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="margin: 0px auto;">
+                                        <input type="submit" class="btn btn-default" value="Update" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>                                        
+                    }
+                    *@
+                </div>
+                <div>
+                    <div id="summarytabs">
+                        <ul>
+                            <li><a href="#summtabs-1">Outstanding Sales Order</a></li>
+                            <li><a href="#summtabs-2">Invoice</a></li>
+                            <li><a href="#summtabs-3">Payment</a></li>
+                            <li><a href="#summtabs-4">Outstanding Invoice</a></li>
+                        </ul>
+                        <div id="summtabs-1">
+                            <div id="salesorderid">
+                                Outstanding Sales Order
+                            </div>
+                        </div>
+                        <div id="summtabs-2">
+                            <div id="invoiceid">Invoice</div>
+                        </div>
+                        <div id="summtabs-3">
+                            <div id="paymentid">Payment</div>
+                        </div>
+                        <div id="summtabs-4">
+                            <div id="outstandinginvoiceid">Outstanding Invoice</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-7">
+                <div style="width: 650px; margin: 0px auto;">
+                    @using (Html.BeginForm("UpdateCustomerNote", "Customers", new { customerid = ViewBag.CustomerId }, FormMethod.Post, new { id = "UpdateCustomerNoteid" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+
+                        @Html.HiddenFor(model => model.customernote.Id)
+                        @Html.HiddenFor(model => model.customernote.CustomerId)
+
+
+                        <div style="display: none">
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.customernote.CustomerId)
+                            </div>
+                            <div class="editor-field">
+                                @Html.DisplayFor(model => model.customernote.CustomerId)
+                                @*@Html.ValidationMessageFor(model => model.customernote.CustomerId)*@
+                            </div>
+                        </div>
+
+                        <div class="editor-label" style="margin-bottom: 5px; margin-top: 5px;">
+                            @Html.LabelFor(model => model.customernote.SpecialNote)
+                        </div>
+                        <textarea id="SpecialNote" name="SpecialNote" cols="80" rows="12">@Model.customernote.SpecialNote</textarea>
+
+@*        <div class="editor-field">
+                                    @Html.EditorFor(model => model.SpecialNote)
+                                    @Html.ValidationMessageFor(model => model.SpecialNote)
+                                </div>*@
+
+                        <div style="padding-top: 5px;">
+                            <input type="submit" class="btn btn-default" value="Update" />&nbsp;   
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div id="editcustomerdialoid">
+    edit customer data here
+</div>
+<div style="display: none;">
+    @Html.ActionLink("Contact Sales", "CreateEditSales", "Customers", new { customerid = Model.customersalescontact.CustomerId, id = Model.customersalescontact.Id }, new { id = "lnkCreateEditSaleCustomer01" })
+    @Html.ActionLink("Subsidiary", "CreateEditSubsidiary", "Customers", new { customerid = Model.custmersubsidiary.CustomerId, id = Model.custmersubsidiary.Id }, new { id = "lnkCreateEditSubsidiaryCustomer01" })
+    @Html.ActionLink("Ship to address", "CreateEditShip", "Customers", new { customerid = Model.customershipaddress.CustomerId, id = Model.customershipaddress.Id }, new { id = "lnkCreateEditShipCustomer01" })
+    @Html.ActionLink("Customer Credit Card", "CreateEditCreditCard", "Customers", new { customerid = Model.customercredit.CustomerId, id = Model.customercredit.Id }, new { id = "lnkcustomercredit01" })
+    @Html.ActionLink("Outsanding Sales Order", "OutsandingSalesOrder", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkoutsandingdalesorder" })
+    @Html.ActionLink("Invoice List", "InvoiceList", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkinvoicelist" })
+    @Html.ActionLink("Payment List", "PaymentList", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkpaymentlist" })
+    @Html.ActionLink("Outstanding Invoice", "Outstandinginvoice", "Customers", new { customerid = Model.customercredit.CustomerId }, new { id = "lnkoutstandinginvoice" })
+</div>

@@ -1,0 +1,37 @@
+﻿@model TimelyDepotMVC.Models.Admin.SPECIALITEM
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SPECIALITEM</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Price)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Option)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Option)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PicID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PicID)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ItemID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

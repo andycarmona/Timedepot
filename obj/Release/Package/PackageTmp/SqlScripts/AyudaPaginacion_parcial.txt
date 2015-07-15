@@ -1,0 +1,164 @@
+﻿using PagedList;
+
+        int _pageIndex = 0;
+        public int PageIndex
+        {
+            get { return _pageIndex; }
+            set { _pageIndex = value; }
+        }
+
+        int _pageSize = 15;
+        //int _pageSize = 1;
+        public int PageSize
+        {
+            get { return _pageSize; }
+            set { _pageSize = value; }
+        }
+
+		---------------------
+            bool bHasPreviousPage = false;
+            bool bHasNextPage = false;
+            int nHas = 0;
+            int nPageCount = 1;
+            int nPageNumber = 0;
+            int pageIndex = 0;
+            int pageSize = PageSize;
+
+
+			            //Set the page
+            if (page == null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                pageIndex = Convert.ToInt32(page);
+            }
+            nHas = biographyList.Count;
+            nPageCount = nHas / pageSize;
+            if (nHas > 0)
+            {
+                if (nPageCount == 0)
+                {
+                    nPageCount = 1;
+                }
+            }
+
+            //Select the items to display
+            var objList = biographyList.ToPagedList(pageIndex, pageSize);
+            biographyList = new List<Biography>();
+            foreach (var item in objList)
+            {
+                biographyList.Add(item);
+            }
+
+            //Set the pagination values
+            //double nMod = nHas & pageSize;
+            int nModi = nHas % pageSize;
+            if (nModi == 0)
+            {
+                //nPageCount = 1;
+                bHasNextPage = false;
+                bHasPreviousPage = false;
+            }
+            if (nModi < pageSize)
+            {
+                bHasNextPage = true;
+                bHasPreviousPage = true;
+                //nPageCount++;
+
+                if (pageIndex == 1)
+                {
+                    bHasPreviousPage = false;
+                }
+                if (nPageCount == pageIndex)
+                {
+                    bHasNextPage = false;
+                }
+
+                if (nPageCount == 0)
+                {
+                    bHasNextPage = false;
+                    bHasPreviousPage = false;
+                }
+            }
+
+            nPageNumber = pageIndex;
+            ViewBag.PageCount = nPageCount;
+            ViewBag.PageNumber = nPageNumber;
+            ViewBag.HasPreviousPage = bHasPreviousPage;
+            ViewBag.HasNextPage = bHasNextPage;
+
+			return View(biographyList);
+
+-----------------------
+                        <tr>
+                            <td colspan="5">
+                                <table border="0" style="width: 95%">
+                                    <tr>
+                                        <td>
+                                            <%
+                                                string szStyleHasPreviousPage = "display:none";
+                                                string szStyleHasNextPage = "display:none";
+                                                if (ViewBag.HasPreviousPage)
+                                                {
+                                                    szStyleHasPreviousPage = "display:block";
+                                                }
+                                                if (ViewBag.HasNextPage)
+                                                {
+                                                    szStyleHasNextPage = "display:block";
+                                                }
+                                    
+                                            %>
+                                            <div style="border: 0px solid #CCCC00;">
+                                                <table class="tblvios" style="width: 100%">
+                                                    <tr>
+                                                        <td>Page <%:(ViewBag.PageCount < ViewBag.PageNumber ? 0 : ViewBag.PageNumber) %>
+                                                of <%: ViewBag.PageCount%></td>
+                                                        <td>
+                                                            <div style="<%: szStyleHasNextPage %>">
+                                                                <% using (Html.BeginForm("Index", "Exhibitions", new { page = ViewBag.PageNumber + 1, sortOrder = ViewBag.CurrentSort }, FormMethod.Post, new { @class = "galleryNavLnk" }))
+                                                                   { %>
+                                                                <input class="btArtistNav" id="nextSubmit1tbsEmpid" type="submit" value="Next" />
+
+                                                                <%  } %>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div style="<%: szStyleHasNextPage%>">
+                                                                <% using (Html.BeginForm("Index", "Exhibitions", new { page = ViewBag.PageCount, sortOrder = ViewBag.CurrentSort }, FormMethod.Post, new { @class = "galleryNavLnk" }))
+                                                                   { %>
+                                                                <input class="btArtistNav" id="LastSubmit1tbsEmpid" type="submit" value="Last" />
+
+                                                                <%  } %>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div style="<%: szStyleHasPreviousPage%>">
+                                                                <% using (Html.BeginForm("Index", "Exhibitions", new { page = 1, sortOrder = ViewBag.CurrentSort }, FormMethod.Post, new { @class = "galleryNavLnk" }))
+                                                                   { %>
+                                                                <input class="btArtistNav" id="FirstSubmit1tbsEmpid" type="submit" value="First" />
+
+                                                                <%  } %>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div style="<%: szStyleHasPreviousPage%>">
+                                                                <% using (Html.BeginForm("Index", "Exhibitions", new { page = ViewBag.PageNumber - 1, sortOrder = ViewBag.CurrentSort }, FormMethod.Post, new { @class = "galleryNavLnk" }))
+                                                                   { %>
+                                                                <input class="btArtistNav" id="PrevSubmit1tbsEmpid" type="submit" value="Prev" />
+
+                                                                <%  } %>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                        </td>
+                                        <td style="display: none">@Html.ActionLink("Back", "Index")
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>

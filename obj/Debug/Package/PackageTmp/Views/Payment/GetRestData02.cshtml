@@ -1,0 +1,24 @@
+﻿<div>
+    <div class="message-error">@ViewBag.ElError</div>
+    @{
+        System.Xml.XmlNodeList childs = null;
+    }
+    @if (ViewBag.ElChildsList != null)
+    {
+        childs = ViewBag.ElChildsList;
+        
+        <div style="margin-bottom: 15px; border: solid 0px blue;">
+
+            @foreach (System.Xml.XmlNode item in childs)
+            {
+                if (!string.IsNullOrEmpty(item.InnerText))
+                {
+                <div class="clear-fix">
+                    <div class="float-left" style="margin-right: 5px;">@item.Name&nbsp;:</div>
+                    <div class="float-left">@item.InnerText</div>
+                </div>                    
+                }
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "iText Tests";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<div style="text-align:center;">
+    <table>
+        <tr>
+            <td>@Html.ActionLink("Output Stream", "OutputStream", "iTextReports", null, new { target = "_blank" })</td>
+            <td>@Html.ActionLink("Sample kdi", "Samplekdi", "iTextReports", null, new { target = "_blank" })</td>
+            <td>@Html.ActionLink("Invoice PdfReport", "Invoice", "iTextReports", null, new { target = "_blank" })</td>
+            <td>@Html.ActionLink("Invoice iText", "InvoiceiText", "iTextReports", null, new { target = "_blank" })</td>
+            <td>@Html.ActionLink("Invoice iText(2)", "InvoiceReport", "iTextReports", null, new { target = "_blank" })</td>
+            <td></td>
+        </tr>
+    </table>
+</div>

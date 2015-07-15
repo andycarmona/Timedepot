@@ -1,0 +1,100 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.SUB_ITEM>
+
+<div style="padding: 10px;">
+    @Html.ActionLink("Inventory List (Excel)", "InventoryListExcel", "Inventory")
+</div>
+<table class="webgrid" style="width: 1100px; margin: 0px auto;">
+    <tr class="webgrid-header">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sub_ItemID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            On&nbsp;Hand
+            @*@Html.DisplayNameFor(model => model.OnHand_Db)*@
+        </th>
+        <th>
+            Open&nbsp;Order
+            @*@Html.DisplayNameFor(model => model.OpenSO_Db)*@
+        </th>
+        <th>
+            Open&nbsp;PO
+            @*@Html.DisplayNameFor(model => model.OpenPO_Db)*@
+        </th>
+    </tr>
+    @{
+        double dOnHand = 0;
+        double dSO = 0;
+        double dPO = 0;
+
+        long telHlp = 0;
+        long faxHlp = 0;
+        string telfmt = "000-000-0000";
+        string szTel = "";
+
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+    }
+
+    @foreach (var item in Model)
+    {
+
+        dOnHand = Convert.ToDouble(item.OnHand_Db) - Convert.ToDouble(item.OnHand_Cr);
+        dSO = Convert.ToDouble(item.OpenSO_Db) - Convert.ToDouble(item.OpenSO_Cr);
+        dPO = Convert.ToDouble(item.OpenPO_Db) - Convert.ToDouble(item.OpenPO_Cr);
+
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row";
+        }
+        else
+        {
+            szClass = "webgrid-row-style";
+        }
+        <tr class="@szClass">
+            <td>
+                @Html.ActionLink("Details", "Edit", new { id = item.ItemID })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sub_ItemID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @dOnHand.ToString()
+                @*@Html.DisplayFor(modelItem => item.OnHand_Db)*@
+            </td>
+            <td>
+                @dSO.ToString()
+                @*@Html.DisplayFor(modelItem => item.OpenSO_Db)*@
+            </td>
+            <td>
+                @dPO.ToString()
+                @*@Html.DisplayFor(modelItem => item.OpenPO_Db)*@
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="5">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("InventoryList", new { page }))
+
+        </td>
+    </tr>
+
+</table>

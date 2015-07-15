@@ -1,0 +1,72 @@
+﻿@model TimelyDepotMVC.Models.Admin.SetupChargeDetail
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SetupChargeDetail</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SetUpCharge)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetUpCharge)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RunCharge)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RunCharge)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.itemid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.itemid)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReSetupCharge)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReSetupCharge)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ReSetupChargeDiscountCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReSetupChargeDiscountCode)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RunChargeDiscountCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RunChargeDiscountCode)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SetupChargeDiscountCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetupChargeDiscountCode)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FirstSetupFree)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FirstSetupFree)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

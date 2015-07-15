@@ -1,0 +1,12 @@
+@{
+    long telHlp = 0;
+    long faxHlp = 0;
+    string telfmt = "000-000-0000";
+}
+
+                                    @{
+                                        telHlp = Convert.ToInt64(Model.customeraddress.Tel);
+                                        faxHlp = Convert.ToInt64(Model.customeraddress.Fax);                                        
+                                    }
+                                        <input id="customeraddress.Tel" name="customeraddress.Tel" type="text" value="@telHlp.ToString(telfmt)" />
+                                        <input id="customerbilling.Fax" name="customerbilling.Fax" type="text" value="@faxHlp.ToString(telfmt)" />

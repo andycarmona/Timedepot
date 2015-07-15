@@ -1,0 +1,37 @@
+﻿@model TimelyDepotMVC.Models.Admin.Shipment
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Shipment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InvoiceNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InvoiceNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipmentDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipmentDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RateResults)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RateResults)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ShipmentId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

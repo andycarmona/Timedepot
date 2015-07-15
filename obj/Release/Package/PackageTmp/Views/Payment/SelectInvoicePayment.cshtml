@@ -1,0 +1,201 @@
+﻿@model TimelyDepotMVC.Models.Admin.Payments
+
+@{
+    ViewBag.Title = "Invoice Payment";
+}
+@section styles{
+    <style type="text/css">
+        .paymentselector {
+            width: 245px;
+        }
+    </style>
+}
+
+<div class="divh1">@ViewBag.Title</div>
+
+@using (Html.BeginForm("InvoicePayment", "Payment", null, FormMethod.Post, new { id = "formInvoicePayment" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="darkerline" style="width: 400px; margin: 0px auto; padding: 15px;">
+        <div class="editor-label">
+            <label for="PaymentNo">Payment No</label>
+        </div>
+        <div class="editor-field">
+            <input id="PaymentNo" name="PaymentNo" type="text" readonly="readonly" value="@Model.PaymentNo" />
+
+        </div>
+
+        <div class="editor-label">
+            <label for="CustomerNo">Customer No</label>
+        </div>
+        <div class="editor-field">
+            <div style="display: block;">
+                <input class="text-box single-line" id="CustomerNo" name="CustomerNo" type="text" readonly="readonly" value="@Model.CustomerNo" />
+            </div>
+        </div>
+
+        <div class="editor-label" style="display: block">
+            <label for="SalesOrderNo">Invoice No</label>
+        </div>
+        <div class="editor-field">
+            <div style="display: block;">
+                <input class="text-box single-line" id="InvoiceNo" name="InvoiceNo" type="text" readonly="readonly" value="@ViewBag.InvoiceNo" />
+            </div>
+            <div style="display: none;">
+                <input class="text-box single-line" id="SalesOrderNo" name="SalesOrderNo" type="text" readonly="readonly" value="@Model.SalesOrderNo" />
+            </div>
+        </div>
+
+        <div class="editor-label" style="display: block">
+            <label for="PaymentType">Payment Type</label>
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("PaymentType", (IEnumerable<SelectListItem>)ViewBag.PaymentType, "Select Payment Type", new { id = "PaymentTypeselectorId", @class = "paymentselector" })
+            <span class="error">&nbsp;*</span>
+            <div style="display: none">
+                <input id="PaymentType" class="paymentselector" name="PaymentType" type="text" />
+            </div>
+        </div>
+
+        <div class="editor-field">
+            <div id="CardNumberselectorIdHlp" style="display: block">
+                <div id="CardNumberselectorDialog">
+                </div>
+            </div>
+            <div style="padding-top: 3px;">
+                <div id="cardnumberdivid" style="display: none;">
+                    <input id="CreditCardNumberhlp" style="width: 240px; position: relative; left: -4px;" name="CreditCardNumberhlp" type="text" />
+                </div>
+                <div style="display: none">
+                    <input class="text-box single-line" id="CreditCardNumber" name="CreditCardNumber" type="text" value="" />
+                    <span class="field-validation-valid" data-valmsg-for="CreditCardNumber" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="editor-label" style="display: none">
+            <label for="ReferenceNo">Reference No</label>
+        </div>
+        <div class="editor-field" style="display: none">
+            <input class="text-box single-line" id="ReferenceNo" name="ReferenceNo" type="text" value="" />
+            <span class="field-validation-valid" data-valmsg-for="ReferenceNo" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="editor-label" style="display: none">
+            <label for="Amount">Amount</label>
+        </div>
+        <div class="editor-field" style="display: none">
+            <input class="text-box single-line" data-val="true" data-val-number="El campo Amount debe ser un número." id="Amount" name="Amount" type="text" value="@Model.Amount" />
+            <span class="field-validation-valid" data-valmsg-for="Amount" data-valmsg-replace="true"></span>
+        </div>
+
+
+        <div class="editor-label" style="display: none">
+            <label for="PaymentDate">Date</label>
+        </div>
+
+        <div class="editor-field" style="display: none">
+            <input id="PaymentDateHlp" name="PaymentDateHlp" type="text" value="07/03/2014" />
+            <div style="display: none;">
+                <input class="text-box single-line" id="PaymentDate" name="PaymentDate" type="datetime" value=" 07/03/2014" />
+                <span class="field-validation-valid" data-valmsg-for="PaymentDate" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div id="mesaagetipid" style="text-align: center; font-weight: bold; padding: 5px;">
+            Select Payment Type, Credit Card Number and then click &#39;Next&#39;.
+        </div>
+        <div style="margin: 5px auto; text-align: center;">
+            <input id="Submit1" class="btn btn-default" type="submit" value="Next" />&nbsp;
+        </div>
+    </div>
+}
+<div style="display: block;">
+    @Html.ActionLink("Get Cards", "GetCards", "Payment", new { customerNo = Model.CustomerNo }, new { id = "lnkGetCards" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        jQuery(Document).ready(initializeSelectInvoice);
+
+        function initializeSelectInvoice() {
+            //Set buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers
+            jQuery("#PaymentTypeselectorId").change(changePaymentTypeselectorId);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+
+        }
+
+        function changePaymentTypeselectorId(src, arg) {
+            var szOption = jQuery(src.target).val();
+            if (szOption != "") {
+                jQuery("#PaymentType").val(szOption);
+
+
+                //Display load image
+                ShowLoadingDialog();
+
+                //Get the partial view
+                var szUrl = jQuery("#lnkGetCards").attr("href");
+
+                //Set payment type
+                szUrl = szUrl + '&PaymentType=' + szOption
+
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: setInvoicePaymentSuccess
+                });
+            }
+            else {
+                jQuery("#CardNumberselectorDialog").html("");
+                jQuery("#cardnumberdivid").css("display", "none");
+            }
+        }
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function setInvoicePaymentSuccess(response, statusCode) {
+            var objRes = response;
+
+            //Hide load image
+            HideLoadingDialog();
+
+            jQuery("#CardNumberselectorDialog").html(objRes);
+            jQuery("#cardnumberdivid").css("display", "block");
+
+            //Attach handlers
+            jQuery("#CardNumberselectorId").change(changeCardNumberselectorId);
+        }
+        function changeCardNumberselectorId(src, arg) {
+            var szOption = jQuery(src.target).val();
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var nIdTxt = src.target[nSelected].text
+
+            jQuery("#CreditCardNumberhlp").val(nIdTxt);
+            jQuery("#CreditCardNumber").val(szOption);
+
+        }
+    </script>
+}

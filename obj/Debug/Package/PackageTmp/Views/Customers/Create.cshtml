@@ -1,0 +1,175 @@
+﻿@model TimelyDepotMVC.Models.Admin.Customers
+
+@*<script src="~/Scripts/jquery-1.8.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+
+@using (Html.BeginForm("Create","Customers",FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div style="padding: 5px;">
+        <table style="width: 100%; border-collapse: collapse; margin: 0px auto;">
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.CustomerNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.CustomerNo)
+                        @Html.ValidationMessageFor(model => model.CustomerNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Status)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Status)
+                        @Html.ValidationMessageFor(model => model.Status)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.BussinesType)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.BussinesType)
+                        @Html.ValidationMessageFor(model => model.BussinesType)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SalesPerson)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SalesPerson)
+                        @Html.ValidationMessageFor(model => model.SalesPerson)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.DeptoNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.DeptoNo)
+                        @Html.ValidationMessageFor(model => model.DeptoNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SellerPermintNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SellerPermintNo)
+                        @Html.ValidationMessageFor(model => model.SellerPermintNo)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ASINo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ASINo)
+                        @Html.ValidationMessageFor(model => model.ASINo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PPAINo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PPAINo)
+                        @Html.ValidationMessageFor(model => model.PPAINo)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SageNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SageNo)
+                        @Html.ValidationMessageFor(model => model.SageNo)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Origin)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Origin)
+                        @Html.ValidationMessageFor(model => model.Origin)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.CreditLimit)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.CreditLimit)
+                        @Html.ValidationMessageFor(model => model.CreditLimit)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PaymentTerms)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PaymentTerms)
+                        @Html.ValidationMessageFor(model => model.PaymentTerms)
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="display:none;">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.BussinesSice)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.BussinesSice)
+                @Html.ValidationMessageFor(model => model.BussinesSice)
+            </div>
+        </div>
+
+        <p>
+            <input type="submit" class="btn btn-default" value="Create" />&nbsp;   
+            <input id="btDialogClose" class="btn btn-default" type="button" value="Close" />
+        </p>
+    </div>
+}

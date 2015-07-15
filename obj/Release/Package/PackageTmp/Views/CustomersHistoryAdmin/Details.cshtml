@@ -1,0 +1,37 @@
+﻿@model TimelyDepotMVC.Models.Admin.CustomersHistory
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>CustomersHistory</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CustomerId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CustomerId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OutstandingBalance)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OutstandingBalance)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OpenPurchaseOrder)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OpenPurchaseOrder)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

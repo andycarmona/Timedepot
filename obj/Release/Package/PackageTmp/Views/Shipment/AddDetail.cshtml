@@ -1,0 +1,138 @@
+﻿@model TimelyDepotMVC.Models.Admin.ShipmentDetails
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ShipmentDetailID)
+
+    <div style="width:280px; margin:0px auto;">
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.ShipmentId, new{ style="margin-right:23px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.ShipmentId)
+                @Html.ValidationMessageFor(model => model.ShipmentId)
+            </div>
+        </div>
+
+        <div class="cf" style="display:none;">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.DetailId, new{ style="margin-right:0px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.DetailId)
+                @Html.ValidationMessageFor(model => model.DetailId)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.BoxNo, new{ style="margin-right:64px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.BoxNo)
+                @Html.ValidationMessageFor(model => model.BoxNo)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.Sub_ItemID, new{ style="margin-right:18px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.Sub_ItemID)
+                @Html.ValidationMessageFor(model => model.Sub_ItemID)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.Quantity, new{ style="margin-right:85px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.Quantity)
+                @Html.ValidationMessageFor(model => model.Quantity)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.UnitPrice, new{ style="margin-right:38px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.UnitPrice)
+                @Html.ValidationMessageFor(model => model.UnitPrice)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.UnitWeight, new{ style="margin-right:58px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.UnitWeight)
+                @Html.ValidationMessageFor(model => model.UnitWeight)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.DimensionH, new{ style="margin-right:60px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.DimensionH)
+                @Html.ValidationMessageFor(model => model.DimensionH)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.DimensionL, new{ style="margin-right:58px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.DimensionL)
+                @Html.ValidationMessageFor(model => model.DimensionL)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.DimensionD, new{ style="margin-right:65px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.DimensionD)
+                @Html.ValidationMessageFor(model => model.DimensionD)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.Reference1, new{ style="margin-right:0px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.Reference1)
+                @Html.ValidationMessageFor(model => model.Reference1)
+            </div>
+        </div>
+
+        <div class="cf">
+            <div class="editor-label left">
+                @Html.LabelFor(model => model.Reference2, new{ style="margin-right:0px;"})
+            </div>
+            <div class="editor-field left">
+                @Html.EditorFor(model => model.Reference2)
+                @Html.ValidationMessageFor(model => model.Reference2)
+            </div>
+        </div>
+        <p>
+            <input class="btn btn-default" type="submit" value="Save" />&nbsp;<input id="btDialogCloseAddDetail" class="btn btn-default" type="button" value="Close" />
+        </p>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,72 @@
+﻿@model TimelyDepotMVC.Models.Admin.InitialInfo
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>InitialInfo</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesOrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesOrderNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InvoiceNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InvoiceNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PurchaseOrderNo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TaxRate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TaxRate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PaymentAccount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PaymentAccount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ShipperInfo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipperInfo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TrackingNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TrackingNo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

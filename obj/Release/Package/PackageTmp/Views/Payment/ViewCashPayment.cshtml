@@ -1,0 +1,46 @@
+﻿¨@model TimelyDepotMVC.ModelsView.PaymentTransactionList
+
+@{
+    ViewBag.Title = "ViewCreditCardPayment";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+<table class="webgrid" style="width: 1240px; margin: 0px auto;">
+    <tr class="webgrid-header">
+
+        <th>Cash/Check details</th>
+    </tr>
+
+    <tr id="uniqueId" class="webgrid-alternating-row timelycustomertr trhlp">
+        <td>
+            <label>@Html.DisplayNameFor(model => model.CustomerNo)</label><br />
+            @Html.DisplayFor(model => model.CustomerNo)<br />
+
+            <label>Actual Sales order number:</label><br />
+            @Html.DisplayFor(model => model.SalesOrderNo)<br />
+
+
+            <label>Transaction code:</label><br />
+            @Html.DisplayFor(model => model.TransactionCode)<br />
+
+            <label>@Html.DisplayNameFor(model => model.PaymentType)</label><br />
+            @Html.DisplayFor(model => model.PaymentType)<br />
+
+            <label>@Html.DisplayNameFor(model => model.PaymentDate)</label><br />
+            @Html.DisplayFor(model => model.PaymentDate)<br />
+
+            <label>@Html.DisplayNameFor(model => model.Amount)</label>
+            @Html.DisplayFor(model => model.Amount)
+            <br />
+
+        </td>
+
+
+    </tr>
+
+    <tr>
+        @Html.ActionLink("Back", "PaymentTransactionList", new { salesOrderNo = @Model.SalesOrderNo })
+    </tr>
+
+</table>
+
+

@@ -1,0 +1,193 @@
+﻿@{
+    ViewBag.Title = "Tables Admin";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<div style="text-align: center">
+    <table style="width: 100%">
+        <tr>
+            <td>@Html.ActionLink("Bussines", "Index", "BussinesAdmin")</td>
+            <td>@Html.ActionLink("CastMaster", "Index", "CastMasterAdmin")</td>
+            <td>@Html.ActionLink("CATEGORY", "Index", "CATEGORYAdmin")</td>
+            <td>@Html.ActionLink("COLLECTION", "Index", "COLLECTIONAdmin")</td>
+            <td>@Html.ActionLink("CustomerDefaults", "Index", "CustomerDefaultsAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("Customers", "Index", "CustomersAdmin")</td>
+            <td>@Html.ActionLink("CustomersBillingDept", "Index", "CustomersBillingDeptAdmin")</td>
+            <td>@Html.ActionLink("CustomersCardType", "Index", "CustomersCardTypeAdmin")</td>
+            <td>@Html.ActionLink("CustomersContactAddress", "Index", "CustomersContactAddressAdmin")</td>
+            <td>@Html.ActionLink("CustomersCreditCardShipping", "Index", "CustomersCreditCardShippingAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("CustomersHistory", "Index", "CustomersHistoryAdmin")</td>
+            <td>@Html.ActionLink("CustomersSalesContact", "Index", "CustomersSalesContactAdmin")</td>
+            <td>@Html.ActionLink("CustomersShipAddress", "Index", "CustomersShipAddressAdmin")</td>
+            <td>@Html.ActionLink("CustomersSpecialNotes", "Index", "CustomersSpecialNotesAdmin")</td>
+            <td>@Html.ActionLink("CustomersSubsidiaryAddress", "Index", "CustomersSubsidiaryAddressAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("DELIVERY", "Index", "DELIVERYAdmin")</td>
+            <td>@Html.ActionLink("Deptos", "Index", "DeptosAdmin")</td>
+            <td>@Html.ActionLink("DF", "Index", "DFAdmin")</td>
+            <td>@Html.ActionLink("DIAL", "Index", "DIALAdmin")</td>
+            <td>@Html.ActionLink("DiscountManage", "Index", "DiscountManageAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("EventLog", "Index", "EventLogAdmin")</td>
+            <td>@Html.ActionLink("Group_Master", "Index", "Group_MasterAdmin")</td>
+            <td>@Html.ActionLink("Imprintitemdetail", "Index", "ImprintitemdetailAdmin")</td>
+            <td>@Html.ActionLink("ImprintMaster", "Index", "ImprintMasterAdmin")</td>
+            <td>@Html.ActionLink("InformationDetail", "Index", "InformationDetailAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("InitialInfo", "Index", "InitialInfoAdmin")</td>
+            <td>@Html.ActionLink("Invoice", "Index", "InvoiceAdmin")</td>
+            <td>@Html.ActionLink("InvoiceDetail", "Index", "InvoiceDetailAdmin")</td>
+            <td>@Html.ActionLink("ITEM", "Index", "ITEMAdmin")</td>
+            <td>@Html.ActionLink("ITEM_PACKAGE", "Index", "ITEM_PACKAGEAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("New_Items", "Index", "New_ItemsAdmin")</td>
+            <td>@Html.ActionLink("Origin", "Index", "OriginAdmin")</td>
+            <td>@Html.ActionLink("PACKAGE", "Index", "PACKAGEAdmin")</td>
+            <td>@Html.ActionLink("PackageGroupDetail", "Index", "PackageGroupDetailAdmin")</td>
+            <td>@Html.ActionLink("packagemaster", "Index", "packagemasterAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("PackageRateLog", "Index", "PackageRateLogAdmin")</td>
+            <td>@Html.ActionLink("PackageRateLogDetails", "Index", "PackageRateLogDetailsAdmin")</td>
+            <td>@Html.ActionLink("PackageRateLogParameters", "Index", "PackageRateLogParametersAdmin")</td>
+            <td>@Html.ActionLink("PackagingDetail", "Index", "PackagingDetailAdmin")</td>
+            <td>@Html.ActionLink("packingitemdetail", "Index", "packingitemdetailAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("Parameters", "Index", "ParametersAdmin")</td>
+            <td>@Html.ActionLink("Payments", "Index", "PaymentsAdmin")</td>
+            <td>@Html.ActionLink("PRICE", "Index", "PRICEAdmin")</td>
+            <td>@Html.ActionLink("PurchaseOrders", "Index", "PurchaseOrdersAdmin")</td>
+            <td>@Html.ActionLink("PurchasOrderDetail", "Index", "PurchasOrderDetailAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("SalesOrder", "Index", "SalesOrderAdmin")</td>
+            <td>@Html.ActionLink("SalesOrderBlindShip", "Index", "SalesOrderBlindShipAdmin")</td>
+            <td>@Html.ActionLink("SalesOrderDetail", "Index", "SalesOrderDetailAdmin")</td>
+            <td>@Html.ActionLink("SETUP", "Index", "SETUPAdmin")</td>
+            <td>@Html.ActionLink("Setup_for_Price", "Index", "Setup_for_PriceAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("SetupChargeDetail", "Index", "SetupChargeDetailAdmin")</td>
+            <td>@Html.ActionLink("SPECIALITEM", "Index", "SPECIALITEMAdmin")</td>
+            <td>@Html.ActionLink("SUB_ITEM", "Index", "SUB_ITEMAdmin")</td>
+            <td>@Html.ActionLink("SUB_SPECIALITEM", "Index", "SUB_SPECIALITEMAdmin")</td>
+            <td>@Html.ActionLink("Terms", "Index", "TermsAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("timelydepot_log", "Index", "timelydepot_logAdmin")</td>
+            <td>@Html.ActionLink("Trade", "Index", "TradeAdmin")</td>
+            <td>@Html.ActionLink("UserInvoiceDetail", "Index", "UserInvoiceDetailAdmin")</td>
+            <td>@*@Html.ActionLink("UserProfile", "Index", "UserProfileAdmin")*@</td>
+            <td>@Html.ActionLink("UserQuotation", "Index", "UserQuotationAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("UserQuotationDetail", "Index", "UserQuotationDetailAdmin")</td>
+            <td>@Html.ActionLink("UserRegistration", "Index", "UserRegistrationAdmin")</td>
+            <td>@Html.ActionLink("VendorDefaults", "Index", "VendorDefaultsAdmin")</td>
+            <td>@Html.ActionLink("VendorItem", "Index", "VendorItemAdmin")</td>
+            <td>@Html.ActionLink("Vendors", "Index", "VendorsAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("VendorsBillingDept", "Index", "VendorsBillingDeptAdmin")</td>
+            <td>@Html.ActionLink("VendorsContactAddress", "Index", "VendorsContactAddressAdmin")</td>
+            <td>@Html.ActionLink("VendorsHistory", "Index", "VendorsHistoryAdmin")</td>
+            <td>@Html.ActionLink("VendorsSalesContact", "Index", "VendorsSalesContactAdmin")</td>
+            <td>@Html.ActionLink("VendorsSpecialNotes", "Index", "VendorsSpecialNotesAdmin")</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("VendorTypes", "Index", "VendorTypesAdmin")</td>
+            <td>@Html.ActionLink("Warehouses", "Index", "WarehousesAdmin")</td>
+            <td>@Html.ActionLink("Class Nos", "Index", "ClssNosAdmin")</td>
+            <td>@Html.ActionLink("Year Product", "Index", "YearProductsAdmin")</td>
+            <td>@*@Html.ActionLink("webpages_Roles", "Index", "webpages_RolesAdmin")*@</td>
+        </tr>
+        <tr>
+            @if (Roles.IsUserInRole("Owner"))
+            {
+                <td>@Html.ActionLink("webpages_UsersInRoles", "Index", "webpages_UsersInRolesAdmin")</td>
+            }
+            @*else
+            {
+                <td>@Html.ActionLink("webpages_UsersInRoles", "Index", "webpages_UsersInRolesAdmin")</td>                    
+            }*@
+            <td>@Html.ActionLink("WorkerInfluentialPersons", "Index", "WorkerInfluentialPersonsAdmin")</td>
+            <td>@Html.ActionLink("Imprint Methods", "Index", "ImprintMethodsAdmin")</td>
+            <td>@Html.ActionLink("Ship Via", "Index", "ShipViaAdmin")</td>
+            <td>@Html.ActionLink("Order By", "Index", "OrderByAdmin")</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align:center; font-weight:bold;">Members Simple</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("Applications", "Index", "ApplicationsAdmin")</td>
+            <td>@Html.ActionLink("Users", "Index", "UsersAdmin")</td>
+            <td>@Html.ActionLink("Memberships", "Index", "MembershipsAdmin")</td>
+            <td>@Html.ActionLink("Profiles", "Index", "ProfilesAdmin")</td>
+            <td>@Html.ActionLink("Roles", "Index", "RolesAdmin")</td>
+        </tr>
+        <tr>
+            @if (Roles.IsUserInRole("Owner"))
+            {
+            <td>@Html.ActionLink("UsersInRoles", "Index", "UsersInRolesAdmin")</td>
+            }
+            else
+            {
+                <td></td>                    
+            }
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@*@Html.ActionLink("UsersInRoles", "Index", "UsersInRolesAdmin")*@</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align:center; font-weight:bold;">Members Aspnet</td>
+        </tr>
+        <tr>
+            <td>@Html.ActionLink("Applications", "Index", "aspnet_ApplicationsAdmin")</td>
+            <td>@Html.ActionLink("Users", "Index", "aspnet_UsersAdmin")</td>
+            <td>@Html.ActionLink("Memberships", "Index", "aspnet_MembershipAdmin")</td>
+            <td>@*@Html.ActionLink("Profiles", "Index", "aspnet_ProfilesAdmin")*@</td>
+            <td>@Html.ActionLink("Roles", "Index", "aspnet_RolesAdmin")</td>
+        </tr>
+        <tr>
+            @if (Roles.IsUserInRole("Owner"))
+            {
+            <td>@Html.ActionLink("UsersInRoles", "Index", "aspnet_UsersInRolesAdmin")</td>
+            }
+            else
+            {
+                <td></td>                    
+            }
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@*@Html.ActionLink("UsersInRoles", "Index", "aspnet_UsersInRolesAdmin")*@</td>
+        </tr>
+        <tr>
+            <td>@*@Html.ActionLink("InformationId", "Index", "InformationIdAdmin")*@</td>
+            <td>@*@Html.ActionLink("Test Payment", "Index", "PayPalPayment", new { id = "2061" }, null)*@</td>
+            <td>@*@Html.ActionLink("UPS Rating Package", "Index", "UPSRatingPackage")*@</td>
+            <td></td>
+            <td></td>
+        </tr>
+        @*<tr>
+            @*<td>@Html.ActionLink("Test01 Encription", "TestEncription", "Payment")</td>
+            <td>@Html.ActionLink("Test Encription", "Test02Encription", "Payment")</td>
+            <td>@Html.ActionLink("Test Invoice Report", "InvoiceReport", "Invoice")</td>
+            <td>@Html.ActionLink("Test In memory Invoice Report", "MemoryInvoiceReport", "Invoice")</td>
+            <td></td>
+            <td></td>
+        </tr>*@
+    </table>
+
+</div>

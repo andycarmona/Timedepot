@@ -1,0 +1,371 @@
+﻿@model TimelyDepotMVC.Models.Admin.ITEM
+@{
+    ViewBag.Title = "Inventory File";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+<div class="divh1">@ViewBag.Title&nbsp;-&nbsp;Vendor</div>
+
+<div style="border: 1px solid #6B6C69; padding: 5px 50px 5px 50px;">
+    <div class="cf">
+        <div class="editor-label left">
+            Item&nbsp;No.:&nbsp;<span style="font-weight: bold;">@Html.DisplayFor(model => model.ItemID)</span>
+        </div>
+        <div class="left" style="width: 500px; margin-left: 300px;">
+            <input id="btPrevious" class="btn btn-default" type="button" value="Previous" />
+            <input id="btNext" class="btn btn-default" style="margin-left: 50px;" type="button" value="Next" />
+        </div>
+        <div class="right">
+            @Html.DropDownList("iteminavtiveid", (IEnumerable<SelectListItem>)ViewBag.ActiveInactivelist, "Select", new { id = "selectiteminactiveid" })
+            <div class="editor-field" style="display: none;">
+                @Html.EditorFor(model => model.Inactive)
+                @Html.ValidationMessageFor(model => model.Inactive)
+            </div>
+        </div>
+    </div>
+    <div style="margin-bottom: 10px; margin-top: 10px; padding:10px; border: 1px solid #6B6C69;">
+        <div id="selectvendordivid">
+            <label class="left" style="margin-right: 5px;">Vendor No</label>
+            @{
+                string szSelector1 = "";
+                string szSelector2 = "";
+                int nHas = ViewBag.VendorItemListHas;
+                if (nHas > 0)
+                {
+                    szSelector1 = string.Format("block;");
+                    szSelector2 = string.Format("none;");
+                }
+                else
+                {
+                    szSelector1 = string.Format("none;");
+                    szSelector2 = string.Format("block;");
+                }
+                <div id="divSelector1id" style="display:@szSelector1">
+                    @Html.DropDownList("vendorId", (IEnumerable<SelectListItem>)ViewBag.VendorItemList, "Select Vendor No.", new { id = "vendorIdselectorId" })
+                </div>                       
+                <div id="divSelector2id" style="display:@szSelector2">
+                    @Html.DropDownList("vendorNo", (IEnumerable<SelectListItem>)ViewBag.VendorNoList, "Select Vendor No.", new { id = "vendorNoselectorId" })
+                </div>                }
+            <input id="vendorId" name="vendorId" type="hidden" value="@ViewBag.VendorItemID" />
+        </div>
+        <div id="vendordataid">
+            Vendor Data
+        </div>
+    </div>
+    <div style="width: 50px; margin: 5px auto;">
+        <input id="btQuit" class="btn btn-default" type="button" value="Quit" />
+    </div>
+</div>
+<div style="display: none;">
+    @Html.ActionLink("Previous", "PreviousSalesHistorybyItemTab", "Inventory", new { id = Model.ItemID, opcion = "3" }, new { id = "lnkPrevious" })
+    @Html.ActionLink("Next", "NextSalesHistorybyItemTab", "Inventory", new { id = Model.ItemID, opcion = "3" }, new { id = "lnkNext" })
+    @Html.ActionLink("Vendor", "CreateVendor", "Inventory", new { szItemId = Model.ItemID, Id = "0" }, new { id = "createvendorid" })
+</div>
+@section scripts{
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.watermark.min.js")"></script>
+    <script type="text/javascript">
+
+        jQuery(document).ready(initializeOpenSales);
+
+        function initializeOpenSales() {
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Intialize fields
+            SetActiveInactiveSelector();
+            jQuery("#selectiteminactiveid").attr("disabled", "disabled");
+
+            //Attach handlers 
+            jQuery("#btPrevious").click(clickbtPrevious);
+            jQuery("#btNext").click(clickbtNext);
+            jQuery("#btQuit").click(clickbtQuit);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+
+            //Load sales history
+            LoadVendor();
+        }
+        function LoadVendor() {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var szVendorID = '@ViewBag.VendorItemID';
+
+            //Get the partial view
+            var szUrl = jQuery("#createvendorid").attr("href");
+            if (szVendorID != "") {
+                szUrl = szUrl.replace("/0?", "/" + szVendorID + "?");
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorSuccess
+            });
+        }
+
+        function vendorSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#vendordataid").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Initialize fields 
+            //var objSel = jQuery("#vendorNoselectorId");
+            var objSelHlp = "@ViewBag.VendorItemListHas";
+            var objSel = Number(objSelHlp);
+            if (objSel > 0) {
+                jQuery("#btCreateVendorHlpId").css("display", "block");
+                jQuery("#selectvendordivid").css("display", "none");
+            }
+            else {
+                jQuery("#btCreateVendorHlpId").css("display", "none");
+                jQuery("#selectvendordivid").css("display", "block");
+            }
+            jQuery("#VendorNo").attr("readonly", "readonly");
+
+            //Set the dropdown selector 
+            //var szMsg = "";
+            //var szSalesContactIdHlp = jQuery("#salescontactId").val();
+            //var ddlSalesContact = jQuery("#salescontactselectorId");
+            //for (var i = 0; i < ddlSalesContact[0].length; i++) {
+            //    szMsg = ddlSalesContact[0][i].value;
+            //    if (szSalesContactIdHlp == szMsg) {
+            //        //When this is enabled gives de efect of 'no sincorinized'
+            //        //ddlSalesContact[0].selectedIndex = ddlSalesContact[0][i].index;
+            //    }
+            //}
+
+            //var nIndice = ddlSalesContact[0].selectedIndex;
+
+            //Initialize fields
+            jQuery("#LeadTime").watermark("00:00:00")
+
+            //Attach handlers 
+            jQuery("#btAddVendor").click(clickbtAddVendor);
+            jQuery("#vendorNoselectorId").change(changevendorNoselectorId);
+            jQuery("#vendorIdselectorId").change(changevendorIdselectorId);
+            jQuery("#updatevendoritemHlpId").click(clickupdatevendoritemHlpId);
+
+        }
+        function clickbtAddVendor(src, arg) {
+            //debugger;
+
+            //Intialize thr form
+            var szIdHlp = jQuery("#Id").val();
+            jQuery("#Id").val("0");
+
+            jQuery("#CompanyName").val("");
+            jQuery("#FirstName").val("");
+            jQuery("#LastName").val("");
+            jQuery("#Tel1").val("");
+            jQuery("#Tel2").val("");
+            jQuery("#Tel").val("");
+            jQuery("#Fax").val("");
+            jQuery("#Address").val("");
+            jQuery("#Note").val("");
+            jQuery("#Addres3").val("");
+            jQuery("#City").val("");
+            jQuery("#State").val("");
+            jQuery("#Zip").val("");
+            jQuery("#Country").val("");
+            jQuery("#Email").val("");
+            jQuery("#Website").val("");
+
+            jQuery("#VendorNo").val("");
+            jQuery("#VendorPartNo").val("");
+            jQuery("#UpdateDate").val("");
+            jQuery("#Cost").val("");
+            jQuery("#CostBlind").val("");
+            jQuery("#RunCharge").val("");
+            jQuery("#SetupCharge").val("");
+            jQuery("#ReSetupCharge").val("");
+            jQuery("#LeadTime").val("");
+
+            jQuery("#btCreateVendorHlpId").css("display", "none");
+            jQuery("#selectvendordivid").css("display", "block");
+
+            jQuery("#divSelector1id").css("display", "none");
+            jQuery("#divSelector2id").css("display", "block");
+
+            //Display load image
+            //ShowLoadingDialog();
+
+
+            ////Get the partial view
+            //var szUrl = jQuery("#createvendorid").attr("href");
+
+            //jQuery.ajax({
+            //    type: 'GET',
+            //    url: szUrl,
+            //    data: null,
+            //    //contentType: 'application/json; charset=utf-8',
+            //    dataType: 'html',
+            //    error: AjaxFailed,
+            //    success: vendorSuccess
+            //});
+        }
+
+        function changevendorNoselectorId(src, arg) {
+            //debugger;
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            if (nId != "") {
+                jQuery("#VendorNo").val(nId);
+                jQuery("#formCreateEditVendorid").submit();
+            }
+        }
+
+
+        function changevendorIdselectorId(src, arg) {
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            var nSelected = src.target.selectedIndex;
+            var nId = src.target[nSelected].value;
+            var szTxt = src.target[nSelected].text;
+            var nPos = szTxt.indexOf("-(");
+            if (nPos != -1) {
+                szTxt = szTxt.substring(nPos + 2);
+                szTxt = szTxt.replace(")", "");
+            }
+
+
+            //var szVendorID = '@ViewBag.VendorItemID';
+            var szVendorID = szTxt;
+
+            //Get the partial view
+            var szUrl = jQuery("#createvendorid").attr("href");
+            if (szVendorID != "") {
+                szUrl = szUrl.replace("/0?", "/" + szVendorID + "?");
+            }
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: vendorSuccess
+            });
+
+            //*******************
+            //var nSelected = src.target.selectedIndex;
+            //var nId = src.target[nSelected].value;
+            //var szTxt = src.target[nSelected].text;
+            //var nPos = szTxt.indexOf("-(");
+            //if (nPos != -1) {
+            //    szTxt = szTxt.substring(nPos + 2);
+            //    szTxt = szTxt.replace(")", "");
+            //}
+            //var szMsg1 = "";
+            //var szMsg2 = "";
+            //var szUrl = jQuery("#createvendorid").attr("href");
+
+            //var nPos1 = szUrl.lastIndexOf("/");
+            //var nPos2 = szUrl.lastIndexOf("=");
+            //if (nPos1 != -1 && nPos2 != -1) {
+            //    szMsg1 = szUrl.substring(0, nPos1 + 1);
+            //    szMsg2 = szUrl.substring(nPos2 + 1);
+            //    szUrl = szMsg1 + szTxt + '?szItemId=' + szMsg2;
+            //}
+
+            //szUrl = szUrl + '&szVendorNo=' + nId;
+
+            //jQuery.ajax({
+            //    type: 'GET',
+            //    url: szUrl,
+            //    data: null,
+            //    //contentType: 'application/json; charset=utf-8',
+            //    dataType: 'html',
+            //    error: AjaxFailed,
+            //    success: vendorSuccess
+            //});
+        }
+
+        function clickupdatevendoritemHlpId(src, arg) {
+            //debugger;
+            var hrefHlp = src.target.parentNode.href;
+
+            var szVendorNo = jQuery("#VendorNo").val();
+            hrefHlp = hrefHlp + '&vendorno=' + szVendorNo;
+            var szCost = jQuery("#Cost").val();
+            hrefHlp = hrefHlp + '&Cost=' + szCost;
+            var szCostBlind = jQuery("#CostBlind").val();
+            hrefHlp = hrefHlp + '&CostBlind=' + szCostBlind;
+            var szRunCharge = jQuery("#RunCharge").val();
+            hrefHlp = hrefHlp + '&RunCharge=' + szRunCharge;
+            var szSetupCharge = jQuery("#SetupCharge").val();
+            hrefHlp = hrefHlp + '&SetupCharge=' + szSetupCharge;
+            var szReSetupCharge = jQuery("#ReSetupCharge").val();
+            hrefHlp = hrefHlp + '&ReSetupCharge=' + szReSetupCharge;
+            var szLeadTimeHrs = jQuery("#LeadTimeHrs").val();
+            hrefHlp = hrefHlp + '&LeadTimeHrs=' + szLeadTimeHrs;
+            var szLeadTimeMin = jQuery("#LeadTimeMin").val();
+            hrefHlp = hrefHlp + '&LeadTimeMin=' + szLeadTimeMin;
+            var szLeadTimeSec = jQuery("#LeadTimeSec").val();
+            hrefHlp = hrefHlp + '&LeadTimeSec=' + szLeadTimeSec;
+            var szLeadTime = jQuery("#LeadTime").val();
+            hrefHlp = hrefHlp + '&LeadTime=' + szLeadTime;
+
+            src.target.parentNode.href = hrefHlp;
+            //alert('clickupdatevendoritemHlpId ' + hrefHlp);
+        }
+
+
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function SetActiveInactiveSelector() {
+            //debugger;
+
+            var szActiveInactive = jQuery("#item_Inactive").val();
+
+            var ddlHlp = jQuery("#selectiteminactiveid")[0];
+            if (szActiveInactive == "") {
+                ddlHlp.selectedIndex = 1;
+            }
+            else {
+                if (szActiveInactive == "Y") {
+                    ddlHlp.selectedIndex = 2;
+                }
+                else {
+                    ddlHlp.selectedIndex = 1;
+                }
+            }
+        }
+        function clickbtPrevious(src, arg) {
+            var szUrl = jQuery("#lnkPrevious").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtNext(src, arg) {
+            var szUrl = jQuery("#lnkNext").attr("href");
+            window.open(szUrl, target = "_self");
+        }
+        function clickbtQuit(src, arg) {
+            window.close();
+        }
+
+    </script>
+}

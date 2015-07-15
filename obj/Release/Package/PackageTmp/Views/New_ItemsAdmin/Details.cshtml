@@ -1,0 +1,44 @@
+﻿@model TimelyDepotMVC.Models.Admin.New_Items
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>New_Items</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SUB_ITEMID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SUB_ITEMID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Desca)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Desca)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DescB)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DescB)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Colors_available)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Colors_available)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ITEMID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "GetCost";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="divh1">@ViewBag.Title</div>
+@{
+    List<string> errorList = null;
+    if (ViewBag.errorList != null)
+    {
+        errorList = ViewBag.errorList;
+
+    }    
+}
+<div class="error" style="width: 600px; margin: 5px auto;">
+    @ViewBag.ErrorMsg
+    @if (errorList != null)
+    {
+        foreach (var item in errorList)
+        {
+        @item
+        }
+    }
+</div>
+<div style="width: 800px; margin: 5px auto;">
+    <div>
+        Results here
+    </div>
+    @{
+        //List<TimelyDepotMVC.Models.UPSResult> resultList = ViewBag.ResultList;
+        List<TimelyDepotMVC.Controllers.Result> resultList = ViewBag.ResultList;
+    }
+    <div>
+        <table class="webgrid" style="margin: 10px auto;">
+            <tr class="webgrid-header">
+                <th>Service&nbsp;Type</th>
+                <th>Cost</th>
+                <th>Time&nbsp;in&nbsp;Transit</th>
+            </tr>
+            @{
+                int nRow = 0;
+                int nMod = 0;
+                string szClass = "";
+            }
+            @if (resultList != null)
+            {
+
+                foreach (var item in resultList)
+                {
+                    nRow++;
+                    nMod = (nRow % 2);
+                    if (nMod == 0)
+                    {
+                        szClass = "webgrid-alternating-row";
+                    }
+                    else
+                    {
+                        szClass = "webgrid-row-style";
+                    }
+                <tr class="@szClass">
+                    <td>@item.service</td>
+                    <td>@item.cost</td>
+                    <td>@item.time</td>
+                </tr>
+                }
+            }
+
+        </table>
+    </div>
+    <div style="margin:10px;">
+        @Html.ActionLink("Back", "GetShippingRate02")
+    </div>
+</div>

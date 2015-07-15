@@ -1,0 +1,23 @@
+﻿@model TimelyDepotMVC.Models.Admin.packagemaster
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>packagemaster</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PackName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PackName)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.PackId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,398 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.Customers>
+
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_LayoutModule.cshtml";
+}
+<div class="divh1">@ViewBag.Title</div>
+
+<div style="margin: 0px auto; width: 1240px; padding: 10px; display: none;">
+    @Html.ActionLink("Add Customer", "Create01", null, new { id = "lnkAddCustomerId" })
+</div>
+<div style="margin: 0px auto; width: 1240px; padding: 5px;">
+    @using (Html.BeginForm("PaymentIndex", "Payment", FormMethod.Post))
+    {
+        <div style="margin: 0 auto; width: 600px;">
+            <div class="cf">
+                <div class="left" style="width: 120px; padding: 5px;">
+                    <div style="margin-top: 5px;"><span>Active Only</span><input id="ckActive" type="checkbox" checked /></div>
+                </div>
+                <div class="cf right" style="margin: 5px;">
+                    <div class="left" style="margin-right: 5px; margin-top: 5px;">
+                        <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
+                    </div>
+                    <div>
+                        <input id="btnSubmitSearch"  type="submit" value="Search" />
+                        @Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId"})
+                    </div>
+                </div>
+            </div>
+            <div class="cf">
+                <div class="left" style="margin: 5px; width: 96px;">Search by:</div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>Customer No.</span><input id="ckcust" style="margin-left: 49px;" type="checkbox" checked /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>Company Name</span><input id="ckcomp" style="margin-left: 35px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>Telphone No.</span><input id="ckphon" style="margin-left: 51px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>Email</span><input id="ckemai" style="margin-left: 100px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>Area Code</span><input id="ckcode" style="margin-left: 70px;" type="checkbox" /></div>
+                </div>
+                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                    <div><span>State</span><input id="ckstate" style="margin-left: 103px;" type="checkbox" /></div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <input id="ckActiveHlp" name="ckActive" type="text" value="@ViewBag.ckActiveHlp" />
+            <input id="ckCriteriaHlp" name="ckCriteria" type="text" value="@ViewBag.ckCriteriaHlp" />
+        </div>
+
+    }
+</div>
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid" style="width: 1240px; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerNo)
+            </th>
+            <th>
+                Company&nbsp;Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BussinesType)
+            </th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Telephone</th>
+            <th>Email&nbsp;Address</th>
+        </tr>
+        @{
+            TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+            string szEmail = "";
+            string szName = "";
+
+            string CompanyName = "";
+            string BussinesType = "";
+            string State = "";
+            string Phone = "";
+            string Email = "";
+            string ZipCode = "";
+            string sztrId = "";
+
+        }
+
+        @foreach (var item in Model)
+        {
+            //szEmail = TimelyDepotMVC.Controllers.CustomersController.GetCustomerEmailName(db01, item.Id, ref szName);
+            TimelyDepotMVC.Controllers.CustomersController.GetCustomerMainData(db01, item.Id, ref CompanyName, ref BussinesType, ref State, ref Phone, ref Email, ref ZipCode);
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row timelycustomertr trhlp";
+            }
+            else
+            {
+                szClass = "webgrid-row-style timelycustomertr trhlp";
+            }
+
+            sztrId = string.Format("row0_{0}", item.Id);
+         
+
+            <tr id="@sztrId" class="@szClass">
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerNo)
+                </td>
+                <td>
+                    @CompanyName
+                </td>
+                <td>
+                    @BussinesType
+                </td>
+                <td>
+                    @State
+                </td>
+                <td>
+                    @ZipCode
+                </td>
+                <td>
+                    @Phone
+                </td>
+                <td>
+                    @Email
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="7">
+                <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
+<div style="display: none;">
+    @Html.ActionLink("select", "SalesOrderByCustomer", "Payment", null, new { aCustomerNo = "lnkeditcustomer" })
+</div>
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeCustomerIndex);
+
+        function initializeCustomerIndex() {
+            //debugger;
+            //Set the buttons
+            jQuery(".btnSubmitSearch").button();
+
+            var szckCriteria = '@ViewBag.ckCriteriaHlp';
+            SetDefaultCheckBox(szckCriteria);
+
+            var szckActiveHlp = '@ViewBag.ckActiveHlp';
+            if (szckActiveHlp == "true") {
+                jQuery("#ckActive").prop("checked", true);
+            }
+            else {
+                jQuery("#ckActive").prop("checked", false);
+            }
+
+            //Initialize fields
+            @*            var objHlp = jQuery("#SelectStatus");
+            var selectstatus = '@ViewBag.SelectStatus';
+            if (selectstatus != "") {
+                objHlp[0].selectedIndex = selectstatus;
+            }*@
+
+            //Attach handlres
+            jQuery("#ckActive").click(clickckActive);
+            jQuery("#ckcust").click(clickckcust);
+            jQuery("#ckcomp").click(clickckcomp);
+            jQuery("#ckphon").click(clickckphon);
+            jQuery("#ckemai").click(clickcckemai);
+            jQuery("#ckcode").click(clickckcode);
+            jQuery("#ckstate").click(clickckstate);
+            jQuery(".timelycustomertr td").each(eachtimelycustomertr);
+
+            //Prepare the dialogs
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#addcustomerDialog").dialog({ autoOpen: false, modal: true });
+        }
+        function eachtimelycustomertr(nPos, src) {
+            jQuery(src).click(clicktimelycustomertr);
+            jQuery(src).mouseover(mouseovertimelycustomertr);
+        }
+        function clicktimelycustomertr(src, arg) {
+            var szId = src.target.parentNode.id;
+            szId = szId.replace("row0_", "");
+            window.open("/Payment/SalesOrderByCustomer?nCustomerId="+szId, "_self");
+        }
+        function mouseovertimelycustomertr(src, arg) {
+            jQuery(src.target).css("cursor", "pointer");
+        }
+        function SetDefaultCheckBox(szckCriteria) {
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "customer":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "company":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "phone":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "email":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "areacode":
+                    jQuery("#ckcode").prop("checked", true);
+                    break;
+                case "state":
+                    jQuery("#ckupcode").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+
+        function clickckstate(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("state");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcode(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("areacode");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickcckemai(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("email");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckphon(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("phone");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcomp(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("company");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcust(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("customer");
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckActive(src, arg) {
+            var bChkActive = (src.target.checked);
+            if (bChkActive) {
+                jQuery("#ckActiveHlp").val("true");
+            }
+            else {
+                jQuery("#ckActiveHlp").val("false");
+            }
+        }
+
+        //Iniciales
+        function clicklnkAddCustomerId(src, arg) {
+            src.preventDefault();
+
+            //debugger;
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery(src.target).attr("href");
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: customerSuccess
+            });
+
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+        function customerSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#addcustomerDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers
+            jQuery("#btDialogClose").click(clickbtDialogClose);
+            
+
+            //Initialize fields
+
+            //Get the title
+            //debugger;
+            var szTitle = "Customers";
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#addcustomerDialog").dialog("option", "title", "Add " + szTitle);
+
+            //setter
+            jQuery("#addcustomerDialog").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#addcustomerDialog").dialog("open");
+
+        }
+
+        function clickbtDialogClose(src, arg) {
+            jQuery("#addcustomerDialog").dialog("close");
+        }
+    </script>
+}

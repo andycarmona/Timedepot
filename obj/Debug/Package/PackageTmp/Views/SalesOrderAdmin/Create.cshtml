@@ -1,0 +1,429 @@
+﻿@model TimelyDepotMVC.Models.Admin.SalesOrder
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>SalesOrder</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesOrderNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesOrderNo)
+            @Html.ValidationMessageFor(model => model.SalesOrderNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SODate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SODate)
+            @Html.ValidationMessageFor(model => model.SODate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipVia)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipVia)
+            @Html.ValidationMessageFor(model => model.ShipVia)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipDate)
+            @Html.ValidationMessageFor(model => model.ShipDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TradeId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TradeId)
+            @Html.ValidationMessageFor(model => model.TradeId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerId)
+            @Html.ValidationMessageFor(model => model.CustomerId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerShiptoId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerShiptoId)
+            @Html.ValidationMessageFor(model => model.CustomerShiptoId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustomerShipLocation)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CustomerShipLocation)
+            @Html.ValidationMessageFor(model => model.CustomerShipLocation)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VendorId)
+            @Html.ValidationMessageFor(model => model.VendorId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BussinesType)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BussinesType)
+            @Html.ValidationMessageFor(model => model.BussinesType)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorAddress)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VendorAddress)
+            @Html.ValidationMessageFor(model => model.VendorAddress)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PurchaseOrderNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PurchaseOrderNo)
+            @Html.ValidationMessageFor(model => model.PurchaseOrderNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentTerms)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentTerms)
+            @Html.ValidationMessageFor(model => model.PaymentTerms)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentDate)
+            @Html.ValidationMessageFor(model => model.PaymentDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PaymentAmount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PaymentAmount)
+            @Html.ValidationMessageFor(model => model.PaymentAmount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShippingHandling)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShippingHandling)
+            @Html.ValidationMessageFor(model => model.ShippingHandling)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CreaditCardNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CreaditCardNo)
+            @Html.ValidationMessageFor(model => model.CreaditCardNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Note)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Note)
+            @Html.ValidationMessageFor(model => model.Note)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsBlindShip)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsBlindShip)
+            @Html.ValidationMessageFor(model => model.IsBlindShip)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesRep)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SalesRep)
+            @Html.ValidationMessageFor(model => model.SalesRep)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Tax_rate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Tax_rate)
+            @Html.ValidationMessageFor(model => model.Tax_rate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Invs_Tax)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Invs_Tax)
+            @Html.ValidationMessageFor(model => model.Invs_Tax)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Approvedby)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Approvedby)
+            @Html.ValidationMessageFor(model => model.Approvedby)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AprovedDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.AprovedDate)
+            @Html.ValidationMessageFor(model => model.AprovedDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Requiredate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Requiredate)
+            @Html.ValidationMessageFor(model => model.Requiredate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.QuoteId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.QuoteId)
+            @Html.ValidationMessageFor(model => model.QuoteId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromName)
+            @Html.ValidationMessageFor(model => model.FromName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromTitle)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromTitle)
+            @Html.ValidationMessageFor(model => model.FromTitle)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromCompany)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromCompany)
+            @Html.ValidationMessageFor(model => model.FromCompany)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromAddress1)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromAddress1)
+            @Html.ValidationMessageFor(model => model.FromAddress1)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromAddress2)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromAddress2)
+            @Html.ValidationMessageFor(model => model.FromAddress2)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromCity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromCity)
+            @Html.ValidationMessageFor(model => model.FromCity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromState)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromState)
+            @Html.ValidationMessageFor(model => model.FromState)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromZip)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromZip)
+            @Html.ValidationMessageFor(model => model.FromZip)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromCountry)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromCountry)
+            @Html.ValidationMessageFor(model => model.FromCountry)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromEmail)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromEmail)
+            @Html.ValidationMessageFor(model => model.FromEmail)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromTel)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromTel)
+            @Html.ValidationMessageFor(model => model.FromTel)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FromFax)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FromFax)
+            @Html.ValidationMessageFor(model => model.FromFax)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToName)
+            @Html.ValidationMessageFor(model => model.ToName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToTitle)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToTitle)
+            @Html.ValidationMessageFor(model => model.ToTitle)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToCompany)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToCompany)
+            @Html.ValidationMessageFor(model => model.ToCompany)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToAddress1)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToAddress1)
+            @Html.ValidationMessageFor(model => model.ToAddress1)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToAddress2)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToAddress2)
+            @Html.ValidationMessageFor(model => model.ToAddress2)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToCity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToCity)
+            @Html.ValidationMessageFor(model => model.ToCity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToState)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToState)
+            @Html.ValidationMessageFor(model => model.ToState)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToZip)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToZip)
+            @Html.ValidationMessageFor(model => model.ToZip)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToCountry)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToCountry)
+            @Html.ValidationMessageFor(model => model.ToCountry)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToEmail)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToEmail)
+            @Html.ValidationMessageFor(model => model.ToEmail)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToTel)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToTel)
+            @Html.ValidationMessageFor(model => model.ToTel)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ToFax)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ToFax)
+            @Html.ValidationMessageFor(model => model.ToFax)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

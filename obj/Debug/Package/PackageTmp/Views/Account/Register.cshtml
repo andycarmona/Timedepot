@@ -1,0 +1,76 @@
+﻿@model TimelyDepotMVC.Models.RegisterModel
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div style="width: 500px; margin: 0 auto;">
+        <fieldset class="darkerline" style="margin-top: 50px; margin-bottom: 50px;">
+            <legend>Register</legend>
+            <div class="cf" style="margin: 5px;">
+                <div class="left" style="margin-right: 5px; padding-top: 8px;">
+                    @Html.LabelFor(model => model.UserName)
+                </div>
+                <div class="viosinput180">
+                    @Html.EditorFor(model => model.UserName)
+                    @Html.ValidationMessageFor(model => model.UserName)
+                </div>
+            </div>
+
+            <div class="cf" style="margin: 5px;">
+                <div class="left" style="margin-right: 5px; padding-top: 8px;">
+                    @Html.LabelFor(model => model.Email)
+                </div>
+                <div class="viosinput180">
+                    @Html.EditorFor(model => model.Email)
+                    @Html.ValidationMessageFor(model => model.Email)
+                </div>
+            </div>
+
+            <div class="cf" style="margin: 5px;">
+                <div class="left" style="margin-right: 5px; padding-top: 8px;">
+                    @Html.LabelFor(model => model.Password)
+                </div>
+                <div class="viosinput180">
+                    @Html.EditorFor(model => model.Password)
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+
+            <div class="cf" style="margin: 5px;">
+                <div class="left" style="margin-right: 5px; padding-top: 8px;">
+                    @Html.LabelFor(model => model.ConfirmPassword)
+                </div>
+                <div class="viosinput180">
+                    @Html.EditorFor(model => model.ConfirmPassword)
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                </div>
+            </div>
+
+            <div style="width: 42px; margin: 0 auto;">
+                <input id="btSubmit" type="submit" value="Register" />
+            </div>
+        </fieldset>
+
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        jQuery(Document).ready(initializeLogin);
+
+        function initializeLogin() {
+
+            //Set the buttons
+            jQuery("#btSubmit").button();
+
+            //Set layout
+            jQuery("#UserName").css("margin-left", "45px");
+            jQuery("#Email").css("margin-left", "25px");
+            jQuery("#Password").css("margin-left", "52px");
+        }
+    </script>
+}

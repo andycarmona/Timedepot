@@ -1,0 +1,172 @@
+﻿@model TimelyDepotMVC.Models.Admin.Memberships
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Memberships</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ApplicationId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ApplicationId)
+            @Html.ValidationMessageFor(model => model.ApplicationId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Password)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Password)
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordFormat)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordFormat)
+            @Html.ValidationMessageFor(model => model.PasswordFormat)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordSalt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordSalt)
+            @Html.ValidationMessageFor(model => model.PasswordSalt)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Email)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Email)
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordQuestion)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordQuestion)
+            @Html.ValidationMessageFor(model => model.PasswordQuestion)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PasswordAnswer)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PasswordAnswer)
+            @Html.ValidationMessageFor(model => model.PasswordAnswer)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsApproved)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsApproved)
+            @Html.ValidationMessageFor(model => model.IsApproved)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsLockedOut)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsLockedOut)
+            @Html.ValidationMessageFor(model => model.IsLockedOut)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CreateDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CreateDate)
+            @Html.ValidationMessageFor(model => model.CreateDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastLoginDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastLoginDate)
+            @Html.ValidationMessageFor(model => model.LastLoginDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastPasswordChangedDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastPasswordChangedDate)
+            @Html.ValidationMessageFor(model => model.LastPasswordChangedDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastLockoutDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastLockoutDate)
+            @Html.ValidationMessageFor(model => model.LastLockoutDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FailedPasswordAttemptCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FailedPasswordAttemptCount)
+            @Html.ValidationMessageFor(model => model.FailedPasswordAttemptCount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FailedPasswordAttemptWindowStart)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FailedPasswordAttemptWindowStart)
+            @Html.ValidationMessageFor(model => model.FailedPasswordAttemptWindowStart)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FailedPasswordAnswerAttemptCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FailedPasswordAnswerAttemptCount)
+            @Html.ValidationMessageFor(model => model.FailedPasswordAnswerAttemptCount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FailedPasswordAnswerAttemptWindowsStart)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FailedPasswordAnswerAttemptWindowsStart)
+            @Html.ValidationMessageFor(model => model.FailedPasswordAnswerAttemptWindowsStart)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Comment)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Comment)
+            @Html.ValidationMessageFor(model => model.Comment)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

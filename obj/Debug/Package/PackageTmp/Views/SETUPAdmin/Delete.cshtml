@@ -1,0 +1,62 @@
+﻿@model TimelyDepotMVC.Models.Admin.SETUP
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>SETUP</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Run_charge)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Run_charge)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SetupCost)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetupCost)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Discount_Code)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Discount_Code)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Min)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Min)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Dial)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Dial)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

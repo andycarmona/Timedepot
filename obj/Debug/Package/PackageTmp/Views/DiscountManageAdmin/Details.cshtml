@@ -1,0 +1,30 @@
+﻿@model TimelyDepotMVC.Models.Admin.DiscountManage
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>DiscountManage</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DiscountName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DiscountName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DiscountPercentage)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DiscountPercentage)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

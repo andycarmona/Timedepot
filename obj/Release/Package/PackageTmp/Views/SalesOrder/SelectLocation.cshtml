@@ -1,0 +1,137 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.CustomersShipAddress>
+<div style="margin: 0px auto; width: 90%">
+    <div class="left" style="margin-right: 3px; padding-top: 10px;">Search by Address:</div>
+    <input id="searchLocation" name="searchLocation" type="text" value="@ViewBag.SearchLocation" />
+    <input id="btnSubmitSearchLocationid" class="btn btn-default" type="button" value="Search" />
+    <span class="btnSubmitSearchLocationlnk">
+        @Html.ActionLink("Reset", "SelectLocation", "SalesOrder", new { customerid = ViewBag.CustomerId }, new { id = "lnkResetLocationId", @class = "btn btn-default" })
+    </span>
+</div>
+
+<table class="webgrid" style="margin: 5px auto; width: 90%;">
+    <tr class="webgrid-header">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.Zip)
+        </th>
+        <th style="display: none;">
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippingPreference)
+        </th>
+    </tr>
+    @{
+        string szItemId = "";
+        string szCompany = "";
+        string szFirstName = "";
+        string szLastName = "";
+        string szAddress = "";
+        string szCity = "";
+        string szState = "";
+        string szZip = "";
+        string szPreference = "";
+
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+    }
+
+    @foreach (var item in Model)
+    {
+        szItemId = string.Format("itm_{0}", item.Id);
+        szCompany = string.Format("cmp_{0}", item.Id);
+        szFirstName = string.Format("fn_{0}", item.Id);
+        szLastName = string.Format("ln_{0}", item.Id);
+        szAddress = string.Format("adr_{0}", item.Id);
+        szCity = string.Format("cty_{0}", item.Id);
+        szState = string.Format("sta_{0}", item.Id);
+        szZip = string.Format("zp_{0}", item.Id);
+        szPreference = string.Format("prf_{0}", item.Id);
+
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row";
+        }
+        else
+        {
+            szClass = "webgrid-row-style";
+        }
+
+        <tr class="@szClass">
+            <td class="lnkSelectLocation">
+                @Html.ActionLink("Select", "Details", new { id = item.Id })
+            </td>
+            <td id="@szAddress" >
+                @Html.DisplayFor(modelItem => item.Address1)
+            </td>
+            <td id="@szCity">
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td style="display: none;">
+                @Html.DisplayFor(modelItem => item.CustomerId)
+            </td>
+            <td id="@szFirstName" style="display: none;">
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td id="@szLastName" style="display: none;">
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td style="display: none;">
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td id="@szState" style="display: none;">
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td style="display: none;">
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td id="@szZip"  style="display: none;">
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td id="@szPreference"  style="display: block;">
+                @Html.DisplayFor(modelItem => item.ShippingPreference)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="5">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("SelectLocation", new { page }))
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="padding: 5px;">
+            <input id="btDialogClose" class="btn btn-default" type="button" value="Close" /></td>
+    </tr>
+
+</table>
+<div id="selectlocationcustmerid" style="display:none;">
+    @ViewBag.CustomerId
+</div>

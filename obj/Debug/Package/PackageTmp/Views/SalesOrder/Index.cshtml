@@ -1,0 +1,447 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.SalesOrder>
+
+@{
+    ViewBag.Title = "Sales Order";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="divh1">@ViewBag.Title</div>
+<div style="margin-right:10px;">
+    @Html.ActionLink("Create Sales Order", "SelectCustomer", "SalesOrder", null, new { id="lnkselectcustomerid" })
+</div>
+
+<div style="width: 1240px; margin: 0px auto;">
+    <div style="margin: 0px auto; width: 1240px; padding: 5px;">
+        @using (Html.BeginForm("Index", "SalesOrder", FormMethod.Post))
+        {
+            <div style="margin: 0 auto; width: 600px;">
+                <div class="cf">
+                    <div class="left" style="width: 120px; padding: 5px;">
+                        <div style="margin-top: 5px;"><span>Open Only</span><input id="ckActive" type="checkbox" checked /></div>
+                    </div>
+                    <div class="cf right" style="margin: 5px;">
+                        <div class="left" style="margin-right: 5px; margin-top: 5px;">
+                            <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
+                        </div>
+                        <div>
+                            <input id="btnSubmitSearch" class="btnSubmitSearch" type="submit" value="Search" />
+                            @Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId", @class = "btnSubmitSearch" })
+                        </div>
+                    </div>
+                </div>
+                <div class="cf">
+                    <div class="left" style="margin: 5px; width: 96px;">Search by:</div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Sales Order No.</span><input id="ckcust" style="margin-left: 34px;" type="checkbox" checked /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Custom PO No.</span><input id="ckcomp" style="margin-left: 35px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Customer Name</span><input id="ckphon" style="margin-left: 30px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Item No.</span><input id="ckemai" style="margin-left: 76px;" type="checkbox" /></div>
+                    </div>
+                    <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 200px;">
+                        <div><span>Require Date</span><input id="ckcode" style="margin-left: 50px;" type="checkbox" /></div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: none;">
+                <input id="ckActiveHlp" name="ckActive" type="text" value="@ViewBag.ckActiveHlp" />
+                <input id="ckCriteriaHlp" name="ckCriteria" type="text" value="@ViewBag.ckCriteriaHlp" />
+            </div>    
+      
+        }
+    </div>
+</div>
+
+<table class="webgrid" style="width: 1240px; margin: 0px auto;">
+    <tr class="webgrid-header" style="width: 1240px; margin: 0px auto;">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.SalesOrderNo)
+        </th>
+        <th>Customer PO</th>
+        <th>Customer name</th>
+        <th>
+            @Html.DisplayNameFor(model => model.SODate)
+        </th>
+        <th>Required Date</th>
+        <th>Shipped Date</th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </th>
+    </tr>
+    @{
+        TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+        int nRow = 0;
+        int nMod = 0;
+        string szClass = "";
+        string szName = "";
+        string szEmail = "";
+    }
+
+    @foreach (var item in Model)
+    {
+        nRow++;
+        nMod = (nRow % 2);
+        if (nMod == 0)
+        {
+            szClass = "webgrid-alternating-row trhlp";
+        }
+        else
+        {
+            szClass = "webgrid-row-style trhlp";
+        }
+
+        szName = "";
+        szEmail = "";
+        TimelyDepotMVC.Controllers.SalesOrderController.GetCustomerEmail(db01, ref szName, ref szEmail, item.SalesOrderId);
+        
+        <tr class="@szClass">
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.SalesOrderId })
+                |
+                @Html.ActionLink("Delete", "Delete", new { id = item.SalesOrderId }) |
+                @Html.ActionLink("Print (Pdf)", "SalesOrderReport", "iTextReports", new { SalesOrderId = item.SalesOrderId }, new { target = "_blank" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SalesOrderNo)
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.PurchaseOrderNo)</td>
+            <td>@szName</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SODate)
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Requiredate)</td>
+            <td>@Html.DisplayFor(modelItem => item.ShipDate)</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="8">
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+        </td>
+    </tr>
+
+</table>
+<div id="createcustomerIdDialog">
+    Customer data here
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializeSalesOrderIndex);
+
+        function initializeSalesOrderIndex() {
+
+            //Set the buttons
+            jQuery(".btnSubmitSearch").button();
+
+            var szckCriteria = '@ViewBag.ckCriteriaHlp';
+            SetDefaultCheckBox(szckCriteria);
+
+            var szckActiveHlp = '@ViewBag.ckActiveHlp';
+            if (szckActiveHlp == "true") {
+                jQuery("#ckActive").prop("checked", true);
+            }
+            else {
+                jQuery("#ckActive").prop("checked", false);
+            }
+
+            //Attach handlers 
+            jQuery("#ckcust").click(clickckcust);
+            jQuery("#ckcomp").click(clickckcomp);
+            jQuery("#ckphon").click(clickckphon);
+            jQuery("#ckemai").click(clickcckemai);
+            jQuery("#ckcode").click(clickckcode);
+            jQuery("#ckstate").click(clickckstate);
+
+            jQuery("#lnkselectcustomerid").click(clicklnkselectcustomerid);
+
+            //jQuery("#lnkSearchUserRegId").click(lnkSearchUserRegId);
+            //jQuery(".lnkSelectQuote").each(eachlnkSelectQuote);
+
+            //Prepare the dialogs 
+            jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
+            //jQuery("#quotedialogid").dialog({ autoOpen: false, modal: true });
+            jQuery("#createcustomerIdDialog").dialog({ autoOpen: false, modal: true });
+
+            //debugger;
+
+        }
+
+        function clickbtnSubmitSelectCustomer(src, arg) {
+            src.preventDefault();
+
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            //var szUrl = jQuery("#lnkselectcustomerid").attr("href");
+            var szUrl = jQuery("#selectcustomersearchform").prop("action");
+
+            var szCia = jQuery("#selectcustomersearchform #searchCompanyName").val();
+            var szEmail = jQuery("#selectcustomersearchform #searchemail").val();
+
+            if (szCia != "") {
+                szUrl = szUrl + '?companyname=' + szCia;
+            }
+
+            if (szEmail != "") {
+                szUrl = szUrl + '?email=' + szEmail;
+            }
+
+            //alert('Aqui submit ' + szUrl + ' ' + szCia + ' ' + szEmail);
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectCustomerSuccess
+            });
+
+        }
+
+        function clicklnkselectcustomerid(src, arg) {
+            //debugger;
+            src.preventDefault();
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the partial view
+            var szUrl = jQuery("#lnkselectcustomerid").attr("href");
+
+            //alert('Aqui ' + szUrl);
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: selectCustomerSuccess
+            });
+        }
+        function AjaxFailed(response, statusCode, optionerror) {
+            //debugger;
+            //var response = ajaxContext.get_response();
+            //var statusCode = response.get_statusCode();
+            alert("Sorry, the request failed with status code: " + statusCode);
+        }
+
+        function selectCustomerSuccess(response, statusCode) {
+            //debugger;
+            var objRes = response;
+
+            //Display the response data
+            jQuery("#createcustomerIdDialog").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
+
+            //Set the buttons
+            jQuery(".btn btn-default").button();
+
+            //Attach handlers 
+            jQuery("#btDialogCloseSelect").click(clickbtDialogCloseSelect);
+            jQuery("#lnkResetSelectCustomerId").click(clicklnkselectcustomerid);
+
+            jQuery("#btnSubmitSelectCustomer").click(clickbtnSubmitSelectCustomer);
+            jQuery(".lnkselectcustomerquote a").each(eachlnkselectcustomerquote);
+
+            //jQuery("#selectcustomersearchform").submit(submitselectcustomersearchform);
+
+            //Initialize fields
+
+            //Get the title 
+            //debugger;
+            //var szTitle = jQuery("#usernameHlpId").html();
+            //szTitle = jQuery.trim(szTitle);
+
+            //Show the dialog (used with the BuscarDepartamento call)
+            jQuery("#createcustomerIdDialog").dialog("option", "title", "Select Customer ");
+
+            //setter
+            jQuery("#createcustomerIdDialog").dialog("option", "width", 700);
+
+            //display the popup dialog
+            jQuery("#createcustomerIdDialog").dialog("open");
+
+        }
+        function clickbtDialogCloseSelect(src, arg) {
+            jQuery("#createcustomerIdDialog").dialog("close");
+        }
+
+        function eachlnkselectcustomerquote(nPos, src) {
+            jQuery(src).click(clicklnkselectcustomerquote);
+        }
+        function clicklnkselectcustomerquote(src, arg) {
+            //debugger;
+            //src.preventDefault();
+
+            //alert('Aqui 3');
+
+            jQuery("#createcustomerIdDialog").dialog("close");
+        }
+
+        function eachtimelycustomertr(nPos, src) {
+            jQuery(src).click(clicktimelycustomertr);
+            jQuery(src).mouseover(mouseovertimelycustomertr);
+        }
+        function clicktimelycustomertr(src, arg) {
+            //debugger;
+            var szhRef = jQuery("#lnkeditcustomer").attr("href");
+
+            var szId = src.target.parentNode.id;
+            szId = szId.replace("row0_", "");
+            szhRef = szhRef + '/' + szId;
+            window.open(szhRef, "_self");
+        }
+        function mouseovertimelycustomertr(src, arg) {
+            jQuery(src.target).css("cursor", "pointer");
+        }
+
+        function SetDefaultCheckBox(szckCriteria) {
+            //debugger;
+            jQuery("#ckcust").prop("checked", false);
+            switch (szckCriteria) {
+                case "salesorder":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "itemno":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "requireddate":
+                    jQuery("#ckupcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+            }
+        }
+        function clickckcust(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("salesorder");
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckstate(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("state");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickcckemai(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("itemno");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+        function clickckphon(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("customername");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcomp(src, arg) {
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("customerpo");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckcode").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+        function clickckcode(src, arg) {
+            //debugger;
+            var bChkItem = (src.target.checked);
+            if (bChkItem) {
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                else {
+                    jQuery("#searchItem").val("");
+                }
+
+                //jQuery("#searchItem").val("");
+                jQuery("#ckCriteriaHlp").val("requireddate");
+                jQuery("#ckcust").prop("checked", false);
+                jQuery("#ckcomp").prop("checked", false);
+                jQuery("#ckphon").prop("checked", false);
+                jQuery("#ckemai").prop("checked", false);
+                jQuery("#ckstate").prop("checked", false);
+
+                var trObj = jQuery(".trhlp").remove();
+            }
+        }
+
+
+    </script>
+}

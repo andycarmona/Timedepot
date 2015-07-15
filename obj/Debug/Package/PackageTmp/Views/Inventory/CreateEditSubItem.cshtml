@@ -1,0 +1,194 @@
+﻿@model TimelyDepotMVC.Models.Admin.SUB_ITEM
+
+@using (Html.BeginForm("UpdateSubItem","Inventory", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div style="margin: 0px auto;">
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ItemID)
+        @*@Html.HiddenFor(model => model.Sub_ItemID)*@
+
+        <table style="width: 80%; margin: 0px auto;">
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ItemID)
+                    </div>
+                </td>
+                <td colspan="3">
+                    <div class="editor-field">
+                        @Html.DisplayFor(model => model.ItemID)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Sub_ItemID)
+                    </div>
+                </td>
+                <td colspan="3">
+                    <div class="viosinput400">
+                        @Html.EditorFor(model => model.Sub_ItemID)
+                        @Html.ValidationMessageFor(model => model.Sub_ItemID)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Description)
+                    </div>
+                </td>
+                <td colspan="3">
+                    <div class="viosinput400">
+                        @Html.EditorFor(model => model.Description)
+                        @Html.ValidationMessageFor(model => model.Description)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Field1)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.Field1)
+                        @Html.ValidationMessageFor(model => model.Field1)
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Sub_GroupID)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.Sub_GroupID)
+                        @Html.ValidationMessageFor(model => model.Sub_GroupID)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>In</td>
+                <td>Out</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        On Hand
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OnHand_Db)
+                        @Html.ValidationMessageFor(model => model.OnHand_Db)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OnHand_Cr)
+                        @Html.ValidationMessageFor(model => model.OnHand_Cr)
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Open S/O</td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OpenSO_Db)
+                        @Html.ValidationMessageFor(model => model.OpenSO_Db)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OpenSO_Cr)
+                        @Html.ValidationMessageFor(model => model.OpenSO_Cr)
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Open P/O</td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OpenPO_Db)
+                        @Html.ValidationMessageFor(model => model.OpenPO_Db)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.OpenPO_Cr)
+                        @Html.ValidationMessageFor(model => model.OpenPO_Cr)
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.Qty_Db)
+                        @Html.ValidationMessageFor(model => model.Qty_Db)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.Qty_Cr)
+                        @Html.ValidationMessageFor(model => model.Qty_Cr)
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.GrossPrice)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.GrossPrice)
+                        @Html.ValidationMessageFor(model => model.GrossPrice)
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.NetPrice)
+                    </div>
+                </td>
+                <td>
+                    <div class="viosinput120">
+                        @Html.EditorFor(model => model.NetPrice)
+                        @Html.ValidationMessageFor(model => model.NetPrice)
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <p>
+                        <input type="submit" class="btn btn-default" value="Update" />&nbsp;   
+                        <input id="btDialogClose" class="btn btn-default" type="button" value="Close" />
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+}
+

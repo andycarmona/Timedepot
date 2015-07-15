@@ -1,0 +1,45 @@
+﻿@model TimelyDepotMVC.Models.Admin.WorkerInfluentialPersons
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>WorkerInfluentialPersons</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.categoryID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.categoryID)
+            @Html.ValidationMessageFor(model => model.categoryID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.influentailPersonID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.influentailPersonID)
+            @Html.ValidationMessageFor(model => model.influentailPersonID)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

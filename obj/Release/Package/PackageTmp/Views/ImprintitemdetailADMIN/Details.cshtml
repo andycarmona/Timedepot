@@ -1,0 +1,37 @@
+﻿@model TimelyDepotMVC.Models.Admin.Imprintitemdetail
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Imprintitemdetail</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.printId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.printId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.itemId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.itemId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RowNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RowNo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

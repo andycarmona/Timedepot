@@ -1,0 +1,160 @@
+﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+@using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@model IEnumerable<TimelyDepotMVC.Models.Admin.PurchaseOrders>
+
+@{
+    ViewBag.Title = "Purchase Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(initializePOIndex);
+
+        function initializePOIndex() {
+
+            //set buttons
+            jQuery(".btnSubmitSearch").button();
+
+            //Attach handlers
+        }
+    </script>
+}
+<div class="divh1">@ViewBag.Title</div>
+<div style="width: 1240px; margin: 0px auto; padding: 5px;">
+    @using (Html.BeginForm("Index", "PurchaseOrder", FormMethod.Post))
+    {
+        <div style="margin: 0px auto; width: 50%">
+            <div class="left" style="margin-right: 3px; padding-top: 10px;">Search Purchase Order No.:</div>
+            <input id="searchPONo" name="searchPONo" type="text" value="@ViewBag.SearchPONo" />
+            <input id="btnSubmitSearch" class="btnSubmitSearch" type="submit" value="Search" />
+            @Html.ActionLink("Reset", "Index", "PurchaseOrder", null, new { id = "lnkResetId", @class = "btnSubmitSearch" })
+        </div>    
+    }
+
+</div>
+<div style="width: 1240px; margin: 0px auto; padding: 5px;">
+    @Html.ActionLink("Add Purchase Order", "Create")
+</div>
+<div style="width: 1240px; margin: 0px auto;">
+    <table class="webgrid">
+        <tr class="webgrid-header">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaseOrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesOrderNo)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.TradeId)*@
+                Trade
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VendorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PODate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShipDate)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.PaidBy)
+            </th>
+                  <th>
+            @Html.DisplayNameFor(model => model.BlindDrop)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Logo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImprintColor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsBlindShip)
+        </th>*@
+        </tr>
+        @{
+            TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
+
+            int nRow = 0;
+            int nMod = 0;
+            string szClass = "";
+            string szTradeName = "";
+            string szReceive = "block";
+        }
+
+        @foreach (var item in Model)
+        {
+            szTradeName = TimelyDepotMVC.Controllers.PurchaseOrderController.GetTradeName(db01, Convert.ToInt32(item.TradeId));
+
+            nRow++;
+            nMod = (nRow % 2);
+            if (nMod == 0)
+            {
+                szClass = "webgrid-alternating-row";
+            }
+            else
+            {
+                szClass = "webgrid-row-style";
+            }
+            <tr class="@szClass">
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.PurchaseOrderId }) |
+                    @Html.ActionLink("Delete", "DeletePurchaseOrder", new { id = item.PurchaseOrderId }, new { onclick = "return confirm('Are you sure you want to delete this Purchase Order?');" }) |
+                    @Html.ActionLink("Print (Pdf)", "POReport", "iTextReports", new { id = item.PurchaseOrderId }, new { target = "_blank" })
+                    @if (!string.IsNullOrEmpty(item.ReceiveStatus))
+                    {
+                        szReceive = "none";
+                    }
+                    else
+                    {
+                        szReceive = "block";
+                    }
+                    <span style="display: @szReceive">
+                        <span>| </span>@Html.ActionLink("Receive", "ReceivePurchaseOrder", new { id = item.PurchaseOrderId }, new { onclick = "return confirm('Confirm the reception of this Purchase Order?');" })
+                    </span>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchaseOrderNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SalesOrderNo)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.TradeId)*@
+                    @szTradeName
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VendorId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PODate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShipDate)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.PaidBy)
+                </td>
+                <td>
+            @Html.DisplayFor(modelItem => item.BlindDrop)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Logo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImprintColor)
+        </td>*@
+            </tr>
+        }
+        <tr>
+            <td colspan="7">
+                <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page, searchPONo = ViewBag.SearchPONo }))
+
+            </td>
+        </tr>
+
+    </table>
+</div>
