@@ -310,7 +310,6 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\WebMa
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\es\EntityFramework.resources.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\es\EntityFramework.SqlServer.resources.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.csprojResolveAssemblyReference.cache
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.Initial.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.ChangeEnvironmetSizeFields.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.PasswrodAndGatewayObligated.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.AddFieldsToRefundEntity.resources
@@ -318,4 +317,15 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.csproj.GenerateResource.Cache
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.pdb
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.AddTranslationsCodesTables.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.AddTransactionListforRefundsAndPayments.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.AddTranslationCodesTable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.UpdateTheWayTransactionListHandlesdata.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.RemoveTrnasactionListAndAddTransactioncodeinpaymentTable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.ChangesForTransactionAndRefunds.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.AddedCheckNumberToPayment.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.ChangeKeyId.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.ChangeKeyId1.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.transactionUriInEnvironmentVariable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.ItemOrderAndPositionInSalesDetail.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.PayLogToPaymentTable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Debug\TimelyDepotMVC.Migrations.InvoicePaymentToPaymentTable.resources
