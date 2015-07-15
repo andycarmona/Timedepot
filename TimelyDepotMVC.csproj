@@ -630,6 +630,10 @@
     <Compile Include="Migrations\201410290944367_AddCreditCardColumnToRefundEntity.Designer.cs">
       <DependentUpon>201410290944367_AddCreditCardColumnToRefundEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507150948029_AddTranslationsCodesTables.cs" />
+    <Compile Include="Migrations\201507150948029_AddTranslationsCodesTables.Designer.cs">
+      <DependentUpon>201507150948029_AddTranslationsCodesTables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2150,6 +2154,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201410290944367_AddCreditCardColumnToRefundEntity.resx">
       <DependentUpon>201410290944367_AddCreditCardColumnToRefundEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507150948029_AddTranslationsCodesTables.resx">
+      <DependentUpon>201507150948029_AddTranslationsCodesTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

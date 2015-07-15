@@ -7,8 +7,17 @@ namespace TimelyDepotMVC.Migrations
     {
         public override void Up()
         {
-            AlterColumn("dbo.EnvironmentParameters", "KeyParameter", c => c.String(nullable: false, maxLength: 50));
-            AlterColumn("dbo.EnvironmentParameters", "Description", c => c.String(nullable: false, maxLength: 20));
+            CreateTable(
+          "dbo.EnvironmentParameters",
+          c => new
+          {
+              ParameterId = c.Int(nullable: false, identity: true),
+              KeyParameter = c.String(nullable: false, maxLength: 50),
+              Description = c.String(nullable: false, maxLength: 50),
+              Active = c.Boolean(nullable: false),
+              ServerUrl = c.String(),
+          })
+          .PrimaryKey(t => t.ParameterId);
         }
         
         public override void Down()
