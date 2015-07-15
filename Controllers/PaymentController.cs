@@ -944,7 +944,7 @@
                 ViewBag.Refunded = refundPayment > 0;
                 ViewBag.InvoicePayment = invoicepayment;
 
-                this.ViewBag.PaymentTitle = string.IsNullOrEmpty(invoicepayment) ? string.Format("Sales Order No: {0}", payment.SalesOrderNo) : string.Format("Invoice No: {0}", invoice.InvoiceNo);
+                this.ViewBag.PaymentTitle = payment.SalesOrderNo;
 
             }
 
@@ -1070,7 +1070,7 @@
                 szMsg = szError;
                 szError = string.Empty;
             }
-
+        
 
             //Update payment
             if (string.IsNullOrEmpty(szError))
@@ -1084,6 +1084,7 @@
                 {
                     nId = Convert.ToInt32(szPaymentid);
                     payment = db.Payments.Find(nId);
+                    var anInvoice = this.db.Invoices.SingleOrDefault(x => x.SalesOrderNo == payment.SalesOrderNo);
                     if (payment != null)
                     {
                         //Update payment
@@ -1112,18 +1113,17 @@
                                     this.AddPaymentAmountSalesOrder(payment);
 
                                 }
-                            
-                           if (string.IsNullOrEmpty(szInvoicePayment))
+
+                       
+                            if (anInvoice != null)
                             {
-                                if (szInvoicePayment.ToUpper() == "TRUE")
+                                //Update the invoice
+                                if (szTransaction_Type == "00")
                                 {
-                                    //Update the invoice
-                                    if (szTransaction_Type == "00")
-                                    {
-                                        this.AddPaymentAmountInvoice(payment);
-                                    }
+                                    this.AddPaymentAmountInvoice(payment);
                                 }
                             }
+
                         }
 
                         db.SaveChanges();
@@ -1133,6 +1133,10 @@
                         {
                             var convertedAmount = Convert.ToDecimal(szAmount, new CultureInfo("en-US"));
                             UpdateSalesOrderPaymentAmount(payment.SalesOrderNo, convertedAmount);
+                            if (anInvoice != null)
+                            {
+                                this.UpdateInvoicePaymentAmount(payment.SalesOrderNo, convertedAmount);
+                            }
                             var aRefund = new Refunds()
                                               {
                                                   RefundAmount = convertedAmount,
