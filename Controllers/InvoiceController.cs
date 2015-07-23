@@ -20,6 +20,8 @@ using TimelyDepotMVC.PDFReporting;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Threading;
+
     public class InvoiceController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
@@ -2385,29 +2387,18 @@ namespace TimelyDepotMVC.Controllers
             int nDay = 0;
             DateTime dDate = DateTime.Now;
             DateTime dDate02 = DateTime.Now;
+            IFormatProvider culture = new System.Globalization.CultureInfo("en-US", true);
             string szMsg = "";
             string[] szdateHlp = null;
             if (!string.IsNullOrEmpty(InvoiceDateHlp01))
             {
-                szdateHlp = InvoiceDateHlp01.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate = new DateTime(nYear, nMonth, nDay);
-                }
+                   dDate = DateTime.Parse(InvoiceDateHlp01, culture, DateTimeStyles.AssumeLocal);
+                  
             }
             if (!string.IsNullOrEmpty(InvoiceDateHlp02))
             {
-                szdateHlp = InvoiceDateHlp02.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate02 = new DateTime(nYear, nMonth, nDay);
-                }
+                    dDate02 = DateTime.Parse(InvoiceDateHlp02, culture, DateTimeStyles.AssumeLocal);
+                
             }
             if (ModelState.IsValid)
             {
@@ -2469,19 +2460,10 @@ namespace TimelyDepotMVC.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-
-                //if (invoice.InvoiceDate != dDate)
-                //{
-                //    invoice.InvoiceDate = dDate;
-                //}
-                //db.Entry(invoice).State = EntityState.Modified;
-                //db.SaveChanges();
-
-                //return RedirectToAction("Index");
             }
 
             return RedirectToAction("Edit0", new { errorMsg = szMsg });
-            //return View(invoice);
+        
         }
 
         //
