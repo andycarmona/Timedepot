@@ -2313,16 +2313,18 @@ namespace TimelyDepotMVC.Controllers
             DateTime dSODate = DateTime.Now;
             DateTime dRequiredDate = DateTime.Now;
             DateTime dApprovedDate = DateTime.Now;
-
+     
+            string[] szdateHlp = null;
+           
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
             IQueryable<Trade> qryTrade = null;
             IQueryable<Warehouses> qryWarehouse = null;
-            CultureInfo provider = CultureInfo.InvariantCulture;
+            CultureInfo provider = new CultureInfo("en-US", true);
 
-            dSODate = !string.IsNullOrEmpty(SODateHlp) ? DateTime.ParseExact(SODateHlp, "MM-dd-yyyy", provider) : Convert.ToDateTime(salesorder.SODate);
-            dRequiredDate = !string.IsNullOrEmpty(RequiredateHlp) ? DateTime.ParseExact(RequiredateHlp, "MM-dd-yyyy", provider).Date : Convert.ToDateTime(salesorder.Requiredate);
-            dShipDate = !string.IsNullOrEmpty(ShipDateHlp) ? DateTime.ParseExact(ShipDateHlp, "MM-dd-yyyy", provider).Date : DateTime.Now;
-            dApprovedDate = !string.IsNullOrEmpty(AprovedDateHlp) ? DateTime.ParseExact(AprovedDateHlp, "MM-dd-yyyy", provider).Date : Convert.ToDateTime(salesorder.ShipDate);
+            dSODate = !string.IsNullOrEmpty(SODateHlp) ? DateTime.Parse(SODateHlp, provider, DateTimeStyles.AssumeLocal) : Convert.ToDateTime(salesorder.SODate);
+            dRequiredDate = !string.IsNullOrEmpty(RequiredateHlp) ? DateTime.Parse(RequiredateHlp, provider, DateTimeStyles.AssumeLocal).Date : Convert.ToDateTime(salesorder.Requiredate);
+            dShipDate = !string.IsNullOrEmpty(ShipDateHlp) ? DateTime.Parse(ShipDateHlp, provider, DateTimeStyles.AssumeLocal) : dShipDate;
+            dApprovedDate = !string.IsNullOrEmpty(AprovedDateHlp) ? DateTime.Parse(AprovedDateHlp, provider, DateTimeStyles.AssumeLocal).Date : Convert.ToDateTime(salesorder.AprovedDate);
              
             if (ModelState.IsValid)
             {
