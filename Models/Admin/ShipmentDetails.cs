@@ -28,7 +28,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Qty")]
         [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = false)]
-        public double? Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         [Display(Name = "Unit Price")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]

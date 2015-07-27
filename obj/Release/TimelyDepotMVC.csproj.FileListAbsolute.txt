@@ -338,3 +338,5 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ItemOrderAndPositionInSalesDetail.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.PayLogToPaymentTable.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.InvoicePaymentToPaymentTable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddShipmentTables.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ChangeQuantityFormat.resources

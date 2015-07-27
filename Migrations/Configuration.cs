@@ -10,7 +10,7 @@ namespace TimelyDepotMVC.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = false; 
+            AutomaticMigrationDataLossAllowed = true; 
         }
 
         protected override void Seed(TimelyDepotMVC.DAL.TimelyDepotContext context)

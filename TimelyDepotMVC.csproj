@@ -671,6 +671,14 @@
     <Compile Include="Migrations\201507151135322_InvoicePaymentToPaymentTable.Designer.cs">
       <DependentUpon>201507151135322_InvoicePaymentToPaymentTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507270820393_AddShipmentTables.cs" />
+    <Compile Include="Migrations\201507270820393_AddShipmentTables.Designer.cs">
+      <DependentUpon>201507270820393_AddShipmentTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507271230132_ChangeQuantityFormat.cs" />
+    <Compile Include="Migrations\201507271230132_ChangeQuantityFormat.Designer.cs">
+      <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2225,6 +2233,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507151135322_InvoicePaymentToPaymentTable.resx">
       <DependentUpon>201507151135322_InvoicePaymentToPaymentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507270820393_AddShipmentTables.resx">
+      <DependentUpon>201507270820393_AddShipmentTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507271230132_ChangeQuantityFormat.resx">
+      <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

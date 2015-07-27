@@ -138,7 +138,7 @@
                         </div>
                     </div>
                     <div class="left">
-                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0" }, new { id = "btUpsRate", @class = "btn btn-default" })
+                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0", quantity=1}, new { id = "btUpsRate", @class = "btn btn-default" })
                     </div>
                 </div>
                 <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
@@ -437,7 +437,7 @@
 
                 // Added by SANOOP
                 var itemId = 'CK831';
-                var quantity = $('#txtShipQuantity1').val();
+                var quantity = $('#item_Quantity').val();
                 var toZip = $('#ToZip').val();
                 szUrl = '@Url.Action("GetUPSRateTE", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {

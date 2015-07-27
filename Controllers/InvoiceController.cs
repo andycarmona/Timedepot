@@ -843,7 +843,7 @@ namespace TimelyDepotMVC.Controllers
                 if (!string.IsNullOrEmpty(qty))
                 {
                     dHlp = Convert.ToDouble(qty);
-                    sodetail.Quantity = dHlp;
+                    sodetail.Quantity = (int?)dHlp;
                 }
                 if (!string.IsNullOrEmpty(shipqty))
                 {
@@ -934,7 +934,7 @@ namespace TimelyDepotMVC.Controllers
                         qtysc = qtysc.Replace("$", "");
                         qtysc = qtysc.Replace(",", "");
                         dcHlp1 = Convert.ToDecimal(qtysc);
-                        setupcharge.Quantity = Convert.ToDouble(dcHlp1);
+                        setupcharge.Quantity = (int?)dcHlp1;
                         db.Entry(setupcharge).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -954,7 +954,7 @@ namespace TimelyDepotMVC.Controllers
                         setupcharge.ItemID = string.Empty;
                         setupcharge.Sub_ItemID = string.Empty;
                         setupcharge.Description = string.Format("Set up Charge {0} {1}", sodetail.InvoiceId.ToString(), sodetail.ItemID);
-                        setupcharge.Quantity = Convert.ToDouble(dcHlp1);
+                        setupcharge.Quantity = (int?)dcHlp1;
                         setupcharge.ShipQuantity = 0;
                         setupcharge.BackOrderQuantity = 0;
                         setupcharge.Tax = 0;
@@ -982,7 +982,7 @@ namespace TimelyDepotMVC.Controllers
                         qtyrc = qtyrc.Replace("$", "");
                         qtyrc = qtyrc.Replace(",", "");
                         dcHlp1 = Convert.ToDecimal(qtyrc);
-                        runcharge.Quantity = Convert.ToDouble(dcHlp1);
+                        runcharge.Quantity = (int?)dcHlp1;
                         db.Entry(runcharge).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -1002,7 +1002,7 @@ namespace TimelyDepotMVC.Controllers
                         runcharge.ItemID = string.Empty;
                         runcharge.Sub_ItemID = string.Empty;
                         runcharge.Description = string.Format("Run Charge {0} {1}", sodetail.InvoiceId.ToString(), sodetail.ItemID);
-                        runcharge.Quantity = Convert.ToDouble(dcHlp1);
+                        runcharge.Quantity = (int?)dcHlp1;
                         runcharge.ShipQuantity = 0;
                         runcharge.BackOrderQuantity = 0;
                         runcharge.Tax = 0;
@@ -1109,7 +1109,7 @@ namespace TimelyDepotMVC.Controllers
                 salesdetail.Sub_ItemID = subitem.Sub_ItemID;
                 salesdetail.BackOrderQuantity = 0;
                 salesdetail.Description = subitem.Description;
-                salesdetail.Quantity = dQty;
+                salesdetail.Quantity = (int?)dQty;
                 salesdetail.ShipQuantity = 0;
                 salesdetail.Tax = 0;
                 salesdetail.UnitPrice = dPrice * (1 - Convert.ToDecimal(dDiscountPrc));
@@ -1548,7 +1548,7 @@ namespace TimelyDepotMVC.Controllers
                         invoicedetail.ItemID = item.ItemID;
                         invoicedetail.ItemOrder = item.ItemOrder;
                         invoicedetail.ItemPosition = item.ItemPosition;
-                        invoicedetail.Quantity = item.Quantity;
+                        invoicedetail.Quantity = (int?)item.Quantity;
                         invoicedetail.ShipQuantity = item.Quantity;
                         invoicedetail.Sub_ItemID = item.Sub_ItemID;
                         invoicedetail.Tax = item.Tax;
