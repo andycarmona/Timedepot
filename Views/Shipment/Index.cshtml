@@ -35,116 +35,101 @@
             </div>
         </div>
         <div id="tabs-3">
-            <div>
-                <div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
-                <div class="cf">
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Bill To:
-                            </div>
-                            <div class="boxMR10">
-                                @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
-                                <div style="display: none;">
-                                    <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                UPS Account:
-                            </div>
-                            <div class="boxMR10">
-                                <input id="txtUPSAccountNumber" type="text" value="@ViewBag.ShipperNumber" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Validate Account:
-                            </div>      
-                            <div class="boxMR10">
-                                <input type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
-                            </div>                      
-                        </div>
-                    </div>
-                    </div>
-                <div class="cf">
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Shipper Number:
-                            </div>
-                            <div class="boxMR10">
-                                <input id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Request option:
-                            </div>
-                            <div class="boxMR10">
-                                @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, "Select Request Option", new { id = "selectrequestoptionid" })
-                                <div style="display: none;">
-                                    <input id="requestoption" type="text" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Customer Type:
-                            </div>
-                            <div class="boxMR10">
-                                @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, "Select Customer type", new { id = "selectcustomertypeid" })
-                                <div style="display: none;">
-                                    <input id="customertype" type="text" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
+            <div id="processShipmentForm" class="form-horizontal">
+                <div class="form-group">
+                    <input class="btn btn-default form-control" type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
                 </div>
-                <div class="cf boxMT10">
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                UPS Service Type:
-                            </div>
-                            <div class="boxMR10">
-                                @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist, "Select UPS Service Type", new { id = "selectupsServiceTypeid" })
-                                <div style="display: none;">
-                                    <input id="upsServiceType" type="text" />
-                                </div>
-                            </div>
+                <div class="form-group">
+
+                    <label for="shipperNumber">
+                        Shipper Number:
+                    </label>
+
+                    <input class="form-control" id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
+
+
+                </div>
+                <div class="form-group">
+                    <label for="ddlBillTo"> Bill To:</label>
+
+                    @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
+                    <div style="display: none;">
+                        <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="txtUPSAccountNumber">UPS Account:</label>
+                    <input class="form-control" id="txtUPSAccountNumber" type="text" value="@ViewBag.ShipperNumber" />
+                </div>
+           
+
+
+             
+                <div class="form-group">
+
+                    <label for="selectrequestoptionid">
+                        Request option:
+                    </label>
+                    
+                    <div class="form-control">
+                        @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, "Select Request Option", new { id = "selectrequestoptionid" })
+                        <div style="display: none;">
+                            <input id="requestoption" type="text" />
                         </div>
                     </div>
-                    <div class="left">
-                        <div class="cf">
-                            <div class="left boxMR5">
-                                Package pack type:
-                            </div>
-                            <div class="boxMR10">
-                                @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, "Select Pacakege Pack Type", new { id = "selectpacakePackTypeid" })
-                                <div style="display: none;">
-                                    <input id="pacakePackType" type="text" />
-                                </div>
-                            </div>
+                    </div>
+
+                <div class="form-group">
+                    <label for="selectcustomertypeid">
+                        Customer Type:
+                    </label>
+                    <div class="form-control">
+                        @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, "Select Customer type", new { id = "selectcustomertypeid" })
+                        <div style="display: none;">
+                            <input id="customertype" type="text" />
                         </div>
                     </div>
-                    <div class="left">
-                        @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0", quantity=1}, new { id = "btUpsRate", @class = "btn btn-default" })
-                        
+
                     </div>
+
+                <div class="form-group">
+
+                    <label for="selectupsServiceTypeid">
+                        UPS Service Type:
+                    </label>
+                    <div class="form-control">
+                        @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist, "Select UPS Service Type", new { id = "selectupsServiceTypeid" })
+                        <div style="display: none;">
+                            <input id="upsServiceType" type="text" />
+                        </div>
+                    </div>
+                    </div>
+
+                <div class="form-group">
+
+                    <label for="selectpacakePackTypeid">
+                        Package pack type:
+                    </label>
+                    <div class="form-control">
+                        @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, "Select Pacakege Pack Type", new { id = "selectpacakePackTypeid" })
+                        <div style="display: none;">
+                            <input id="pacakePackType" type="text" />
+                        </div>
+                    </div>
+
                 </div>
-                <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
-                    @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
+
+                <div class="form-group">
+                    <label>Choose a UPS rate from list:</label>
+                    @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0", quantity = 1 }, new { id = "btUpsRate", @class = "btn btn-default" })
+
                 </div>
+            </div>
+
+            <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
+                @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
             </div>
         </div>
         <div id="tabs-4">
@@ -179,7 +164,7 @@
                         </div>
                         <div style="display: none;">
                             <input id="ckCriteriaHlpLog" name="ckCriteriaLog" type="text" value="@ViewBag.ckCriteriaHlpLog" />
-                        </div>    
+                        </div>
                     }
                 </div>
                 <div id="shipmentLogdialog">
@@ -208,7 +193,7 @@
             //Set the buttons
             jQuery(".btn btn-default").button();
 
-            //Attach handlers 
+            //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
             jQuery("#btUpsRate").click(clickbtUpsRate);
 
@@ -222,7 +207,7 @@
             jQuery("#tabs").tabs({ load: loadTab });
             //jQuery("#logtabs").tabs();
 
-            //Prepare the dialogs 
+            //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
             //jQuery("#shipmentDialog").dialog({ autoOpen: false, modal: true });
 
@@ -247,33 +232,63 @@
                     $('#txtUPSAccountNumber').val('');
                 else
                     $('#txtUPSAccountNumber').val($('#shipperNumber').val());
-                
+
             });
 
         }
 
         function validateUPSAccount() {
             var accountNumber = $('#txtUPSAccountNumber').val();
-            
+
             szUrl = '@Url.Action("ValidateUPSAccount", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
-                if (szUrl != "") {
-                    szUrl = szUrl + '?accountNumber=' + accountNumber;
-                }
+            if (szUrl != "") {
+                szUrl = szUrl + '?accountNumber=' + accountNumber;
+            }
 
             //Display load image
-                ShowLoadingDialog();
+            ShowLoadingDialog();
 
             //Get the UPS Rate
-                jQuery.ajax({
-                    type: 'GET',
-                    url: szUrl,
-                    data: null,
-                    //contentType: 'application/json; charset=utf-8',
-                    dataType: 'html',
-                    error: AjaxFailed,
-                    success: validateUPSAccountSuccess
-                });
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: validateUPSAccountSuccess
+            });
         }
+
+        function processShipment() {
+            var chosenServiceCode=$('input:radio[name=chosenUpsRate]:checked').val();
+            var accountNumber = $('#txtUPSAccountNumber').val();
+
+            szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+            if (szUrl != "") {
+                szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&shipToPostalCode=06001';
+            }
+
+            //Display load image
+            ShowLoadingDialog();
+
+            //Get the UPS Rate
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: UPSShipmentResponse
+            });
+        }
+
+        function UPSShipmentResponse(response, statusCode) {
+            //Hide load image
+            HideLoadingDialog();
+        }
+
         function validateUPSAccountSuccess(response, statusCode) {
 
             var szResult = eval("(" + response + ")");
@@ -774,7 +789,7 @@
                 jQuery("#ckActive").prop("checked", false);
             }
 
-            //Attach handlers 
+            //Attach handlers
             jQuery("#btDialogClose").click(clickbtDialogClose);
             jQuery("#lnkResetSelectSOId").click(clicklnkResetSelectSOId);
             jQuery("#searchsalesorderformid").submit(submitsearchsalesorderformid);
@@ -792,7 +807,7 @@
 
             //Initialize fields
 
-            //Get the title 
+            //Get the title
             //debugger;
             //var szTitle = "Invoice";
 
@@ -949,14 +964,14 @@
             //Hide load image
             HideLoadingDialog();
 
-            //Set the buttons 
+            //Set the buttons
             jQuery(".btn btn-default").button();
 
             //Move trade selector
             //jQuery("#tradeeditselector01id").remove();
             //jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
 
-            // Addey by SANOOP            
+            // Addey by SANOOP
             jQuery("#tradeeditselector01id").html($('#divCompanyName').text().trim());
 
             //Mark error message
@@ -1025,10 +1040,10 @@
             jQuery(".service input").each(eachInvoicedetailservice)
             jQuery(".detailShipmentUpdate a").each(eachdetailShipmentUpdate);
 
-            //Set the buttons 
+            //Set the buttons
             jQuery(".btn btn-default").button();
 
-            //Attach handlers 
+            //Attach handlers
             jQuery(".pagination ul li a").each(eachlnknavigationDetails);
             jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
             jQuery(".lnkUpdateDetail a").each(eachlnkUpdateDetail);
@@ -1145,11 +1160,11 @@
             //Hide load image
             HideLoadingDialog();
 
-            //Set the buttons 
+            //Set the buttons
             jQuery(".btn btn-default").button();
             //jQuery(".btnSubmitSearch").button();
 
-            ////Attach handlers 
+            ////Attach handlers
             jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
             //jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
             //jQuery(".lnkResetId a").click(clicklnkResetId);
@@ -1159,7 +1174,7 @@
             ////Initialize fields
             //jQuery(".adddetailShipment a").each(eachadddetailShipmentlnk);
 
-            //Get the title 
+            //Get the title
             //debugger;
             var szTitle = "Shipment Detail";
 
@@ -1232,11 +1247,11 @@
             //Hide load image
             HideLoadingDialog();
 
-            //Set the buttons 
+            //Set the buttons
             jQuery(".btn btn-default").button();
             jQuery(".btnSubmitSearch").button();
 
-            //Attach handlers 
+            //Attach handlers
             jQuery("#btDialogClose").click(clickbtDialogClose);
             jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
             jQuery(".lnkResetId a").click(clicklnkResetId);
@@ -1247,7 +1262,7 @@
             jQuery(".adddetailShipment a").each(eachadddetailShipmentlnk);
 
 
-            //Get the title 
+            //Get the title
             //debugger;
             var szTitle = "Sales Order Detail";
 
@@ -1516,7 +1531,7 @@
             //Set the buttons lnkResetId
             jQuery(".btn btn-default").button();
 
-            //Attach handlers 
+            //Attach handlers
             jQuery("#btDialogClose").click(clickbtDialogClose);
             jQuery("#btnSubmitSearchLocationid").click(clickbtnSubmitSearchLocationid02);
 
@@ -1528,7 +1543,7 @@
             jQuery(".pagination ul li a").each(eachlnknavigationlocation);
             //Initialize fields
 
-            //Get the title 
+            //Get the title
             //debugger;
             var szTitle = "Sales Order Detail";
 

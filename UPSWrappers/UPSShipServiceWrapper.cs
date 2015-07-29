@@ -6,6 +6,24 @@ using TimelyDepotMVC.UPSShipService;
 
 namespace TimelyDepotMVC.UPSWrappers
 {
+    using PayPal.AdaptivePayments;
+
+    using TimelyDepotMVC.UPSRateService;
+
+    using DimensionsType = TimelyDepotMVC.UPSShipService.DimensionsType;
+    using PackageServiceOptionsType = TimelyDepotMVC.UPSShipService.PackageServiceOptionsType;
+    using PackageType = TimelyDepotMVC.UPSShipService.PackageType;
+    using PackageWeightType = TimelyDepotMVC.UPSShipService.PackageWeightType;
+    using RequestType = TimelyDepotMVC.UPSShipService.RequestType;
+    using ShipFromType = TimelyDepotMVC.UPSShipService.ShipFromType;
+    using ShipmentType = TimelyDepotMVC.UPSShipService.ShipmentType;
+    using ShipperType = TimelyDepotMVC.UPSShipService.ShipperType;
+    using ShipToAddressType = TimelyDepotMVC.UPSShipService.ShipToAddressType;
+    using ShipToType = TimelyDepotMVC.UPSShipService.ShipToType;
+    using UPSSecurity = TimelyDepotMVC.UPSShipService.UPSSecurity;
+    using UPSSecurityServiceAccessToken = TimelyDepotMVC.UPSShipService.UPSSecurityServiceAccessToken;
+    using UPSSecurityUsernameToken = TimelyDepotMVC.UPSShipService.UPSSecurityUsernameToken;
+
     public class UPSShipServiceWrapper
     {
 
@@ -74,6 +92,12 @@ namespace TimelyDepotMVC.UPSWrappers
             //FreightBillingOption = freightBillingOption;
         }
 
+        public UPSShipServiceWrapper(string userName, string password, string accessLicenseNumber)
+        {
+            UserName = userName;
+            Pasword = password;
+            AccessLicenseNumber = accessLicenseNumber;
+        }
         #region Private
 
         private void AddUpsSecurity(ShipService upsShipService)
@@ -111,33 +135,46 @@ namespace TimelyDepotMVC.UPSWrappers
         private void AddShipperAddress(ShipperType shipper)
         {
             var shipperAddress = new ShipAddressType();
-            shipperAddress.AddressLine = new String[] { ShipperAddressLine };
+            shipperAddress.AddressLine = new[] { ShipperAddressLine };
             shipperAddress.City = ShipperCity;
             shipperAddress.PostalCode = ShipperPostalCode;
             shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
             shipperAddress.CountryCode = ShipperCountryCode;
             shipper.Address = shipperAddress;
+            var shipFromPhone = new ShipPhoneType();
+
+            shipFromPhone.Number = "1234567893";
+
+            shipFromPhone.Extension = "3456";
+
+            shipper.Phone = shipFromPhone;
         }
 
         private void AddShipToAddress(ShipmentType shipment)
         {
             var shipTo = new ShipToType();
             var shipToAddress = new ShipToAddressType();
-            shipToAddress.AddressLine = new String[] { ShipToAddressLine };
-            shipToAddress.City = ShipToCity;//txtPShipToCity.Text;
+            var aPhone = new ShipPhoneType();
+            aPhone.Extension = "234";
+            aPhone.Number = "3423423489";
+
+            shipToAddress.AddressLine = new[] { ShipToAddressLine };
+            shipToAddress.City = ShipToCity;
             shipToAddress.PostalCode = ShipToPostalCode;
-            shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
+            shipToAddress.StateProvinceCode = "CT";
             shipToAddress.CountryCode = ShipToCountryCode;
             shipTo.Address = shipToAddress;
             shipTo.Name = ShipToName;
+            shipTo.Phone = aPhone;
             shipment.ShipTo = shipTo;
+
         }
 
         private void AddShipFromAddress(ShipmentType shipment)
         {
             var shipFrom = new ShipFromType();
             var shipFromAddress = new ShipAddressType();
-            shipFromAddress.AddressLine = new String[] { ShipFromAddressLine };
+            shipFromAddress.AddressLine = new[] { ShipFromAddressLine };
             shipFromAddress.City = ShipFromCity;
             shipFromAddress.PostalCode = ShipFromPostalCode;
             shipFromAddress.StateProvinceCode = ShipFromStateProvinceCode;
@@ -158,18 +195,22 @@ namespace TimelyDepotMVC.UPSWrappers
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };
             paymentInfo.ShipmentCharge = shpmentChargeArray;
             shipment.PaymentInformation = paymentInfo;
+
         }
 
-        /*private void AddPaymentInformation(ShipmentType shipment)
+        private void AddPaymentInformation(ShipmentType shipment)
         {
             var paymentInfo = new PaymentInfoType();
+           
             var paymentInfoType = new PaymentType();
-            paymentInfoType.Code
+            
+            paymentInfoType.Code = "06";
+            var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
             shipper.Name = ShipperName;
             AddShipperAddress(shipper);
             shipment.Shipper = shipper;
-        }*/
+        }
 
         private void AddPackage(int boxWeight, int declaredVal, int boxHeight, int boxWidth, int boxLength, string packagingTypeCode, string currencyCode, PackageType[] pkgArray, int pos)
         {
@@ -211,12 +252,12 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentID);
             var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentID);
-
+            
             var shpSvc = new ShipService();
             var shipmentRequest = new ShipmentRequest();
             AddUpsSecurity(shpSvc);
             var request = new RequestType();
-            String[] requestOption = { "1" }; //{ "nonvalidate" };
+            string[] requestOption = { "nonvalidate" };
             request.RequestOption = requestOption;
             shipmentRequest.Request = request;
             var shipment = new ShipmentType();

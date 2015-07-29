@@ -826,7 +826,7 @@ namespace TimelyDepotMVC.Controllers
             xavRequest.AddressKeyFormat = addressKeyFormat;
 
             ServicePointManager.ServerCertificateValidationCallback = ValidateRemoteCertificate;
-
+            
             XAVResponse xavResponse = xavService.ProcessXAV(xavRequest);
             return xavResponse;
         }
