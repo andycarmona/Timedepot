@@ -1,7 +1,0 @@
-﻿<div class="editor-label" style="display: block">
-    <label for="CreditCardNumber">Credit Card Number</label>
-</div>
-<div>
-    @Html.DropDownList("CreditCardNumber", (IEnumerable<SelectListItem>)ViewBag.PaymentList, "Select Card Number", new { id = "CardNumberselectorId", @class = "paymentselector" })
-    <span class="error">&nbsp;*</span>
-</div>

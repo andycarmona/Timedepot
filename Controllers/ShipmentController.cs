@@ -19,6 +19,9 @@ using System.Net.Security;
 namespace TimelyDepotMVC.Controllers
 {
     using System.Data.Entity;
+    using System.Web.Routing;
+
+    using TimelyDepotMVC.Helpers;
     using TimelyDepotMVC.Models;
     using TimelyDepotMVC.UPSRateService;
 
@@ -175,11 +178,11 @@ namespace TimelyDepotMVC.Controllers
                     UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", "Caffe Riace", "200 Sheridan Ave", "Palo Alto", "94306", UPSConstants.UpsShipFromAddressLine,
                     UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
                     UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType,UPSConstants.UpsShipmentChargeType);
+                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType, UPSConstants.UpsShipmentChargeType);
 
             var rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId);
             return Json(rateResponse, JsonRequestBehavior.AllowGet);
-            
+
         }
 
         public JsonResult ValidateUPSAccount(string accountNumber)
@@ -209,14 +212,14 @@ namespace TimelyDepotMVC.Controllers
                     UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
                     UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
 
-                
+
                 var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", 25, 2, 5, "42", 400, 100, "11", inv_detl, "02", "USD", Convert.ToDecimal(26.5), true);//,out requestXML);
 
                 result = "This is a valid UPS Account.";
             }
             catch
             {
-                
+
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -826,7 +829,7 @@ namespace TimelyDepotMVC.Controllers
             xavRequest.AddressKeyFormat = addressKeyFormat;
 
             ServicePointManager.ServerCertificateValidationCallback = ValidateRemoteCertificate;
-            
+
             XAVResponse xavResponse = xavService.ProcessXAV(xavRequest);
             return xavResponse;
         }
@@ -1749,116 +1752,35 @@ namespace TimelyDepotMVC.Controllers
 
             return PartialView(invoice);
         }
+
+
         //
         // POST: /Invoice/Edit/5
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Invoice invoice, string InvoiceDateHlp01, string InvoiceDateHlp02)
+        public void Edit(Invoice invoice)
         {
-            int nPos = -1;
-            int nYear = 0;
-            int nMonth = 0;
-            int nDay = 0;
-            DateTime dDate = DateTime.Now;
-            DateTime dDate02 = DateTime.Now;
-            string szMsg = "";
-            string[] szdateHlp = null;
-            if (!string.IsNullOrEmpty(InvoiceDateHlp01))
-            {
-                szdateHlp = InvoiceDateHlp01.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate = new DateTime(nYear, nMonth, nDay);
-                }
-            }
-            if (!string.IsNullOrEmpty(InvoiceDateHlp02))
-            {
-                szdateHlp = InvoiceDateHlp02.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate02 = new DateTime(nYear, nMonth, nDay);
-                }
-            }
+            var msgResult = "Success";
+
             if (ModelState.IsValid)
             {
-                invoice.InvoiceDate = dDate;
-                invoice.ShipDate = dDate02;
-
-                if (invoice.Tax_rate == null)
-                {
-                    invoice.Tax_rate = 0;
-                }
-
-                db.Entry(invoice).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                szMsg = string.Format("(Date Help: {0} - {1})", InvoiceDateHlp01, dDate.ToString());
-                foreach (var item in ModelState.Values)
-                {
-                    if (item.Errors.Count > 0)
-                    {
-                        foreach (var itemError in item.Errors)
-                        {
-                            szMsg = string.Format("{0} {1}", szMsg, itemError.ErrorMessage);
-                        }
-                    }
-                }
-
-                if (invoice.Tax_rate == null)
-                {
-                    invoice.Tax_rate = 0;
-                }
-
-                nPos = szMsg.IndexOf("is not valid for Invoice Date.");
-                if (nPos != -1)
-                {
-                    if (invoice.InvoiceDate != dDate)
-                    {
-                        invoice.InvoiceDate = dDate;
-                    }
-                    db.Entry(invoice).State = EntityState.Modified;
+                try
+                { 
+                    Invoice aInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoice.InvoiceId);
+                    aInvoice.FromCompany = invoice.FromCompany;
+                    db.Entry(aInvoice).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    db.Refresh(System.Data.Objects.RefreshMode.ClientWins, model);
+                    var newModel = db.Products.Single(x => x.Product_ID == productId);
                 }
-                nPos = -1;
-                nPos = szMsg.IndexOf("no es válido para Invoice Date.");
-                if (nPos != -1)
+                catch (Exception e)
                 {
-                    if (invoice.InvoiceDate != dDate)
-                    {
-                        invoice.InvoiceDate = dDate;
-                    }
-                    if (invoice.ShipDate != dDate02)
-                    {
-                        invoice.ShipDate = dDate02;
-                    }
-                    db.Entry(invoice).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    msgResult = e.Message;
                 }
 
-                //if (invoice.InvoiceDate != dDate)
-                //{
-                //    invoice.InvoiceDate = dDate;
-                //}
-                //db.Entry(invoice).State = EntityState.Modified;
-                //db.SaveChanges();
-
-                //return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Edit0", new { errorMsg = szMsg });
-            //return View(invoice);
+
         }
         //
         // GET: /Invoice/Edit0
@@ -2092,7 +2014,7 @@ namespace TimelyDepotMVC.Controllers
             //Get Shipper Number
             szShipperNumber = Settings.Default.UPSShipperNumber;   //A3024V
             ViewBag.ShipperNumber = szShipperNumber;
-                        
+
             //Request option
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
             listSelector.Add(new KeyValuePair<string, string>("Rate", "Rate"));

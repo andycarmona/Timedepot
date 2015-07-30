@@ -22,6 +22,8 @@ namespace TimelyDepotMVC.Controllers
 {
     using System.Threading;
 
+    using TimelyDepotMVC.Helpers;
+
     public class InvoiceController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
@@ -2374,6 +2376,31 @@ namespace TimelyDepotMVC.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult PublishInvoiceData(Invoice invoice)
+        {
+            var msgResult = "Success";
+            try
+            {
+                Invoice invoiceToUpdate = db.Invoices.Find(invoice.InvoiceId);
+                invoice.InvoiceDate = DateTime.Now;
+                invoice.ShipDate = DateTime.Now;
+
+                if (invoice.Tax_rate == null)
+                {
+                    invoice.Tax_rate = 0;
+                }
+                invoiceToUpdate.FromCompany = invoice.FromCompany;
+                invoiceToUpdate.ToCompany = invoice.ToCompany;
+                db.Entry(invoiceToUpdate).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                msgResult = e.Message;
+            }
+            return Json(msgResult, JsonRequestBehavior.AllowGet);
+        }
         //
         // POST: /Invoice/Edit/5
 

@@ -3,7 +3,7 @@
 @model IEnumerable<TimelyDepotMVC.Models.Admin.ShipmentDetails>
 
 <div class="boxMb10" style="text-align:center; font-size:1.1em; font-weight:bold;">@ViewBag.ShipmentTitle</div>
-<table class="webgrid" style="width: 900px; margin: 0px auto;">
+<table class="webgrid" style="width: 100%; margin: 0px auto;">
     <tr class="webgrid-header">
         <th>@Html.ActionLink("Add", "AddDetail", new { shipmenid = ViewBag.ShipmentId }, new { id="lnkAddShipmentDetail" })</th>
         <th style="display:none;">
@@ -57,28 +57,28 @@
             <td style="display:none;">
                 @Html.TextBoxFor(modelItem => item.DetailId)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.BoxNo)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.Sub_ItemID)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.Quantity)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.UnitPrice)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.UnitWeight)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.DimensionH)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.DimensionL)
             </td>
-            <td>
+            <td style="text-align:left;">
                 @Html.TextBoxFor(modelItem => item.DimensionD)
             </td>
             <td>
@@ -90,7 +90,7 @@
         </tr>
     }
         <tr>
-        <td colspan="11">
+        <td colspan="4">
             <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
             @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
 
