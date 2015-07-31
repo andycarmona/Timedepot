@@ -1758,29 +1758,27 @@ namespace TimelyDepotMVC.Controllers
         // POST: /Invoice/Edit/5
 
         [HttpPost]
-        public void Edit(Invoice invoice)
+        [ValidateAntiForgeryToken]
+        public RedirectToRouteResult Edit(Invoice invoice)
         {
             var msgResult = "Success";
-
+           
             if (ModelState.IsValid)
             {
                 try
-                { 
-                    Invoice aInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoice.InvoiceId);
-                    aInvoice.FromCompany = invoice.FromCompany;
-                    db.Entry(aInvoice).State = EntityState.Modified;
+                {
+                 
+                    db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
-                    db.Refresh(System.Data.Objects.RefreshMode.ClientWins, model);
-                    var newModel = db.Products.Single(x => x.Product_ID == productId);
+
                 }
                 catch (Exception e)
                 {
                     msgResult = e.Message;
                 }
-
             }
 
-
+            return RedirectToAction("Index");
         }
         //
         // GET: /Invoice/Edit0

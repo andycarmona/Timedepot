@@ -359,7 +359,7 @@
     </div> 
     <div class="TEdiv" style="width: 376px; margin: 0.5em auto;">
         @*<input class="btnEditSO btn btn-default" type="submit" value="Save" />&nbsp;*@
-        <input id="btnSaveInvoiceData" class="btn btn-default" type="button"  name="Edit" value="Save data" />
+        <input id="btnSaveInvoiceData" class="btn btn-default" type="submit"  name="Edit" value="Save data" />
         @Html.ActionLink("Create Shipment", "ShipAll", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
         @Html.ActionLink("Validate Address", "ValidateAddressTE", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
         @Html.ActionLink("Quit", "Index", null, new { @class = "btnEditSO btn btn-default" })
@@ -382,7 +382,8 @@
         var headers = {};
         headers['__RequestVerificationToken'] = token;
         $('#tradeselector01id').text('     Company Name : @Model.CustomerShipLocation');
-        $('#btnSaveInvoiceData').click(publishInvoiceData);
+       
+      //$('#editsalesorderid').submit(publishInvoiceData);
 
 //jQuery("#btnSaveInvoiceData").click(postInvoiceData);
 
@@ -400,7 +401,7 @@
                 processData: false,
                 cache: false,
                 success: function(data) {
-                    alert("success");
+                    alert("Sue");
                 },
                 error: function(xhr) {
                     alert(xhr);
