@@ -1777,8 +1777,8 @@ namespace TimelyDepotMVC.Controllers
                     msgResult = e.Message;
                 }
             }
-
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Shipment", new { id = invoice.InvoiceId });
+          
         }
         //
         // GET: /Invoice/Edit0
