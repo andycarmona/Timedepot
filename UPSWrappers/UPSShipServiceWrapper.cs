@@ -10,6 +10,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
     using PayPal.AdaptivePayments;
 
+    using TimelyDepotMVC.ModelsView;
     using TimelyDepotMVC.UPSRateService;
 
     using DimensionsType = TimelyDepotMVC.UPSShipService.DimensionsType;
@@ -94,6 +95,36 @@ namespace TimelyDepotMVC.UPSWrappers
             //FreightBillingOption = freightBillingOption;
         }
 
+        public UPSShipServiceWrapper(ShipmentRequestView shipmentRequestModel)
+        {
+            UserName = shipmentRequestModel.userName;
+            Pasword = shipmentRequestModel.password;
+            AccessLicenseNumber = shipmentRequestModel.accessLicenseNumber;
+            ShipperNumber = shipmentRequestModel.shipperNumber;
+            ShipperName = shipmentRequestModel.shipperName;
+            ShipperAddressLine = shipmentRequestModel.shipperAddressLine;
+            ShipperCity = shipmentRequestModel.shipperCity;
+            ShipperPostalCode = shipmentRequestModel.shipperPostalCode;
+            ShipperStateProvinceCode = shipmentRequestModel.shipperStateProvinceCode;
+            ShipperCountryCode = shipmentRequestModel.shipperCountryCode;
+            ShipToPostalCode = shipmentRequestModel.shipToPostalCode;
+            ShipToCountryCode = shipmentRequestModel.shipToCountryCode;
+            ShipToName = shipmentRequestModel.shipToName;
+            ShipToAddressLine = shipmentRequestModel.shipToAddressLine;
+            ShipToCity = shipmentRequestModel.shipToCity;
+            ShipToStateProvinceCode = shipmentRequestModel.shipToStateProvinceCode;
+            ShipFromAddressLine = shipmentRequestModel.shipFromAddressLine;
+            ShipFromCity = shipmentRequestModel.shipFromCity;
+            ShipFromPostalCode = shipmentRequestModel.shipFromPostalCode;
+            ShipFromStateProvinceCode = shipmentRequestModel.shipFromStateProvinceCode;
+            ShipFromCountryCode = shipmentRequestModel.shipFromCountryCode;
+            ShipFromName = shipmentRequestModel.shipFromName;
+            BillShipperAccountNumber = shipmentRequestModel.billShipperAccountNumber;
+            PackagingTypeCode = shipmentRequestModel.packagingTypeCode;
+            ShipmentChargeType = shipmentRequestModel.shipmentChargeType;
+            //FreightBillingOption = freightBillingOption;
+        }
+
         public UPSShipServiceWrapper(string userName, string password, string accessLicenseNumber)
         {
             UserName = userName;
@@ -154,7 +185,7 @@ namespace TimelyDepotMVC.UPSWrappers
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
             shipToAddress.City = ShipToCity;
             shipToAddress.PostalCode = ShipToPostalCode;
-            shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
+            shipToAddress.StateProvinceCode = "CA";
             shipToAddress.CountryCode = ShipToCountryCode;
             shipTo.Address = shipToAddress;
             shipTo.Name = ShipToName;

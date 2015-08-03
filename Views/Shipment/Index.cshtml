@@ -285,11 +285,12 @@
 
         function processShipment() {
             var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
+            var toZipCode = $('#ToZip').val();
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&shipToPostalCode=06001';
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&shipToPostalCode=' + toZipCode;
                 }
 
                 //Display load image
@@ -333,7 +334,7 @@
                 var rowData = "";
                 if (IsJsonString(response)) {
                     var obj = jQuery.parseJSON(response);
-                    if (IsArray(obj)) {
+                    if (obj.ShipmentResults!==undefined) {
                         for (var shipmentIndex = 0; shipmentIndex < obj.ShipmentResults.PackageResults.length; shipmentIndex++) {
                             var labelImage = "<img "
                                 + "src='" + "data:image/jpg;base64,"

@@ -698,6 +698,7 @@
     <Compile Include="ModelsView\SalesOrderDetailSRC.cs" />
     <Compile Include="ModelsView\SalesOrderList.cs" />
     <Compile Include="ModelsView\SelectCustomer.cs" />
+    <Compile Include="ModelsView\ShipmentRequestView.cs" />
     <Compile Include="ModelsView\VendorList.cs" />
     <Compile Include="ModelsView\VendorView.cs" />
     <Compile Include="Models\AccountModels.cs" />

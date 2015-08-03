@@ -178,7 +178,7 @@ namespace TimelyDepotMVC.Controllers
             var shipServiceWrapper = new UPSShipServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
                     UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
                     UPSConstants.UpsShipperAddressLine, UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", "Caffe Riace", "200 Sheridan Ave", "Palo Alto", "94306", UPSConstants.UpsShipFromAddressLine,
+                    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", "Caffe Riace", "200 Sheridan Ave", "Palo Alto", "CA", UPSConstants.UpsShipFromAddressLine,
                     UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
                     UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
                     UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType, UPSConstants.UpsShipmentChargeType);
