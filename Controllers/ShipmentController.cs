@@ -24,6 +24,7 @@ namespace TimelyDepotMVC.Controllers
     using TimelyDepotMVC.Helpers;
     using TimelyDepotMVC.Models;
     using TimelyDepotMVC.UPSRateService;
+    using TimelyDepotMVC.UPSShipService;
 
     public class ShipmentController : Controller
     {
@@ -172,6 +173,8 @@ namespace TimelyDepotMVC.Controllers
 
         public JsonResult ProcessShipment(string serviceCode, int shipmentId, string shipToPostalCode)
         {
+            ShipmentResponse rateResponse = null;
+            string szError=null;
             var shipServiceWrapper = new UPSShipServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
                     UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
                     UPSConstants.UpsShipperAddressLine, UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
@@ -180,8 +183,17 @@ namespace TimelyDepotMVC.Controllers
                     UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
                     UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType, UPSConstants.UpsShipmentChargeType);
 
-            var rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId);
-            return Json(rateResponse, JsonRequestBehavior.AllowGet);
+                rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
+          
+
+            if (string.IsNullOrEmpty(szError))
+            {
+                return Json(rateResponse, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(szError, JsonRequestBehavior.AllowGet); 
+            }
 
         }
 
@@ -1762,12 +1774,12 @@ namespace TimelyDepotMVC.Controllers
         public RedirectToRouteResult Edit(Invoice invoice)
         {
             var msgResult = "Success";
-           
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                 
+
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
 

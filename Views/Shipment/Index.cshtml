@@ -153,7 +153,8 @@
     -moz-transform: rotate(90deg);
     -o-transform: rotate(90deg);
     -ms-transform: rotate(90deg);
-    transform: rotate(90deg);"></div></div>
+    transform: rotate(90deg);"></div>
+            </div>
         </div>
         <div id="tabs-4">
             <div id="searchlogtabs">
@@ -309,21 +310,48 @@
             }
         }
 
+        function IsJsonString(str) {
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        function IsArray(obj) {
+            if (Object.prototype.toString.call(obj) === '[object Array]') {
+                return true;
+            }
+        }
+
         function UPSShipmentResponse(response, statusCode) {
             //Hide load image
             HideLoadingDialog();
             $("#shipmentContainerData").show();
             if (statusCode === "success") {
-                var obj = jQuery.parseJSON(response);
-                var labelImage = "<img "
-                    + "src='" + "data:image/jpg;base64,"
-                    + obj.ShipmentResults.PackageResults[0].ShippingLabel.GraphicImage + "'/>";
-                var totalCharges = obj.ShipmentResults.ShipmentCharges.TotalCharges.MonetaryValue;
-                var trackingNumber = obj.ShipmentResults.PackageResults[0].TrackingNumber;
-                var rowData = "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
-                $('#shipmentResult').html(rowData);
-                jQuery("#shipmentResult img").click(clickBtnLabelView);
-                jQuery("#printLabel").click(clickBtnPrintLabel);
+                var rowData = "";
+                if (IsJsonString(response)) {
+                    var obj = jQuery.parseJSON(response);
+                    if (IsArray(obj)) {
+                        for (var shipmentIndex = 0; shipmentIndex < obj.ShipmentResults.PackageResults.length; shipmentIndex++) {
+                            var labelImage = "<img "
+                                + "src='" + "data:image/jpg;base64,"
+                                + obj.ShipmentResults.PackageResults[shipmentIndex].ShippingLabel.GraphicImage + "'/>";
+
+                            var trackingNumber = obj.ShipmentResults.PackageResults[shipmentIndex].TrackingNumber;
+                            rowData += "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
+
+                        }
+                        $('#shipmentResult').html(rowData);
+                        jQuery("#shipmentResult img").click(clickBtnLabelView);
+                        jQuery("#printLabel").click(clickBtnPrintLabel);
+                    } else {
+                        alert(response);
+                    }
+                } else {
+                    alert("Sorry, couldn't get valid results. Please contact si administrator");
+                }
             }
         }
 
@@ -388,8 +416,8 @@
             //Display the response data
 
             jQuery("#shipmentLogdialog").html(objRes);
-          
-            
+
+
             //Attach Handlers
             jQuery(".shipmentdetailslnk").each(eachshipmentdetailslnk);
 

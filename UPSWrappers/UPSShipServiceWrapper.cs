@@ -6,6 +6,8 @@ using TimelyDepotMVC.UPSShipService;
 
 namespace TimelyDepotMVC.UPSWrappers
 {
+    using System.Globalization;
+
     using PayPal.AdaptivePayments;
 
     using TimelyDepotMVC.UPSRateService;
@@ -141,31 +143,21 @@ namespace TimelyDepotMVC.UPSWrappers
             shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
             shipperAddress.CountryCode = ShipperCountryCode;
             shipper.Address = shipperAddress;
-            var shipFromPhone = new ShipPhoneType();
-
-            shipFromPhone.Number = "1234567893";
-
-            shipFromPhone.Extension = "3456";
-
-            shipper.Phone = shipFromPhone;
         }
 
         private void AddShipToAddress(ShipmentType shipment)
         {
             var shipTo = new ShipToType();
             var shipToAddress = new ShipToAddressType();
-            var aPhone = new ShipPhoneType();
-            aPhone.Extension = "234";
-            aPhone.Number = "3423423489";
+
 
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
             shipToAddress.City = ShipToCity;
             shipToAddress.PostalCode = ShipToPostalCode;
-            shipToAddress.StateProvinceCode = "CT";
+            shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
             shipToAddress.CountryCode = ShipToCountryCode;
             shipTo.Address = shipToAddress;
             shipTo.Name = ShipToName;
-            shipTo.Phone = aPhone;
             shipment.ShipTo = shipTo;
 
         }
@@ -201,9 +193,9 @@ namespace TimelyDepotMVC.UPSWrappers
         private void AddPaymentInformation(ShipmentType shipment)
         {
             var paymentInfo = new PaymentInfoType();
-           
+
             var paymentInfoType = new PaymentType();
-            
+
             paymentInfoType.Code = "06";
             var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
@@ -236,7 +228,7 @@ namespace TimelyDepotMVC.UPSWrappers
             var packageServiceOptions = new PackageServiceOptionsType();
             var declaredValue = new PackageDeclaredValueType();
             declaredValue.CurrencyCode = currencyCode;
-            declaredValue.MonetaryValue = declaredVal.ToString();
+            declaredValue.MonetaryValue = declaredVal.ToString(CultureInfo.InvariantCulture);
             packageServiceOptions.DeclaredValue = declaredValue;
             package.PackageServiceOptions = packageServiceOptions;
 
@@ -248,53 +240,75 @@ namespace TimelyDepotMVC.UPSWrappers
 
         #endregion
 
-        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int ShipmentID)
+        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int ShipmentID, ref string szError)
         {
             //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentID);
-            var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentID);
-            
-            var shpSvc = new ShipService();
-            var shipmentRequest = new ShipmentRequest();
-            AddUpsSecurity(shpSvc);
-            var request = new RequestType();
-            string[] requestOption = { "nonvalidate" };
-            request.RequestOption = requestOption;
-            shipmentRequest.Request = request;
-            var shipment = new ShipmentType();
-            shipment.Description = "Ship webservice example";
-            AddShipper(shipment);
-            AddShipFromAddress(shipment);
-            AddShipToAddress(shipment);
-            AddBillShipperAccount(shipment);
-            //AddPaymentInformation(shipment);
-
-            var service = new ServiceType();
-            service.Code = serviceCode;
-            shipment.Service = service;
-
-            PackageType[] pkgArray;
-            pkgArray = new PackageType[shipmentDetails.Count];
-            var i = 0;
-            foreach (var box in shipmentDetails)
+            try
             {
-                AddPackage(box.UnitWeight.Value, Convert.ToInt32(box.UnitPrice), box.DimensionH.Value, box.DimensionD.Value, box.DimensionL.Value, PackagingTypeCode, "USD", pkgArray, i);
-                i = i + 1;
+                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentID);
+
+                var shpSvc = new ShipService();
+                var shipmentRequest = new ShipmentRequest();
+                AddUpsSecurity(shpSvc);
+                var request = new RequestType();
+                string[] requestOption = { "nonvalidate" };
+                request.RequestOption = requestOption;
+                shipmentRequest.Request = request;
+                var shipment = new ShipmentType();
+                shipment.Description = "Ship webservice";
+                AddShipper(shipment);
+                AddShipFromAddress(shipment);
+                AddShipToAddress(shipment);
+                AddBillShipperAccount(shipment);
+                //AddPaymentInformation(shipment);
+
+                var service = new ServiceType();
+                service.Code = serviceCode;
+                shipment.Service = service;
+
+                PackageType[] pkgArray;
+                pkgArray = new PackageType[shipmentDetails.Count];
+                var i = 0;
+                foreach (var box in shipmentDetails)
+                {
+                    AddPackage(
+                        box.UnitWeight.Value,
+                        Convert.ToInt32(box.UnitPrice),
+                        box.DimensionH.Value,
+                        box.DimensionD.Value,
+                        box.DimensionL.Value,
+                        PackagingTypeCode,
+                        "USD",
+                        pkgArray,
+                        i);
+                    i = i + 1;
+                }
+                shipment.Package = pkgArray;
+
+                var labelSpec = new LabelSpecificationType();
+                var labelStockSize = new LabelStockSizeType();
+                labelStockSize.Height = "3";
+                labelStockSize.Width = "2";
+                labelSpec.LabelStockSize = labelStockSize;
+                var labelImageFormat = new LabelImageFormatType();
+                labelImageFormat.Code = "GIF"; //"SPL";
+                labelSpec.LabelImageFormat = labelImageFormat;
+                shipmentRequest.LabelSpecification = labelSpec;
+                shipmentRequest.Shipment = shipment;
+
+                var shipmentResponse = shpSvc.ProcessShipment(shipmentRequest);
+                return shipmentResponse;
             }
-            shipment.Package = pkgArray;
-
-            var labelSpec = new LabelSpecificationType();
-            var labelStockSize = new LabelStockSizeType();
-            labelStockSize.Height = "3";
-            labelStockSize.Width = "2";
-            labelSpec.LabelStockSize = labelStockSize;
-            var labelImageFormat = new LabelImageFormatType();
-            labelImageFormat.Code = "GIF";//"SPL";
-            labelSpec.LabelImageFormat = labelImageFormat;
-            shipmentRequest.LabelSpecification = labelSpec;
-            shipmentRequest.Shipment = shipment;
-
-            var shipmentResponse = shpSvc.ProcessShipment(shipmentRequest);
-            return shipmentResponse;
+            catch (System.Web.Services.Protocols.SoapException ex)
+            {
+                string message = "";
+                message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
+                message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
+                message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
+                message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Message, ex.Detail.LastChild.InnerText);
+                return null;
+            }
         }
     }
 }
