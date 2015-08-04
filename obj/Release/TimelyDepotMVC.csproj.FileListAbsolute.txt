@@ -346,3 +346,4 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\AutoM
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\AutoMapper.pdb
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\AutoMapper.xml
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\AutoMapper.Net4.pdb
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.InvoiceUpdateTable.resources

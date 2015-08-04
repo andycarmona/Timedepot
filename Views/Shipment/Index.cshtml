@@ -148,7 +148,6 @@
             </div>
             <div id="labelPreview" title="Label Preview" style="display:none;">
                 <div id="labelContent" style="
-    margin-top: 237px;
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
     -o-transform: rotate(90deg);
@@ -249,7 +248,7 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $('#ddlBillTo').change(function() {
+            $('#ddlBillTo').change(function () {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper')
                     $('#txtUPSAccountNumber').val('');
@@ -285,12 +284,13 @@
 
         function processShipment() {
             var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
-            var toZipCode = $('#ToZip').val();
+            //var toZipCode = $('#ToZip').val();
+            var szInvoiceNo = jQuery("#invoiceNoid").val();
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&shipToPostalCode=' + toZipCode;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&InvoiceNo=' + szInvoiceNo;
                 }
 
                 //Display load image
@@ -334,7 +334,7 @@
                 var rowData = "";
                 if (IsJsonString(response)) {
                     var obj = jQuery.parseJSON(response);
-                    if (obj.ShipmentResults!==undefined) {
+                    if (obj.ShipmentResults !== undefined) {
                         for (var shipmentIndex = 0; shipmentIndex < obj.ShipmentResults.PackageResults.length; shipmentIndex++) {
                             var labelImage = "<img "
                                 + "src='" + "data:image/jpg;base64,"
@@ -465,23 +465,23 @@
 
             jQuery("#ckcustLog").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcustLog").prop("checked", true);
-                break;
-            case "shipmentrecord":
-                jQuery("#ckcompLog").prop("checked", true);
-                break;
-            case "shippementddate":
-                jQuery("#ckcodeLog").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItemLog';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItemLog").val(szDate)
-                }
-                break;
-            default:
-                jQuery("#ckstateLog").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcustLog").prop("checked", true);
+                    break;
+                case "shipmentrecord":
+                    jQuery("#ckcompLog").prop("checked", true);
+                    break;
+                case "shippementddate":
+                    jQuery("#ckcodeLog").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItemLog';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItemLog").val(szDate)
+                    }
+                    break;
+                default:
+                    jQuery("#ckstateLog").prop("checked", true);
+                    break;
             }
         }
 
@@ -594,64 +594,64 @@
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcust").prop("checked", true);
-                break;
-            case "salesorder":
-                jQuery("#ckcomp").prop("checked", true);
-                break;
-            case "customerpo":
-                jQuery("#ckphon").prop("checked", true);
-                break;
-            case "customername":
-                jQuery("#ckemai").prop("checked", true);
-                break;
-            case "shippeddate":
-                jQuery("#ckcode").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItem';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItem").val(szDate)
-                }
-                break;
-            case "itemno":
-                jQuery("#ckstate").prop("checked", true);
-                break;
-            default:
-                jQuery("#ckstate").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
             }
         }
 
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcust").prop("checked", true);
-                break;
-            case "salesorder":
-                jQuery("#ckcomp").prop("checked", true);
-                break;
-            case "customerpo":
-                jQuery("#ckphon").prop("checked", true);
-                break;
-            case "customername":
-                jQuery("#ckemai").prop("checked", true);
-                break;
-            case "shippeddate":
-                jQuery("#ckcode").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItem';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItem").val(szDate)
-                }
-                break;
-            case "itemno":
-                jQuery("#ckstate").prop("checked", true);
-                break;
-            default:
-                jQuery("#ckstate").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
             }
         }
 

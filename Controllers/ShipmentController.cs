@@ -21,8 +21,11 @@ namespace TimelyDepotMVC.Controllers
     using System.Data.Entity;
     using System.Web.Routing;
 
+    using AutoMapper;
+
     using TimelyDepotMVC.Helpers;
     using TimelyDepotMVC.Models;
+    using TimelyDepotMVC.ModelsView;
     using TimelyDepotMVC.UPSRateService;
     using TimelyDepotMVC.UPSShipService;
 
@@ -171,20 +174,26 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string shipToPostalCode)
+        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
         {
             ShipmentResponse rateResponse = null;
-            string szError=null;
-            var shipServiceWrapper = new UPSShipServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
-                    UPSConstants.UpsShipperAddressLine, UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", "Caffe Riace", "200 Sheridan Ave", "Palo Alto", "CA", UPSConstants.UpsShipFromAddressLine,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType, UPSConstants.UpsShipmentChargeType);
+            string szError = null;
+            var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
 
+            if (selectedInvoice != null)
+            {
+                var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+                shipmentRequestDto.userName = UPSConstants.UpsUserName;
+                shipmentRequestDto.password = UPSConstants.UpsPasword;
+                shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
+                shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+                shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
+                shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+                shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+
+                var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
                 rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
-          
+          }
 
             if (string.IsNullOrEmpty(szError))
             {

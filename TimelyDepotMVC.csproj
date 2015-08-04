@@ -688,6 +688,10 @@
     <Compile Include="Migrations\201507271230132_ChangeQuantityFormat.Designer.cs">
       <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201508040754027_InvoiceUpdateTable.cs" />
+    <Compile Include="Migrations\201508040754027_InvoiceUpdateTable.Designer.cs">
+      <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2249,6 +2253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507271230132_ChangeQuantityFormat.resx">
       <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508040754027_InvoiceUpdateTable.resx">
+      <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -29,43 +29,32 @@ namespace TimelyDepotMVC.UPSWrappers
 
     public class UPSShipServiceWrapper
     {
-
-        public string UserName { get; set; }
-        public string Pasword { get; set; }
-        public string AccessLicenseNumber { get; set; }
-        public string ShipperNumber { get; set; }
-        public string ShipperName { get; set; }
-        public string ShipperAddressLine { get; set; }
-        public string ShipperCity { get; set; }
-        public string ShipperPostalCode { get; set; }
-        public string ShipperStateProvinceCode { get; set; }
-        public string ShipperCountryCode { get; set; }
-        public string ShipToPostalCode { get; set; }
-        public string ShipToCountryCode { get; set; }
-        public string ShipToName { get; set; }
-        public string ShipToAddressLine { get; set; }
-        public string ShipToCity { get; set; }
-        public string ShipToStateProvinceCode { get; set; }
-
-        public string ShipFromAddressLine { get; set; }
-        public string ShipFromCity { get; set; }
-        public string ShipFromPostalCode { get; set; }
-        public string ShipFromStateProvinceCode { get; set; }
-        public string ShipFromCountryCode { get; set; }
-        public string ShipFromName { get; set; }
-        public string BillShipperAccountNumber { get; set; }
-        public string PackagingTypeCode { get; set; }
-        public string ShipmentChargeType { get; set; }
-        public string FreightBillingOption { get; set; }
-
-        public UPSShipServiceWrapper(string userName, string password, string accessLicenseNumber,
-             string shipperNumber, string shipperName, string shipperAddressLine, string shipperCity,
-            string shipperPostalCode, string shipperStateProvinceCode, string shipperCountryCode,
-            string shipToPostalCode, string shipToCountryCode, string shipToName, string shipToAddressLine,
-            string shipToCity, string shipToStateProvinceCode, string shipFromAddressLine,
-            string shipFromCity, string shipFromPostalCode, string shipFromStateProvinceCode,
-            string shipFromCountryCode, string shipFromName, string billShipperAccountNumber,
-             string packagingTypeCode, string shipmentChargeType)
+        public UPSShipServiceWrapper(
+           string userName,
+           string password,
+           string accessLicenseNumber,
+           string shipperNumber,
+           string shipperName,
+           string shipperAddressLine,
+           string shipperCity,
+           string shipperPostalCode,
+           string shipperStateProvinceCode,
+           string shipperCountryCode,
+           string shipToPostalCode,
+           string shipToCountryCode,
+           string shipToName,
+           string shipToAddressLine,
+           string shipToCity,
+           string shipToStateProvinceCode,
+           string shipFromAddressLine,
+           string shipFromCity,
+           string shipFromPostalCode,
+           string shipFromStateProvinceCode,
+           string shipFromCountryCode,
+           string shipFromName,
+           string billShipperAccountNumber,
+           string packagingTypeCode,
+           string shipmentChargeType)
         {
             UserName = userName;
             Pasword = password;
@@ -101,28 +90,23 @@ namespace TimelyDepotMVC.UPSWrappers
             Pasword = shipmentRequestModel.password;
             AccessLicenseNumber = shipmentRequestModel.accessLicenseNumber;
             ShipperNumber = shipmentRequestModel.shipperNumber;
-            ShipperName = shipmentRequestModel.shipperName;
-            ShipperAddressLine = shipmentRequestModel.shipperAddressLine;
-            ShipperCity = shipmentRequestModel.shipperCity;
-            ShipperPostalCode = shipmentRequestModel.shipperPostalCode;
-            ShipperStateProvinceCode = shipmentRequestModel.shipperStateProvinceCode;
-            ShipperCountryCode = shipmentRequestModel.shipperCountryCode;
-            ShipToPostalCode = shipmentRequestModel.shipToPostalCode;
-            ShipToCountryCode = shipmentRequestModel.shipToCountryCode;
-            ShipToName = shipmentRequestModel.shipToName;
-            ShipToAddressLine = shipmentRequestModel.shipToAddressLine;
-            ShipToCity = shipmentRequestModel.shipToCity;
-            ShipToStateProvinceCode = shipmentRequestModel.shipToStateProvinceCode;
-            ShipFromAddressLine = shipmentRequestModel.shipFromAddressLine;
-            ShipFromCity = shipmentRequestModel.shipFromCity;
-            ShipFromPostalCode = shipmentRequestModel.shipFromPostalCode;
-            ShipFromStateProvinceCode = shipmentRequestModel.shipFromStateProvinceCode;
-            ShipFromCountryCode = shipmentRequestModel.shipFromCountryCode;
-            ShipFromName = shipmentRequestModel.shipFromName;
+            ShipperName = shipmentRequestModel.FromName;
+            ShipperAddressLine = shipmentRequestModel.FromAddress1;
+            ShipperCity = shipmentRequestModel.FromCity;
+            ShipperPostalCode = shipmentRequestModel.FromZip;
+            ShipperStateProvinceCode = shipmentRequestModel.Fromstate;
+            ShipperCountryCode = shipmentRequestModel.FromCountry;
+            ShipperCompany = shipmentRequestModel.FromCompany;
+            ShipToCompany = shipmentRequestModel.ToCompany;
+            ShipToPostalCode = shipmentRequestModel.ToZip;
+            ShipToCountryCode = shipmentRequestModel.ToCountry;
+            ShipToName = shipmentRequestModel.ToName;
+            ShipToAddressLine = shipmentRequestModel.ToAddress1;
+            ShipToCity = shipmentRequestModel.ToCity;
+            ShipToStateProvinceCode = shipmentRequestModel.ToState;
             BillShipperAccountNumber = shipmentRequestModel.billShipperAccountNumber;
             PackagingTypeCode = shipmentRequestModel.packagingTypeCode;
             ShipmentChargeType = shipmentRequestModel.shipmentChargeType;
-            //FreightBillingOption = freightBillingOption;
         }
 
         public UPSShipServiceWrapper(string userName, string password, string accessLicenseNumber)
@@ -131,6 +115,63 @@ namespace TimelyDepotMVC.UPSWrappers
             Pasword = password;
             AccessLicenseNumber = accessLicenseNumber;
         }
+
+        public string UserName { get; set; }
+
+        public string Pasword { get; set; }
+
+        public string AccessLicenseNumber { get; set; }
+
+        public string ShipperNumber { get; set; }
+
+        public string ShipperName { get; set; }
+
+        public string ShipperAddressLine { get; set; }
+
+        public string ShipperCity { get; set; }
+
+        public string ShipperCompany { get; set; }
+
+        public string ShipperPostalCode { get; set; }
+
+        public string ShipperStateProvinceCode { get; set; }
+
+        public string ShipperCountryCode { get; set; }
+
+        public string ShipToPostalCode { get; set; }
+
+        public string ShipToCountryCode { get; set; }
+
+        public string ShipToCompany { get; set; }
+
+        public string ShipToName { get; set; }
+
+        public string ShipToAddressLine { get; set; }
+
+        public string ShipToCity { get; set; }
+
+        public string ShipToStateProvinceCode { get; set; }
+
+        public string ShipFromAddressLine { get; set; }
+
+        public string ShipFromCity { get; set; }
+
+        public string ShipFromPostalCode { get; set; }
+
+        public string ShipFromStateProvinceCode { get; set; }
+
+        public string ShipFromCountryCode { get; set; }
+
+        public string ShipFromName { get; set; }
+
+        public string BillShipperAccountNumber { get; set; }
+
+        public string PackagingTypeCode { get; set; }
+
+        public string ShipmentChargeType { get; set; }
+
+        public string FreightBillingOption { get; set; }
+
         #region Private
 
         private void AddUpsSecurity(ShipService upsShipService)
@@ -173,7 +214,9 @@ namespace TimelyDepotMVC.UPSWrappers
             shipperAddress.PostalCode = ShipperPostalCode;
             shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
             shipperAddress.CountryCode = ShipperCountryCode;
+            shipper.Name = ShipperName;
             shipper.Address = shipperAddress;
+            
         }
 
         private void AddShipToAddress(ShipmentType shipment)
@@ -189,6 +232,8 @@ namespace TimelyDepotMVC.UPSWrappers
             shipToAddress.CountryCode = ShipToCountryCode;
             shipTo.Address = shipToAddress;
             shipTo.Name = ShipToName;
+            shipTo.AttentionName = ShipToName;
+            shipTo.CompanyDisplayableName = ShipToCompany;
             shipment.ShipTo = shipTo;
 
         }
@@ -197,13 +242,15 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var shipFrom = new ShipFromType();
             var shipFromAddress = new ShipAddressType();
-            shipFromAddress.AddressLine = new[] { ShipFromAddressLine };
-            shipFromAddress.City = ShipFromCity;
-            shipFromAddress.PostalCode = ShipFromPostalCode;
-            shipFromAddress.StateProvinceCode = ShipFromStateProvinceCode;
-            shipFromAddress.CountryCode = ShipFromCountryCode;
+            shipFromAddress.AddressLine = new[] { ShipperAddressLine };
+            shipFromAddress.City = ShipperCity;
+            shipFromAddress.PostalCode = ShipperPostalCode;
+            shipFromAddress.StateProvinceCode = ShipperStateProvinceCode;
+            shipFromAddress.CountryCode = ShipperCountryCode;
             shipFrom.Address = shipFromAddress;
-            shipFrom.Name = ShipFromName;
+            shipFrom.Name = ShipperName;
+            shipFrom.AttentionName = ShipperName;
+            shipFrom.CompanyDisplayableName = ShipperCompany;
             shipment.ShipFrom = shipFrom;
         }
 

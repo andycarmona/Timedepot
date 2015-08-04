@@ -19,41 +19,37 @@ namespace TimelyDepotMVC.ModelsView
 
         public string shipperNumber { get; set; }
 
-        public string shipperName { get; set; }
+        public string FromCompany { get; set; }
 
-        public string shipperAddressLine { get; set; }
+        public string FromName { get; set; }
 
-        public string shipperCity { get; set; }
+        public string FromAddress1 { get; set; }
 
-        public string shipperPostalCode { get; set; }
+        public string FromCity { get; set; }
 
-        public string shipperStateProvinceCode { get; set; }
+        public string FromZip { get; set; }
 
-        public string shipperCountryCode { get; set; }
+        public string Fromstate { get; set; }
 
-        public string shipToPostalCode { get; set; }
+        public string FromCountry { get; set; }
 
-        public string shipToCountryCode { get; set; }
+        public string FromTel { get; set; }
 
-        public string shipToName { get; set; }
+        public string ToCompany { get; set; }
 
-        public string shipToAddressLine { get; set; }
+        public string ToName { get; set; }
 
-        public string shipToCity { get; set; }
+        public string ToAddress1 { get; set; }
 
-        public string shipToStateProvinceCode { get; set; }
+        public string ToCity { get; set; }
 
-        public string shipFromAddressLine { get; set; }
+        public string ToZip { get; set; }
 
-        public string shipFromCity { get; set; }
+        public string ToState { get; set; }
 
-        public string shipFromPostalCode { get; set; }
+        public string ToCountry { get; set; }
 
-        public string shipFromStateProvinceCode { get; set; }
-
-        public string shipFromCountryCode { get; set; }
-
-        public string shipFromName { get; set; }
+        public string ToTel { get; set; }
 
         public string billShipperAccountNumber { get; set; }
 
