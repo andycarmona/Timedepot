@@ -35,125 +35,8 @@
             </div>
         </div>
         <div id="tabs-3">
-            <div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
-            <div id="processShipmentForm" class="form-horizontal">
-                <div class="form-group">
-                    <input class="btn btn-default form-control" type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
-                </div>
-                <div class="form-group">
+            <div id="processShipmentInfo"></div>
 
-                    <label for="shipperNumber">
-                        Shipper Number:
-                    </label>
-
-                    <input class="form-control" id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
-
-
-                </div>
-                <div class="form-group">
-                    <label for="ddlBillTo"> Bill To:</label>
-
-                    <div class="form-control">
-                        @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
-                        <div style="display: none;">
-                            <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="txtUPSAccountNumber">UPS Account:</label>
-                    <input class="form-control" id="txtUPSAccountNumber" type="text" value="@ViewBag.ShipperNumber" />
-                </div>
-
-
-
-
-                <div class="form-group">
-
-                    <label for="selectrequestoptionid">
-                        Request option:
-                    </label>
-
-                    <div class="form-control">
-                        @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, "Select Request Option", new { id = "selectrequestoptionid" })
-                        <div style="display: none;">
-                            <input id="requestoption" type="text" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectcustomertypeid">
-                        Customer Type:
-                    </label>
-                    <div class="form-control">
-                        @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, "Select Customer type", new { id = "selectcustomertypeid" })
-                        <div style="display: none;">
-                            <input id="customertype" type="text" />
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="selectupsServiceTypeid">
-                        UPS Service Type:
-                    </label>
-                    <div class="form-control">
-                        @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist, "Select UPS Service Type", new { id = "selectupsServiceTypeid" })
-                        <div style="display: none;">
-                            <input id="upsServiceType" type="text" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-
-                    <label for="selectpacakePackTypeid">
-                        Package pack type:
-                    </label>
-                    <div class="form-control">
-                        @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, "Select Pacakege Pack Type", new { id = "selectpacakePackTypeid" })
-                        <div style="display: none;">
-                            <input id="pacakePackType" type="text" />
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-                    <label>Choose a UPS rate from list:</label>
-                    @Html.ActionLink("Get UPS Rate", "GetUPSRateTE", "Shipment", new { invoiceId = "0", quantity = 1 }, new { id = "btUpsRate", @class = "btn btn-default" })
-
-                </div>
-            </div>
-
-            <div id="apiresultsid" style="width: 620px; margin: 10px auto;">
-                @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
-            </div>
-            <div id="shipmentContainerData" style="display:none;">
-                <table class="webgrid" style="width: 50%; margin: 0px auto;">
-                    <tr class="webgrid-header">
-                        <th style="text-align:left;">
-                            TrackNumber
-                        </th>
-                        <th style="text-align:left;">
-                            Label
-                        </th>
-                    </tr>
-                    <tr id="shipmentResult"></tr>
-                </table>
-
-            </div>
-            <div id="labelPreview" title="Label Preview" style="display:none;">
-                <div id="labelContent" style="
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);"></div>
-            </div>
         </div>
         <div id="tabs-4">
             <div id="searchlogtabs">
@@ -201,6 +84,8 @@
     @Html.ActionLink("Edit", "Edit", "Shipment", new { id = "0" }, new { id = "editlnk" })
     @Html.ActionLink("Get Sales Details", "GetSalesDetailsSRC", "Invoice", new { salesorderid = "0" }, new { id = "getsalesdetailsId" })
     @Html.ActionLink("Get Shipment Details", "GetShipmenDetails", "Shipment", new { invoiceid = "0" }, new { id = "getshipmentdetailsId" })
+    @Html.ActionLink("Get Process Details", "ProcessShipmentInformation", "Shipment", new { invoiceid = "0" }, new { id = "getprocessdetailsId" })
+    @Html.ActionLink("Get Ups rates Details", "GetUPSRateTE", "Shipment", new { invoiceid = "0" }, new { id = "getUpsRateDetailsId" })
     <div id="addressresultdiv" class="tevalid" style="text-align: center;">@ViewBag.AddressResult</div>
     <div id="upserrordiv" class="error" style="text-align: center;">
         @ViewBag.UPSError
@@ -209,6 +94,7 @@
 @section scripts{
     <script type="text/javascript">
         var w;
+        var selectedShipmentDetailValue;
         jQuery(document).ready(initializeShipment);
 
         function initializeShipment() {
@@ -232,7 +118,7 @@
 
             //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
-            //jQuery("#shipmentDialog").dialog({ autoOpen: false, modal: true });
+            
 
 
             SetDefaultRateSelectors();
@@ -248,7 +134,7 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $('#ddlBillTo').change(function () {
+            $('#ddlBillTo').change(function() {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper')
                     $('#txtUPSAccountNumber').val('');
@@ -257,14 +143,20 @@
 
             });
 
+            if ($('#item_Quantity').val() == "") {
+
+                $('#processShipmentBtn').hide();
+            }
+
         }
 
         function validateUPSAccount() {
             var accountNumber = $('#txtUPSAccountNumber').val();
+            var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
 
             szUrl = '@Url.Action("ValidateUPSAccount", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?accountNumber=' + accountNumber;
+                szUrl = szUrl + '?accountNumber=' + accountNumber + '&invoiceNo=' + szInvoiceNo;
             }
 
             //Display load image
@@ -286,11 +178,13 @@
             var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
+            
+            var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
-            if (chosenServiceCode !== undefined) {
+            if ((chosenServiceCode !== undefined) && (shipmentDetailId !== '')) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=1&InvoiceNo=' + szInvoiceNo;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentDetailId=' + shipmentDetailId + '&InvoiceNo=' + szInvoiceNo;
                 }
 
                 //Display load image
@@ -307,7 +201,7 @@
                     success: UPSShipmentResponse
                 });
             } else {
-                alert("Please, choose a Ups rate for this shipment.");
+                alert("Error. Please choose a rate and a box to be send");
             }
         }
 
@@ -344,6 +238,7 @@
                             rowData += "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
 
                         }
+             
                         $('#shipmentResult').html(rowData);
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
@@ -372,6 +267,14 @@
 
         function clickBtnPrintLabel() {
             w.window.print();
+        }
+
+        function ShowBoxLabel(src) {
+            var currentObj = src.currentTarget;
+            var imageUrl = currentObj.currentSrc;
+            jQuery("#labelBoxPreview").dialog({ autoOpen: false, modal: true});
+            jQuery("#labelBoxContent img").attr("src", imageUrl);
+            jQuery("#labelBoxPreview").dialog("open");
         }
 
         function validateUPSAccountSuccess(response, statusCode) {
@@ -465,23 +368,23 @@
 
             jQuery("#ckcustLog").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcustLog").prop("checked", true);
-                    break;
-                case "shipmentrecord":
-                    jQuery("#ckcompLog").prop("checked", true);
-                    break;
-                case "shippementddate":
-                    jQuery("#ckcodeLog").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItemLog';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItemLog").val(szDate)
-                    }
-                    break;
-                default:
-                    jQuery("#ckstateLog").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcustLog").prop("checked", true);
+                break;
+            case "shipmentrecord":
+                jQuery("#ckcompLog").prop("checked", true);
+                break;
+            case "shippementddate":
+                jQuery("#ckcodeLog").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItemLog';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItemLog").val(szDate)
+                }
+                break;
+            default:
+                jQuery("#ckstateLog").prop("checked", true);
+                break;
             }
         }
 
@@ -525,7 +428,7 @@
         }
 
         function clickbtUpsRate(src, arg) {
-            debugger;
+
             src.preventDefault();
 
             var szMsg = "";
@@ -537,7 +440,7 @@
 
                 szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
 
-                szMsg = "=" + szInvoiceId + '&ValidateAddresResult=' + szAddressResult
+                szMsg = "=" + szInvoiceId + '&ValidateAddresResult=' + szAddressResult;
 
                 // Commented By SANOOP
                 //szUrl = src.target.parentNode.href;
@@ -548,8 +451,10 @@
                 var quantity = $('#item_Quantity').val();
                 var toZip = $('#ToZip').val();
                 szUrl = '@Url.Action("GetUPSRateTE", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
-                if (szUrl != "") {
+                if (quantity != "") {
                     szUrl = szUrl + '?ItemId=' + itemId + '&quantity=' + quantity + '&shipToPostalCode=' + toZip;
+                } else {
+                    alert("Missing shipment data. Could not retrieve Ups rates.");
                 }
 
                 //Display load image
@@ -573,7 +478,7 @@
             //var szResult = eval("(" + response + ")");
             //jQuery("#txtapiresultsid").val(szResult);
             $('#apiresultsid').html(response);
-
+            $('#processShipmentBtn').show();
 
             //Hide load image
             HideLoadingDialog();
@@ -594,64 +499,64 @@
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
@@ -809,7 +714,7 @@
 
         // Sorting.
         function sortInvoiceData(sortOrder) {
-            debugger;
+
             //src.preventDefault();
 
             //Display load image
@@ -927,7 +832,7 @@
         }
 
         function clickeditInvoicelnk(src, arg) {
-            debugger;
+
             src.preventDefault();
             //alert('test');
             // Hide the grid
@@ -1060,7 +965,7 @@
         }
 
         function selectEditInvoiceSuccess(response, statusCode) {
-            debugger;
+
             var objRes = response;
 
             //Display the response data
@@ -1109,7 +1014,7 @@
             //Load InvoiceDetail
             //Display load image
             ShowLoadingDialog();
-            debugger;
+
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
 
             jQuery.ajax({
@@ -1189,8 +1094,44 @@
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
                 LoadShipmentDetails(szHayShipment);
+
             }
         }
+
+        function LoadProcessInformation(invoiceId) {
+            var szMsg = "=" + invoiceId;
+
+            var szUrl = jQuery("#getprocessdetailsId").attr("href");
+            szUrl = szUrl.replace("=0", szMsg);
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: processDetailSuccess
+            });
+        }
+
+        function LoadUpsRateInformation(invoiceId) {
+            var szMsg = "=" + invoiceId;
+
+            var szUrl = jQuery("#getUpsRateDetailsId").attr("href");
+            szUrl = szUrl.replace("=0", szMsg);
+
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                //contentType: 'application/json; charset=utf-8',
+                dataType: 'html',
+                error: AjaxFailed,
+                success: upsRateDetailSuccess
+            });
+        }
+
 
         function LoadShipmentDetails(invoiceId) {
             //Load Shipment Detail
@@ -1201,7 +1142,7 @@
             var szMsg = "=" + invoiceId;
 
             var szUrl = jQuery("#getshipmentdetailsId").attr("href");
-            szUrl = szUrl.replace("=0", szMsg)
+            szUrl = szUrl.replace("=0", szMsg);
 
             jQuery.ajax({
                 type: 'GET',
@@ -1214,6 +1155,29 @@
             });
         }
 
+        function upsRateDetailSuccess(response) {
+            var objRes = response;
+            //Display the response data
+            jQuery("#apiresultsid").html(objRes);
+        }
+
+        function processDetailSuccess(response) {
+            var objRes = response;
+            //Display the response data
+            jQuery("#processShipmentInfo").html(objRes);
+
+            jQuery("#ddlShipmentBox").change(function() {
+                this.selectedShipmentDetailValue = this.value;
+                jQuery("#txtShipmentDetail").val(this.value);
+               
+            });
+            var szHayShipment = jQuery("#hasShipmentDiv").html();
+            szHayShipment = jQuery.trim(szHayShipment);
+            if (szHayShipment != "0") {
+                LoadUpsRateInformation(szHayShipment);
+            }
+        }
+       
         function shipmentDetailSuccess(response, statusCode) {
             var objRes = response;
 
@@ -1232,6 +1196,12 @@
             if (szViewDetails != "") {
                 jQuery("#tabs").tabs("option", "active", 1);
             }
+            var szHayShipment = jQuery("#hasShipmentDiv").html();
+            szHayShipment = jQuery.trim(szHayShipment);
+            if (szHayShipment != "0") {
+                LoadProcessInformation(szHayShipment);
+            }
+            jQuery("#imageRow img").click(ShowBoxLabel);
         }
 
         function clicklnkAddShipmentDetail(src, arg) {
@@ -1273,7 +1243,7 @@
             //Set the buttons
             jQuery(".btn btn-default").button();
             //jQuery(".btnSubmitSearch").button();
-
+            $('#processShipmentBtn').show();
             ////Attach handlers
             jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
             //jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
@@ -1357,7 +1327,7 @@
             //debugger;
 
             var objRes = response;
-
+            $('#processShipmentBtn').show();
             //Display the response data
             jQuery("#selectvendorDialog").html(objRes);
 

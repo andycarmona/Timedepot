@@ -9,12 +9,12 @@ namespace TimelyDepotMVC.Models.Admin
 {
     public class ShipmentDetails
     {
-        [Display(Name = "ShipmentId")]
-        public int? ShipmentId { get; set; }
-
         [Key]
         [Display(Name = "ShipmentId")]
         public int ShipmentDetailID { get; set; }
+
+        [Display(Name = "ShipmentId")]
+        public int ShipmentId { get; set; }
 
         [Display(Name = "Invoice DetailId")]
         public int? DetailId { get; set; }
@@ -51,5 +51,9 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Reference # 2")]
         public string Reference2 { get; set; }
+
+         [Display(Name = "Shipment label")]
+        [Column(TypeName = "varchar(MAX)")]
+        public string ShipmentLabel { get; set; }
     }
 }

@@ -228,11 +228,10 @@ namespace TimelyDepotMVC.UPSWrappers
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
             shipToAddress.City = ShipToCity;
             shipToAddress.PostalCode = ShipToPostalCode;
-            shipToAddress.StateProvinceCode = "CA";
+            shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
             shipToAddress.CountryCode = ShipToCountryCode;
             shipTo.Address = shipToAddress;
             shipTo.Name = ShipToName;
-            shipTo.AttentionName = ShipToName;
             shipTo.CompanyDisplayableName = ShipToCompany;
             shipment.ShipTo = shipTo;
 
@@ -249,7 +248,6 @@ namespace TimelyDepotMVC.UPSWrappers
             shipFromAddress.CountryCode = ShipperCountryCode;
             shipFrom.Address = shipFromAddress;
             shipFrom.Name = ShipperName;
-            shipFrom.AttentionName = ShipperName;
             shipFrom.CompanyDisplayableName = ShipperCompany;
             shipment.ShipFrom = shipFrom;
         }
@@ -318,12 +316,12 @@ namespace TimelyDepotMVC.UPSWrappers
 
         #endregion
 
-        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int ShipmentID, ref string szError)
+        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int ShipmentDetailID, ref string szError)
         {
-            //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentID);
+            //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentDetailID);
             try
             {
-                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentID);
+                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentDetailID);
 
                 var shpSvc = new ShipService();
                 var shipmentRequest = new ShipmentRequest();
@@ -379,7 +377,7 @@ namespace TimelyDepotMVC.UPSWrappers
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                string message = "";
+                string message = string.Empty;
                 message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
                 message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
                 message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;

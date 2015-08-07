@@ -692,6 +692,14 @@
     <Compile Include="Migrations\201508040754027_InvoiceUpdateTable.Designer.cs">
       <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201508060847017_ChangeShipmentDetails.cs" />
+    <Compile Include="Migrations\201508060847017_ChangeShipmentDetails.Designer.cs">
+      <DependentUpon>201508060847017_ChangeShipmentDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.cs" />
+    <Compile Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.Designer.cs">
+      <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2058,6 +2066,7 @@
     <Content Include="Views\Payment\EditCashPayments.cshtml" />
     <Content Include="Views\Payment\ViewRefund.cshtml" />
     <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
+    <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2256,6 +2265,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201508040754027_InvoiceUpdateTable.resx">
       <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508060847017_ChangeShipmentDetails.resx">
+      <DependentUpon>201508060847017_ChangeShipmentDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.resx">
+      <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

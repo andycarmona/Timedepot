@@ -1234,7 +1234,7 @@ namespace TimelyDepotMVC.Controllers
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
 
             //qrysalesdetails = db.SalesOrderDetails.Where(sldt => sldt.SalesOrderId == nSalesOrderid).OrderBy(sldt => sldt.Sub_ItemID).ThenBy(sldt => sldt.ItemOrder);
-            qrysalesdetails = db.InvoiceDetails.Where(sldt => sldt.InvoiceId == nSalesOrderid && sldt.ItemID != "").OrderBy(sldt => sldt.ItemPosition).ThenBy(sldt => sldt.ItemOrder);
+            qrysalesdetails = db.InvoiceDetails.Where(sldt => sldt.InvoiceId == nSalesOrderid).OrderBy(sldt => sldt.ItemPosition).ThenBy(sldt => sldt.ItemOrder);
             if (qrysalesdetails.Count() > 0)
             {
                 foreach (var item in qrysalesdetails)
