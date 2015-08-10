@@ -21,9 +21,12 @@ namespace TimelyDepotMVC.Controllers
     using System.Data.Entity;
     using System.Globalization;
     using System.Reflection.Emit;
+    using System.Threading.Tasks;
     using System.Web.Routing;
 
     using AutoMapper;
+
+    using PdfReportSamples.Models;
 
     using TimelyDepotMVC.Helpers;
     using TimelyDepotMVC.Models;
@@ -190,6 +193,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 listShipmentDetails =
                     db.ShipmentDetails.Where(x => x.ShipmentId == shipmentByInvoice.ShipmentId).ToList();
+                ViewBag.ActualShipmentId = shipmentByInvoice.ShipmentId;
             }
             // Shipment boxes
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
@@ -276,7 +280,7 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentDetailId, string invoiceNo)
+        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
         {
             ShipmentResponse rateResponse = null;
             string szError = null;
@@ -294,9 +298,10 @@ namespace TimelyDepotMVC.Controllers
                 shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-               
-                rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentDetailId, ref szError);
-                this.AddImageToShipmentDetail(shipmentDetailId, rateResponse.ShipmentResults.PackageResults[0].ShippingLabel.GraphicImage);
+
+                rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
+
+                var result = this.AddUpsDataToShipmentDetail(shipmentId, rateResponse.ShipmentResults.PackageResults);
             }
 
             if (string.IsNullOrEmpty(szError))
@@ -310,17 +315,27 @@ namespace TimelyDepotMVC.Controllers
 
         }
 
-        public void AddImageToShipmentDetail(int shipmentDetailId,string aLabel)
+        public Task<int> AddUpsDataToShipmentDetail(int shipmentId, PackageResultsType[] packageList)
         {
-            var aShipmentDetail =
-                db.ShipmentDetails.SingleOrDefault(x => x.ShipmentDetailID == shipmentDetailId);
-            if (aShipmentDetail != null)
+            var aShipmentDetailList =
+               db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList();
+            if (!aShipmentDetailList.Any())
             {
-                aShipmentDetail.ShipmentLabel = "data:image/jpg;base64," + aLabel;
-                this.db.Entry(aShipmentDetail).State = EntityState.Modified;
+                return this.db.SaveChangesAsync();
             }
 
-            this.db.SaveChanges();
+            for (var packageIndex = 0; packageIndex < packageList.Count(); packageIndex++)
+            {
+                var aLabel = packageList[packageIndex].ShippingLabel.GraphicImage;
+                var trackId = packageList[packageIndex].TrackingNumber;
+                aShipmentDetailList[packageIndex].ShipmentLabel = "data:image/jpg;base64," + aLabel;
+                aShipmentDetailList[packageIndex].trackId = trackId;
+                aShipmentDetailList[packageIndex].Shipped = true;
+                this.db.Entry(aShipmentDetailList[packageIndex]).State = EntityState.Modified;
+            }
+
+            return this.db.SaveChangesAsync();
+
         }
 
         public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo)
@@ -507,7 +522,7 @@ namespace TimelyDepotMVC.Controllers
             // XML
 
             string szResult = "The rate transaction was a Success;Total Shipment Charges: 41.20USD;Total Shipment Negociated Charges: 39.32USD days;Delivery time: 2 days";
-     
+
             return PartialView(resultData);
             //return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
         }
@@ -526,7 +541,7 @@ namespace TimelyDepotMVC.Controllers
                 lst.Add(new ResultData() { service = "UPS Second Day Air®", code = "02" });
                 lst.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
 
-       
+
 
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
                     UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
@@ -637,7 +652,7 @@ namespace TimelyDepotMVC.Controllers
                 {
                 }
 
-            
+
 
                 return lst;
             }
@@ -838,17 +853,14 @@ namespace TimelyDepotMVC.Controllers
             Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
             if (invoice != null)
             {
-                //Create the shimpent if it does not exit
-                shipment = db.Shipments.Where(shpm => shpm.InvoiceId == invoice.InvoiceId).FirstOrDefault<Shipment>();
-                if (shipment == null)
-                {
+               
                     shipment = new Shipment();
                     shipment.ShipmentDate = DateTime.Now;
                     shipment.InvoiceId = invoice.InvoiceId;
                     shipment.InvoiceNo = invoice.InvoiceNo;
                     db.Shipments.Add(shipment);
                     db.SaveChanges();
-                }
+              
 
                 qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
                 if (qryInvDetail.Count() > 0)
@@ -922,7 +934,7 @@ namespace TimelyDepotMVC.Controllers
             if (shipment != null)
             {
                 invoiceId = Convert.ToInt32(shipment.InvoiceId);
-
+                ViewBag.ShipmentId = shipment.ShipmentId;
 
                 if (shipmentDetail != null)
                 {
@@ -1031,7 +1043,7 @@ namespace TimelyDepotMVC.Controllers
                     szRate = shipment.RateResults;
                     dDate = Convert.ToDateTime(shipment.ShipmentDate);
                     szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId.ToString(), szDate, szRate);
+                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Date: {1} Rate Results: {2}", szInvoiceNo, szDate, szRate);
                 }
             }
             else
@@ -1044,11 +1056,11 @@ namespace TimelyDepotMVC.Controllers
                     szRate = shipment.RateResults;
                     dDate = Convert.ToDateTime(shipment.ShipmentDate);
                     szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId.ToString(), szDate, szRate);
+                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Date: {1} Rate Results: {2}", szInvoiceNo, szDate, szRate);
                 }
             }
 
-            ViewBag.ShipmentId = nShipmentId;
+         
 
             //Set the page
             if (page == null)
@@ -1063,6 +1075,7 @@ namespace TimelyDepotMVC.Controllers
 
             var onePageOfData = ShipmentDetailsList.ToPagedList(pageIndex, pageSize);
             ViewBag.OnePageOfData = onePageOfData;
+            ViewBag.ShipmentId = ShipmentDetailsList[0].ShipmentId;
             return PartialView(ShipmentDetailsList.ToPagedList(pageIndex, pageSize));
         }
 

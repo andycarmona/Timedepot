@@ -700,6 +700,14 @@
     <Compile Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.Designer.cs">
       <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201508101149507_AddTrackIdToDetailShipment.cs" />
+    <Compile Include="Migrations\201508101149507_AddTrackIdToDetailShipment.Designer.cs">
+      <DependentUpon>201508101149507_AddTrackIdToDetailShipment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508101308137_shippedFlag.cs" />
+    <Compile Include="Migrations\201508101308137_shippedFlag.Designer.cs">
+      <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2271,6 +2279,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.resx">
       <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508101149507_AddTrackIdToDetailShipment.resx">
+      <DependentUpon>201508101149507_AddTrackIdToDetailShipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508101308137_shippedFlag.resx">
+      <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

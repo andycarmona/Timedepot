@@ -43,7 +43,7 @@
             @Html.DisplayNameFor(model => model.Reference2)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ShipmentLabel)
+            @Html.DisplayNameFor(model => model.ShipmentId)
         </th>
     </tr>
 
@@ -52,7 +52,10 @@
         <tr id="imageRow">
             <td>
                 @*@Html.ActionLink("Edit", "EditShipDetail", new { id = item.ShipmentDetailID }) |*@
-                @Html.ActionLink("Delete", "Delete", new { id = item.ShipmentDetailID }, new { onclick = "return confirm('Do you want to delete this detail?');" })
+                @if (!@item.Shipped)
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ShipmentDetailID }, new { onclick = "return confirm('Do you want to delete this detail?');" })
+                }
             </td>
             <td style="display:none;">
                 @Html.DisplayFor(modelItem => item.ShipmentId)
@@ -61,37 +64,47 @@
                 @Html.TextBoxFor(modelItem => item.DetailId)
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.BoxNo)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.BoxNo))
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.Sub_ItemID)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Sub_ItemID))
+             
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.Quantity)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Quantity))
+           
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.UnitPrice)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitPrice))
+            
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.UnitWeight)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitWeight, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitWeight))
+              
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.DimensionH)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionH, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionH))
+              
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.DimensionL)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionL, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionL))
+              
             </td>
             <td style="text-align:left;">
-                @Html.TextBoxFor(modelItem => item.DimensionD)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionD, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionD))
+            
             </td>
             <td>
-                @Html.TextBoxFor(modelItem => item.Reference1)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference1, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference1))
+          
             </td>
             <td>
-                @Html.TextBoxFor(modelItem => item.Reference2)
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference2))
+          
             </td>
             <td>
-                <img style="margin-top:20px; width: 40px; vertical-align: middle; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg); " id="labelBox" @item.ShipmentDetailID src="@item.ShipmentLabel"  />
+                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.ShipmentId, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.ShipmentId))
+                
             </td>
         </tr>
     }

@@ -55,5 +55,10 @@ namespace TimelyDepotMVC.Models.Admin
          [Display(Name = "Shipment label")]
         [Column(TypeName = "varchar(MAX)")]
         public string ShipmentLabel { get; set; }
+
+        [Display(Name = "Track Id")]
+         public string trackId { get; set; }
+
+        public bool Shipped { get; set; }
     }
 }

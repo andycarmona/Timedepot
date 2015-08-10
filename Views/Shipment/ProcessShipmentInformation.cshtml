@@ -1,4 +1,8 @@
 ﻿<div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
+<div style="display: none;">
+    <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
+   
+</div>
 <div id="processShipmentForm" class="form-horizontal">
     <div class="form-group">
         <input class="btn btn-default form-control" type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
@@ -10,20 +14,12 @@
         <input class="form-control" id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
     </div>
     <div class="form-group">
-        <label for="txtShipmentDetail"> List of shipment boxes:</label>
-        <div class="form-control">
-            @Html.DropDownList("shipmentBoxesOption", (IEnumerable<SelectListItem>)ViewBag.ShipmentBoxesOptionlist, "-- Select --", new { id = "ddlShipmentBox" })
-            <div style="display: none;">
-                <input id="txtShipmentDetail" value="" type="text" />
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="txtBillTo"> Bill To:</label>
         <div class="form-control">
             @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
             <div style="display: none;">
                 <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
+               
             </div>
         </div>
     </div>

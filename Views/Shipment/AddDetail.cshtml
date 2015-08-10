@@ -33,7 +33,8 @@
                 @Html.LabelFor(model => model.BoxNo, new{ style="margin-right:64px;"})
             </div>
             <div class="editor-field left">
-                @Html.EditorFor(model => model.BoxNo)
+                @(@Model.Shipped ? Html.TextBoxFor(model => model.BoxNo, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(model => model.BoxNo))
+      
                 @Html.ValidationMessageFor(model => model.BoxNo)
             </div>
         </div>

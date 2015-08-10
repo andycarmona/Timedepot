@@ -153,10 +153,74 @@ namespace TimelyDepotMVC.UPSWrappers
             ent.ShipmentDetails.Remove(detail);
         }
 
+        //public static bool HasShipment(int invoiceNum)
+        //{
+        //    return ent.Shipments.Any(i => i.InvoiceNum == invoiceNum && !i.IsCancelled && !i.IsShipped);
+        //}
 
-        public static List<ShipmentDetails> GetShipmentShipmentDetails(int shipmentDetailId)
+        //public static Shipments GetShipmentByID(int shipmentID)
+        //{
+        //    return ent.Shipments.FirstOrDefault(i => i.ShipmentID == shipmentID && !i.IsCancelled);
+        //}
+
+        //public static Shipments GetShipmentByInvoice(int invoiceNo)
+        //{
+        //    return ent.Shipments.FirstOrDefault(i => i.InvoiceNum == invoiceNo && !i.IsCancelled && !i.IsShipped);
+        //}
+
+        //public static Shipments AddNewShipment(int invoiceNo)
+        //{
+        //    var shipment = new Shipments();
+        //    shipment.InvoiceNum = invoiceNo;
+        //    shipment.LastModifiedDate = DateTime.Now;
+        //    shipment.IsCancelled = false;
+        //    ent.Shipments.AddObject(shipment);
+        //    return shipment;
+        //}
+
+        //public static void AddNewShipment(Shipments shipment)
+        //{
+        //    ent.Shipments.AddObject(shipment);
+        //}
+
+        //public static ShipmentAddresses GetShipmentAddressFrom(int invoiceNum)
+        //{
+        //    var shipment = GetInvoiceNotProcessedShipment(invoiceNum);
+        //    return shipment == null ? null : shipment.ShipmentAddresses.FirstOrDefault(i => i.ShipmentID == shipment.ShipmentID && i.ShipFrom);
+        //}
+
+        //public static ShipmentAddresses GetShipmentAddressTo(int invoiceNum)
+        //{
+        //    var shipment = GetInvoiceNotProcessedShipment(invoiceNum);
+        //    return shipment == null ? null : shipment.ShipmentAddresses.FirstOrDefault(i => i.ShipmentID == shipment.ShipmentID && !i.ShipFrom);
+        //}
+
+        //public static Shipments GetInvoiceNotProcessedShipment(int invoiceNum)
+        //{
+        //    return
+        //        ent.Shipments.FirstOrDefault(
+        //            i => i.InvoiceNum == invoiceNum && !i.IsCancelled && !i.IsShipped);
+        //}
+
+        //public static ShipmentAddresses AddNewShipmentAddress(int shipmentID, bool shipFrom)
+        //{
+        //    var address = new ShipmentAddresses();
+        //    address.ShipmentID = shipmentID;
+        //    address.ShipFrom = shipFrom;
+        //    ent.ShipmentAddresses.AddObject(address);
+        //    return address;
+        //}
+
+        //public static List<Shipments> GetShipmentsByInvoice(int? invoiceNo)
+        //{
+        //    if (invoiceNo.HasValue)
+        //        return ent.Shipments.Where(i => i.InvoiceNum == invoiceNo).OrderBy(i => i.ShipmentID).ToList();
+        //    return ent.Shipments.OrderBy(i => i.InvoiceNum).ThenBy(i => i.ShipmentID).ToList();
+        //}
+
+        public static List<ShipmentDetails> GetShipmentShipmentDetails(int shipmentId)
         {
-            var shipment = ent.ShipmentDetails.Where(i => i.ShipmentDetailID == shipmentDetailId).ToList();
+            var shipment = ent.ShipmentDetails.Where(i => i.ShipmentId == shipmentId).ToList();
             return
                 shipment.OrderBy(i => i.Sub_ItemID)
                    .ThenBy(i => i.BoxNo)

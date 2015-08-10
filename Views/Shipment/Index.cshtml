@@ -178,13 +178,14 @@
             var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
+            var actualShipmentId = jQuery("#txtShipmentId").val();
             
-            var shipmentDetailId = jQuery("#txtShipmentDetail").val();
+            //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
-            if ((chosenServiceCode !== undefined) && (shipmentDetailId !== '')) {
+            if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentDetailId=' + shipmentDetailId + '&InvoiceNo=' + szInvoiceNo;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId='+actualShipmentId+'&InvoiceNo=' + szInvoiceNo;
                 }
 
                 //Display load image
@@ -1166,11 +1167,7 @@
             //Display the response data
             jQuery("#processShipmentInfo").html(objRes);
 
-            jQuery("#ddlShipmentBox").change(function() {
-                this.selectedShipmentDetailValue = this.value;
-                jQuery("#txtShipmentDetail").val(this.value);
-               
-            });
+           
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
@@ -1263,6 +1260,8 @@
 
             //setter
             jQuery("#selectvendorDialog").dialog("option", "width", 340);
+
+
 
             //display the popup dialog
             jQuery("#selectvendorDialog").dialog("open");

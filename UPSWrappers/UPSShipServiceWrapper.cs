@@ -280,7 +280,7 @@ namespace TimelyDepotMVC.UPSWrappers
             shipment.Shipper = shipper;
         }
 
-        private void AddPackage(int boxWeight, int declaredVal, int boxHeight, int boxWidth, int boxLength, string packagingTypeCode, string currencyCode, PackageType[] pkgArray, int pos)
+        private void AddPackage(string boxNo, int boxWeight, int declaredVal, int boxHeight, int boxWidth, int boxLength, string packagingTypeCode, string currencyCode, PackageType[] pkgArray, int pos)
         {
             var package = new PackageType();
             var packageWeight = new PackageWeightType();
@@ -309,6 +309,7 @@ namespace TimelyDepotMVC.UPSWrappers
             package.PackageServiceOptions = packageServiceOptions;
 
             var packType = new PackagingType();
+            packType.Description = boxNo;
             packType.Code = packagingTypeCode;
             package.Packaging = packType;
             pkgArray[pos] = package;
@@ -316,12 +317,12 @@ namespace TimelyDepotMVC.UPSWrappers
 
         #endregion
 
-        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int ShipmentDetailID, ref string szError)
+        public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int shipmentID, ref string szError)
         {
             //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentDetailID);
             try
             {
-                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(ShipmentDetailID);
+                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(shipmentID);
 
                 var shpSvc = new ShipService();
                 var shipmentRequest = new ShipmentRequest();
@@ -348,6 +349,7 @@ namespace TimelyDepotMVC.UPSWrappers
                 foreach (var box in shipmentDetails)
                 {
                     AddPackage(
+                        box.BoxNo,
                         box.UnitWeight.Value,
                         Convert.ToInt32(box.UnitPrice),
                         box.DimensionH.Value,
