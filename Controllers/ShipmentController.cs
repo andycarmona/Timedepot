@@ -280,7 +280,7 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
+        public ActionResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
         {
             ShipmentResponse rateResponse = null;
             string szError = null;
@@ -853,14 +853,14 @@ namespace TimelyDepotMVC.Controllers
             Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
             if (invoice != null)
             {
-               
-                    shipment = new Shipment();
-                    shipment.ShipmentDate = DateTime.Now;
-                    shipment.InvoiceId = invoice.InvoiceId;
-                    shipment.InvoiceNo = invoice.InvoiceNo;
-                    db.Shipments.Add(shipment);
-                    db.SaveChanges();
-              
+
+                shipment = new Shipment();
+                shipment.ShipmentDate = DateTime.Now;
+                shipment.InvoiceId = invoice.InvoiceId;
+                shipment.InvoiceNo = invoice.InvoiceNo;
+                db.Shipments.Add(shipment);
+                db.SaveChanges();
+
 
                 qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
                 if (qryInvDetail.Count() > 0)
@@ -900,6 +900,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 nInvoiceId = invoice.InvoiceId;
                 szInvoiceNo = invoice.InvoiceNo;
+
             }
 
             shipment = db.Shipments.Find(shipmenid);
@@ -915,7 +916,7 @@ namespace TimelyDepotMVC.Controllers
 
             //Create the shipment detail
             details = CreateShipmentDetail(shipment, invoice, invDetails, ref szError);
-
+            ViewBag.ShipmentId = shipment.ShipmentId;
             return PartialView(details);
         }
 
@@ -1060,7 +1061,7 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-         
+
 
             //Set the page
             if (page == null)
@@ -1954,7 +1955,20 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult Index(string id, string addressresult, string ckCriteriaLog)
         {
+            if (!string.IsNullOrEmpty(id))
+            {
+                var parsedId = int.Parse(id);
+
+                var aShipmentDetail = this.db.ShipmentDetails.Join(this.db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp) => new { dtl, shp }).Where(NData => NData.shp.InvoiceId == parsedId && NData.dtl.Shipped == false).ToList();
+
+                if (aShipmentDetail.Any())
+                {
+                        this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
+                }
+            }
+
             var dFecha = DateTime.Now;
+
             if (!string.IsNullOrEmpty(addressresult))
             {
                 ViewBag.AddressResult = addressresult;
@@ -1967,12 +1981,14 @@ namespace TimelyDepotMVC.Controllers
             {
                 ViewBag.UPSError = TempData["UPSError"].ToString();
             }
-            //Shipment Log initial values
+
             if (string.IsNullOrEmpty(ckCriteriaLog))
             {
                 ViewBag.SearchItemLog = "0";
                 ViewBag.ckCriteriaHlpLog = "invoice";
             }
+
+
             ViewBag.CurrentDateLog = dFecha.ToString("yyyy/MM/dd");
             return View();
         }
