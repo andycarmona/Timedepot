@@ -1,61 +1,13 @@
 ﻿@model IEnumerable<TimelyDepotMVC.UPSWrappers.ResultData>
-<style>
-    .tableBorder tr th td
-    {
-        border: 1px solid;
-    }
-
-    th
-    {
-        padding:5px;
-    }
-
-</style>
-
-<table class="tableBorder">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.code)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.service)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Publishedcost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.cost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Negcost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.time)
-        </th>        
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.code)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.service)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Publishedcost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.cost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Negcost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.time)
-        </td>
-        
-    </tr>
-}
-
-</table>
+<div class="form-group">
+    <label>Choose a UPS rate from list:</label><br/>
+        @foreach (var item in Model)
+        {
+            <label class="pdsa-radiobutton">
+                <input id="code"@item.code name="chosenUpsRate" type="radio" value="@item.code" />
+                <span> @item.service</span>
+               
+            </label><br />
+        }
+    <input class="btn btn-default" type="button" id="btnProcessShipment" value="Process shipment" onclick="processShipment();" />
+</div>

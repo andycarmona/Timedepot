@@ -1,6 +1,0 @@
-USE [timessence]
-GO
-ALTER TABLE dbo.UserQuotation DROP COLUMN Id;
-GO
-ALTER TABLE dbo.UserQuotation ADD Id int IDENTITY CONSTRAINT Id_pk PRIMARY KEY ;
-GO

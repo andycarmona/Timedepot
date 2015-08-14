@@ -6,6 +6,9 @@ using TimelyDepotMVC.UPSRateService;
 
 namespace TimelyDepotMVC.UPSWrappers
 {
+    using TimelyDepotMVC.Models.Admin;
+    using TimelyDepotMVC.ModelsView;
+
     public class UPSRateServiceWrapper
     {
 
@@ -21,13 +24,14 @@ namespace TimelyDepotMVC.UPSWrappers
         public string ShipperPostalCode { get; set; }
         public string ShipperStateProvinceCode { get; set; }
         public string ShipperCountryCode { get; set; }
-
+        public string ShipToCompany { get; set; }
         public string ShipToPostalCode { get; set; }
         public string ShipToCountryCode { get; set; }
         public string ShipToName { get; set; }
         public string ShipToAddressLine { get; set; }
         public string ShipToCity { get; set; }
         public string ShipToStateProvinceCode { get; set; }
+        public string ShipperCompany { get; set; }
 
         public string ShipFromAddressLine { get; set; }
         public string ShipFromCity { get; set; }
@@ -74,6 +78,42 @@ namespace TimelyDepotMVC.UPSWrappers
             PackagingTypeCode = packagingTypeCode;
         }
 
+        public UPSRateServiceWrapper(ShipmentRequestView shipmentRequestModel)
+        {
+            UserName = shipmentRequestModel.userName;
+            Pasword = shipmentRequestModel.password;
+            AccessLicenseNumber = shipmentRequestModel.accessLicenseNumber;
+            ShipperNumber = shipmentRequestModel.shipperNumber;
+            ShipperName = shipmentRequestModel.FromName;
+
+            ShipFromAddressLine = shipmentRequestModel.FromAddress1;
+            ShipperAddressLine = shipmentRequestModel.FromAddress1;
+
+            ShipFromCity = shipmentRequestModel.FromCity;
+            ShipperCity = shipmentRequestModel.FromCity;
+
+            ShipperPostalCode = shipmentRequestModel.FromZip;
+            ShipFromPostalCode = shipmentRequestModel.FromZip;
+
+            ShipFromStateProvinceCode = shipmentRequestModel.Fromstate;
+            ShipperStateProvinceCode = shipmentRequestModel.Fromstate;
+
+            ShipFromCountryCode = shipmentRequestModel.FromCountry;
+            ShipperCountryCode = shipmentRequestModel.FromCountry;
+
+            ShipperCompany = shipmentRequestModel.FromCompany;
+            ShipToCompany = shipmentRequestModel.ToCompany;
+
+            ShipToPostalCode = shipmentRequestModel.ToZip;
+            ShipToCountryCode = shipmentRequestModel.ToCountry;
+            ShipToName = shipmentRequestModel.ToName;
+            ShipToAddressLine = shipmentRequestModel.ToAddress1;
+            ShipToCity = shipmentRequestModel.ToCity;
+            ShipToStateProvinceCode = shipmentRequestModel.ToState;
+            BillShipperAccountNumber = shipmentRequestModel.billShipperAccountNumber;
+            PackagingTypeCode = shipmentRequestModel.packagingTypeCode;
+            
+        }
         #region Private
 
         private void AddCustomerClassification(RateRequest rateRequest)

@@ -39,6 +39,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
@@ -609,6 +617,7 @@
     </Compile>
     <Compile Include="Helpers\CustomErrorHandlerAttribute.cs" />
     <Compile Include="Helpers\DecimalModelBinder.cs" />
+    <Compile Include="Helpers\HttpParamActionAttribute.cs" />
     <Compile Include="Helpers\SalesOrderAmountValidatorAttribute.cs" />
     <Compile Include="Migrations\201410020747288_AddTransactionListforRefundsAndPayments.cs" />
     <Compile Include="Migrations\201410021511054_AddTranslationCodesTable.cs" />
@@ -671,6 +680,34 @@
     <Compile Include="Migrations\201507151135322_InvoicePaymentToPaymentTable.Designer.cs">
       <DependentUpon>201507151135322_InvoicePaymentToPaymentTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507270820393_AddShipmentTables.cs" />
+    <Compile Include="Migrations\201507270820393_AddShipmentTables.Designer.cs">
+      <DependentUpon>201507270820393_AddShipmentTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507271230132_ChangeQuantityFormat.cs" />
+    <Compile Include="Migrations\201507271230132_ChangeQuantityFormat.Designer.cs">
+      <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508040754027_InvoiceUpdateTable.cs" />
+    <Compile Include="Migrations\201508040754027_InvoiceUpdateTable.Designer.cs">
+      <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508060847017_ChangeShipmentDetails.cs" />
+    <Compile Include="Migrations\201508060847017_ChangeShipmentDetails.Designer.cs">
+      <DependentUpon>201508060847017_ChangeShipmentDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.cs" />
+    <Compile Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.Designer.cs">
+      <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508101149507_AddTrackIdToDetailShipment.cs" />
+    <Compile Include="Migrations\201508101149507_AddTrackIdToDetailShipment.Designer.cs">
+      <DependentUpon>201508101149507_AddTrackIdToDetailShipment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508101308137_shippedFlag.cs" />
+    <Compile Include="Migrations\201508101308137_shippedFlag.Designer.cs">
+      <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -689,6 +726,7 @@
     <Compile Include="ModelsView\SalesOrderDetailSRC.cs" />
     <Compile Include="ModelsView\SalesOrderList.cs" />
     <Compile Include="ModelsView\SelectCustomer.cs" />
+    <Compile Include="ModelsView\ShipmentRequestView.cs" />
     <Compile Include="ModelsView\VendorList.cs" />
     <Compile Include="ModelsView\VendorView.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -2036,6 +2074,7 @@
     <Content Include="Views\Payment\EditCashPayments.cshtml" />
     <Content Include="Views\Payment\ViewRefund.cshtml" />
     <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
+    <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2226,6 +2265,27 @@
     <EmbeddedResource Include="Migrations\201507151135322_InvoicePaymentToPaymentTable.resx">
       <DependentUpon>201507151135322_InvoicePaymentToPaymentTable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507270820393_AddShipmentTables.resx">
+      <DependentUpon>201507270820393_AddShipmentTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507271230132_ChangeQuantityFormat.resx">
+      <DependentUpon>201507271230132_ChangeQuantityFormat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508040754027_InvoiceUpdateTable.resx">
+      <DependentUpon>201508040754027_InvoiceUpdateTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508060847017_ChangeShipmentDetails.resx">
+      <DependentUpon>201508060847017_ChangeShipmentDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508071029077_AddLabelColumnToShipmentDetail.resx">
+      <DependentUpon>201508071029077_AddLabelColumnToShipmentDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508101149507_AddTrackIdToDetailShipment.resx">
+      <DependentUpon>201508101149507_AddTrackIdToDetailShipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508101308137_shippedFlag.resx">
+      <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -2262,6 +2322,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />
+  <Import Project="packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

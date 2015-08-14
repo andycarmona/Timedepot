@@ -542,6 +542,14 @@ span.right { float: right; width: 3em; text-align: left; }
         color: #000;
     }
 
+    .webgrid td {
+         white-space:nowrap;
+    }
+
+    .webgrid input {
+        width: 100%;
+    }
+
 .webgrid-header {
     padding: 6px 5px;
     text-align: center;
@@ -692,3 +700,27 @@ span.right { float: right; width: 3em; text-align: left; }
 .amountResultPosition {
     float: right;
 }
+
+#shipmentResult img {
+        vertical-align: middle;
+        margin-top: 60px;
+    margin-bottom: 50px;
+        width: 50%;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#labelPreview img {
+        margin-top: 161px;
+      vertical-align: middle;
+    width: 100%;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg); 
+}
+

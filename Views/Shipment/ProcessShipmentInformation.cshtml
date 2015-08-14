@@ -1,0 +1,102 @@
+﻿<div id="addressresultdiv03" class="tevalid boxMb10" style="text-align: center;">@ViewBag.AddressResult</div>
+
+<div id="processShipmentForm" class="form-horizontal">
+    <div class="form-group">
+        <input class="btn btn-default form-control" type="button" id="btnValidateUPSAccount" value="Validate Account" onclick="validateUPSAccount();" />
+    </div>
+    <div class="form-group">
+        <label for="shipperNumber">
+            Shipper Number:
+        </label>
+        <input class="form-control" id="shipperNumber" type="text" value="@ViewBag.ShipperNumber" readonly="readonly" />
+    </div>
+    <div class="form-group">
+        <label for="txtBillTo"> Bill To:</label>
+        <div class="form-control">
+            @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, null, new { id = "ddlBillTo" })
+            <div style="display: none;">
+                <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
+               
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtUPSAccountNumber">UPS Account:</label>
+        <input class="form-control" id="txtUPSAccountNumber" type="text" value="@ViewBag.ShipperNumber" />
+    </div>
+    <div class="form-group">
+        <label for="selectrequestoptionid">
+            Request option:
+        </label>
+        <div class="form-control">
+            @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, null, new { id = "selectrequestoptionid" })
+            <div style="display: none;">
+                <input id="requestoption" type="text" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="selectcustomertypeid">
+            Customer Type:
+        </label>
+        <div class="form-control">
+            @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, null, new { id = "selectcustomertypeid" })
+            <div style="display: none;">
+                <input id="customertype" type="text" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+
+        <label for="selectupsServiceTypeid">
+            UPS Service Type:
+        </label>
+        <div class="form-control">
+            @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist,null, new { id = "selectupsServiceTypeid" })
+            <div style="display: none;">
+                <input id="upsServiceType" type="text" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="selectpacakePackTypeid">
+            Package pack type:
+        </label>
+        <div class="form-control">
+            @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, null, new { id = "selectpacakePackTypeid" })
+            <div style="display: none;">
+                <input id="pacakePackType" type="text" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="apiresultsid" style="width: 620px; margin: 10px auto;">
+    @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
+</div>
+<div id="shipmentContainerData" style="display:none;">
+    <table class="webgrid" style="width: 50%; margin: 0px auto;">
+        <tr class="webgrid-header">
+            <th style="text-align:left;">
+                TrackNumber
+            </th>
+            <th style="text-align:left;">
+                Label
+            </th>
+        </tr>
+        <tr id="shipmentResult"></tr>
+    </table>
+
+</div>
+<div id="labelPreview" title="Label Preview" style="display:none;">
+    <div id="labelContent" style="
+    margin-top: 100px;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);"></div>
+</div>

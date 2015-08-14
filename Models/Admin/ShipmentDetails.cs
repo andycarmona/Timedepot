@@ -9,12 +9,12 @@ namespace TimelyDepotMVC.Models.Admin
 {
     public class ShipmentDetails
     {
-        [Display(Name = "ShipmentId")]
-        public int? ShipmentId { get; set; }
-
         [Key]
         [Display(Name = "ShipmentId")]
         public int ShipmentDetailID { get; set; }
+
+        [Display(Name = "ShipmentId")]
+        public int ShipmentId { get; set; }
 
         [Display(Name = "Invoice DetailId")]
         public int? DetailId { get; set; }
@@ -28,7 +28,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Qty")]
         [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = false)]
-        public double? Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         [Display(Name = "Unit Price")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
@@ -51,5 +51,14 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Reference # 2")]
         public string Reference2 { get; set; }
+
+         [Display(Name = "Shipment label")]
+        [Column(TypeName = "varchar(MAX)")]
+        public string ShipmentLabel { get; set; }
+
+        [Display(Name = "Track Id")]
+         public string trackId { get; set; }
+
+        public bool Shipped { get; set; }
     }
 }

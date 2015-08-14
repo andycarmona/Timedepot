@@ -4,7 +4,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    @Html.HiddenFor(model => model.ShipmentDetailID)
+   
 
     <div style="width:280px; margin:0px auto;">
 
@@ -13,7 +13,7 @@
                 @Html.LabelFor(model => model.ShipmentId, new{ style="margin-right:23px;"})
             </div>
             <div class="editor-field left">
-                @Html.EditorFor(model => model.ShipmentId)
+                @Html.TextBoxFor(model => model.ShipmentId, new Dictionary<string, object>() { { "readonly", "true" } })
                 @Html.ValidationMessageFor(model => model.ShipmentId)
             </div>
         </div>
@@ -33,7 +33,8 @@
                 @Html.LabelFor(model => model.BoxNo, new{ style="margin-right:64px;"})
             </div>
             <div class="editor-field left">
-                @Html.EditorFor(model => model.BoxNo)
+                @Html.TextBoxFor(model => model.BoxNo, new Dictionary<string, object>() { { "readonly", "true" } }) 
+      
                 @Html.ValidationMessageFor(model => model.BoxNo)
             </div>
         </div>

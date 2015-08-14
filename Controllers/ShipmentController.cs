@@ -19,8 +19,20 @@ using System.Net.Security;
 namespace TimelyDepotMVC.Controllers
 {
     using System.Data.Entity;
+    using System.Globalization;
+    using System.Reflection.Emit;
+    using System.Threading.Tasks;
+    using System.Web.Routing;
+
+    using AutoMapper;
+
+    using PdfReportSamples.Models;
+
+    using TimelyDepotMVC.Helpers;
     using TimelyDepotMVC.Models;
+    using TimelyDepotMVC.ModelsView;
     using TimelyDepotMVC.UPSRateService;
+    using TimelyDepotMVC.UPSShipService;
 
     public class ShipmentController : Controller
     {
@@ -167,23 +179,168 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string shipToPostalCode)
+        public PartialViewResult ProcessShipmentInformation(string invoiceId)
         {
-            var shipServiceWrapper = new UPSShipServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
-                    UPSConstants.UpsShipperAddressLine, UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", "Caffe Riace", "200 Sheridan Ave", "Palo Alto", "94306", UPSConstants.UpsShipFromAddressLine,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType,UPSConstants.UpsShipmentChargeType);
 
-            var rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId);
-            return Json(rateResponse, JsonRequestBehavior.AllowGet);
-            
+            string szShipperNumber = string.Empty;
+            List<ShipmentDetails> listShipmentDetails = null;
+            szShipperNumber = Settings.Default.UPSShipperNumber;
+            ViewBag.ShipperNumber = szShipperNumber;
+            int parsedInvoiceId = Int16.Parse(invoiceId);
+
+            var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
+            if (shipmentByInvoice != null)
+            {
+                listShipmentDetails =
+                    db.ShipmentDetails.Where(x => x.ShipmentId == shipmentByInvoice.ShipmentId).ToList();
+                ViewBag.ActualShipmentId = shipmentByInvoice.ShipmentId;
+            }
+            // Shipment boxes
+            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
+            listSelector = new List<KeyValuePair<string, string>>();
+            if (listShipmentDetails != null)
+            {
+                foreach (var shipmentDetail in listShipmentDetails)
+                {
+                    listSelector.Add(
+                        new KeyValuePair<string, string>(
+                            shipmentDetail.ShipmentDetailID.ToString(CultureInfo.InvariantCulture),
+                            "Box " + shipmentDetail.BoxNo + " - " + shipmentDetail.Reference1));
+                }
+            }
+
+            SelectList shipmentBoxOptionlist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.ShipmentBoxesOptionlist = shipmentBoxOptionlist;
+
+            //Request option
+            listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("Rate", "Rate"));
+            listSelector.Add(new KeyValuePair<string, string>("Shop", "Shop"));
+            SelectList requestOptionlist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.RequestOptionlist = requestOptionlist;
+
+            // Bill To Option
+            listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("Shipper", "Shipper"));
+            listSelector.Add(new KeyValuePair<string, string>("Sender", "Sender"));
+            listSelector.Add(new KeyValuePair<string, string>("Third Party", "Third Party"));
+            SelectList billToOptionlist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.BillToOptionlist = billToOptionlist;
+
+
+
+            //Customer type
+            listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("00", "Rates Associated with Shipper Number"));
+            listSelector.Add(new KeyValuePair<string, string>("01", "Daily Rates"));
+            listSelector.Add(new KeyValuePair<string, string>("04", "Retail Rates"));
+            listSelector.Add(new KeyValuePair<string, string>("53", "Standard List Rates"));
+            SelectList customerTypelist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.CustomerTypeList = customerTypelist;
+
+            //UPS Service type
+            listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("03", "Ground"));
+            listSelector.Add(new KeyValuePair<string, string>("01", "Next Day Air"));
+            listSelector.Add(new KeyValuePair<string, string>("02", "2nd Day Air"));
+            listSelector.Add(new KeyValuePair<string, string>("12", "3 Day Select"));
+            listSelector.Add(new KeyValuePair<string, string>("13", "Next Day Air Saver"));
+            listSelector.Add(new KeyValuePair<string, string>("14", "Next Day Air Early AM"));
+            listSelector.Add(new KeyValuePair<string, string>("59", "2nd Day Air AM"));
+            listSelector.Add(new KeyValuePair<string, string>("07", "Worldwide Express"));
+            listSelector.Add(new KeyValuePair<string, string>("08", "Worldwide Expedited"));
+            listSelector.Add(new KeyValuePair<string, string>("11", "Standard"));
+            listSelector.Add(new KeyValuePair<string, string>("54", "Worldwide Express Plus"));
+            listSelector.Add(new KeyValuePair<string, string>("65", "UPS Saver"));
+            listSelector.Add(new KeyValuePair<string, string>("82", "UPS Today Standard"));
+            listSelector.Add(new KeyValuePair<string, string>("83", "UPS Today Dedicated Courier"));
+            listSelector.Add(new KeyValuePair<string, string>("84", "UPS Today Intercity"));
+            listSelector.Add(new KeyValuePair<string, string>("85", "UPS Today Express"));
+            listSelector.Add(new KeyValuePair<string, string>("86", "UPS Today Express Saver"));
+            SelectList upsServiceTypelist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.UpsServiceTypelist = upsServiceTypelist;
+
+            //Package pack type
+            listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("02", "Package/customer supplied"));
+            listSelector.Add(new KeyValuePair<string, string>("00", "Unknown"));
+            listSelector.Add(new KeyValuePair<string, string>("01", "UPS Letter"));
+            listSelector.Add(new KeyValuePair<string, string>("03", "UPS Tube"));
+            listSelector.Add(new KeyValuePair<string, string>("04", "UPS Pack"));
+            listSelector.Add(new KeyValuePair<string, string>("21", "Express Box"));
+            listSelector.Add(new KeyValuePair<string, string>("24", "25KG Box"));
+            listSelector.Add(new KeyValuePair<string, string>("25", "10KG Box"));
+            listSelector.Add(new KeyValuePair<string, string>("30", "Pallet"));
+            listSelector.Add(new KeyValuePair<string, string>("2a", "Small Express Box"));
+            listSelector.Add(new KeyValuePair<string, string>("2b", "Medium Express Box"));
+            listSelector.Add(new KeyValuePair<string, string>("2c", "Large Express Box"));
+            SelectList packageTypelist = new SelectList(listSelector, "Key", "Value");
+            ViewBag.packageTypelist = packageTypelist;
+
+            return this.PartialView();
         }
 
-        public JsonResult ValidateUPSAccount(string accountNumber)
+        public ActionResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
         {
+            ShipmentResponse rateResponse = null;
+            string szError = null;
+            var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
+
+            if (selectedInvoice != null)
+            {
+                var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+                shipmentRequestDto.userName = UPSConstants.UpsUserName;
+                shipmentRequestDto.password = UPSConstants.UpsPasword;
+                shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
+                shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+                shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
+                shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+                shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+
+                var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
+
+                rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
+
+                var result = this.AddUpsDataToShipmentDetail(shipmentId, rateResponse.ShipmentResults.PackageResults);
+            }
+
+            if (string.IsNullOrEmpty(szError))
+            {
+                return Json(rateResponse, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(szError, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        public Task<int> AddUpsDataToShipmentDetail(int shipmentId, PackageResultsType[] packageList)
+        {
+            var aShipmentDetailList =
+               db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList();
+            if (!aShipmentDetailList.Any())
+            {
+                return this.db.SaveChangesAsync();
+            }
+
+            for (var packageIndex = 0; packageIndex < packageList.Count(); packageIndex++)
+            {
+                var aLabel = packageList[packageIndex].ShippingLabel.GraphicImage;
+                var trackId = packageList[packageIndex].TrackingNumber;
+                aShipmentDetailList[packageIndex].ShipmentLabel = "data:image/jpg;base64," + aLabel;
+                aShipmentDetailList[packageIndex].trackId = trackId;
+                aShipmentDetailList[packageIndex].Shipped = true;
+                this.db.Entry(aShipmentDetailList[packageIndex]).State = EntityState.Modified;
+            }
+
+            return this.db.SaveChangesAsync();
+
+        }
+
+        public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo)
+        {
+            var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
             string result = "Not a valid UPS Account.";
             try
             {
@@ -194,29 +351,33 @@ namespace TimelyDepotMVC.Controllers
                 inv_detl.CASE_WT = 19;
                 inv_detl.UT_WT = Convert.ToDecimal(2.1);
 
-                var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber, accountNumber, UPSConstants.UpsShipperName,
-                    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, UPSConstants.UpsShipperAddressLine,
-                    UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                    UPSConstants.UpsShipperCountryCode, "94306", "US", null, null, null, null, UPSConstants.UpsShipFromAddressLine,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType);
+                if (selectedInvoice != null)
+                {
+                    var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+                    shipmentRequestDto.userName = UPSConstants.UpsUserName;
+                    shipmentRequestDto.password = UPSConstants.UpsPasword;
+                    shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
+                    shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+                    shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
+                    shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+                    shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+                    var rateServiceWrapper = new UPSRateServiceWrapper(shipmentRequestDto);
 
-                var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber,
-                    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, "94306", "US", null, null, null,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
+                    var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
+                        UPSConstants.UpsAccessLicenseNumber,
+                        UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, "94306", "US", null, null, null,
+                        UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
+                        UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
 
-                
-                var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", 25, 2, 5, "42", 400, 100, "11", inv_detl, "02", "USD", Convert.ToDecimal(26.5), true);//,out requestXML);
 
-                result = "This is a valid UPS Account.";
+                    var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", 25, 2, 5, "42", 400, 100, "11", inv_detl, "02", "USD", Convert.ToDecimal(26.5), true);//,out requestXML);
+
+                    result = "This is a valid UPS Account.";
+                }
             }
             catch
             {
-                
+
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -361,71 +522,7 @@ namespace TimelyDepotMVC.Controllers
             // XML
 
             string szResult = "The rate transaction was a Success;Total Shipment Charges: 41.20USD;Total Shipment Negociated Charges: 39.32USD days;Delivery time: 2 days";
-            //var shipFromZip = "97733";
-            //var shipToZip = "94306";
-            //var weight = "100";
-            //UPSUtility ups = new UPSUtility();
-            //szResult = ups.GetShippingRate(Settings.Default.UPSApiKey, Settings.Default.UPSUserName, Settings.Default.UPSPassword, shipFromZip, shipToZip, weight);
 
-            //AQUI Poner los resultados del Get UPS Reate
-
-
-            // Windows Application
-            //using (UPSEntities ent = new UPSEntities(GetConnectionStringForEntity()))
-            //{
-            //    /*var products = (from item in ent.invs
-            //                    select item).ToList();*/
-            //    //string itemNo = cbPItemNo.SelectedValue.ToString();
-            //    var product = (from item in ent.invs
-            //                   where item.PROD_CD == itemNo
-            //                   select item).FirstOrDefault();
-            //    if (product == null)
-            //    {
-            //        szResult = "Specified Item No. was not found in the database." + Environment.NewLine + "Please provide a valid Item No..";
-            //        return Json(szResult, JsonRequestBehavior.AllowGet);
-            //    }
-            //    int Qty;
-            //    int.TryParse(quantity, out Qty);
-            //    if (Qty == 0)
-            //    {
-            //        szResult = "Specified Quantity is not valid." + Environment.NewLine + "Please provide a valid Quantity.";
-            //        return Json(szResult, JsonRequestBehavior.AllowGet);
-            //    }
-            //    if (!product.BOX_CASE.HasValue || product.BOX_CASE.Value == 0)
-            //    {
-            //        szResult = "The BOX_CASE database table field for the product is NULL or 0.";
-            //        return Json(szResult, JsonRequestBehavior.AllowGet);
-            //    }
-
-            //    int nrBoxes = Qty / product.BOX_CASE.Value;
-            //    int itemsInLastBox = Qty % product.BOX_CASE.Value;
-            //    string fullBoxWeight = product.CASE_WT.Value.ToString();
-            //    string partialBoxWeight = string.Empty;
-            //    if (itemsInLastBox > 0)
-            //        partialBoxWeight = (itemsInLastBox * product.UT_WT).ToString();
-            //    //get dimensions:
-            //    var details = (from item in ent.inv_detl
-            //                   where item.PROD_CD == product.PROD_CD
-            //                   select item).FirstOrDefault();
-            //    if (details == null)
-            //    {
-            //        szResult = "Specified Item No. has no details in the database." + Environment.NewLine + "Please provide a valid Item No..";
-            //        return Json(szResult, JsonRequestBehavior.AllowGet); ;
-            //    }
-            //    decimal unitPrice;
-            //    decimal.TryParse(unitPriceValue, out unitPrice);
-            //    int valuePerFullBox = (int)(product.BOX_CASE.Value * unitPrice);
-            //    int diff = valuePerFullBox % 100;
-            //    if (diff > 0)
-            //        valuePerFullBox = valuePerFullBox + (100 - diff);
-            //    int valuePerPartialBox = (int)(itemsInLastBox * unitPrice);
-            //    diff = valuePerPartialBox % 100;
-            //    if (diff > 0)
-            //        valuePerPartialBox = valuePerPartialBox + (100 - diff);
-            //    GetRateFromUPS(Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice,invoice,customerType,serviceType,packageType);
-            //}
-
-            //return Json(szResult, JsonRequestBehavior.AllowGet);
             return PartialView(resultData);
             //return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
         }
@@ -444,21 +541,7 @@ namespace TimelyDepotMVC.Controllers
                 lst.Add(new ResultData() { service = "UPS Second Day Air®", code = "02" });
                 lst.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
 
-                //lst.Add(new ResultData() { service = "UPS Express", code = "07" });
-                //lst.Add(new ResultData() { service = "UPS ExpeditedSM", code = "08" });
-                //lst.Add(new ResultData() { service = "UPS Standard", code = "11" });
 
-                //lst.Add(new ResultData() { service = "UPS Next Day Air Saver®", code = "13" });
-                //lst.Add(new ResultData() { service = "UPS Next Day Air® Early A.M. SM", code = "14" });
-
-                //var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                //    "sanoop", UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
-                //    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, UPSConstants.UpsShipperAddressLine,
-                //    UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                //    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", null, null, null, null, UPSConstants.UpsShipFromAddressLine,
-                //    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                //    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                //    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType);
 
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
                     UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
@@ -523,13 +606,6 @@ namespace TimelyDepotMVC.Controllers
                 {
                 }
 
-
-
-                //lstViewResidential.DataSource = lst;
-                //lstViewResidential.DataBind();
-
-
-
                 foreach (ResultData r in lst)
                 {
                     RateService upsService = new RateService();
@@ -576,48 +652,6 @@ namespace TimelyDepotMVC.Controllers
                 {
                 }
 
-                //display some debug info also
-                //lst.Add(new ResultData { service = "nrBboxes", cost = nrBoxes.ToString() });
-                //lst.Add(new ResultData { service = "itemsInLastBox", cost = itemsInLastBox.ToString() });
-                //lst.Add(new ResultData { service = "fullBoxWeight", cost = fullBoxWeight.ToString() });
-                //lst.Add(new ResultData { service = "valuePerFullBox", cost = valuePerFullBox.ToString() });
-                //lst.Add(new ResultData { service = "valuePerPartialBox", cost = valuePerPartialBox.ToString() });
-                //lst.Add(new ResultData { service = "partialBoxWeight", cost = partialBoxWeight.ToString() });
-
-                //lst.Add(new ResultData { service = "unitPrice", cost = unitPrice.ToString("#.##") });
-                //lst.Add(new ResultData { service = "CASE_HI", cost = details.CASE_HI.ToString() });
-                //lst.Add(new ResultData { service = "CASE_LEN", cost = details.CASE_LEN.ToString() });
-                //lst.Add(new ResultData { service = "CASE_WT", cost = details.CASE_WT.ToString() });
-                //lst.Add(new ResultData { service = "CASE_WI", cost = details.CASE_WI.ToString() });
-                //lst.Add(new ResultData { service = "UT_WT", cost = details.UT_WT.ToString() });
-                //lst.Add(new ResultData { service = "UT_WI", cost = details.UT_WI.ToString() });
-
-                //lstViewCommercial.DataSource = lst;
-                //lstViewCommercial.DataBind();
-                //lblResidential.Visible = true;
-                //lblCommercial.Visible = true;
-                //if (Request.IsAuthenticated)
-                //    if (Roles.IsUserInRole("Admin"))
-                //    {
-                //        lstViewCommercial.Columns[1].Visible = true;
-                //        lstViewResidential.Columns[1].Visible = true;
-                //        lstViewCommercial.Columns[2].Visible = true;
-                //        lstViewResidential.Columns[2].Visible = true;
-                //    }
-                //    else
-                //    {
-                //        lstViewResidential.Columns[1].Visible = false;
-                //        lstViewCommercial.Columns[1].Visible = false;
-                //        lstViewResidential.Columns[2].Visible = false;
-                //        lstViewCommercial.Columns[2].Visible = false;
-                //    }
-                //else
-                //{
-                //    lstViewResidential.Columns[1].Visible = false;
-                //    lstViewCommercial.Columns[1].Visible = false;
-                //    lstViewResidential.Columns[2].Visible = false;
-                //    lstViewCommercial.Columns[2].Visible = false;
-                //}
 
 
                 return lst;
@@ -629,78 +663,7 @@ namespace TimelyDepotMVC.Controllers
 
         }
 
-        //private string GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, Invoice invoice, string customerType, string serviceType, string packageType)
-        //{
-        //    string resultString = string.Empty;
-        //    var result = new UPSResult();
-        //    try
-        //    {                
-        //        //var upsService = new RateService();
-        //        //var rateResponse = CallUPSRateRequest(Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, upsService);
-        //        var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-        //        UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
-        //        customerType, "", UPSConstants.UpsShipperAddressLine,
-        //        UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-        //        UPSConstants.UpsShipperCountryCode, invoice.ToZip, invoice.ToCountry, null, invoice.ToAddress1,
-        //        invoice.ToCity, invoice.ToState, UPSConstants.UpsShipFromAddressLine,
-        //        UPSConstants.UpsShipFromAddressLine, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-        //        UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-        //         UPSConstants.UpsShipperNumber, packageType);
 
-        //        var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-        //        UPSConstants.UpsAccessLicenseNumber, customerType, "", invoice.ToZip,
-        //        invoice.ToCountry, null, invoice.ToCity, invoice.ToState, UPSConstants.UpsShipFromCity,
-        //        UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode, UPSConstants.UpsShipFromCountryCode,
-        //        UPSConstants.UpsShipFromName);
-
-        //        var rateResponse = rateServiceWrapper.CallUPSRateRequest(serviceType, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details,packageType, "USD", unitPrice, false);
-        //        resultString = resultString + "The rate transaction was a " + rateResponse.Response.ResponseStatus.Description;
-
-        //        foreach (var rshipment in rateResponse.RatedShipment)
-        //        {
-        //            result.Cost = rshipment.TotalCharges.MonetaryValue + rshipment.TotalCharges.CurrencyCode;
-        //            if (rshipment.GuaranteedDelivery != null &&
-        //                rshipment.GuaranteedDelivery.BusinessDaysInTransit != null)
-        //                result.Time = rshipment.GuaranteedDelivery.BusinessDaysInTransit;
-        //            result.NegociatedCost = rshipment.NegotiatedRateCharges != null
-        //                                        ? rshipment.NegotiatedRateCharges.TotalCharge.MonetaryValue +
-        //                                          rshipment.NegotiatedRateCharges.TotalCharge.CurrencyCode
-        //                                        : string.Empty;
-        //        }
-        //        if (serviceType == "03")//only for Ground service
-        //            try
-        //            {
-        //                var titResponse = transitTimeWrapper.CallUPSTimeInTransitRequest(Qty, nrBoxes, fullBoxWeight, partialBoxWeight, "USD", unitPrice, true);
-        //                var groundService =
-        //                   ((UPSTimeInTransit.TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
-        //                       i => i.Service.Code == "GND");
-        //                result.Time = groundService.EstimatedArrival.BusinessDaysInTransit;
-        //            }
-        //            catch (System.Web.Services.Protocols.SoapException ex)
-        //            {
-        //            }
-        //    }
-        //    catch (System.Web.Services.Protocols.SoapException ex)
-        //    {
-        //        string message = "";
-        //        message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
-        //        message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
-        //        message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
-        //        message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
-        //        //MessageBox.Show("Error processing API Time in Transit call (webservice error): " + message, "UPS API Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        resultString = "Error processing API Time in Transit call (webservice error): " + message;
-        //        //Log("Error : " + message);
-        //    }
-
-        //    resultString = resultString +
-        //                      string.Format("{0}Total Shipment Charges: {1}", Environment.NewLine, result.Cost);
-        //    resultString = resultString +
-        //                      string.Format("{0}Total Shipment Negociated Charges: {1} days", Environment.NewLine, result.NegociatedCost);
-        //    resultString = resultString +
-        //                      string.Format("{0}Delivery time: {1} days", Environment.NewLine, result.Time);
-
-        //    return resultString;
-        //}
 
         #endregion
 
@@ -753,7 +716,7 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                string message = "";
+                string message = string.Empty;
                 message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
                 message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
                 message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
@@ -789,7 +752,7 @@ namespace TimelyDepotMVC.Controllers
 
         private XAVResponse CallUPSXAVRequest(XAVService.XAVService xavService, Invoice invoice)
         {
-            string szToCountry = "";
+            string szToCountry = string.Empty;
 
             XAVRequest xavRequest = new XAVRequest();
 
@@ -841,11 +804,11 @@ namespace TimelyDepotMVC.Controllers
         // GET: //ValidateAddress
         public ActionResult ValidateAddressTE(int invoiceId)
         {
-            string ValidateAddresResult = "";
-            string txtPShipToCountryCode = "";
-            string txtPShipToStateCode = "";
-            string txtPShipToCity = "";
-            string szError = "";
+            string ValidateAddresResult = string.Empty;
+            string txtPShipToCountryCode = string.Empty;
+            string txtPShipToStateCode = string.Empty;
+            string txtPShipToCity = string.Empty;
+            string szError = string.Empty;
 
             Invoice invoice = db.Invoices.Find(invoiceId);
             if (invoice != null)
@@ -854,7 +817,7 @@ namespace TimelyDepotMVC.Controllers
                 //Verify empty fields
                 if (string.IsNullOrEmpty(invoice.ToAddress1) || string.IsNullOrEmpty(invoice.ToCity) || string.IsNullOrEmpty(invoice.ToState) || string.IsNullOrEmpty(invoice.ToZip) || string.IsNullOrEmpty(invoice.ToCountry))
                 {
-                    ValidateAddresResult = string.Format("Error: Zip data is missing.");
+                    ValidateAddresResult = string.Format("Error: Address data is missing.");
                 }
                 else
                 {
@@ -875,12 +838,32 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
         }
 
+        public bool CheckExistingShipments(int invoiceId)
+        {
+
+            var shipmentsByInvoice = db.Shipments.Where(inv => inv.InvoiceId == invoiceId);
+
+            if (!shipmentsByInvoice.Any())
+            {
+                return false;
+            }
+
+            var result = (from shipment in shipmentsByInvoice
+                          join shpDetail in this.db.ShipmentDetails on shipment.ShipmentId equals shpDetail.ShipmentId
+                          select new ShipmentDetails()
+                                     {
+                                         Shipped = shpDetail.Shipped
+                                     }).Where(z => z.Shipped == false).ToList();
+
+
+            return result.Any();
+        }
 
         //
         // GET:/Shipment/ShipAll
         public ActionResult ShipAll(int invoiceId)
         {
-            string szError = "";
+            string szError = string.Empty;
 
             Shipment shipment = null;
             ShipmentDetails details = null;
@@ -890,17 +873,14 @@ namespace TimelyDepotMVC.Controllers
             Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
             if (invoice != null)
             {
-                //Create the shimpent if it does not exit
-                shipment = db.Shipments.Where(shpm => shpm.InvoiceId == invoice.InvoiceId).FirstOrDefault<Shipment>();
-                if (shipment == null)
-                {
-                    shipment = new Shipment();
-                    shipment.ShipmentDate = DateTime.Now;
-                    shipment.InvoiceId = invoice.InvoiceId;
-                    shipment.InvoiceNo = invoice.InvoiceNo;
-                    db.Shipments.Add(shipment);
-                    db.SaveChanges();
-                }
+
+                shipment = new Shipment();
+                shipment.ShipmentDate = DateTime.Now;
+                shipment.InvoiceId = invoice.InvoiceId;
+                shipment.InvoiceNo = invoice.InvoiceNo;
+                db.Shipments.Add(shipment);
+                db.SaveChanges();
+
 
                 qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
                 if (qryInvDetail.Count() > 0)
@@ -923,8 +903,8 @@ namespace TimelyDepotMVC.Controllers
         public PartialViewResult AddDetail(string invoiceNoid, int shipmenid = 0)
         {
             int nInvoiceId = 0;
-            string szInvoiceNo = "";
-            string szError = "";
+            string szInvoiceNo = string.Empty;
+            string szError = string.Empty;
 
             Shipment shipment = null;
             ShipmentDetails details = null;
@@ -940,6 +920,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 nInvoiceId = invoice.InvoiceId;
                 szInvoiceNo = invoice.InvoiceNo;
+
             }
 
             shipment = db.Shipments.Find(shipmenid);
@@ -955,7 +936,7 @@ namespace TimelyDepotMVC.Controllers
 
             //Create the shipment detail
             details = CreateShipmentDetail(shipment, invoice, invDetails, ref szError);
-
+            ViewBag.ShipmentId = shipment.ShipmentId;
             return PartialView(details);
         }
 
@@ -966,29 +947,34 @@ namespace TimelyDepotMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddDetail(ShipmentDetails shipmentdetails)
         {
-            int invoiceId = 0;
-            Shipment shipment = db.Shipments.Where(shp => shp.ShipmentId == shipmentdetails.ShipmentId).FirstOrDefault<Shipment>();
+
+            var shipmentDetail = db.ShipmentDetails.FirstOrDefault(shp => shp.ShipmentDetailID == shipmentdetails.ShipmentDetailID);
+            var invoiceId = 0;
+            var shipment = db.Shipments.FirstOrDefault(shp => shp.ShipmentId == shipmentdetails.ShipmentId);
+
             if (shipment != null)
             {
                 invoiceId = Convert.ToInt32(shipment.InvoiceId);
+                ViewBag.ShipmentId = shipment.ShipmentId;
+
+                if (shipmentDetail != null)
+                {
+                    if (!this.ModelState.IsValid)
+                    {
+                        return this.RedirectToAction("Index", "Shipment", new { id = invoiceId });
+                    }
+                    this.db.Entry(shipmentdetails).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                }
+                else
+                {
+
+                    db.ShipmentDetails.Add(shipmentdetails);
+                    db.SaveChanges();
+                }
             }
 
-            if (ModelState.IsValid)
-            {
-                db.Entry(shipmentdetails).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index", "Shipment", new { id = invoiceId });
-            }
-
-            if (invoiceId == 0)
-            {
-                return RedirectToAction("Index", "Shipment");
-            }
-            else
-            {
-                return RedirectToAction("Index", "Shipment", new { id = invoiceId });
-            }
-            //return View(shipmentdetails);
+            return RedirectToAction("Index", "Shipment", new { id = invoiceId });
         }
 
         //
@@ -1028,18 +1014,11 @@ namespace TimelyDepotMVC.Controllers
             int nShipmentId = 0;
             int pageIndex = 0;
             int pageSize = PageSize;
-            string szInvoiceNo = "";
-            string szRate = "";
-            string szDate = "";
+            string szInvoiceNo = string.Empty;
+            string szRate = string.Empty;
+            string szDate = string.Empty;
             DateTime dDate = DateTime.Now;
 
-
-            //IQueryable<Shipment> qryShipment = null;
-            //qryShipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid);
-            //if (qryShipment.Count() > 0)
-            //{
-
-            //}
 
             if (!string.IsNullOrEmpty(shipmentLog))
             {
@@ -1056,11 +1035,10 @@ namespace TimelyDepotMVC.Controllers
             {
                 foreach (var item in qryShipmentDetails)
                 {
-                    if (nShipmentId == 0)
+                    if (!item.dtl.Shipped)
                     {
-                        nShipmentId = item.shp.ShipmentId;
+                        ShipmentDetailsList.Add(item.dtl);
                     }
-                    ShipmentDetailsList.Add(item.dtl);
                 }
             }
 
@@ -1068,34 +1046,17 @@ namespace TimelyDepotMVC.Controllers
 
             //Verify the shipment only
             ViewBag.ShipmentTitle = " ";
-            if (nShipmentId == 0)
-            {
-                shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
-                if (shipment != null)
-                {
-                    nShipmentId = shipment.ShipmentId;
-                    szInvoiceNo = shipment.InvoiceNo;
-                    szRate = shipment.RateResults;
-                    dDate = Convert.ToDateTime(shipment.ShipmentDate);
-                    szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId.ToString(), szDate, szRate);
-                }
-            }
-            else
-            {
-                shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
-                if (shipment != null)
-                {
-                    nShipmentId = shipment.ShipmentId;
-                    szInvoiceNo = shipment.InvoiceNo;
-                    szRate = shipment.RateResults;
-                    dDate = Convert.ToDateTime(shipment.ShipmentDate);
-                    szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId.ToString(), szDate, szRate);
-                }
-            }
 
-            ViewBag.ShipmentId = nShipmentId;
+            shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
+            if (shipment != null)
+            {
+                nShipmentId = ShipmentDetailsList[0].ShipmentId;
+                szInvoiceNo = shipment.InvoiceNo;
+                szRate = shipment.RateResults;
+                dDate = Convert.ToDateTime(shipment.ShipmentDate);
+                szDate = dDate.ToShortDateString();
+                ViewBag.ShipmentTitle = string.Format("Invoice No: {0} shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId, szDate, szRate);
+            }
 
             //Set the page
             if (page == null)
@@ -1110,14 +1071,15 @@ namespace TimelyDepotMVC.Controllers
 
             var onePageOfData = ShipmentDetailsList.ToPagedList(pageIndex, pageSize);
             ViewBag.OnePageOfData = onePageOfData;
-            return PartialView(ShipmentDetailsList.ToPagedList(pageIndex, pageSize));
+            ViewBag.ShipmentId = ShipmentDetailsList[0].ShipmentId;
+            return PartialView(onePageOfData);
         }
 
         //
         // GET: /Shipment/ShipItem
         public ActionResult ShipItem(string salesorderid, int id = 0)
         {
-            string szError = "";
+            string szError = string.Empty;
 
             Invoice invoice = null;
             InvoiceDetail invDetails = null;
@@ -1164,11 +1126,11 @@ namespace TimelyDepotMVC.Controllers
             decimal dUnitWeigth = 0;
             decimal dfullBoxWeight = 0;
             decimal dHlp = 0;
-            string fullBoxWeight = "";
-            string partialBoxWeight = "";
-            string szError01 = "";
-            string szCustomerNo = "";
-            string szError02 = "";
+            string fullBoxWeight = string.Empty;
+            string partialBoxWeight = string.Empty;
+            string szError01 = string.Empty;
+            string szCustomerNo = string.Empty;
+            string szError02 = string.Empty;
             ITEM item = null;
             ShipmentDetails shipmentDetails = null;
 
@@ -1179,7 +1141,7 @@ namespace TimelyDepotMVC.Controllers
                 Customers customer = db01.Customers.Find(invoice.CustomerId);
                 if (customer == null)
                 {
-                    szCustomerNo = "";
+                    szCustomerNo = string.Empty;
                 }
                 else
                 {
@@ -1196,6 +1158,9 @@ namespace TimelyDepotMVC.Controllers
 
                 if (invDetails.Id == 0)
                 {
+                    var shipmentDetailList =
+                        db01.ShipmentDetails.Where(cf => cf.ShipmentId == shipment.ShipmentId);
+                    var shDetailCount = shipmentDetailList.Count() + 1;
                     //Create the shipment detail
                     shipmentDetails = new ShipmentDetails();
                     shipmentDetails.DetailId = invDetails.Id;
@@ -1206,19 +1171,15 @@ namespace TimelyDepotMVC.Controllers
 
                     shipmentDetails.DimensionL = 0;
 
-                    shipmentDetails.BoxNo = "";
+                    shipmentDetails.BoxNo = "Box " + shDetailCount;
                     shipmentDetails.Sub_ItemID = invDetails.Sub_ItemID;
                     shipmentDetails.Quantity = invDetails.Quantity;
+                    shipmentDetails.DetailId = shipmentDetailList.Select(x => x.DetailId).FirstOrDefault();
                     shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
                     shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, invDetails.Quantity.ToString());
                     shipmentDetails.ShipmentId = shipment.ShipmentId;
                     shipmentDetails.UnitPrice = invDetails.UnitPrice;
                     shipmentDetails.UnitWeight = 0;
-
-                    db01.ShipmentDetails.Add(shipmentDetails);
-                    db01.SaveChanges();
-
-                    db01.Dispose();
                 }
                 else
                 {
@@ -1268,7 +1229,7 @@ namespace TimelyDepotMVC.Controllers
                         //Box weigth
                         if (string.IsNullOrEmpty(item.CaseWeight))
                         {
-                            fullBoxWeight = "";
+                            fullBoxWeight = string.Empty;
                             dfullBoxWeight = 0;
                         }
                         else
@@ -1453,7 +1414,7 @@ namespace TimelyDepotMVC.Controllers
             double dTotalAmount = 0;
             double dBalanceDue = 0;
             DateTime dPODate = DateTime.Now;
-            string szMsg = "";
+            string szMsg = string.Empty;
 
             Customers customer = null;
             CustomersContactAddress soldto = null;
@@ -1749,116 +1710,33 @@ namespace TimelyDepotMVC.Controllers
 
             return PartialView(invoice);
         }
+
+
         //
         // POST: /Invoice/Edit/5
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Invoice invoice, string InvoiceDateHlp01, string InvoiceDateHlp02)
+        public RedirectToRouteResult Edit(Invoice invoice)
         {
-            int nPos = -1;
-            int nYear = 0;
-            int nMonth = 0;
-            int nDay = 0;
-            DateTime dDate = DateTime.Now;
-            DateTime dDate02 = DateTime.Now;
-            string szMsg = "";
-            string[] szdateHlp = null;
-            if (!string.IsNullOrEmpty(InvoiceDateHlp01))
-            {
-                szdateHlp = InvoiceDateHlp01.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate = new DateTime(nYear, nMonth, nDay);
-                }
-            }
-            if (!string.IsNullOrEmpty(InvoiceDateHlp02))
-            {
-                szdateHlp = InvoiceDateHlp02.Split('/');
-                if (szdateHlp != null)
-                {
-                    nMonth = Convert.ToInt32(szdateHlp[0]);
-                    nDay = Convert.ToInt32(szdateHlp[1]);
-                    nYear = Convert.ToInt32(szdateHlp[2]);
-                    dDate02 = new DateTime(nYear, nMonth, nDay);
-                }
-            }
+            var msgResult = "Success";
+
             if (ModelState.IsValid)
             {
-                invoice.InvoiceDate = dDate;
-                invoice.ShipDate = dDate02;
-
-                if (invoice.Tax_rate == null)
+                try
                 {
-                    invoice.Tax_rate = 0;
-                }
 
-                db.Entry(invoice).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                szMsg = string.Format("(Date Help: {0} - {1})", InvoiceDateHlp01, dDate.ToString());
-                foreach (var item in ModelState.Values)
-                {
-                    if (item.Errors.Count > 0)
-                    {
-                        foreach (var itemError in item.Errors)
-                        {
-                            szMsg = string.Format("{0} {1}", szMsg, itemError.ErrorMessage);
-                        }
-                    }
-                }
-
-                if (invoice.Tax_rate == null)
-                {
-                    invoice.Tax_rate = 0;
-                }
-
-                nPos = szMsg.IndexOf("is not valid for Invoice Date.");
-                if (nPos != -1)
-                {
-                    if (invoice.InvoiceDate != dDate)
-                    {
-                        invoice.InvoiceDate = dDate;
-                    }
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+
                 }
-                nPos = -1;
-                nPos = szMsg.IndexOf("no es válido para Invoice Date.");
-                if (nPos != -1)
+                catch (Exception e)
                 {
-                    if (invoice.InvoiceDate != dDate)
-                    {
-                        invoice.InvoiceDate = dDate;
-                    }
-                    if (invoice.ShipDate != dDate02)
-                    {
-                        invoice.ShipDate = dDate02;
-                    }
-                    db.Entry(invoice).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    msgResult = e.Message;
                 }
-
-                //if (invoice.InvoiceDate != dDate)
-                //{
-                //    invoice.InvoiceDate = dDate;
-                //}
-                //db.Entry(invoice).State = EntityState.Modified;
-                //db.SaveChanges();
-
-                //return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Edit0", new { errorMsg = szMsg });
-            //return View(invoice);
+            return RedirectToAction("Index", "Shipment", new { id = invoice.InvoiceId });
         }
         //
         // GET: /Invoice/Edit0
@@ -2071,100 +1949,41 @@ namespace TimelyDepotMVC.Controllers
 
         public ActionResult Index(string id, string addressresult, string ckCriteriaLog)
         {
-            string szShipperNumber = "";
-            DateTime dFecha = DateTime.Now;
-
             if (!string.IsNullOrEmpty(id))
             {
-                ViewBag.LoadInvoiceNo = id;
+                var parsedId = int.Parse(id);
+
+                var aShipmentDetail = this.db.ShipmentDetails.Join(this.db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp) => new { dtl, shp }).Where(NData => NData.shp.InvoiceId == parsedId && NData.dtl.Shipped == false).ToList();
+
+                if (aShipmentDetail.Any())
+                {
+                    this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
+                }
             }
+
+            var dFecha = DateTime.Now;
 
             if (!string.IsNullOrEmpty(addressresult))
             {
                 ViewBag.AddressResult = addressresult;
             }
-
+            if (!string.IsNullOrEmpty(id))
+            {
+                ViewBag.LoadInvoiceNo = id;
+            }
             if (TempData["UPSError"] != null)
             {
                 ViewBag.UPSError = TempData["UPSError"].ToString();
             }
 
-            //Get Shipper Number
-            szShipperNumber = Settings.Default.UPSShipperNumber;   //A3024V
-            ViewBag.ShipperNumber = szShipperNumber;
-                        
-            //Request option
-            List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
-            listSelector.Add(new KeyValuePair<string, string>("Rate", "Rate"));
-            listSelector.Add(new KeyValuePair<string, string>("Shop", "Shop"));
-            SelectList requestOptionlist = new SelectList(listSelector, "Key", "Value");
-            ViewBag.RequestOptionlist = requestOptionlist;
-
-            // Bill To Option
-            listSelector = new List<KeyValuePair<string, string>>();
-            listSelector.Add(new KeyValuePair<string, string>("Shipper", "Shipper"));
-            listSelector.Add(new KeyValuePair<string, string>("Sender", "Sender"));
-            listSelector.Add(new KeyValuePair<string, string>("Third Party", "Third Party"));
-            SelectList billToOptionlist = new SelectList(listSelector, "Key", "Value");
-            ViewBag.BillToOptionlist = billToOptionlist;
-
-            //Customer type
-            listSelector = new List<KeyValuePair<string, string>>();
-            listSelector.Add(new KeyValuePair<string, string>("00", "Rates Associated with Shipper Number"));
-            listSelector.Add(new KeyValuePair<string, string>("01", "Daily Rates"));
-            listSelector.Add(new KeyValuePair<string, string>("04", "Retail Rates"));
-            listSelector.Add(new KeyValuePair<string, string>("53", "Standard List Rates"));
-            SelectList customerTypelist = new SelectList(listSelector, "Key", "Value");
-            ViewBag.CustomerTypeList = customerTypelist;
-
-            //UPS Service type
-            listSelector = new List<KeyValuePair<string, string>>();
-            listSelector.Add(new KeyValuePair<string, string>("01", "Next Day Air"));
-            listSelector.Add(new KeyValuePair<string, string>("02", "2nd Day Air"));
-            listSelector.Add(new KeyValuePair<string, string>("03", "Ground"));
-            listSelector.Add(new KeyValuePair<string, string>("12", "3 Day Select"));
-            listSelector.Add(new KeyValuePair<string, string>("13", "Next Day Air Saver"));
-            listSelector.Add(new KeyValuePair<string, string>("14", "Next Day Air Early AM"));
-            listSelector.Add(new KeyValuePair<string, string>("59", "2nd Day Air AM"));
-            listSelector.Add(new KeyValuePair<string, string>("07", "Worldwide Express"));
-            listSelector.Add(new KeyValuePair<string, string>("08", "Worldwide Expedited"));
-            listSelector.Add(new KeyValuePair<string, string>("11", "Standard"));
-            listSelector.Add(new KeyValuePair<string, string>("54", "Worldwide Express Plus"));
-            listSelector.Add(new KeyValuePair<string, string>("65", "UPS Saver"));
-            listSelector.Add(new KeyValuePair<string, string>("82", "UPS Today Standard"));
-            listSelector.Add(new KeyValuePair<string, string>("83", "UPS Today Dedicated Courier"));
-            listSelector.Add(new KeyValuePair<string, string>("84", "UPS Today Intercity"));
-            listSelector.Add(new KeyValuePair<string, string>("85", "UPS Today Express"));
-            listSelector.Add(new KeyValuePair<string, string>("86", "UPS Today Express Saver"));
-            SelectList upsServiceTypelist = new SelectList(listSelector, "Key", "Value");
-            ViewBag.UpsServiceTypelist = upsServiceTypelist;
-
-            //Package pack type
-            listSelector = new List<KeyValuePair<string, string>>();
-            listSelector.Add(new KeyValuePair<string, string>("00", "Unknown"));
-            listSelector.Add(new KeyValuePair<string, string>("01", "UPS Letter"));
-            listSelector.Add(new KeyValuePair<string, string>("02", "Package/customer supplied"));
-            listSelector.Add(new KeyValuePair<string, string>("03", "UPS Tube"));
-            listSelector.Add(new KeyValuePair<string, string>("04", "UPS Pack"));
-            listSelector.Add(new KeyValuePair<string, string>("21", "Express Box"));
-            listSelector.Add(new KeyValuePair<string, string>("24", "25KG Box"));
-            listSelector.Add(new KeyValuePair<string, string>("25", "10KG Box"));
-            listSelector.Add(new KeyValuePair<string, string>("30", "Pallet"));
-            listSelector.Add(new KeyValuePair<string, string>("2a", "Small Express Box"));
-            listSelector.Add(new KeyValuePair<string, string>("2b", "Medium Express Box"));
-            listSelector.Add(new KeyValuePair<string, string>("2c", "Large Express Box"));
-            SelectList packageTypelist = new SelectList(listSelector, "Key", "Value");
-            ViewBag.packageTypelist = packageTypelist;
-
-            //Shipment Log initial values
             if (string.IsNullOrEmpty(ckCriteriaLog))
             {
                 ViewBag.SearchItemLog = "0";
                 ViewBag.ckCriteriaHlpLog = "invoice";
             }
+
+
             ViewBag.CurrentDateLog = dFecha.ToString("yyyy/MM/dd");
-
-
             return View();
         }
 

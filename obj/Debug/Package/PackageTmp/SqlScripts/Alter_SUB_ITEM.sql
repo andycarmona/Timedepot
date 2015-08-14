@@ -1,4 +1,0 @@
-USE [timessence]
-GO
-ALTER TABLE dbo.SUB_ITEM ADD id int IDENTITY(1,1) PRIMARY KEY NOT NULL ;
-GO

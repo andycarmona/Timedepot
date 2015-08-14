@@ -10,7 +10,11 @@ using TimelyDepotMVC.Controllers;
 
 namespace TimelyDepotMVC
 {
+    using AutoMapper;
+
     using TimelyDepotMVC.Helpers;
+    using TimelyDepotMVC.Models.Admin;
+    using TimelyDepotMVC.ModelsView;
 
     // Nota: para obtener instrucciones sobre cómo habilitar el modo clásico de IIS6 o IIS7, 
     // visite http://go.microsoft.com/?LinkId=9394801
@@ -23,14 +27,19 @@ namespace TimelyDepotMVC
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            //ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AuthConfig.RegisterAuth();
+            CreateModelMapping();
         }
 
+
+        protected void CreateModelMapping()
+        {
+            Mapper.CreateMap<Invoice, ShipmentRequestView>();
+        }
         /////////////////////////////////////////////////////////////////////
         // Name: Application_Error
         // Version: 1.1.0

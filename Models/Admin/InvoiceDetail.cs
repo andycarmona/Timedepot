@@ -17,7 +17,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Req.Qty")]
         [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = false)]
-        public double? Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         [Display(Name = "Ship Qty")]
         [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = false)]
