@@ -42,9 +42,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Reference2)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ShipmentId)
-        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -101,10 +98,6 @@
             <td>
                 @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference2))
           
-            </td>
-            <td>
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.ShipmentId, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.ShipmentId))
-                
             </td>
         </tr>
     }

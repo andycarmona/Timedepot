@@ -240,9 +240,9 @@ namespace TimelyDepotMVC.Controllers
 
             //UPS Service type
             listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("03", "Ground"));
             listSelector.Add(new KeyValuePair<string, string>("01", "Next Day Air"));
             listSelector.Add(new KeyValuePair<string, string>("02", "2nd Day Air"));
-            listSelector.Add(new KeyValuePair<string, string>("03", "Ground"));
             listSelector.Add(new KeyValuePair<string, string>("12", "3 Day Select"));
             listSelector.Add(new KeyValuePair<string, string>("13", "Next Day Air Saver"));
             listSelector.Add(new KeyValuePair<string, string>("14", "Next Day Air Early AM"));
@@ -262,9 +262,9 @@ namespace TimelyDepotMVC.Controllers
 
             //Package pack type
             listSelector = new List<KeyValuePair<string, string>>();
+            listSelector.Add(new KeyValuePair<string, string>("02", "Package/customer supplied"));
             listSelector.Add(new KeyValuePair<string, string>("00", "Unknown"));
             listSelector.Add(new KeyValuePair<string, string>("01", "UPS Letter"));
-            listSelector.Add(new KeyValuePair<string, string>("02", "Package/customer supplied"));
             listSelector.Add(new KeyValuePair<string, string>("03", "UPS Tube"));
             listSelector.Add(new KeyValuePair<string, string>("04", "UPS Pack"));
             listSelector.Add(new KeyValuePair<string, string>("21", "Express Box"));
@@ -838,6 +838,26 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
         }
 
+        public bool CheckExistingShipments(int invoiceId)
+        {
+
+            var shipmentsByInvoice = db.Shipments.Where(inv => inv.InvoiceId == invoiceId);
+
+            if (!shipmentsByInvoice.Any())
+            {
+                return false;
+            }
+
+            var result = (from shipment in shipmentsByInvoice
+                          join shpDetail in this.db.ShipmentDetails on shipment.ShipmentId equals shpDetail.ShipmentId
+                          select new ShipmentDetails()
+                                     {
+                                         Shipped = shpDetail.Shipped
+                                     }).Where(z => z.Shipped == false).ToList();
+
+
+            return result.Any();
+        }
 
         //
         // GET:/Shipment/ShipAll
@@ -1000,13 +1020,6 @@ namespace TimelyDepotMVC.Controllers
             DateTime dDate = DateTime.Now;
 
 
-            //IQueryable<Shipment> qryShipment = null;
-            //qryShipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid);
-            //if (qryShipment.Count() > 0)
-            //{
-
-            //}
-
             if (!string.IsNullOrEmpty(shipmentLog))
             {
                 ViewBag.ShipmentLogDetails = true;
@@ -1022,11 +1035,10 @@ namespace TimelyDepotMVC.Controllers
             {
                 foreach (var item in qryShipmentDetails)
                 {
-                    if (nShipmentId == 0)
+                    if (!item.dtl.Shipped)
                     {
-                        nShipmentId = item.shp.ShipmentId;
+                        ShipmentDetailsList.Add(item.dtl);
                     }
-                    ShipmentDetailsList.Add(item.dtl);
                 }
             }
 
@@ -1034,34 +1046,17 @@ namespace TimelyDepotMVC.Controllers
 
             //Verify the shipment only
             ViewBag.ShipmentTitle = " ";
-            if (nShipmentId == 0)
-            {
-                shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
-                if (shipment != null)
-                {
-                    nShipmentId = shipment.ShipmentId;
-                    szInvoiceNo = shipment.InvoiceNo;
-                    szRate = shipment.RateResults;
-                    dDate = Convert.ToDateTime(shipment.ShipmentDate);
-                    szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Date: {1} Rate Results: {2}", szInvoiceNo, szDate, szRate);
-                }
-            }
-            else
-            {
-                shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
-                if (shipment != null)
-                {
-                    nShipmentId = shipment.ShipmentId;
-                    szInvoiceNo = shipment.InvoiceNo;
-                    szRate = shipment.RateResults;
-                    dDate = Convert.ToDateTime(shipment.ShipmentDate);
-                    szDate = dDate.ToShortDateString();
-                    ViewBag.ShipmentTitle = string.Format("Invoice No: {0} Date: {1} Rate Results: {2}", szInvoiceNo, szDate, szRate);
-                }
-            }
 
-
+            shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
+            if (shipment != null)
+            {
+                nShipmentId = ShipmentDetailsList[0].ShipmentId;
+                szInvoiceNo = shipment.InvoiceNo;
+                szRate = shipment.RateResults;
+                dDate = Convert.ToDateTime(shipment.ShipmentDate);
+                szDate = dDate.ToShortDateString();
+                ViewBag.ShipmentTitle = string.Format("Invoice No: {0} shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId, szDate, szRate);
+            }
 
             //Set the page
             if (page == null)
@@ -1077,7 +1072,7 @@ namespace TimelyDepotMVC.Controllers
             var onePageOfData = ShipmentDetailsList.ToPagedList(pageIndex, pageSize);
             ViewBag.OnePageOfData = onePageOfData;
             ViewBag.ShipmentId = ShipmentDetailsList[0].ShipmentId;
-            return PartialView(ShipmentDetailsList.ToPagedList(pageIndex, pageSize));
+            return PartialView(onePageOfData);
         }
 
         //
@@ -1163,6 +1158,9 @@ namespace TimelyDepotMVC.Controllers
 
                 if (invDetails.Id == 0)
                 {
+                    var shipmentDetailList =
+                        db01.ShipmentDetails.Where(cf => cf.ShipmentId == shipment.ShipmentId);
+                    var shDetailCount = shipmentDetailList.Count() + 1;
                     //Create the shipment detail
                     shipmentDetails = new ShipmentDetails();
                     shipmentDetails.DetailId = invDetails.Id;
@@ -1173,19 +1171,15 @@ namespace TimelyDepotMVC.Controllers
 
                     shipmentDetails.DimensionL = 0;
 
-                    shipmentDetails.BoxNo = string.Empty;
+                    shipmentDetails.BoxNo = "Box " + shDetailCount;
                     shipmentDetails.Sub_ItemID = invDetails.Sub_ItemID;
                     shipmentDetails.Quantity = invDetails.Quantity;
+                    shipmentDetails.DetailId = shipmentDetailList.Select(x => x.DetailId).FirstOrDefault();
                     shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
                     shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, invDetails.Quantity.ToString());
                     shipmentDetails.ShipmentId = shipment.ShipmentId;
                     shipmentDetails.UnitPrice = invDetails.UnitPrice;
                     shipmentDetails.UnitWeight = 0;
-
-                    db01.ShipmentDetails.Add(shipmentDetails);
-                    db01.SaveChanges();
-
-                    db01.Dispose();
                 }
                 else
                 {
@@ -1963,7 +1957,7 @@ namespace TimelyDepotMVC.Controllers
 
                 if (aShipmentDetail.Any())
                 {
-                        this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
+                    this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
                 }
             }
 

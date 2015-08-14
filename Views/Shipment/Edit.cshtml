@@ -289,7 +289,7 @@
                     <div class="labelClass">
                         @Html.Label("Country")
                     </div>
-                  
+                    <input id="btnSaveInvoiceData" style="margin: 10px;float:right;"class="btn btn-default" type="submit" name="Edit" value="Save data" />
                 </div>
                 <div class="darkerline left" style="width: 40%; padding: 5px;">
                     <div>
@@ -359,7 +359,7 @@
     </div> 
     <div class="TEdiv" style="width: 376px; margin: 0.5em auto;">
         @*<input class="btnEditSO btn btn-default" type="submit" value="Save" />&nbsp;*@
-        <input id="btnSaveInvoiceData" class="btn btn-default" type="submit"  name="Edit" value="Save data" />
+      
         @Html.ActionLink("Create Shipment", "ShipAll", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
         @Html.ActionLink("Validate Address", "ValidateAddressTE", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
         @Html.ActionLink("Quit", "Index", null, new { @class = "btnEditSO btn btn-default" })

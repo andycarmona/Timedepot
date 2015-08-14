@@ -1075,21 +1075,6 @@
 
             //Display required fields
             jQuery(".lnkShipItem a").each(eachlnkShipItem);
-
-            //Mark shipped items -- Commented below code by SANOOP.
-            //var szShiped = jQuery("#shippeditemsdiv").html();
-            //szShiped = jQuery.trim(szShiped);
-            //if (szShiped != "") {
-            //    var szShipedHlp = szShiped.split(';');
-            //    for (var i = 0; i < szShipedHlp.length; i++) {
-            //        //Remove Update, ship item links
-            //        jQuery("#" + szShipedHlp[i]).empty();
-            //        var szShippedDiv = "<div style='margin-bottom:15px;'><span style='color: #FFFFFF; background-color: #009933; padding:10px;'>SHIPPED</span></div>";
-            //        jQuery(szShippedDiv).appendTo("#" + szShipedHlp[i]);
-            //    }
-
-            //}
-
             //Center other fields
             jQuery(".edititemhlpdiv").css("width", "600px");
             jQuery(".edititemhlpdiv").css("margin", "0px auto");
@@ -1247,14 +1232,7 @@
             $('#processShipmentBtn').show();
             ////Attach handlers
             jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
-            //jQuery(".pagination ul li a").each(eachlnknavigationAddDetail);
-            //jQuery(".lnkResetId a").click(clicklnkResetId);
-            //jQuery("#searchsubitemid").submit(submitsearchsubitemid);
-
-
-            ////Initialize fields
-            //jQuery(".adddetailShipment a").each(eachadddetailShipmentlnk);
-
+          
             //Get the title
             //debugger;
             var szTitle = "Shipment Detail";

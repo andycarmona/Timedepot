@@ -13,7 +13,7 @@
     <div class="form-group">
         <label for="txtBillTo"> Bill To:</label>
         <div class="form-control">
-            @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, "-- Select --", new { id = "ddlBillTo" })
+            @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, null, new { id = "ddlBillTo" })
             <div style="display: none;">
                 <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
                
@@ -29,7 +29,7 @@
             Request option:
         </label>
         <div class="form-control">
-            @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, "Select Request Option", new { id = "selectrequestoptionid" })
+            @Html.DropDownList("requestoption", (IEnumerable<SelectListItem>)ViewBag.RequestOptionlist, null, new { id = "selectrequestoptionid" })
             <div style="display: none;">
                 <input id="requestoption" type="text" />
             </div>
@@ -40,7 +40,7 @@
             Customer Type:
         </label>
         <div class="form-control">
-            @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, "Select Customer type", new { id = "selectcustomertypeid" })
+            @Html.DropDownList("customertype", (IEnumerable<SelectListItem>)ViewBag.CustomerTypeList, null, new { id = "selectcustomertypeid" })
             <div style="display: none;">
                 <input id="customertype" type="text" />
             </div>
@@ -54,7 +54,7 @@
             UPS Service Type:
         </label>
         <div class="form-control">
-            @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist, "Select UPS Service Type", new { id = "selectupsServiceTypeid" })
+            @Html.DropDownList("upsServiceType", (IEnumerable<SelectListItem>)ViewBag.UpsServiceTypelist,null, new { id = "selectupsServiceTypeid" })
             <div style="display: none;">
                 <input id="upsServiceType" type="text" />
             </div>
@@ -65,7 +65,7 @@
             Package pack type:
         </label>
         <div class="form-control">
-            @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, "Select Pacakege Pack Type", new { id = "selectpacakePackTypeid" })
+            @Html.DropDownList("pacakePackType", (IEnumerable<SelectListItem>)ViewBag.packageTypelist, null, new { id = "selectpacakePackTypeid" })
             <div style="display: none;">
                 <input id="pacakePackType" type="text" />
             </div>
