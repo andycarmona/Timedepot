@@ -317,9 +317,8 @@ namespace TimelyDepotMVC.Controllers
 
         public Task<int> AddUpsDataToShipmentDetail(int shipmentId, PackageResultsType[] packageList)
         {
-            var aShipmentDetailList =
-               db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList();
-            if (!aShipmentDetailList.Any())
+            var aShipmentDetailList = db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList();
+            if (!aShipmentDetailList.Any() && (shipmentId < 1))
             {
                 return this.db.SaveChangesAsync();
             }
@@ -334,8 +333,15 @@ namespace TimelyDepotMVC.Controllers
                 this.db.Entry(aShipmentDetailList[packageIndex]).State = EntityState.Modified;
             }
 
-            return this.db.SaveChangesAsync();
+            var actualShipment = db.Shipments.SingleOrDefault(x => x.ShipmentId == shipmentId);
+            if (actualShipment == null)
+            {
+                return this.db.SaveChangesAsync();
+            }
 
+            actualShipment.Shipped = true;
+            this.db.Entry(actualShipment).State = EntityState.Modified;
+            return this.db.SaveChangesAsync();
         }
 
         public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo)
@@ -840,23 +846,9 @@ namespace TimelyDepotMVC.Controllers
 
         public bool CheckExistingShipments(int invoiceId)
         {
-
-            var shipmentsByInvoice = db.Shipments.Where(inv => inv.InvoiceId == invoiceId);
-
-            if (!shipmentsByInvoice.Any())
-            {
-                return false;
-            }
-
-            var result = (from shipment in shipmentsByInvoice
-                          join shpDetail in this.db.ShipmentDetails on shipment.ShipmentId equals shpDetail.ShipmentId
-                          select new ShipmentDetails()
-                                     {
-                                         Shipped = shpDetail.Shipped
-                                     }).Where(z => z.Shipped == false).ToList();
-
-
-            return result.Any();
+            var shipmentsByInvoice = db.Shipments.Where(inv => inv.InvoiceId == invoiceId && inv.Shipped == false);
+            var existShipment = shipmentsByInvoice.Any();
+            return existShipment;
         }
 
         //
@@ -868,18 +860,24 @@ namespace TimelyDepotMVC.Controllers
             Shipment shipment = null;
             ShipmentDetails details = null;
             IQueryable<InvoiceDetail> qryInvDetail = null;
-
+            var existActiveShipments = this.CheckExistingShipments(invoiceId);
             //Get the invoice
             Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
-            if (invoice != null)
+            if ((invoice != null))
             {
-
-                shipment = new Shipment();
-                shipment.ShipmentDate = DateTime.Now;
-                shipment.InvoiceId = invoice.InvoiceId;
-                shipment.InvoiceNo = invoice.InvoiceNo;
-                db.Shipments.Add(shipment);
-                db.SaveChanges();
+                if (!existActiveShipments)
+                {
+                    shipment = new Shipment();
+                    shipment.ShipmentDate = DateTime.Now;
+                    shipment.InvoiceId = invoice.InvoiceId;
+                    shipment.InvoiceNo = invoice.InvoiceNo;
+                    db.Shipments.Add(shipment);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    shipment = db.Shipments.SingleOrDefault(c => c.InvoiceId == invoiceId && c.Shipped != true);
+                }
 
 
                 qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
@@ -1018,7 +1016,9 @@ namespace TimelyDepotMVC.Controllers
             string szRate = string.Empty;
             string szDate = string.Empty;
             DateTime dDate = DateTime.Now;
-
+            IPagedList<ShipmentDetails> onePageOfData = null;
+       
+            pageIndex = page == null ? 1 : Convert.ToInt32(page);
 
             if (!string.IsNullOrEmpty(shipmentLog))
             {
@@ -1026,52 +1026,42 @@ namespace TimelyDepotMVC.Controllers
             }
 
             Shipment shipment = null;
-            List<ShipmentDetails> ShipmentDetailsList = new List<ShipmentDetails>();
+            var ShipmentDetailsList = new List<ShipmentDetails>();
 
-            //qryShipmentDetails = db.ShipmentDetails.Where(shpdtl => shpdtl.);
-            var qryShipmentDetails = db.ShipmentDetails.Join(db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp)
-                => new { dtl, shp }).Where(NData => NData.shp.InvoiceId == invoiceid).OrderBy(NData => NData.dtl.Sub_ItemID);
-            if (qryShipmentDetails.Count() > 0)
+            var qryShipmentDetails =
+                db.ShipmentDetails.Join(
+                    db.Shipments,
+                    dtl => dtl.ShipmentId,
+                    shp => shp.ShipmentId,
+                    (dtl, shp) => new { dtl, shp })
+                    .Where(NData => NData.shp.InvoiceId == invoiceid)
+                    .OrderBy(NData => NData.dtl.Sub_ItemID);
+
+            if (qryShipmentDetails.Any())
             {
-                foreach (var item in qryShipmentDetails)
-                {
-                    if (!item.dtl.Shipped)
-                    {
-                        ShipmentDetailsList.Add(item.dtl);
-                    }
-                }
+                ShipmentDetailsList.AddRange(from item in qryShipmentDetails where !item.dtl.Shipped select item.dtl);
             }
-
-
-
-            //Verify the shipment only
+           
             ViewBag.ShipmentTitle = " ";
 
-            shipment = db.Shipments.Where(shp => shp.InvoiceId == invoiceid).FirstOrDefault<Shipment>();
+            shipment = db.Shipments.FirstOrDefault(shp => shp.InvoiceId == invoiceid && shp.Shipped == false);
             if (shipment != null)
             {
-                nShipmentId = ShipmentDetailsList[0].ShipmentId;
+                nShipmentId = shipment.ShipmentId;
                 szInvoiceNo = shipment.InvoiceNo;
                 szRate = shipment.RateResults;
                 dDate = Convert.ToDateTime(shipment.ShipmentDate);
                 szDate = dDate.ToShortDateString();
                 ViewBag.ShipmentTitle = string.Format("Invoice No: {0} shipment Id: {1} Date: {2} Rate Results: {3}", szInvoiceNo, nShipmentId, szDate, szRate);
+               
+                if (!shipment.Shipped)
+                {
+                    onePageOfData = ShipmentDetailsList.ToPagedList(pageIndex, pageSize);
+                }
             }
 
-            //Set the page
-            if (page == null)
-            {
-                pageIndex = 1;
-            }
-            else
-            {
-                pageIndex = Convert.ToInt32(page);
-            }
-
-
-            var onePageOfData = ShipmentDetailsList.ToPagedList(pageIndex, pageSize);
             ViewBag.OnePageOfData = onePageOfData;
-            ViewBag.ShipmentId = ShipmentDetailsList[0].ShipmentId;
+            ViewBag.ShipmentId = nShipmentId;
             return PartialView(onePageOfData);
         }
 

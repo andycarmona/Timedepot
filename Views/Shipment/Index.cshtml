@@ -3,9 +3,10 @@
 }
 <div style="display: none;">
     <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
-
+    
 </div>
 <div class="divh1 boxtb3">@ViewBag.Title</div>
+
 <div>
     <div id="tabs" style="margin: 0px auto;">
         <ul>
@@ -15,6 +16,7 @@
             <li><a href="#tabs-4">Shipment Log</a></li>
         </ul>
         <div id="tabs-1">
+       
             <div>
                 <div class="cf">
                     @*<div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>*@
@@ -121,7 +123,6 @@
 
             //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
-            
 
 
             SetDefaultRateSelectors();
@@ -150,7 +151,14 @@
 
                 $('#processShipmentBtn').hide();
             }
+         
+        }
 
+        function clickChangeTab(tabIndex) {
+            debugger;
+            if (jQuery("#shipmentDetailsdialog").children().length>0) {
+                $("#tabs").tabs("option", "active", tabIndex);
+            }
         }
 
         function validateUPSAccount() {
@@ -182,13 +190,13 @@
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-            
+
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId='+actualShipmentId+'&InvoiceNo=' + szInvoiceNo;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
                 }
 
                 //Display load image
@@ -205,7 +213,7 @@
                     success: UPSShipmentResponse
                 });
             } else {
-                alert("Error. Please choose a rate and a box to be send");
+                alert("Error. Please choose a UPS rate from list.");
             }
         }
 
@@ -242,7 +250,7 @@
                             rowData += "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
 
                         }
-             
+
                         $('#shipmentResult').html(rowData);
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
@@ -277,7 +285,7 @@
         function ShowBoxLabel(src) {
             var currentObj = src.currentTarget;
             var imageUrl = currentObj.currentSrc;
-            jQuery("#labelBoxPreview").dialog({ autoOpen: false, modal: true});
+            jQuery("#labelBoxPreview").dialog({ autoOpen: false, modal: true });
             jQuery("#labelBoxContent img").attr("src", imageUrl);
             jQuery("#labelBoxPreview").dialog("open");
         }
@@ -700,21 +708,6 @@
             });
 
             return false;
-
-            //Delete trade  selector
-            //jQuery("#tradeselector01id").html("");
-
-            //Get the partial view
-            //var szUrl = jQuery(src.target).attr("href");
-            //jQuery.ajax({
-            //    type: 'GET',
-            //    url: szUrl,
-            //    data: null,
-            //    //contentType: 'application/json; charset=utf-8',
-            //    dataType: 'html',
-            //    error: AjaxFailed,
-            //    success: selectInvoiceSuccess
-            //});
         }
 
         // Sorting.
@@ -748,21 +741,6 @@
             });
 
             return false;
-
-            //Delete trade  selector
-            //jQuery("#tradeselector01id").html("");
-
-            //Get the partial view
-            //var szUrl = jQuery(src.target).attr("href");
-            //jQuery.ajax({
-            //    type: 'GET',
-            //    url: szUrl,
-            //    data: null,
-            //    //contentType: 'application/json; charset=utf-8',
-            //    dataType: 'html',
-            //    error: AjaxFailed,
-            //    success: selectInvoiceSuccess
-            //});
         }
 
         function AjaxFailed(response, statusCode, optionerror) {
@@ -810,25 +788,10 @@
             jQuery("#ckemai").click(clickcckemai);
             jQuery("#ckcode").click(clickckcode);
             jQuery("#ckstate").click(clickckstate);
+        
             jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
 
 
-            //jQuery(".pagination ul li a").each(eachlnknavigation);
-
-            //Initialize fields
-
-            //Get the title
-            //debugger;
-            //var szTitle = "Invoice";
-
-            //Show the dialog (used with the BuscarDepartamento call)
-            //jQuery("#shipmentDialog").dialog("option", "title", "Select " + szTitle);
-
-            //setter
-            //jQuery("#shipmentDialog").dialog("option", "width", 950);
-
-            //display the popup dialog
-            //jQuery("#shipmentDialog").dialog("open");
 
         }
 
@@ -1019,7 +982,7 @@
             //Load InvoiceDetail
             //Display load image
             ShowLoadingDialog();
-
+            
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
 
             jQuery.ajax({
@@ -1156,14 +1119,14 @@
             //Display the response data
             jQuery("#processShipmentInfo").html(objRes);
 
-           
+
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
                 LoadUpsRateInformation(szHayShipment);
             }
         }
-       
+
         function shipmentDetailSuccess(response, statusCode) {
             var objRes = response;
 
@@ -1179,9 +1142,7 @@
             //Open details tab
             szViewDetails = jQuery("#shipmentLogDetailsid").html();
             szViewDetails = jQuery.trim(szViewDetails);
-            if (szViewDetails != "") {
-                jQuery("#tabs").tabs("option", "active", 1);
-            }
+            clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
@@ -1232,7 +1193,7 @@
             $('#processShipmentBtn').show();
             ////Attach handlers
             jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
-          
+
             //Get the title
             //debugger;
             var szTitle = "Shipment Detail";
@@ -1244,8 +1205,7 @@
             jQuery("#selectvendorDialog").dialog("option", "width", 340);
 
 
-
-            //display the popup dialog
+//display the popup dialog
             jQuery("#selectvendorDialog").dialog("open");
 
 

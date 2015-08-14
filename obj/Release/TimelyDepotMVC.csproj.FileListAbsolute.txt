@@ -351,3 +351,4 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddLabelColumnToShipmentDetail.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddTrackIdToDetailShipment.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.shippedFlag.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ShippedFlagtoShipment.resources

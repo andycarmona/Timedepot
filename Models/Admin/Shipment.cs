@@ -27,5 +27,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Rate Results")]
         public string RateResults { get; set; }
+
+        public bool Shipped { get; set; }
     }
 }
