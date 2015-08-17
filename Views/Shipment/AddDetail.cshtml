@@ -1,6 +1,6 @@
 ﻿@model TimelyDepotMVC.Models.Admin.ShipmentDetails
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null,null,FormMethod.Post,new {id="detailForm"}))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -129,7 +129,7 @@
             </div>
         </div>
         <p>
-            <input class="btn btn-default" type="submit" value="Save" />&nbsp;<input id="btDialogCloseAddDetail" class="btn btn-default" type="button" value="Close" />
+            <input class="btn btn-default" type="button" id="PostNewDetail" value="Save" />&nbsp;<input id="btDialogCloseAddDetail" class="btn btn-default" type="button" value="Close" />
         </p>
     </div>
 }

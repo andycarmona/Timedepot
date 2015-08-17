@@ -5,7 +5,7 @@
     <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
     
 </div>
-<div class="divh1 boxtb3">@ViewBag.Title</div>
+<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;">@ViewBag.AddressResult</p></div>
 
 <div>
     <div id="tabs" style="margin: 0px auto;">
@@ -15,6 +15,7 @@
             <li><a href="#tabs-3">Process Shipment</a></li>
             <li><a href="#tabs-4">Shipment Log</a></li>
         </ul>
+      
         <div id="tabs-1">
        
             <div>
@@ -91,7 +92,7 @@
     @Html.ActionLink("Get Shipment Details", "GetShipmenDetails", "Shipment", new { invoiceid = "0" }, new { id = "getshipmentdetailsId" })
     @Html.ActionLink("Get Process Details", "ProcessShipmentInformation", "Shipment", new { invoiceid = "0" }, new { id = "getprocessdetailsId" })
     @Html.ActionLink("Get Ups rates Details", "GetUPSRateTE", "Shipment", new { invoiceid = "0" }, new { id = "getUpsRateDetailsId" })
-    <div id="addressresultdiv" class="tevalid" style="text-align: center;">@ViewBag.AddressResult</div>
+   
     <div id="upserrordiv" class="error" style="text-align: center;">
         @ViewBag.UPSError
     </div>
@@ -110,7 +111,7 @@
             //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
             jQuery("#btUpsRate").click(clickbtUpsRate);
-
+          
             jQuery("#lnkResetIdLog").click(clicklnkResetIdLog);
             jQuery("#ckcustLog").click(clickckcustLog);
             jQuery("#ckcompLog").click(clickckcompLog);
@@ -155,7 +156,7 @@
         }
 
         function clickChangeTab(tabIndex) {
-            debugger;
+            //debugger;
             if (jQuery("#shipmentDetailsdialog").children().length>0) {
                 $("#tabs").tabs("option", "active", tabIndex);
             }
@@ -241,25 +242,27 @@
                 if (IsJsonString(response)) {
                     var obj = jQuery.parseJSON(response);
                     if (obj.ShipmentResults !== undefined) {
+                        rowData += "<tr><th>TrackNumber</th><th>Label</th></tr>";
                         for (var shipmentIndex = 0; shipmentIndex < obj.ShipmentResults.PackageResults.length; shipmentIndex++) {
                             var labelImage = "<img "
                                 + "src='" + "data:image/jpg;base64,"
                                 + obj.ShipmentResults.PackageResults[shipmentIndex].ShippingLabel.GraphicImage + "'/>";
 
                             var trackingNumber = obj.ShipmentResults.PackageResults[shipmentIndex].TrackingNumber;
-                            rowData += "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
+                            rowData += "<tr><td>" + trackingNumber + "</td><td>" + labelImage + "</td></tr>";
 
                         }
 
                         $('#shipmentResult').html(rowData);
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
-                        jQuery("#tabs").tabs("option", "active", 2);
+                        jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
+                        //jQuery("#tabs").tabs("option", "active", 2);
                     } else {
-                        alert(response);
+                        alert("Error. Missing data. Please contact administrator.");
                     }
                 } else {
-                    alert("Sorry, couldn't get valid results. Please contact si administrator");
+                    alert(response);
                 }
             }
         }
@@ -442,8 +445,8 @@
 
         function clickbtUpsRate(src, arg) {
 
-            src.preventDefault();
-
+            //src.preventDefault();
+            debugger;
             var szMsg = "";
             var szUrl = "";
             var szInvoiceId = "";
@@ -1047,7 +1050,7 @@
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
                 LoadShipmentDetails(szHayShipment);
-
+            
             }
         }
 
@@ -1154,7 +1157,7 @@
         function clicklnkAddShipmentDetail(src, arg) {
             src.preventDefault();
 
-            var szHref = src.target.href;
+            var szHref = src.target.href; 
 
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             szHref = szHref + '&invoiceNoid=' + szInvoiceNo;
@@ -1208,6 +1211,9 @@
 //display the popup dialog
             jQuery("#selectvendorDialog").dialog("open");
 
+            //Event for updating/deleting boxes
+            jQuery("#PostNewDetail").click(postDetailData);
+           
 
         }
 
@@ -1241,6 +1247,36 @@
 
         function eachlnkUpdateDetail(nPos, src) {
             jQuery(src).click(clicklnkUpdateDetail);
+        }
+
+        function deleteDetailBox(shipmentDetailId) {
+    
+                $.ajax({
+                    type: "POST",
+                    dataType: 'text',
+                    url: "/Shipment/Delete",
+                    data: "shipmentDetailId=" + shipmentDetailId,
+                    success: function (data) {
+                        $("#shipmentDetailsdialog").html(data);
+                        //$('#shipment').html(data);
+                    }
+                });
+          
+        }
+
+        function postDetailData(src, arg) {
+            src.preventDefault();
+            //debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Shipment/AddDetail",
+                data: $('#detailForm').serialize(),
+                datatype: "html",
+                success: function (data) {
+                 // clickbtDialogCloseAddDetail();
+                    $('#shipmentDetailsdialog').html(data);
+                }
+            });
         }
 
         function clicklnkAddSalesOrderDetail(src, arg) {

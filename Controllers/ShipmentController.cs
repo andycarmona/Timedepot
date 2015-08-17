@@ -88,7 +88,6 @@ namespace TimelyDepotMVC.Controllers
                 db.SaveChanges();
             }
 
-
             return RedirectToAction("Index", "Shipment", new { id = nInvoiceid });
         }
 
@@ -393,29 +392,26 @@ namespace TimelyDepotMVC.Controllers
         //public JsonResult GetUPSRateTE(int invoiceId, string ValidateAddresResult, string itemNo, string quantity, string unitPriceValue, string customerType, string serviceType, string packageType)
         public PartialViewResult GetUPSRateTE(string ItemId, string quantity, string shipToPostalCode)
         {
-            //Invoice invoice = db.Invoices.Find(invoiceId);
+      
             List<ResultData> resultData = new List<ResultData>();
             try
             {
                 int unitPerCase = 1;
-                //string itemID = Request.QueryString["ItemID"] != null ? Convert.ToString(Request.QueryString["ItemID"]) : string.Empty;
-                //DataSet ds = new DataSet();
-                //Connection obj = new Connection();
+  
                 int BOX_CASE = 0;
                 decimal CASE_WI = 0;
                 decimal UT_WT = 0;
                 decimal unitPrice = 0;//TODO:// need to get from db unitprice
                 int Qty;
                 int.TryParse(quantity, out Qty);
-                //ds = obj.Getdataset("select a.* from (Select *,LTRIM(RTRIM(STR(Price,10,2))) as PriceNew,case PriceType when 'DEFAULT' then 0 when 'Default' then 0 else 0 end as seq From PRICE Where Item='" + itemID + "')a where a.seq='0'  order by    a.Price   desc  ");
+
                 var ds = db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
-                //ds = obj.Getdataset("select a.* from (Select *,LTRIM(RTRIM(STR(thePrice,10,2))) as PriceNew,case PriceType when 'DEFAULT' then 0 when 'Default' then 0 else 0 end as seq From PRICE Where Item='" + itemID + "')a where a.seq='0'  order by    a.thePrice   desc  ");
-                //if (ds != null && ds.Tables != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+
                 if (ds != null && ds.Count > 0)
                 {
                     int j = 0;
                     bool hasValue = false;
-                    //for (Int32 i = 0; i < ds.Tables[0].Rows.Count; i++)
+       
                     var i = 0;
                     foreach (var item in ds)
                     {
@@ -438,15 +434,12 @@ namespace TimelyDepotMVC.Controllers
                 details.CASE_LEN = 0;
                 details.CASE_WI = 0;
                 details.CASE_WT = 0;
-                //ds = new DataSet();
-                //ds = obj.Getdataset("SELECT [UnitPerCase],[UnitWeight],[CaseWeight],[DimensionH],[DimensionL],[DimensionD] FROM [dbo].[ITEM] where itemid='" + itemID + "'");
                 var itemList = db.ITEMs.Where(i => i.ItemID == ItemId).ToList();
                 if (itemList.Count > 0)
                 {
                     int j = 0;
                     bool hasValue = false;
                     var i = 0;
-                    //for (Int32 i = 0; i < ds.Tables[0].Rows.Count; i++)
                     foreach (var item in itemList)
                     {
 
@@ -495,9 +488,7 @@ namespace TimelyDepotMVC.Controllers
                     valuePerPartialBox = valuePerPartialBox + (100 - diff);
 
                 var resultString = string.Empty;
-                //if (Request.IsAuthenticated)
-                //    if (Roles.IsUserInRole("Admin"))
-                //    {
+            
                 resultString = "BOX_CASE : " + BOX_CASE;
                 resultString += "<br /> unitPrice : " + unitPrice;
                 resultString += "<br /> CASE_WI : " + CASE_WI;
@@ -511,10 +502,7 @@ namespace TimelyDepotMVC.Controllers
                 resultString += "<br /> partialBoxWeight : " + partialBoxWeight;
                 resultString += "<br /> nrBoxes : " + nrBoxes;
                 resultString += "<br /> qty : " + qty;
-                //}
-
-                //List<ResultData> lst = new List<ResultData>();
-                //lst.Add(new ResultData { service = "BOX_CASE", cost = BOX_CASE.ToString("#.##") });
+           
 
                 resultData = GetRateFromUPS(Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, shipToPostalCode);
 
@@ -530,7 +518,7 @@ namespace TimelyDepotMVC.Controllers
             string szResult = "The rate transaction was a Success;Total Shipment Charges: 41.20USD;Total Shipment Negociated Charges: 39.32USD days;Delivery time: 2 days";
 
             return PartialView(resultData);
-            //return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
+            
         }
 
         #region UPS RATE SERVICE API
@@ -972,17 +960,17 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Shipment", new { id = invoiceId });
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
+
         }
 
-        //
-        // GET:/Shipment/Delete
-        public ActionResult Delete(int id = 0)
+       [HttpPost]
+        public ActionResult Delete(int shipmentDetailId = 0)
         {
             int invoiceId = 0;
             Shipment shipment = null;
 
-            ShipmentDetails details = db.ShipmentDetails.Find(id);
+            ShipmentDetails details = db.ShipmentDetails.Find(shipmentDetailId);
             if (details != null)
             {
                 shipment = db.Shipments.Find(details.ShipmentId);
@@ -996,7 +984,7 @@ namespace TimelyDepotMVC.Controllers
 
                 if (invoiceId != 0)
                 {
-                    return RedirectToAction("Index", "Shipment", new { id = invoiceId });
+                    return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
                 }
             }
 
