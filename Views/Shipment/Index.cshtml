@@ -1019,7 +1019,7 @@
 
             //Set readonly fields
             // the tax should be on product only, no tax on service
-            jQuery(".service input").each(eachInvoicedetailservice)
+            jQuery(".service input").each(eachInvoicedetailservice);
             jQuery(".detailShipmentUpdate a").each(eachdetailShipmentUpdate);
 
             //Set the buttons
@@ -1029,13 +1029,12 @@
             jQuery(".pagination ul li a").each(eachlnknavigationDetails);
             jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
             jQuery(".lnkUpdateDetail a").each(eachlnkUpdateDetail);
-            jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
+            //jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
             jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
             jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
-
             jQuery(".imprintselectorclass").each(eachimprintselectorclass);
             jQuery(".imprintclass").each(eachimprintclass);
-
+            $(document).on("click", "#lnkAddShipmentDetail", clicklnkAddShipmentDetail);
             //Hide fields not used
             jQuery(".teshipment").css("display", "none");
 
@@ -1140,11 +1139,11 @@
             HideLoadingDialog();
 
             //Attach handlers
-            jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
-
+            //jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
+        
             //Open details tab
-            szViewDetails = jQuery("#shipmentLogDetailsid").html();
-            szViewDetails = jQuery.trim(szViewDetails);
+            //szViewDetails = jQuery("#shipmentLogDetailsid").html();
+            //szViewDetails = jQuery.trim(szViewDetails);
             clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
@@ -1156,7 +1155,7 @@
 
         function clicklnkAddShipmentDetail(src, arg) {
             src.preventDefault();
-
+   
             var szHref = src.target.href; 
 
             var szInvoiceNo = jQuery("#invoiceNoid").val();
@@ -1250,7 +1249,8 @@
         }
 
         function deleteDetailBox(shipmentDetailId) {
-    
+            var r = confirm("Are you sure you want to delete this detail?");
+            if (r == true) {
                 $.ajax({
                     type: "POST",
                     dataType: 'text',
@@ -1258,10 +1258,9 @@
                     data: "shipmentDetailId=" + shipmentDetailId,
                     success: function (data) {
                         $("#shipmentDetailsdialog").html(data);
-                        //$('#shipment').html(data);
                     }
                 });
-          
+            } 
         }
 
         function postDetailData(src, arg) {
@@ -1273,7 +1272,8 @@
                 data: $('#detailForm').serialize(),
                 datatype: "html",
                 success: function (data) {
-                 // clickbtDialogCloseAddDetail();
+                  clickbtDialogCloseAddDetail();
+
                     $('#shipmentDetailsdialog').html(data);
                 }
             });

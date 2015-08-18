@@ -22,6 +22,8 @@ namespace TimelyDepotMVC.Controllers
 {
     using System.Threading;
 
+    using Microsoft.Ajax.Utilities;
+
     using TimelyDepotMVC.Helpers;
 
     public class InvoiceController : Controller
@@ -799,6 +801,21 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("Edit", new { id = salesorderId });
         }
 
+        private double ConvertParamToDouble(string valToConvert)
+        {
+            double result;
+            try
+            {
+                result = Convert.ToDouble(valToConvert);
+            }
+            catch (Exception e)
+            {
+                result = 0;
+            }
+
+            return result;
+        }
+
         //
         // GET: /Invoice/UpdateDetail
         public ActionResult UpdateDetail(int? id, string salesorderid, string qty, string shipqty, string boqty, string desc, string price, string tax,
@@ -844,29 +861,30 @@ namespace TimelyDepotMVC.Controllers
 
                 if (!string.IsNullOrEmpty(qty))
                 {
-                    dHlp = Convert.ToDouble(qty);
+
+                    dHlp = this.ConvertParamToDouble(qty);
                     sodetail.Quantity = (int?)dHlp;
                 }
                 if (!string.IsNullOrEmpty(shipqty))
                 {
-                    dHlp = Convert.ToDouble(shipqty);
+                    dHlp = this.ConvertParamToDouble(shipqty);
                     sodetail.ShipQuantity = dHlp;
                 }
                 if (!string.IsNullOrEmpty(boqty))
                 {
-                    dHlp = Convert.ToDouble(boqty);
+                    dHlp = this.ConvertParamToDouble(boqty);
                     sodetail.BackOrderQuantity = dHlp;
                 }
                 if (!string.IsNullOrEmpty(tax))
                 {
-                    dHlp = Convert.ToDouble(tax);
+                    dHlp = this.ConvertParamToDouble(tax);
                     sodetail.Tax = dHlp;
                 }
                 if (!string.IsNullOrEmpty(price))
                 {
                     price = price.Replace("$", "");
                     price = price.Replace(",", "");
-                    dcHlp = Convert.ToDecimal(price);
+                    dcHlp = (decimal)this.ConvertParamToDouble(price);
                     sodetail.UnitPrice = dcHlp;
 
                     //Set the price according with the Quantity
@@ -944,12 +962,12 @@ namespace TimelyDepotMVC.Controllers
                     {
                         pricesc = pricesc.Replace("$", "");
                         pricesc = pricesc.Replace(",", "");
-                        dcHlp = Convert.ToDecimal(pricesc);
+                        dcHlp = (decimal)this.ConvertParamToDouble(pricesc);
                         //setupcharge.UnitPrice = dcHlp;
 
                         qtysc = qtysc.Replace("$", "");
                         qtysc = qtysc.Replace(",", "");
-                        dcHlp1 = Convert.ToDecimal(qtysc);
+                        dcHlp1 = (decimal)this.ConvertParamToDouble(qtysc); 
 
                         setupcharge = new InvoiceDetail();
                         setupcharge.InvoiceId = nSalesOrderId;
@@ -963,7 +981,7 @@ namespace TimelyDepotMVC.Controllers
                         setupcharge.UnitPrice = dcHlp;
                         setupcharge.ItemPosition = 0;
                         setupcharge.ItemOrder = 0;
-                        setupcharge.Tax = Convert.ToDouble(dTaxRate);
+                        setupcharge.Tax = dTaxRate;
                         db.InvoiceDetails.Add(setupcharge);
                         db.SaveChanges();
                     }
@@ -978,12 +996,12 @@ namespace TimelyDepotMVC.Controllers
                     {
                         pricerc = pricerc.Replace("$", "");
                         pricerc = pricerc.Replace(",", "");
-                        dcHlp = Convert.ToDecimal(pricerc);
+                        dcHlp = (decimal)this.ConvertParamToDouble(pricerc);
                         runcharge.UnitPrice = dcHlp;
 
                         qtyrc = qtyrc.Replace("$", "");
                         qtyrc = qtyrc.Replace(",", "");
-                        dcHlp1 = Convert.ToDecimal(qtyrc);
+                        dcHlp1 = (decimal)this.ConvertParamToDouble(qtyrc);
                         runcharge.Quantity = (int?)dcHlp1;
                         db.Entry(runcharge).State = EntityState.Modified;
                         db.SaveChanges();
@@ -992,12 +1010,12 @@ namespace TimelyDepotMVC.Controllers
                     {
                         pricerc = pricerc.Replace("$", "");
                         pricerc = pricerc.Replace(",", "");
-                        dcHlp = Convert.ToDecimal(pricerc);
+                        dcHlp = (decimal)this.ConvertParamToDouble(pricerc);
                         //runcharge.UnitPrice = dcHlp;
 
                         qtyrc = qtyrc.Replace("$", "");
                         qtyrc = qtyrc.Replace(",", "");
-                        dcHlp1 = Convert.ToDecimal(qtyrc);
+                        dcHlp1 = (decimal)this.ConvertParamToDouble(qtyrc);
 
                         runcharge = new InvoiceDetail();
                         runcharge.InvoiceId = nSalesOrderId;
@@ -1011,7 +1029,7 @@ namespace TimelyDepotMVC.Controllers
                         runcharge.UnitPrice = dcHlp;
                         runcharge.ItemPosition = 0;
                         runcharge.ItemOrder = 0;
-                        runcharge.Tax = Convert.ToDouble(dTaxRate);
+                        runcharge.Tax = dTaxRate;
                         db.InvoiceDetails.Add(runcharge);
                         db.SaveChanges();
                     }
@@ -2175,6 +2193,20 @@ namespace TimelyDepotMVC.Controllers
                 salesorder = db.SalesOrders.Where(slod => slod.SalesOrderNo == invoice.SalesOrderNo).FirstOrDefault<SalesOrder>();
                 if (salesorder != null)
                 {
+                    //Get the totals
+                    GetSalesOrderTotals(
+                        salesorder.SalesOrderId,
+                        ref dSalesAmount,
+                        ref dTotalTax,
+                        ref dTax,
+                        ref dTotalAmount,
+                        ref dBalanceDue);
+                    
+                    ViewBag.SalesAmount = dSalesAmount.ToString("C");
+                    ViewBag.TotalTax = dTotalTax.ToString("C");
+                    ViewBag.Tax = dTax.ToString("F2");
+                    ViewBag.TotalAmount = dTotalAmount.ToString("C");
+                    ViewBag.BalanceDue = dBalanceDue.ToString("C");
                     ViewBag.SalesOrderDate = Convert.ToDateTime(salesorder.SODate).ToString("MM/dd/yyyy");
                 }
                 else
@@ -2187,23 +2219,6 @@ namespace TimelyDepotMVC.Controllers
                 ViewBag.SalesOrderDate = string.Empty;
             }
          
-
-            //Get the totals
-           GetSalesOrderTotals(
-               salesorder.SalesOrderId,
-               ref dSalesAmount,
-               ref dTotalTax,
-               ref dTax,
-               ref dTotalAmount,
-               ref dBalanceDue);
-            //GetInvoiceTotals(invoice.InvoiceId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
-            ViewBag.SalesAmount = dSalesAmount.ToString("C");
-            ViewBag.TotalTax = dTotalTax.ToString("C");
-            ViewBag.Tax = dTax.ToString("F2");
-            ViewBag.TotalAmount = dTotalAmount.ToString("C");
-            ViewBag.BalanceDue = dBalanceDue.ToString("C");
-           
-
 
             //Get the terms data
             listSelector = new List<KeyValuePair<string, string>>();

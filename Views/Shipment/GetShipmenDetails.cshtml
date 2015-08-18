@@ -57,7 +57,7 @@ else
         
                     @if (!@item.Shipped)
                     {
-                        <input class="btn btn-default"  type="button" id="deleteBoxbtn" value="Delete custom" onclick="deleteDetailBox(@item.ShipmentDetailID);" />
+                        <input class="btn btn-default"  type="button" id="deleteBoxbtn" value="Delete" onclick="deleteDetailBox(@item.ShipmentDetailID);" />
 
                     }
                 </td>
@@ -68,7 +68,7 @@ else
                     @Html.TextBoxFor(modelItem => item.DetailId)
                 </td>
                 <td style="text-align: left;">
-                    @(@item.Shipped ? Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.BoxNo))
+                    @Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "true" } })
                 </td>
                 <td style="text-align: left;">
                     @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Sub_ItemID))

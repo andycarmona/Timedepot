@@ -104,7 +104,7 @@
             <div class="left" style="display: none;">
                 @Html.DisplayFor(modelItem => item.SalesOrderId)
             </div>
-            @*<div class="left detailShipment" style="margin-left: 5px; margin-right: 5px;">@Html.ActionLink("X", "DeleteDetail", "Invoice", new { id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this item?');" })</div>*@
+            <div class="left detailShipment" style="margin-left: 5px; margin-right: 5px;">@Html.ActionLink("X", "DeleteDetail", "Invoice", new { id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this item?');" })</div>
             <div class="left" style="width: 300px; margin-right: 0.5em;">
                 Item No.:&nbsp;@Html.DisplayFor(modelItem => item.Sub_ItemID)
             </div>
@@ -257,10 +257,10 @@
                         </tr>
                     </table>
                 </div>*@
-                @*<div id="@szLnkShiped" style="margin: 5px auto; width: 80px; display: block; text-align: center">
+                <div id="@szLnkShiped" style="margin: 5px auto; width: 80px; display: block; text-align: center">
                     <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId }, new { id = szLnkUpdate })</span>&nbsp;
                     <span class="lnkShipItem">@Html.ActionLink("Ship Item", "ShipItem", "Shipment", new { id = item.Id, salesorderid = ViewBag.SalesOrderId }, new { id = szLnkUpdate, style="display:none;" })</span>&nbsp;
-                </div>*@
+                </div>
             </div>
             <div id="@szTax" class="tdsalesdetail viosinput60"  style="display:none;">
                 <div class="@szProductService">
@@ -293,10 +293,10 @@
                 $('#divShippedAmount' + id).html((unitPrice * shippingQuantity).toFixed(2));
             }
             else {
-                alert('Shipment quanity should be greater than 0 and less than or equals to quantity available.')
+                alert('Shipment quantity should be greater than 0 and less than or equals to quantity available.');
                 $(this).val('1');
                 $('#divRemainingQuantity' + id).html(totalQuantity - 1);
-                $('#divShippedAmount' + id).html(unitPrice.toFixed(2))
+                $('#divShippedAmount' + id).html(unitPrice.toFixed(2));
             }
         });
     });

@@ -968,6 +968,7 @@ namespace TimelyDepotMVC.Controllers
         public ActionResult Delete(int shipmentDetailId = 0)
         {
             int invoiceId = 0;
+          
             Shipment shipment = null;
 
             ShipmentDetails details = db.ShipmentDetails.Find(shipmentDetailId);
@@ -978,9 +979,14 @@ namespace TimelyDepotMVC.Controllers
                 {
                     invoiceId = Convert.ToInt32(shipment.InvoiceId);
                 }
-
+                var shipmentResult = this.db.ShipmentDetails.SingleOrDefault(x => x.ShipmentDetailID == shipmentDetailId);
                 db.ShipmentDetails.Remove(details);
                 db.SaveChanges();
+
+                if (shipmentResult != null)
+                {
+                    this.ReorderBoxesNames(shipmentResult.ShipmentId);
+                }
 
                 if (invoiceId != 0)
                 {
@@ -988,7 +994,19 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Shipment");
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = 0 });
+        }
+
+        private void ReorderBoxesNames(int shipmentId)
+        {
+            int detailIndex = 1;
+
+            foreach (var aDetail in this.db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList())
+            {
+                aDetail.BoxNo = "Box " + detailIndex++;
+            }
+
+            db.SaveChanges();
         }
 
         //

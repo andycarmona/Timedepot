@@ -30,7 +30,7 @@
 
         <div class="cf">
             <div class="editor-label left">
-                @Html.LabelFor(model => model.BoxNo, new{ style="margin-right:64px;"})
+                @Html.LabelFor(model => model.BoxNo, new{ style="margin-right:74px;"})
             </div>
             <div class="editor-field left">
                 @Html.TextBoxFor(model => model.BoxNo, new Dictionary<string, object>() { { "readonly", "true" } }) 
@@ -41,7 +41,7 @@
 
         <div class="cf">
             <div class="editor-label left">
-                @Html.LabelFor(model => model.Sub_ItemID, new{ style="margin-right:18px;"})
+                @Html.LabelFor(model => model.Sub_ItemID, new{ style="margin-right:80px;"})
             </div>
             <div class="editor-field left">
                 @Html.EditorFor(model => model.Sub_ItemID)
@@ -51,7 +51,7 @@
 
         <div class="cf">
             <div class="editor-label left">
-                @Html.LabelFor(model => model.Quantity, new{ style="margin-right:85px;"})
+                @Html.LabelFor(model => model.Quantity, new{ style="margin-right:87px;"})
             </div>
             <div class="editor-field left">
                 @Html.EditorFor(model => model.Quantity)
@@ -135,5 +135,6 @@
 }
 
 @section Scripts {
+    
     @Scripts.Render("~/bundles/jqueryval")
 }
