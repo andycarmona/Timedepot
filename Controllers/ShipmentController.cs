@@ -880,6 +880,10 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
+            if (shipment != null)
+            {
+                this.ReorderBoxesNames(shipment.ShipmentId);
+            }
 
             return RedirectToAction("Index", "Shipment", new { id = invoiceId });
         }
