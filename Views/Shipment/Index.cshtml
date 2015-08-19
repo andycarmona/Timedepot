@@ -111,7 +111,7 @@
             //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
             jQuery("#btUpsRate").click(clickbtUpsRate);
-          
+
             jQuery("#lnkResetIdLog").click(clicklnkResetIdLog);
             jQuery("#ckcustLog").click(clickckcustLog);
             jQuery("#ckcompLog").click(clickckcompLog);
@@ -152,12 +152,12 @@
 
                 $('#processShipmentBtn').hide();
             }
-         
+
         }
 
         function clickChangeTab(tabIndex) {
             //debugger;
-            if (jQuery("#shipmentDetailsdialog").children().length>0) {
+            if (jQuery("#shipmentDetailsdialog").children().length > 0) {
                 $("#tabs").tabs("option", "active", tabIndex);
             }
         }
@@ -791,9 +791,8 @@
             jQuery("#ckemai").click(clickcckemai);
             jQuery("#ckcode").click(clickckcode);
             jQuery("#ckstate").click(clickckstate);
-        
-            jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
 
+            jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
 
 
         }
@@ -985,7 +984,7 @@
             //Load InvoiceDetail
             //Display load image
             ShowLoadingDialog();
-            
+
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
 
             jQuery.ajax({
@@ -1029,7 +1028,7 @@
             jQuery(".pagination ul li a").each(eachlnknavigationDetails);
             jQuery(".lnkEditDetail a").each(eachlnkEditDetail);
             jQuery(".lnkUpdateDetail a").each(eachlnkUpdateDetail);
-          jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
+            jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
             jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
             jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
             jQuery(".imprintselectorclass").each(eachimprintselectorclass);
@@ -1049,7 +1048,7 @@
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
                 LoadShipmentDetails(szHayShipment);
-            
+
             }
         }
 
@@ -1071,20 +1070,27 @@
         }
 
         function LoadUpsRateInformation(invoiceId) {
-            var szMsg = "=" + invoiceId;
+            var itemId = jQuery("#item_Sub_ItemID").val();
+            var quantity = jQuery("#divQuantity1").text();
+            var toZip = jQuery("#ToZip").val();
+            var szMsg = "=" + invoiceId + "&ItemId=" + itemId + "&quantity=" + quantity + "&shipToPostalCode=" + toZip;
 
             var szUrl = jQuery("#getUpsRateDetailsId").attr("href");
             szUrl = szUrl.replace("=0", szMsg);
-
-            jQuery.ajax({
-                type: 'GET',
-                url: szUrl,
-                data: null,
-                //contentType: 'application/json; charset=utf-8',
-                dataType: 'html',
-                error: AjaxFailed,
-                success: upsRateDetailSuccess
-            });
+            if (jQuery("#addressresultdiv03").text() != '') {
+                ShowLoadingDialog();
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: upsRateDetailSuccess
+                });
+            } else {
+                alert("Please validate the shipment address.");
+            }
         }
 
 
@@ -1114,6 +1120,7 @@
             var objRes = response;
             //Display the response data
             jQuery("#apiresultsid").html(objRes);
+            HideLoadingDialog();
         }
 
         function processDetailSuccess(response) {
@@ -1140,7 +1147,7 @@
 
             //Attach handlers
             //jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
-        
+
             //Open details tab
             //szViewDetails = jQuery("#shipmentLogDetailsid").html();
             //szViewDetails = jQuery.trim(szViewDetails);
@@ -1155,8 +1162,8 @@
 
         function clicklnkAddShipmentDetail(src, arg) {
             src.preventDefault();
-   
-            var szHref = src.target.href; 
+
+            var szHref = src.target.href;
 
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             szHref = szHref + '&invoiceNoid=' + szInvoiceNo;
@@ -1212,7 +1219,7 @@
 
             //Event for updating/deleting boxes
             jQuery("#PostNewDetail").click(postDetailData);
-           
+
 
         }
 
@@ -1256,25 +1263,27 @@
                     dataType: 'text',
                     url: "/Shipment/Delete",
                     data: "shipmentDetailId=" + shipmentDetailId,
-                    success: function (data) {
+                    success: function(data) {
                         $("#shipmentDetailsdialog").html(data);
                     }
                 });
-            } 
+            }
         }
 
         function postDetailData(src, arg) {
             src.preventDefault();
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
             //debugger;
             $.ajax({
                 type: "POST",
                 url: "/Shipment/AddDetail",
                 data: $('#detailForm').serialize(),
                 datatype: "html",
-                success: function (data) {
-                  clickbtDialogCloseAddDetail();
+                success: function(data) {
+                    clickbtDialogCloseAddDetail();
 
                     $('#shipmentDetailsdialog').html(data);
+                    LoadUpsRateInformation(szInvoiceId);
                 }
             });
         }

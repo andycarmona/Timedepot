@@ -402,8 +402,18 @@ namespace TimelyDepotMVC.Controllers
                 decimal CASE_WI = 0;
                 decimal UT_WT = 0;
                 decimal unitPrice = 0;//TODO:// need to get from db unitprice
-                int Qty;
-                int.TryParse(quantity, out Qty);
+                double Qty;
+                quantity = quantity.Trim();
+                double.TryParse(quantity, out Qty);
+                if (ItemId.Contains("_"))
+                {
+                    ItemId = ItemId.Split('_')[0];
+                }
+
+                if (ItemId.Contains("/"))
+                {
+                    ItemId = ItemId.Split('/')[0];
+                }
 
                 var ds = db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
 
@@ -446,9 +456,9 @@ namespace TimelyDepotMVC.Controllers
                         if (item.UnitPerCase != null)
                             BOX_CASE = Convert.ToInt16(item.UnitPerCase);
                         if (item.CaseWeight != null)
-                            CASE_WI = Convert.ToDecimal(item.CaseWeight);
+                            CASE_WI = Convert.ToDecimal(item.CaseWeight,CultureInfo.InvariantCulture);
                         if (item.UnitWeight != null)
-                            UT_WT = Convert.ToDecimal(item.UnitWeight);
+                            UT_WT = Convert.ToDecimal(item.UnitWeight,CultureInfo.InvariantCulture);
                         if (item.DimensionH != null)
                             details.CASE_HI = Convert.ToInt16(item.DimensionH);
                         if (item.DimensionL != null)
@@ -463,13 +473,13 @@ namespace TimelyDepotMVC.Controllers
                 details.CASE_WI = CASE_WI;
                 if (BOX_CASE == 0)
                     BOX_CASE = unitPerCase;
-                var qty = Convert.ToInt32(quantity);
-                int nrBoxes = qty / BOX_CASE;
+                var qty = Qty;
+                int nrBoxes = (int)(qty / BOX_CASE);
                 if ((qty % BOX_CASE) > 0)
                     nrBoxes += 1;
                 if (nrBoxes < 1)
                     nrBoxes = 1;
-                int itemsInLastBox = qty % BOX_CASE;
+                int itemsInLastBox = (int)(qty % BOX_CASE);
                 string fullBoxWeight = "0";
                 if ((qty / BOX_CASE) > 0)
                     fullBoxWeight = Math.Ceiling(BOX_CASE * UT_WT).ToString();
@@ -504,12 +514,12 @@ namespace TimelyDepotMVC.Controllers
                 resultString += "<br /> qty : " + qty;
            
 
-                resultData = GetRateFromUPS(Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, shipToPostalCode);
+                resultData = GetRateFromUPS((int)Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, shipToPostalCode);
 
             }
             catch (Exception ex)
             {
-                //Response.Write(ex.Message + ex.StackTrace);
+                var error = ex.Message;
 
             }
 
@@ -563,7 +573,7 @@ namespace TimelyDepotMVC.Controllers
                             foreach (var rshipment in rateResponse.RatedShipment)
                             {
                                 var rate = Math.Round
-                                    (decimal.Parse(rshipment.TotalCharges.MonetaryValue) + decimal.Parse(rshipment.TotalCharges.MonetaryValue) * 0.15m);
+                                    (decimal.Parse(rshipment.TotalCharges.MonetaryValue,CultureInfo.InvariantCulture) + decimal.Parse(rshipment.TotalCharges.MonetaryValue,CultureInfo.InvariantCulture) * 0.15m);
                                 r.cost = rate + " " + rshipment.TotalCharges.CurrencyCode;
 
                                 r.Publishedcost = rshipment.TotalCharges.MonetaryValue + " " + rshipment.TotalCharges.CurrencyCode;
@@ -612,7 +622,7 @@ namespace TimelyDepotMVC.Controllers
                             foreach (var rshipment in rateResponse.RatedShipment)
                             {
                                 var rate = Math.Round
-                                    (decimal.Parse(rshipment.TotalCharges.MonetaryValue) + decimal.Parse(rshipment.TotalCharges.MonetaryValue) * 0.15m);
+                                    (decimal.Parse(rshipment.TotalCharges.MonetaryValue,CultureInfo.InvariantCulture) + decimal.Parse(rshipment.TotalCharges.MonetaryValue,CultureInfo.InvariantCulture) * 0.15m);
                                 r.cost = rate + " " + rshipment.TotalCharges.CurrencyCode;
 
 
