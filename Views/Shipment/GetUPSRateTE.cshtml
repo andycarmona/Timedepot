@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<TimelyDepotMVC.UPSWrappers.ResultData>
            @if (@Model.Any())
            {
+               var status = false;
                <div class="form-group">
                    <label>Choose a UPS rate from list:</label><br />
                    <table class="webgrid" style="width: 100%; margin: 0px auto;">
@@ -16,23 +17,30 @@
 
                            @foreach (var item in Model)
                            {
+                               if (!String.IsNullOrEmpty(@item.errorMessage))
+                               {
+                                   status = true;
+                               }
                                <tr>
                                    <td>
                                        <input style="width: 20px;" id="code" @item.code name="chosenUpsRate" type="radio" value="@item.code" />
                   
                                    </td>
                                    <td>@item.service</td>
-                                   <td>@item.cost</td>
-                                   <td>@item.Publishedcost</td>
-                                   <td>@item.Negcost</td>
-                                   <td>@item.time</td>
+                                   <td>@(item.cost ?? "No value")</td>
+                                   <td>@(item.Publishedcost ?? "No value")</td>
+                                   <td>@(item.Negcost ?? "No value")</td>
+                                   <td>@(item.time ?? "No value")</td>
                                </tr>
                            }
      
 
                        </tbody>
                    </table>
+                   
+                   @if(!status){
                    <input class="btn btn-default" type="button" id="btnProcessShipment" value="Process shipment" onclick=" processShipment(); " />
+}
                </div>
            }
            else

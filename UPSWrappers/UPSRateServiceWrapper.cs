@@ -282,9 +282,6 @@ namespace TimelyDepotMVC.UPSWrappers
             package.PackageWeight = packageWeight;
 
             var packageDimensions = new UPSRateService.DimensionsType();
-            //packageDimensions.Height = ((int)details.CASE_HI.Value).ToString();
-            //packageDimensions.Length = ((int)details.CASE_LEN.Value).ToString();
-            //packageDimensions.Width = ((int)details.CASE_WT.Value).ToString();
 
             packageDimensions.Height = "0";
             packageDimensions.Length = "0";
@@ -335,12 +332,6 @@ namespace TimelyDepotMVC.UPSWrappers
             AddPackageArray(nrBoxes, itemsInLastBox, fullBoxWeight, partialBoxWeight, valuePerFullBox, valuePerPartialBox, details, packagingTypeCode, currencyCode, shipment);
             AddInvoiceTotalType(Qty, unitPrice, shipment);
             rateRequest.Shipment = shipment;
-            //var serializer = new XmlSerializer(typeof(RateRequest));
-            //using (var writer = new StringWriter())
-            //{
-            //  serializer.Serialize(writer, rateRequest);
-            //  requestXML = writer.ToString();
-            //}
             rateResponse = upsService.ProcessRate(rateRequest);
             return rateResponse;
         }

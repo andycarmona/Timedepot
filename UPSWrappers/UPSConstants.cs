@@ -25,7 +25,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         public static string UpsShipperNumber
         {
-            get { return "A3024V"; }
+            get { return Settings.Default.UPSShipperNumber; }
         }
 
         public static string UpsShipperName

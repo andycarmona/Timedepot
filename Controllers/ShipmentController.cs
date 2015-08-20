@@ -279,8 +279,45 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
+        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo)
+        {
+
+            ShipConfirmResponse rateResponse = null;
+            string szError = null;
+            var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
+
+            if (selectedInvoice != null)
+            {
+                var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+                shipmentRequestDto.userName = UPSConstants.UpsUserName;
+                shipmentRequestDto.password = UPSConstants.UpsPasword;
+                shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
+                shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+                shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
+                shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+                shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+
+                var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
+
+                rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
+
+                //var result = this.AddUpsDataToShipmentDetail(shipmentId, rateResponse.ShipmentResults.PackageResults);
+            }
+
+            if (string.IsNullOrEmpty(szError))
+            {
+                return Json(rateResponse, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(szError, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
         public ActionResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
         {
+           
             ShipmentResponse rateResponse = null;
             string szError = null;
             var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
@@ -343,18 +380,24 @@ namespace TimelyDepotMVC.Controllers
             return this.db.SaveChangesAsync();
         }
 
-        public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo)
+        public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo, string ItemId, string quantity, string shipToPostalCode)
         {
             var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
             string result = "Not a valid UPS Account.";
             try
             {
-                UPSWrappers.inv_detl inv_detl = new UPSWrappers.inv_detl();
-                inv_detl.CASE_HI = 24;
-                inv_detl.CASE_LEN = 24;
-                inv_detl.CASE_WI = 42;
-                inv_detl.CASE_WT = 19;
-                inv_detl.UT_WT = Convert.ToDecimal(2.1);
+                decimal unitPrice = 0;//TODO:// need to get from db unitprice
+                double Qty;
+                quantity = quantity.Trim();
+                double.TryParse(quantity, out Qty);
+                int nrBoxes;
+                int itemsInLastBox;
+                string fullBoxWeight;
+                string partialBoxWeight;
+                int valuePerFullBox;
+                int valuePerPartialBox;
+                var details = this.GetBoxInformationDetails(ItemId, Qty, ref unitPrice, out nrBoxes, out itemsInLastBox, out fullBoxWeight, out partialBoxWeight, out valuePerFullBox, out valuePerPartialBox);
+           
 
                 if (selectedInvoice != null)
                 {
@@ -368,21 +411,21 @@ namespace TimelyDepotMVC.Controllers
                     shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
                     var rateServiceWrapper = new UPSRateServiceWrapper(shipmentRequestDto);
 
-                    var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                        UPSConstants.UpsAccessLicenseNumber,
-                        UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, "94306", "US", null, null, null,
-                        UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                        UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
+                    //var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
+                    //    UPSConstants.UpsAccessLicenseNumber,
+                    //    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, "94306", "US", null, null, null,
+                    //    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
+                    //    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
 
 
-                    var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", 25, 2, 5, "42", 400, 100, "11", inv_detl, "02", "USD", Convert.ToDecimal(26.5), true);//,out requestXML);
+                    var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", (int)Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight,details, "02", "USD", unitPrice, true);//,out requestXML);
 
                     result = "This is a valid UPS Account.";
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                var error = e.Message;
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -396,130 +439,25 @@ namespace TimelyDepotMVC.Controllers
             List<ResultData> resultData = new List<ResultData>();
             try
             {
-                int unitPerCase = 1;
-  
-                int BOX_CASE = 0;
-                decimal CASE_WI = 0;
-                decimal UT_WT = 0;
+             
                 decimal unitPrice = 0;//TODO:// need to get from db unitprice
                 double Qty;
                 quantity = quantity.Trim();
                 double.TryParse(quantity, out Qty);
-                if (ItemId.Contains("_"))
-                {
-                    ItemId = ItemId.Split('_')[0];
-                }
-
-                if (ItemId.Contains("/"))
-                {
-                    ItemId = ItemId.Split('/')[0];
-                }
-
-                var ds = db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
-
-                if (ds != null && ds.Count > 0)
-                {
-                    int j = 0;
-                    bool hasValue = false;
-       
-                    var i = 0;
-                    foreach (var item in ds)
-                    {
-                        if (Convert.ToInt16(item.Qty) > Qty)
-                        {
-                            hasValue = true;
-                            j = i == 0 ? 0 : i - 1;
-                            break;
-                        }
-                        i++;
-                    }
-                    if (!hasValue)
-                        j = ds.Count - 1;
-                    var dsArray = ds.ToArray();
-                    unitPrice = Convert.ToDecimal(dsArray[j].thePrice);
-                }
-
-                UPSWrappers.inv_detl details = new UPSWrappers.inv_detl();
-                details.CASE_HI = 0;
-                details.CASE_LEN = 0;
-                details.CASE_WI = 0;
-                details.CASE_WT = 0;
-                var itemList = db.ITEMs.Where(i => i.ItemID == ItemId).ToList();
-                if (itemList.Count > 0)
-                {
-                    int j = 0;
-                    bool hasValue = false;
-                    var i = 0;
-                    foreach (var item in itemList)
-                    {
-
-                        if (item.UnitPerCase != null)
-                            BOX_CASE = Convert.ToInt16(item.UnitPerCase);
-                        if (item.CaseWeight != null)
-                            CASE_WI = Convert.ToDecimal(item.CaseWeight,CultureInfo.InvariantCulture);
-                        if (item.UnitWeight != null)
-                            UT_WT = Convert.ToDecimal(item.UnitWeight,CultureInfo.InvariantCulture);
-                        if (item.DimensionH != null)
-                            details.CASE_HI = Convert.ToInt16(item.DimensionH);
-                        if (item.DimensionL != null)
-                            details.CASE_LEN = Convert.ToInt16(item.DimensionL);
-                        if (item.DimensionD != null)
-                            details.CASE_WT = Convert.ToInt16(item.DimensionD);
-                        i++;
-                    }
-                }
-
-                details.UT_WT = UT_WT;
-                details.CASE_WI = CASE_WI;
-                if (BOX_CASE == 0)
-                    BOX_CASE = unitPerCase;
-                var qty = Qty;
-                int nrBoxes = (int)(qty / BOX_CASE);
-                if ((qty % BOX_CASE) > 0)
-                    nrBoxes += 1;
-                if (nrBoxes < 1)
-                    nrBoxes = 1;
-                int itemsInLastBox = (int)(qty % BOX_CASE);
-                string fullBoxWeight = "0";
-                if ((qty / BOX_CASE) > 0)
-                    fullBoxWeight = Math.Ceiling(BOX_CASE * UT_WT).ToString();
-                string partialBoxWeight = "0";
-                if (itemsInLastBox > 0)
-                    partialBoxWeight = Math.Ceiling(itemsInLastBox * UT_WT).ToString();
-
-
-                int valuePerFullBox = qty >= BOX_CASE ? (int)(BOX_CASE * (unitPrice * ((decimal)0.60))) : 0;
-                int diff = valuePerFullBox % 100;
-                if (diff > 0)
-                    valuePerFullBox = valuePerFullBox + (100 - diff);
-                int valuePerPartialBox = (int)(itemsInLastBox * (unitPrice * ((decimal)0.60)));
-                diff = valuePerPartialBox % 100;
-                if (diff > 0)
-                    valuePerPartialBox = valuePerPartialBox + (100 - diff);
-
-                var resultString = string.Empty;
-            
-                resultString = "BOX_CASE : " + BOX_CASE;
-                resultString += "<br /> unitPrice : " + unitPrice;
-                resultString += "<br /> CASE_WI : " + CASE_WI;
-                resultString += "<br /> UT_WT : " + UT_WT;
-                resultString += "<br /> CASE_HI : " + details.CASE_HI;
-                resultString += "<br /> CASE_LEN : " + details.CASE_LEN;
-                resultString += "<br /> CASE_WT : " + details.CASE_WT;
-                resultString += "<br /> valuePerFullBox : " + valuePerFullBox;
-                resultString += "<br /> valuePerPartialBox : " + valuePerPartialBox;
-                resultString += "<br /> fullBoxWeight : " + fullBoxWeight;
-                resultString += "<br /> partialBoxWeight : " + partialBoxWeight;
-                resultString += "<br /> nrBoxes : " + nrBoxes;
-                resultString += "<br /> qty : " + qty;
-           
+                int nrBoxes;
+                int itemsInLastBox;
+                string fullBoxWeight;
+                string partialBoxWeight;
+                int valuePerFullBox;
+                int valuePerPartialBox;
+                var details = this.GetBoxInformationDetails(ItemId, Qty, ref unitPrice, out nrBoxes, out itemsInLastBox, out fullBoxWeight, out partialBoxWeight, out valuePerFullBox, out valuePerPartialBox);
 
                 resultData = GetRateFromUPS((int)Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, shipToPostalCode);
 
             }
             catch (Exception ex)
             {
-                var error = ex.Message;
+               resultData[0].errorMessage = ex.Message;
 
             }
 
@@ -529,6 +467,143 @@ namespace TimelyDepotMVC.Controllers
 
             return PartialView(resultData);
             
+        }
+
+        private UPSWrappers.inv_detl GetBoxInformationDetails(
+            string ItemId,
+            double Qty,
+            ref decimal unitPrice,
+            out int nrBoxes,
+            out int itemsInLastBox,
+            out string fullBoxWeight,
+            out string partialBoxWeight,
+            out int valuePerFullBox,
+            out int valuePerPartialBox)
+        {
+            int unitPerCase = 1;
+
+            int BOX_CASE = 0;
+            decimal CASE_WI = 0;
+            decimal UT_WT = 0;
+
+            if (ItemId.Contains("_"))
+            {
+                ItemId = ItemId.Split('_')[0];
+            }
+
+            if (ItemId.Contains("/"))
+            {
+                ItemId = ItemId.Split('/')[0];
+            }
+
+            var ds = this.db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
+
+            if (ds != null && ds.Count > 0)
+            {
+                int j = 0;
+                bool hasValue = false;
+
+                var i = 0;
+                foreach (var item in ds)
+                {
+                    if (Convert.ToInt16(item.Qty) > Qty)
+                    {
+                        hasValue = true;
+                        j = i == 0 ? 0 : i - 1;
+                        break;
+                    }
+                    i++;
+                }
+                if (!hasValue)
+                {
+                    j = ds.Count - 1;
+                }
+                var dsArray = ds.ToArray();
+                unitPrice = Convert.ToDecimal(dsArray[j].thePrice);
+            }
+
+            UPSWrappers.inv_detl details = new UPSWrappers.inv_detl();
+            details.CASE_HI = 0;
+            details.CASE_LEN = 0;
+            details.CASE_WI = 0;
+            details.CASE_WT = 0;
+            var itemList = this.db.ITEMs.Where(i => i.ItemID == ItemId).ToList();
+            if (itemList.Count > 0)
+            {
+                int j = 0;
+                bool hasValue = false;
+                var i = 0;
+                foreach (var item in itemList)
+                {
+                    if (item.UnitPerCase != null)
+                    {
+                        BOX_CASE = Convert.ToInt16(item.UnitPerCase);
+                    }
+                    if (item.CaseWeight != null)
+                    {
+                        CASE_WI = Convert.ToDecimal(item.CaseWeight, CultureInfo.InvariantCulture);
+                    }
+                    if (item.UnitWeight != null)
+                    {
+                        UT_WT = Convert.ToDecimal(item.UnitWeight, CultureInfo.InvariantCulture);
+                    }
+                    if (item.DimensionH != null)
+                    {
+                        details.CASE_HI = Convert.ToInt16(item.DimensionH);
+                    }
+                    if (item.DimensionL != null)
+                    {
+                        details.CASE_LEN = Convert.ToInt16(item.DimensionL);
+                    }
+                    if (item.DimensionD != null)
+                    {
+                        details.CASE_WT = Convert.ToInt16(item.DimensionD);
+                    }
+                    i++;
+                }
+            }
+
+            details.UT_WT = UT_WT;
+            details.CASE_WI = CASE_WI;
+            if (BOX_CASE == 0)
+            {
+                BOX_CASE = unitPerCase;
+            }
+            var qty = Qty;
+            nrBoxes = (int)(qty / BOX_CASE);
+            if ((qty % BOX_CASE) > 0)
+            {
+                nrBoxes += 1;
+            }
+            if (nrBoxes < 1)
+            {
+                nrBoxes = 1;
+            }
+            itemsInLastBox = (int)(qty % BOX_CASE);
+            fullBoxWeight = "0";
+            if ((qty / BOX_CASE) > 0)
+            {
+                fullBoxWeight = Math.Ceiling(BOX_CASE * UT_WT).ToString();
+            }
+            partialBoxWeight = "0";
+            if (itemsInLastBox > 0)
+            {
+                partialBoxWeight = Math.Ceiling(itemsInLastBox * UT_WT).ToString();
+            }
+
+            valuePerFullBox = qty >= BOX_CASE ? (int)(BOX_CASE * (unitPrice * ((decimal)0.60))) : 0;
+            int diff = valuePerFullBox % 100;
+            if (diff > 0)
+            {
+                valuePerFullBox = valuePerFullBox + (100 - diff);
+            }
+            valuePerPartialBox = (int)(itemsInLastBox * (unitPrice * ((decimal)0.60)));
+            diff = valuePerPartialBox % 100;
+            if (diff > 0)
+            {
+                valuePerPartialBox = valuePerPartialBox + (100 - diff);
+            }
+            return details;
         }
 
         #region UPS RATE SERVICE API
@@ -838,7 +913,7 @@ namespace TimelyDepotMVC.Controllers
 
 
             }
-
+           
             return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
         }
 

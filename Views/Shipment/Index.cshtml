@@ -162,13 +162,20 @@
             }
         }
 
-        function validateUPSAccount() {
-            var accountNumber = $('#txtUPSAccountNumber').val();
-            var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
+    
 
-            szUrl = '@Url.Action("ValidateUPSAccount", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+        function validateUPSAccount() {
+
+            //var toZipCode = $('#ToZip').val();
+            var szInvoiceNo = jQuery("#invoiceNoid").val();
+            var actualShipmentId = jQuery("#txtShipmentId").val();
+
+            //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
+
+
+            szUrl = '@Url.Action("ProcessShipmentConfirmation", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?accountNumber=' + accountNumber + '&invoiceNo=' + szInvoiceNo;
+                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
             }
 
             //Display load image
@@ -182,8 +189,21 @@
                 //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
-                success: validateUPSAccountSuccess
+                success: UPSAccountValidationResponse
             });
+        }
+
+        function UPSAccountValidationResponse(response, statusCode) {
+            //Hide load image
+            HideLoadingDialog();
+            var obj = jQuery.parseJSON(response);
+            if (obj.ShipmentResults !== undefined) {
+
+                alert("You have a valid account number.");
+
+            } else {
+                alert("Invalid account number. Please contact your UPS provider.");
+            }
         }
 
         function processShipment() {
@@ -293,15 +313,7 @@
             jQuery("#labelBoxPreview").dialog("open");
         }
 
-        function validateUPSAccountSuccess(response, statusCode) {
-
-            var szResult = eval("(" + response + ")");
-            alert(szResult);
-
-            //Hide load image
-            HideLoadingDialog();
-
-        }
+     
 
         function clickbtnSubmitSearchLog(src, arg) {
             src.preventDefault();
@@ -882,8 +894,8 @@
 
         function LoadInvoice(InvNo) {
             InvNo = jQuery.trim(InvNo);
-            var szInvNo = "/" + InvNo
-            var szInvNoDet = "=" + InvNo
+            var szInvNo = "/" + InvNo;
+            var szInvNoDet = "=" + InvNo;
             var szUrl = jQuery("#editlnk").attr('href');
             szUrl = szUrl.replace("/0", szInvNo);
 

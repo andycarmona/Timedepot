@@ -13,5 +13,6 @@ namespace TimelyDepotMVC.UPSWrappers
         public string cost { get; set; }
         public string Negcost { get; set; }
         public string time { get; set; }
+        public string errorMessage { get; set; }
     }
 }
