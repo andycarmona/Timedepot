@@ -28,6 +28,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Qty")]
         [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = false)]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? Quantity { get; set; }
 
         [Display(Name = "Unit Price")]
@@ -35,15 +36,19 @@ namespace TimelyDepotMVC.Models.Admin
         public decimal? UnitPrice { get; set; }
 
         [Display(Name = "Weight")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? UnitWeight { get; set; }
 
         [Display(Name = "Height")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? DimensionH { get; set; }
 
         [Display(Name = "Length")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? DimensionL { get; set; }
 
         [Display(Name = "Width")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? DimensionD { get; set; }
 
         [Display(Name = "Reference # 1")]

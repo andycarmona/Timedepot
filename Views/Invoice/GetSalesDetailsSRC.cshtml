@@ -11,6 +11,7 @@
         double dExtAmountTotal = 0;
         double dExtAmount = 0;
         double quantity = 0.0;
+        int shippedQty = 0;
         string szClass = "";
         string szExtAmount = "";
         string szExtAmountSC = "";
@@ -176,7 +177,9 @@
                                 <div id='@divRemainingQuantityId' class="viosinput100 textright">
                                     @{
                                         quantity = (double)(item.Quantity - item.ShipQuantity);
+                                        shippedQty = (int)item.ShipQuantity;
                                     }
+                                   
                                     @Html.DisplayFor(modelItem => quantity)
                                 </div>
                             </td>
@@ -216,53 +219,12 @@
                     </table>
 
                 </div>
-                @*<div class="left">
-                        <table>
-                            <tr class="paddLR">
-                                <td>Unit Price</td>
-                                <td>Shipped Amount</td>
-                            </tr>
-                            <tr class="paddLR">
-                                 <td>
-                                    <div id="@szPrice" class="viosinput100 textright">
-                                        @Html.TextBoxFor(modelItem => item.UnitPrice, new { @class = "textright", @id = "txtUnitPrice" + counter, @disabled = true })
-                                        @Html.ValidationMessageFor(model => item.UnitPrice)
-                                    </div>
-                                </td>
-
-                                @{
-                                    var divId = "divShippedAmount" + counter;
-                                    var price = item.UnitPrice.GetValueOrDefault() * Convert.ToDecimal(item.ShipQuantity.GetValueOrDefault());
-                                 }
-                                <td class="textright"><div id='@divId'>@price</div></td>
-                            </tr>
-                            <tr class="paddLR teshipment">
-                                <td>
-                                    <div id="@szPriceSC" class="viosinput100 textright">
-                                        @Html.TextBoxFor(modelItem => item.UnitPricSRC, new { @class = "textright" })
-                                        @Html.ValidationMessageFor(model => item.UnitPricSRC)
-                                    </div>
-                                </td>
-                                <td class="textright">@szExtAmountSC</td>
-                            </tr>
-                            <tr class="paddLR teshipment">
-                                <td>
-                                    <div id="@szPriceRC" class="viosinput100 textright">
-                                        @Html.TextBoxFor(modelItem => item.UnitPriceRC, new { @class = "textright" })
-                                        @Html.ValidationMessageFor(model => item.UnitPriceRC)
-                                    </div>
-                                </td>
-                                <td class="textright">@szExtAmountRC</td>
-                            </tr>
-                            <tr class="paddLR textright teshipment">
-                                <td><span style="font-size: 1.0em; font-weight: bold;">Item Total:</span></td>
-                                <td class="textright">@szExtAmountTotal</td>
-                            </tr>
-                        </table>
-                    </div>*@
                 <div id="@szLnkShiped" style="margin: 5px auto; width: 80px; display: block; text-align: center">
                     <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId ,qty=quantity}, new { id = szLnkUpdate })</span>&nbsp;
-                    <span class="lnkShipItem">@Html.ActionLink("Ship Item", "ShipItem", "Shipment", new { id = item.Id, salesorderid = ViewBag.SalesOrderId }, new { id = szLnkUpdate, style = "display:none;" })</span>&nbsp;
+                    <span class="lnkShipItem">
+                        
+                    @Html.ActionLink("Ship Item", "ShipItem", "Shipment", new { id = item.Id, salesorderid = ViewBag.SalesOrderId, shipqty = quantity }, new { id = szLnkUpdate, style = "display:none;" })
+                    </span>&nbsp;
                 </div>
             </div>
             <div id="@szTax" class="tdsalesdetail viosinput60" style="display:none;">

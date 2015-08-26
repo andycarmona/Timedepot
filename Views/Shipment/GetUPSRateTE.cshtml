@@ -1,49 +1,55 @@
 ﻿@model IEnumerable<TimelyDepotMVC.UPSWrappers.ResultData>
-           @if (@Model.Any())
-           {
-               var status = false;
-               <div class="form-group">
-                   <label>Choose a UPS rate from list:</label><br />
-                   <table class="webgrid" style="width: 100%; margin: 0px auto;">
-                       <tbody>
-                           <tr class="webgrid-header">
-                               <th></th>
-                               <th>Service</th>
-                               <th>Cost</th>
-                               <th>Published cost</th>
-                               <th>Negotiated cost</th>
-                               <th>Time</th>
-                           </tr>
+@if (@Model.Any())
+{
+    var status = false;
+    
+    <div class="form-group">
+        <label>Choose a UPS rate from list:</label><br />
+        <table class="webgrid" style="width: 100%; margin: 0px auto;">
+            <tbody>
+                <tr class="webgrid-header">
+                    <th></th>
+                    <th>Service</th>
+                    <th>Cost</th>
+                    <th>Published cost</th>
+                    <th>Negotiated cost</th>
+                    <th>Time</th>
+                </tr>
 
-                           @foreach (var item in Model)
-                           {
-                               if (!String.IsNullOrEmpty(@item.errorMessage))
-                               {
-                                   status = true;
-                               }
-                               <tr>
-                                   <td>
-                                       <input style="width: 20px;" id="code" @item.code name="chosenUpsRate" type="radio" value="@item.code" />
-                  
-                                   </td>
-                                   <td>@item.service</td>
-                                   <td>@(item.cost ?? "No value")</td>
-                                   <td>@(item.Publishedcost ?? "No value")</td>
-                                   <td>@(item.Negcost ?? "No value")</td>
-                                   <td>@(item.time ?? "No value")</td>
-                               </tr>
-                           }
-     
+                @foreach (var item in Model)
+                {
+                    if (!String.IsNullOrEmpty(@item.errorMessage))
+                    {
+                        status = true;
+                    }
+                    <tr>
+                        <td>
+                            <input style="width: 20px;" id="code" @item.code name="chosenUpsRate" type="radio" value="@item.code" />
 
-                       </tbody>
-                   </table>
-                   
-                   @if(!status){
-                   <input class="btn btn-default" type="button" id="btnProcessShipment" value="Process shipment" onclick=" processShipment(); " />
+                        </td>
+                        <td>@item.service</td>
+                        <td>@(item.cost ?? "No value")</td>
+                        <td>@(item.Publishedcost ?? "No value")</td>
+                        <td>@(item.Negcost ?? "No value")</td>
+                        <td>@(item.time ?? "No value")</td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+        @if (!status)
+        {
+            <input class="btn btn-default" type="button" id="btnProcessShipment" value="Process shipment" onclick=" processShipment(); " />
+        }
+        else
+        {
+            <p style="color:red;">Missing data in rate list. Unable to process shipment</p>
+        }
+    </div>
 }
-               </div>
-           }
-           else
-           {
-               <p>Sorry.Could not find rates for this product</p>
-           }
+else
+{
+    <p>Sorry.Could not find rates for this product</p>
+}
