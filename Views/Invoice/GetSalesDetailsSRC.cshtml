@@ -11,6 +11,7 @@
         double dExtAmountTotal = 0;
         double dExtAmount = 0;
         double quantity = 0.0;
+        int originalQuantity = 0;
         int shippedQty = 0;
         string szClass = "";
         string szExtAmount = "";
@@ -156,26 +157,25 @@
                         <tr class="paddLR">
                             <td>
                                 @*<div id="@szQty" class="viosinput100">*@
-                                @{ var divQuantityId = "divQuantity" + counter; }
-                                <div id='@divQuantityId' class="viosinput100">
-                                    @Html.DisplayFor(modelItem => item.Quantity, new { @class = "textright" })
+                                @{
+                                    var divQuantityId = "divQuantity" + counter;
+                                  
+                                }
+                                <div id='@divQuantityId' data-salesorder-id="@szShipQty" class="viosinput100">
 
+                                    @Html.TextBoxFor(modelItem => item.Quantity, new { @class = "shippingQuantity", @idAttr = counter,@originalQuantity=item.Quantity })
                                 </div>
                             </td>
                             <td>
-                                <div id="@szShipQty" class="viosinput100 textright">
-                                    @Html.TextBoxFor(modelItem => item.ShipQuantity, new { @class = "textright shippingQuantity", @id = "txtShipQuantity" + counter, @idAttr = counter, @max = item.Quantity, @min = 1 })
+                                <div id="@szShipQty" class="viosinput100">
+                                    @Html.TextBoxFor(modelItem => item.ShipQuantity, new { @class = "shipqty", @id = "txtShipQuantity" + counter, @idAttr = counter, @max = item.Quantity, @min = 1 })
                                     @Html.ValidationMessageFor(model => item.ShipQuantity)
-                                    <span style="display: none;" id="result_@szShipQty"></span>
+                                    <span style="display: none;" id="result_@szShipQty">@item.ShipQuantity</span>
                                 </div>
                             </td>
                             <td>
-                                @*<div id="@szBOQty" class="viosinput100 textright">
-                                        @Html.TextBoxFor(modelItem => item.BackOrderQuantity, new { @class = "textright" })
-                                        @Html.ValidationMessageFor(model => item.BackOrderQuantity)
-                                    </div>*@
                                 @{ var divRemainingQuantityId = "divRemainingQuantity" + counter; }
-                                <div id='@divRemainingQuantityId' class="viosinput100 textright">
+                                <div id='@divRemainingQuantityId' class="viosinput100">
                                     @{
                                  quantity = (double)(item.Quantity - item.ShipQuantity);
                                  shippedQty = (int)item.ShipQuantity;
@@ -187,7 +187,7 @@
                             <td>
                                 @*<div id="@szPrice" class="viosinput100 textright">*@
                                 @{ var divUnitPriceId = "divUnitPrice" + counter; }
-                                <div id='@divUnitPriceId' class="viosinput100 textright">
+                                <div id='@divUnitPriceId' class="viosinput100">
                                     @Html.DisplayFor(modelItem => item.UnitPrice, new { @class = "textright" })
                                     @Html.ValidationMessageFor(model => item.UnitPrice)
                                 </div>
@@ -202,7 +202,7 @@
                         <tr class="paddLR teshipment">
                             <td colspan="2" style="text-align: right;">Set up Charge</td>
                             <td>
-                                <div id="@szQtySCid" class="viosinput100 textright">
+                                <div id="@szQtySCid" class="viosinput100">
                                     @Html.TextBoxFor(modelItem => item.QuantitySC, new { @class = "textright" })
                                     @Html.ValidationMessageFor(model => item.QuantitySC)
                                 </div>
@@ -224,7 +224,7 @@
                     <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId, qty = quantity }, new { id = szLnkUpdate, @class = "btn btn-default" })</span>
                     <span style="float:left;" class="lnkShipItem">
                         <button class="btn btn-default" data-salesorder=@ViewBag.SalesOrderId data-itemid="@item.Id" data-shipquantity="@shippedQty" type="button" value="Ship item" id="@szLnkUpdate" style="display:none;">Ship item</button>
-                      
+
                     </span>&nbsp;
                 </div>
             </div>
@@ -250,33 +250,28 @@
         $('.shippingQuantity').blur(function () {
             debugger;
             var chosenQty = $(this).val();
-            var salesorderId = $(this).parent().attr("id").split("_")[1];
-            $("#result_shipqty_"+salesorderId).text(chosenQty);
+            var originalQty = parseInt($(this).attr("originalquantity"));
+            var salesorderId = $(this).parent().attr("data-salesorder-id").split("_")[1];
             var id = $(this).attr('idAttr');
-            //var test = $('#txtShipQuantity' + id).val()
-            var totalQuantity = parseInt($('#divQuantity' + id).text().trim());
-            var shippingQuantity = parseInt($(this).val());
-            var result = totalQuantity - shippingQuantity;
+            var shippingQuantity = parseInt($('#txtShipQuantity' + id).val().trim());
+            var remainingQty = chosenQty - shippingQuantity;
             var splitprice = $('#divUnitPrice' + id).text().trim().split(" ");
-            var unitPrice = parseFloat(splitprice[0]).toFixed(2);
-            if (shippingQuantity > 0 && shippingQuantity <= totalQuantity) {
+            var unitPrice = numeral().unformat(splitprice[0]);
+            //parseFloat(splitprice[0].replace('.', ',').replace(' ', '')).toFixed(2);
+            $("#result_shipqty_" + salesorderId).text(shippingQuantity);
 
-                if (result > 0) {
-                    $('#divRemainingQuantity' + id).html(result);
-                    $('#divShippedAmount' + id).html((unitPrice * chosenQty));
-
+            if (chosenQty > 0 && shippingQuantity <= chosenQty) {
+                if (remainingQty >= 0) {
+                    $(this).attr("originalquantity", chosenQty);
+                    $('#divRemainingQuantity' + id).html(remainingQty);
+                    $('#divShippedAmount' + id).html((unitPrice * shippingQuantity));
                 }
             }
             else {
-                alert('Shipment quantity should be greater than 0 and less than or equals to quantity available.');
-                if (totalQuantity > 0) {
-                    $("#result_shipqty_"+salesorderId).text(1);
-                    $(this).val('1');
-                    $('#divRemainingQuantity' + id).html(totalQuantity - 1);
+                    alert('Shipment quantity should be greater than 0 and less than or equals to quantity available.');
+                    $(this).val(originalQty);
+                    $('#divRemainingQuantity' + id).html(originalQty - shippingQuantity);
                     $('#divShippedAmount' + id).html(unitPrice);
-                } else {
-                    $(this).val('0');
-                }
             }
         });
     });

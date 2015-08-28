@@ -26,7 +26,7 @@
                         <input style="width:60px;" id="invoiceNoid" type="text"/>
                     </div>
                     @*<div class="left boxl5">Available default Address</div>*@
-                    <div class="left telink">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
+                    <div class="left" style="margin-left: 20px; height: 30px;">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk",@class="btn btn-default"})</div>
                     <div id="tradeselector01id" class="left boxl5"></div>
                 </div>
                 <div id="editInvoicediv">
@@ -105,7 +105,6 @@
         jQuery(document).ready(initializeShipment);
 
         function initializeShipment() {
-            debugger;
             //Set the buttons
             jQuery(".btn btn-default").button();
 
@@ -667,7 +666,7 @@
 
         function clickselectInvoicelnk(src, arg) {
             src.preventDefault();
-            debugger;
+            //debugger;
             //Display load image
             ShowLoadingDialog();
 
@@ -953,7 +952,9 @@
                 jQuery("#btUpsRate").css("cursor", "default");
                 jQuery("#btUpsRate").attr("title", "");
             }
+            //debugger;
             jQuery("#invoiceNoid").prop("disabled", "true");
+          
             jQuery("#addressresultdiv03").show();
             var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
             if (szInvoiceNo != "") {
@@ -1122,13 +1123,10 @@
 
             //Hide load image and select invoice link
             HideLoadingDialog();
-
-            //Attach handlers
-            //jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
-
-            //Open details tab
-            //szViewDetails = jQuery("#shipmentLogDetailsid").html();
-            //szViewDetails = jQuery.trim(szViewDetails);
+            $('.shipqty').each(function (i, obj) {
+                $(this).css("border", "none");
+                $(this).prop("readonly", true);
+            });
             clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
