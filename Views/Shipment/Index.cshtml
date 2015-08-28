@@ -5,7 +5,7 @@
     <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
 
 </div>
-<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;">@(@ViewBag.AddressResult == null ? "Address not validated" : @ViewBag.AddressResult) </p></div>
+<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;display:none;">@(@ViewBag.AddressResult == null ? "Address not validated" : @ViewBag.AddressResult) </p></div>
 
 <div>
     <div id="tabs" style="margin: 0px auto;">
@@ -23,7 +23,7 @@
                     @*<div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>*@
                     <div class="left boxl5">Invoice #</div>
                     <div class="left boxl5">
-                        <input id="invoiceNoid" type="text" />
+                        <input style="width:60px;" id="invoiceNoid" type="text"/>
                     </div>
                     @*<div class="left boxl5">Available default Address</div>*@
                     <div class="left telink">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
@@ -101,10 +101,11 @@
     <script type="text/javascript">
         var w;
         var selectedShipmentDetailValue;
+        var szId;
         jQuery(document).ready(initializeShipment);
 
         function initializeShipment() {
-
+            debugger;
             //Set the buttons
             jQuery(".btn btn-default").button();
 
@@ -129,7 +130,7 @@
 
             SetDefaultRateSelectors();
 
-            var szId = '@ViewBag.LoadInvoiceNo';
+            szId = '@ViewBag.LoadInvoiceNo';
             if (szId != "") {
                 LoadInvoice(szId);
             }
@@ -286,6 +287,10 @@
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
                         jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
+                        $('.shippingQuantity').each(function (i, obj) {
+                            $(this).val(0);
+                        });
+
                         var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
                         if (szInvoiceId != undefined) {
                             loadInvoiceDetails(szInvoiceId);
@@ -662,7 +667,7 @@
 
         function clickselectInvoicelnk(src, arg) {
             src.preventDefault();
-
+            debugger;
             //Display load image
             ShowLoadingDialog();
 
@@ -670,12 +675,12 @@
             var szSealesOrderNo = $('#invoiceNoid').val(); //"0";//jQuery("#searchItem").val();
             var szCustomer = "false"; //jQuery("#ckActiveHlp").val();
             var szEmail = "invoice"; //jQuery("#ckCriteriaHlp").val();
-
+            
             //Get the partial view
             //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
             var szUrl = jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + '';
+                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + 'InvoiceNoDesc';
             }
 
             jQuery.ajax({
@@ -771,8 +776,7 @@
             jQuery("#ckstate").click(clickckstate);
 
             jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
-
-
+         
         }
 
         function eacheditInvoicelnk(nPos, src) {
@@ -925,11 +929,7 @@
             //Set the buttons
             jQuery(".btn btn-default").button();
 
-            //Move trade selector
-            //jQuery("#tradeeditselector01id").remove();
-            //jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
-
-            // Addey by SANOOP
+           
             jQuery("#tradeeditselector01id").html($('#divCompanyName').text().trim());
 
             //Mark error message
@@ -953,14 +953,13 @@
                 jQuery("#btUpsRate").css("cursor", "default");
                 jQuery("#btUpsRate").attr("title", "");
             }
-
+            jQuery("#invoiceNoid").prop("disabled", "true");
+            jQuery("#addressresultdiv03").show();
             var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
             if (szInvoiceNo != "") {
                 jQuery("#invoiceNoid").val(szInvoiceNo);
             }
 
-            //Load InvoiceDetail
-            //Display load image
             ShowLoadingDialog();
 
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
@@ -978,7 +977,7 @@
         }
 
         function selectEditInvoiceDetailSuccess(response, statusCode) {
-            debugger;
+            //debugger;
             var objRes = response;
 
             //Display the response data
@@ -1016,8 +1015,8 @@
             jQuery(".teshipment").css("display", "none");
 
             //Display required fields
-            jQuery(".lnkShipItem a").each(eachlnkShipItem);
-            //jQuery(".lnkShipItem a").on('click',addShipmentItem);
+            jQuery(".lnkShipItem button").each(eachlnkShipItem);
+            jQuery(".lnkShipItem button").on('click',addShipmentItem);
             //Center other fields
             jQuery(".edititemhlpdiv").css("width", "600px");
             jQuery(".edititemhlpdiv").css("margin", "0px auto");
@@ -1117,7 +1116,7 @@
 
         function shipmentDetailSuccess(response, statusCode) {
             var objRes = response;
-            debugger;
+            //debugger;
             //Display the response data
             jQuery("#shipmentDetailsdialog").html(objRes);
 
@@ -1220,24 +1219,28 @@
         }
 
         function addShipmentItem(event) {
-            var szUrl = jQuery(event.target).attr("href");
          
+            var szUrl = "/Shipment/ShipItem?";
+            var salesorderId = $(this).attr('data-salesorder');
+            var invoiceId = $(this).attr('data-itemid');
+            var shippedQuantity = $("#result_shipqty_"+invoiceId).text();
+            szUrl = szUrl + "salesorderid="+salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
+
             jQuery.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: szUrl,
                 data: null,
-                //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
                 success: shipmentItemSuccess
             });
-            
+
         }
 
 
         function shipmentItemSuccess(response, statusCode) {
             var objRes = response;
-            debugger;
+            //debugger;
             //Display the response data
             jQuery("#shipmentDetailsdialog").html(objRes);
 
@@ -1275,6 +1278,10 @@
                     data: "shipmentDetailId=" + shipmentDetailId,
                     success: function(data) {
                         $("#shipmentDetailsdialog").html(data);
+                        var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+                        if (szInvoiceId != undefined) {
+                            loadInvoiceDetails(szInvoiceId);
+                        }
                     }
                 });
             }
@@ -1305,7 +1312,7 @@
                 datatype: "html",
                 success: function(data) {
                     clickbtDialogCloseAddDetail();
-                    debugger;
+                    //debugger;
                     $('#shipmentDetailsdialog').html(data);
 
                 },

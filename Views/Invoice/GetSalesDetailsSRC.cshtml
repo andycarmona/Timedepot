@@ -106,7 +106,7 @@
             <div class="left" style="display: none;">
                 @Html.DisplayFor(modelItem => item.SalesOrderId)
             </div>
-            <div class="left detailShipment" style="margin-left: 5px; margin-right: 5px;">@Html.ActionLink("X", "DeleteDetail", "Invoice", new { id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this item?');" })</div>
+            <div class="left detailShipment" style="margin-left: 5px; margin-right: 5px;">@Html.ActionLink("X", "DeleteDetail", "Invoice", new { id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this item?');", @class = "btn btn-default" })</div>
             <div class="left" style="width: 300px; margin-right: 0.5em;">
                 Item No.:&nbsp;@Html.DisplayFor(modelItem => item.Sub_ItemID)
             </div>
@@ -143,7 +143,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="left">
+                <div class="left" style="margin-bottom:25px;">
                     <table>
                         <tr class="paddLR">
                             <td>Req. Qty</td>
@@ -166,6 +166,7 @@
                                 <div id="@szShipQty" class="viosinput100 textright">
                                     @Html.TextBoxFor(modelItem => item.ShipQuantity, new { @class = "textright shippingQuantity", @id = "txtShipQuantity" + counter, @idAttr = counter, @max = item.Quantity, @min = 1 })
                                     @Html.ValidationMessageFor(model => item.ShipQuantity)
+                                    <span style="display: none;" id="result_@szShipQty"></span>
                                 </div>
                             </td>
                             <td>
@@ -176,10 +177,10 @@
                                 @{ var divRemainingQuantityId = "divRemainingQuantity" + counter; }
                                 <div id='@divRemainingQuantityId' class="viosinput100 textright">
                                     @{
-                                        quantity = (double)(item.Quantity - item.ShipQuantity);
-                                        shippedQty = (int)item.ShipQuantity;
+                                 quantity = (double)(item.Quantity - item.ShipQuantity);
+                                 shippedQty = (int)item.ShipQuantity;
                                     }
-                                   
+
                                     @Html.DisplayFor(modelItem => quantity)
                                 </div>
                             </td>
@@ -219,11 +220,11 @@
                     </table>
 
                 </div>
-                <div id="@szLnkShiped" style="margin: 5px auto; width: 80px; display: block; text-align: center">
-                    <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId ,qty=quantity}, new { id = szLnkUpdate })</span>&nbsp;
-                    <span class="lnkShipItem">
-                        
-                    @Html.ActionLink("Ship Item", "ShipItem", "Shipment", new { id = item.Id, salesorderid = ViewBag.SalesOrderId, shipqty = quantity }, new { id = szLnkUpdate, style = "display:none;" })
+                <div id="@szLnkShiped" style="margin: 5px auto; width: 300px; display: block; text-align: center">
+                    <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId, qty = quantity }, new { id = szLnkUpdate, @class = "btn btn-default" })</span>
+                    <span style="float:left;" class="lnkShipItem">
+                        <button class="btn btn-default" data-salesorder=@ViewBag.SalesOrderId data-itemid="@item.Id" data-shipquantity="@shippedQty" type="button" value="Ship item" id="@szLnkUpdate" style="display:none;">Ship item</button>
+                      
                     </span>&nbsp;
                 </div>
             </div>
@@ -237,7 +238,7 @@
     }
 
     <div style="margin: 5px auto; width: 40px; display: block;">
-        @Html.ActionLink("Add", "AddDetail", "Invoice", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkAddSalesOrderDetail" })
+        @Html.ActionLink("Add", "AddDetail", "Invoice", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkAddSalesOrderDetail", @class = "btn btn-default" })
     </div>
     <div id="shippeditemsdiv" style="display:none;">
         @ViewBag.ShippedItems
@@ -248,25 +249,31 @@
     $(document).ready(function () {
         $('.shippingQuantity').blur(function () {
             debugger;
+            var chosenQty = $(this).val();
+            var salesorderId = $(this).parent().attr("id").split("_")[1];
+            $("#result_shipqty_"+salesorderId).text(chosenQty);
             var id = $(this).attr('idAttr');
             //var test = $('#txtShipQuantity' + id).val()
             var totalQuantity = parseInt($('#divQuantity' + id).text().trim());
             var shippingQuantity = parseInt($(this).val());
             var result = totalQuantity - shippingQuantity;
-            var unitPrice = parseFloat($('#divUnitPrice' + id).text().trim().substr(1, $('#divUnitPrice' + id).text().length - 1));
+            var splitprice = $('#divUnitPrice' + id).text().trim().split(" ");
+            var unitPrice = parseFloat(splitprice[0]).toFixed(2);
             if (shippingQuantity > 0 && shippingQuantity <= totalQuantity) {
-               
+
                 if (result > 0) {
                     $('#divRemainingQuantity' + id).html(result);
-                    $('#divShippedAmount' + id).html((unitPrice * shippingQuantity).toFixed(2));
+                    $('#divShippedAmount' + id).html((unitPrice * chosenQty));
+
                 }
             }
             else {
                 alert('Shipment quantity should be greater than 0 and less than or equals to quantity available.');
                 if (totalQuantity > 0) {
+                    $("#result_shipqty_"+salesorderId).text(1);
                     $(this).val('1');
                     $('#divRemainingQuantity' + id).html(totalQuantity - 1);
-                    $('#divShippedAmount' + id).html(unitPrice.toFixed(2));
+                    $('#divShippedAmount' + id).html(unitPrice);
                 } else {
                     $(this).val('0');
                 }

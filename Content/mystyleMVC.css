@@ -580,6 +580,13 @@ span.right { float: right; width: 3em; text-align: left; }
     border-left: 2px solid #D6E8FF;
     border-right: 2px solid #D6E8FF;
 }
+.webgrid tr:hover {
+    background-color: #D6E8FF;
+}
+
+.pagination tr:hover {
+    background-color: #FFFFFF;
+}
 
 .webgrid-row-style {
     height: 30px;
