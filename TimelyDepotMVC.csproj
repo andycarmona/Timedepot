@@ -708,6 +708,10 @@
     <Compile Include="Migrations\201508101308137_shippedFlag.Designer.cs">
       <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201508141521428_ShippedFlagtoShipment.cs" />
+    <Compile Include="Migrations\201508141521428_ShippedFlagtoShipment.Designer.cs">
+      <DependentUpon>201508141521428_ShippedFlagtoShipment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2285,6 +2289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201508101308137_shippedFlag.resx">
       <DependentUpon>201508101308137_shippedFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508141521428_ShippedFlagtoShipment.resx">
+      <DependentUpon>201508141521428_ShippedFlagtoShipment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

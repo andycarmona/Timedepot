@@ -316,6 +316,77 @@ namespace TimelyDepotMVC.UPSWrappers
         }
 
         #endregion
+        public ShipConfirmResponse CallUPSShipmentConfirmationRequest(string serviceCode, int shipmentID, ref string szError)
+        {
+            //var dbShipment = ShipmentModule.GetShipmentByID(ShipmentDetailID);
+            try
+            {
+                var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(shipmentID);
+
+                var shpSvc = new ShipService();
+                var shipmentRequest = new ShipConfirmRequest();
+                AddUpsSecurity(shpSvc);
+                var request = new RequestType();
+                string[] requestOption = { "nonvalidate" };
+                request.RequestOption = requestOption;
+                shipmentRequest.Request = request;
+                var shipment = new ShipmentType();
+                shipment.Description = "Ship webservice";
+                AddShipper(shipment);
+                AddShipFromAddress(shipment);
+                AddShipToAddress(shipment);
+                AddBillShipperAccount(shipment);
+                //AddPaymentInformation(shipment);
+
+                var service = new ServiceType();
+                service.Code = serviceCode;
+                shipment.Service = service;
+
+                PackageType[] pkgArray;
+                pkgArray = new PackageType[shipmentDetails.Count];
+                var i = 0;
+                foreach (var box in shipmentDetails)
+                {
+                    AddPackage(
+                        box.BoxNo,
+                        1,
+                        20,
+                        1,
+                        1,
+                        1,
+                        "02",
+                        "USD",
+                        pkgArray,
+                        i);
+                    i = i + 1;
+                }
+                shipment.Package = pkgArray;
+
+                var labelSpec = new LabelSpecificationType();
+                var labelStockSize = new LabelStockSizeType();
+                labelStockSize.Height = "3";
+                labelStockSize.Width = "2";
+                labelSpec.LabelStockSize = labelStockSize;
+                var labelImageFormat = new LabelImageFormatType();
+                labelImageFormat.Code = "GIF"; //"SPL";
+                labelSpec.LabelImageFormat = labelImageFormat;
+                shipmentRequest.LabelSpecification = labelSpec;
+                shipmentRequest.Shipment = shipment;
+
+                var shipmentResponse = shpSvc.ProcessShipConfirm(shipmentRequest);
+                return shipmentResponse;
+            }
+            catch (System.Web.Services.Protocols.SoapException ex)
+            {
+                string message = string.Empty;
+                message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
+                message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
+                message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
+                message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Message, ex.Detail.LastChild.InnerText);
+                return null;
+            }
+        }
 
         public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int shipmentID, ref string szError)
         {
@@ -323,7 +394,7 @@ namespace TimelyDepotMVC.UPSWrappers
             try
             {
                 var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(shipmentID);
-
+               
                 var shpSvc = new ShipService();
                 var shipmentRequest = new ShipmentRequest();
                 AddUpsSecurity(shpSvc);
@@ -373,7 +444,7 @@ namespace TimelyDepotMVC.UPSWrappers
                 labelSpec.LabelImageFormat = labelImageFormat;
                 shipmentRequest.LabelSpecification = labelSpec;
                 shipmentRequest.Shipment = shipment;
-                
+              
                 var shipmentResponse = shpSvc.ProcessShipment(shipmentRequest);
                 return shipmentResponse;
             }

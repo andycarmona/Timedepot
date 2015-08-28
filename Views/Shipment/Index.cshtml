@@ -5,7 +5,8 @@
     <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
 
 </div>
-<div class="divh1 boxtb3">@ViewBag.Title</div>
+<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;display:none;">@(@ViewBag.AddressResult == null ? "Address not validated" : @ViewBag.AddressResult) </p></div>
+
 <div>
     <div id="tabs" style="margin: 0px auto;">
         <ul>
@@ -14,13 +15,15 @@
             <li><a href="#tabs-3">Process Shipment</a></li>
             <li><a href="#tabs-4">Shipment Log</a></li>
         </ul>
+
         <div id="tabs-1">
+
             <div>
                 <div class="cf">
                     @*<div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>*@
                     <div class="left boxl5">Invoice #</div>
                     <div class="left boxl5">
-                        <input id="invoiceNoid" type="text" />
+                        <input style="width:60px;" id="invoiceNoid" type="text"/>
                     </div>
                     @*<div class="left boxl5">Available default Address</div>*@
                     <div class="left telink">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>
@@ -89,7 +92,7 @@
     @Html.ActionLink("Get Shipment Details", "GetShipmenDetails", "Shipment", new { invoiceid = "0" }, new { id = "getshipmentdetailsId" })
     @Html.ActionLink("Get Process Details", "ProcessShipmentInformation", "Shipment", new { invoiceid = "0" }, new { id = "getprocessdetailsId" })
     @Html.ActionLink("Get Ups rates Details", "GetUPSRateTE", "Shipment", new { invoiceid = "0" }, new { id = "getUpsRateDetailsId" })
-    <div id="addressresultdiv" class="tevalid" style="text-align: center;">@ViewBag.AddressResult</div>
+
     <div id="upserrordiv" class="error" style="text-align: center;">
         @ViewBag.UPSError
     </div>
@@ -98,35 +101,36 @@
     <script type="text/javascript">
         var w;
         var selectedShipmentDetailValue;
+        var szId;
         jQuery(document).ready(initializeShipment);
 
         function initializeShipment() {
-
+            debugger;
             //Set the buttons
             jQuery(".btn btn-default").button();
 
             //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
-            jQuery("#btUpsRate").click(clickbtUpsRate);
-
+           
+            jQuery("#updateDetail").click(updateDetailBox);
             jQuery("#lnkResetIdLog").click(clicklnkResetIdLog);
             jQuery("#ckcustLog").click(clickckcustLog);
             jQuery("#ckcompLog").click(clickckcompLog);
             jQuery("#ckcodeLog").click(clickckcodeLog);
             jQuery("#btnSubmitSearchLog").click(clickbtnSubmitSearchLog);
-
+            jQuery("#upsRateListbtn").click(GetRateList);
+           
             //Create the tabs
             jQuery("#tabs").tabs({ load: loadTab });
             //jQuery("#logtabs").tabs();
 
             //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
-            
 
 
             SetDefaultRateSelectors();
 
-            var szId = '@ViewBag.LoadInvoiceNo';
+            szId = '@ViewBag.LoadInvoiceNo';
             if (szId != "") {
                 LoadInvoice(szId);
             }
@@ -153,13 +157,35 @@
 
         }
 
-        function validateUPSAccount() {
-            var accountNumber = $('#txtUPSAccountNumber').val();
-            var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
+        function clickChangeTab(tabIndex) {
+            //debugger;
+            if (jQuery("#shipmentDetailsdialog").children().length > 0) {
+                $("#tabs").tabs("option", "active", tabIndex);
+            }
+        }
 
-            szUrl = '@Url.Action("ValidateUPSAccount", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
+        function GetRateList() {
+         
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+            if (szInvoiceId != undefined) {
+                LoadUpsRateInformation(szInvoiceId);
+            } else {
+                alert("Missing Invoice data necessary to get rates list.");
+            }
+        }
+
+        function validateUPSAccount() {
+
+            //var toZipCode = $('#ToZip').val();
+            var szInvoiceNo = jQuery("#invoiceNoid").val();
+            var actualShipmentId = jQuery("#txtShipmentId").val();
+
+            //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
+
+
+            szUrl = '@Url.Action("ProcessShipmentConfirmation", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?accountNumber=' + accountNumber + '&invoiceNo=' + szInvoiceNo;
+                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
             }
 
             //Display load image
@@ -173,8 +199,21 @@
                 //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
-                success: validateUPSAccountSuccess
+                success: UPSAccountValidationResponse
             });
+        }
+
+        function UPSAccountValidationResponse(response, statusCode) {
+            //Hide load image
+            HideLoadingDialog();
+            var obj = jQuery.parseJSON(response);
+            if (obj.ShipmentResults !== undefined) {
+
+                alert("You have a valid account number.");
+
+            } else {
+                alert("Invalid account number. Please contact your UPS provider.");
+            }
         }
 
         function processShipment() {
@@ -182,13 +221,13 @@
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-            
+
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId='+actualShipmentId+'&InvoiceNo=' + szInvoiceNo;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
                 }
 
                 //Display load image
@@ -205,7 +244,7 @@
                     success: UPSShipmentResponse
                 });
             } else {
-                alert("Error. Please choose a rate and a box to be send");
+                alert("Error. Please choose a UPS rate from list.");
             }
         }
 
@@ -225,7 +264,7 @@
         }
 
         function UPSShipmentResponse(response, statusCode) {
-            //Hide load image
+
             HideLoadingDialog();
             $("#shipmentContainerData").show();
             if (statusCode === "success") {
@@ -233,25 +272,34 @@
                 if (IsJsonString(response)) {
                     var obj = jQuery.parseJSON(response);
                     if (obj.ShipmentResults !== undefined) {
+                        rowData += "<tr><th>TrackNumber</th><th>Label</th></tr>";
                         for (var shipmentIndex = 0; shipmentIndex < obj.ShipmentResults.PackageResults.length; shipmentIndex++) {
                             var labelImage = "<img "
                                 + "src='" + "data:image/jpg;base64,"
                                 + obj.ShipmentResults.PackageResults[shipmentIndex].ShippingLabel.GraphicImage + "'/>";
 
                             var trackingNumber = obj.ShipmentResults.PackageResults[shipmentIndex].TrackingNumber;
-                            rowData += "<td>" + trackingNumber + "</td><td>" + labelImage + "</td>";
+                            rowData += "<tr><td>" + trackingNumber + "</td><td>" + labelImage + "</td></tr>";
 
                         }
-             
+
                         $('#shipmentResult').html(rowData);
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
-                        jQuery("#tabs").tabs("option", "active", 2);
+                        jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
+                        $('.shippingQuantity').each(function (i, obj) {
+                            $(this).val(0);
+                        });
+
+                        var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+                        if (szInvoiceId != undefined) {
+                            loadInvoiceDetails(szInvoiceId);
+                        }
                     } else {
-                        alert(response);
+                        alert("Error. Missing data. Please contact administrator.");
                     }
                 } else {
-                    alert("Sorry, couldn't get valid results. Please contact si administrator");
+                    alert("Error. Missing data in shipped box. Please fill upp data for all boxes.");
                 }
             }
         }
@@ -277,20 +325,11 @@
         function ShowBoxLabel(src) {
             var currentObj = src.currentTarget;
             var imageUrl = currentObj.currentSrc;
-            jQuery("#labelBoxPreview").dialog({ autoOpen: false, modal: true});
+            jQuery("#labelBoxPreview").dialog({ autoOpen: false, modal: true });
             jQuery("#labelBoxContent img").attr("src", imageUrl);
             jQuery("#labelBoxPreview").dialog("open");
         }
 
-        function validateUPSAccountSuccess(response, statusCode) {
-
-            var szResult = eval("(" + response + ")");
-            alert(szResult);
-
-            //Hide load image
-            HideLoadingDialog();
-
-        }
 
         function clickbtnSubmitSearchLog(src, arg) {
             src.preventDefault();
@@ -432,51 +471,6 @@
             }
         }
 
-        function clickbtUpsRate(src, arg) {
-
-            src.preventDefault();
-
-            var szMsg = "";
-            var szUrl = "";
-            var szInvoiceId = "";
-            var szAddressResult = jQuery("#addressresultdiv03").html();
-            szAddressResult = jQuery.trim(szAddressResult);
-            if (szAddressResult != "") {
-
-                szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
-
-                szMsg = "=" + szInvoiceId + '&ValidateAddresResult=' + szAddressResult;
-
-                // Commented By SANOOP
-                //szUrl = src.target.parentNode.href;
-                //szUrl = szUrl.replace("=0", szMsg)
-
-                // Added by SANOOP
-                var itemId = 'CK831';
-                var quantity = $('#item_Quantity').val();
-                var toZip = $('#ToZip').val();
-                szUrl = '@Url.Action("GetUPSRateTE", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
-                if (quantity != "") {
-                    szUrl = szUrl + '?ItemId=' + itemId + '&quantity=' + quantity + '&shipToPostalCode=' + toZip;
-                } else {
-                    alert("Missing shipment data. Could not retrieve Ups rates.");
-                }
-
-                //Display load image
-                ShowLoadingDialog();
-
-                //Get the UPS Rate
-                jQuery.ajax({
-                    type: 'GET',
-                    url: szUrl,
-                    data: null,
-                    //contentType: 'application/json; charset=utf-8',
-                    dataType: 'html',
-                    error: AjaxFailed,
-                    success: upsRateSuccess
-                });
-            }
-        }
 
         function upsRateSuccess(response, statusCode) {
 
@@ -673,7 +667,7 @@
 
         function clickselectInvoicelnk(src, arg) {
             src.preventDefault();
-
+            debugger;
             //Display load image
             ShowLoadingDialog();
 
@@ -681,12 +675,12 @@
             var szSealesOrderNo = $('#invoiceNoid').val(); //"0";//jQuery("#searchItem").val();
             var szCustomer = "false"; //jQuery("#ckActiveHlp").val();
             var szEmail = "invoice"; //jQuery("#ckCriteriaHlp").val();
-
+            
             //Get the partial view
             //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
             var szUrl = jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + '';
+                szUrl = szUrl + '?searchItem=' + szSealesOrderNo + '&ckActive=' + szCustomer + '&ckCriteria=' + szEmail + '&sortOrder=' + 'InvoiceNoDesc';
             }
 
             jQuery.ajax({
@@ -700,21 +694,6 @@
             });
 
             return false;
-
-            //Delete trade  selector
-            //jQuery("#tradeselector01id").html("");
-
-            //Get the partial view
-            //var szUrl = jQuery(src.target).attr("href");
-            //jQuery.ajax({
-            //    type: 'GET',
-            //    url: szUrl,
-            //    data: null,
-            //    //contentType: 'application/json; charset=utf-8',
-            //    dataType: 'html',
-            //    error: AjaxFailed,
-            //    success: selectInvoiceSuccess
-            //});
         }
 
         // Sorting.
@@ -748,21 +727,6 @@
             });
 
             return false;
-
-            //Delete trade  selector
-            //jQuery("#tradeselector01id").html("");
-
-            //Get the partial view
-            //var szUrl = jQuery(src.target).attr("href");
-            //jQuery.ajax({
-            //    type: 'GET',
-            //    url: szUrl,
-            //    data: null,
-            //    //contentType: 'application/json; charset=utf-8',
-            //    dataType: 'html',
-            //    error: AjaxFailed,
-            //    success: selectInvoiceSuccess
-            //});
         }
 
         function AjaxFailed(response, statusCode, optionerror) {
@@ -810,26 +774,9 @@
             jQuery("#ckemai").click(clickcckemai);
             jQuery("#ckcode").click(clickckcode);
             jQuery("#ckstate").click(clickckstate);
+
             jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
-
-
-            //jQuery(".pagination ul li a").each(eachlnknavigation);
-
-            //Initialize fields
-
-            //Get the title
-            //debugger;
-            //var szTitle = "Invoice";
-
-            //Show the dialog (used with the BuscarDepartamento call)
-            //jQuery("#shipmentDialog").dialog("option", "title", "Select " + szTitle);
-
-            //setter
-            //jQuery("#shipmentDialog").dialog("option", "width", 950);
-
-            //display the popup dialog
-            //jQuery("#shipmentDialog").dialog("open");
-
+         
         }
 
         function eacheditInvoicelnk(nPos, src) {
@@ -917,8 +864,8 @@
 
         function LoadInvoice(InvNo) {
             InvNo = jQuery.trim(InvNo);
-            var szInvNo = "/" + InvNo
-            var szInvNoDet = "=" + InvNo
+            var szInvNo = "/" + InvNo;
+            var szInvNoDet = "=" + InvNo;
             var szUrl = jQuery("#editlnk").attr('href');
             szUrl = szUrl.replace("/0", szInvNo);
 
@@ -982,11 +929,7 @@
             //Set the buttons
             jQuery(".btn btn-default").button();
 
-            //Move trade selector
-            //jQuery("#tradeeditselector01id").remove();
-            //jQuery("#tradeeditselector01id").appendTo(jQuery("#tradeselector01id"));
-
-            // Addey by SANOOP
+           
             jQuery("#tradeeditselector01id").html($('#divCompanyName').text().trim());
 
             //Mark error message
@@ -1010,14 +953,13 @@
                 jQuery("#btUpsRate").css("cursor", "default");
                 jQuery("#btUpsRate").attr("title", "");
             }
-
+            jQuery("#invoiceNoid").prop("disabled", "true");
+            jQuery("#addressresultdiv03").show();
             var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
             if (szInvoiceNo != "") {
                 jQuery("#invoiceNoid").val(szInvoiceNo);
             }
 
-            //Load InvoiceDetail
-            //Display load image
             ShowLoadingDialog();
 
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
@@ -1053,7 +995,7 @@
 
             //Set readonly fields
             // the tax should be on product only, no tax on service
-            jQuery(".service input").each(eachInvoicedetailservice)
+            jQuery(".service input").each(eachInvoicedetailservice);
             jQuery(".detailShipmentUpdate a").each(eachdetailShipmentUpdate);
 
             //Set the buttons
@@ -1066,15 +1008,15 @@
             jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
             jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
             jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
-
             jQuery(".imprintselectorclass").each(eachimprintselectorclass);
             jQuery(".imprintclass").each(eachimprintclass);
-
+            $(document).on("click", "#lnkAddShipmentDetail", clicklnkAddShipmentDetail);
             //Hide fields not used
             jQuery(".teshipment").css("display", "none");
 
             //Display required fields
-            jQuery(".lnkShipItem a").each(eachlnkShipItem);
+            jQuery(".lnkShipItem button").each(eachlnkShipItem);
+            jQuery(".lnkShipItem button").on('click',addShipmentItem);
             //Center other fields
             jQuery(".edititemhlpdiv").css("width", "600px");
             jQuery(".edititemhlpdiv").css("margin", "0px auto");
@@ -1085,6 +1027,8 @@
             if (szHayShipment != "0") {
                 LoadShipmentDetails(szHayShipment);
 
+            } else {
+                jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
             }
         }
 
@@ -1106,20 +1050,27 @@
         }
 
         function LoadUpsRateInformation(invoiceId) {
-            var szMsg = "=" + invoiceId;
+            var itemId = jQuery("#item_Sub_ItemID").val();
+            var quantity = jQuery("#divQuantity1").text();
+            var toZip = jQuery("#ToZip").val();
+            var szMsg = "=" + invoiceId + "&ItemId=" + itemId + "&quantity=" + quantity + "&shipToPostalCode=" + toZip;
 
             var szUrl = jQuery("#getUpsRateDetailsId").attr("href");
             szUrl = szUrl.replace("=0", szMsg);
-
-            jQuery.ajax({
-                type: 'GET',
-                url: szUrl,
-                data: null,
-                //contentType: 'application/json; charset=utf-8',
-                dataType: 'html',
-                error: AjaxFailed,
-                success: upsRateDetailSuccess
-            });
+            if (jQuery("#addressresultdiv03").text() != '') {
+                ShowLoadingDialog();
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: upsRateDetailSuccess
+                });
+            } else {
+                alert("Please validate the shipment address.");
+            }
         }
 
 
@@ -1149,6 +1100,7 @@
             var objRes = response;
             //Display the response data
             jQuery("#apiresultsid").html(objRes);
+            HideLoadingDialog();
         }
 
         function processDetailSuccess(response) {
@@ -1156,17 +1108,15 @@
             //Display the response data
             jQuery("#processShipmentInfo").html(objRes);
 
-           
+
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
-            if (szHayShipment != "0") {
-                LoadUpsRateInformation(szHayShipment);
-            }
+         
         }
-       
+
         function shipmentDetailSuccess(response, statusCode) {
             var objRes = response;
-
+            //debugger;
             //Display the response data
             jQuery("#shipmentDetailsdialog").html(objRes);
 
@@ -1174,14 +1124,12 @@
             HideLoadingDialog();
 
             //Attach handlers
-            jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
+            //jQuery("#lnkAddShipmentDetail").click(clicklnkAddShipmentDetail);
 
             //Open details tab
-            szViewDetails = jQuery("#shipmentLogDetailsid").html();
-            szViewDetails = jQuery.trim(szViewDetails);
-            if (szViewDetails != "") {
-                jQuery("#tabs").tabs("option", "active", 1);
-            }
+            //szViewDetails = jQuery("#shipmentLogDetailsid").html();
+            //szViewDetails = jQuery.trim(szViewDetails);
+            clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {
@@ -1232,7 +1180,7 @@
             $('#processShipmentBtn').show();
             ////Attach handlers
             jQuery("#btDialogCloseAddDetail").click(clickbtDialogCloseAddDetail);
-          
+
             //Get the title
             //debugger;
             var szTitle = "Shipment Detail";
@@ -1244,9 +1192,11 @@
             jQuery("#selectvendorDialog").dialog("option", "width", 340);
 
 
-
             //display the popup dialog
             jQuery("#selectvendorDialog").dialog("open");
+
+            //Event for updating/deleting boxes
+            jQuery("#PostNewDetail").click(postDetailData);
 
 
         }
@@ -1265,6 +1215,41 @@
 
         function eachlnkShipItem(nPos, src) {
             jQuery(src).css("display", "block");
+            
+        }
+
+        function addShipmentItem(event) {
+         
+            var szUrl = "/Shipment/ShipItem?";
+            var salesorderId = $(this).attr('data-salesorder');
+            var invoiceId = $(this).attr('data-itemid');
+            var shippedQuantity = $("#result_shipqty_"+invoiceId).text();
+            szUrl = szUrl + "salesorderid="+salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
+
+            jQuery.ajax({
+                type: 'POST',
+                url: szUrl,
+                data: null,
+                dataType: 'html',
+                error: AjaxFailed,
+                success: shipmentItemSuccess
+            });
+
+        }
+
+
+        function shipmentItemSuccess(response, statusCode) {
+            var objRes = response;
+            //debugger;
+            //Display the response data
+            jQuery("#shipmentDetailsdialog").html(objRes);
+
+            //Hide load image and select invoice link
+            HideLoadingDialog();
+
+            clickChangeTab(1);
+
+      
         }
 
         function eachInvoicedetailservice(nPos, src) {
@@ -1281,6 +1266,60 @@
 
         function eachlnkUpdateDetail(nPos, src) {
             jQuery(src).click(clicklnkUpdateDetail);
+        }
+
+        function deleteDetailBox(shipmentDetailId) {
+            var r = confirm("Are you sure you want to delete this detail?");
+            if (r == true) {
+                $.ajax({
+                    type: "POST",
+                    dataType: 'text',
+                    url: "/Shipment/Delete",
+                    data: "shipmentDetailId=" + shipmentDetailId,
+                    success: function(data) {
+                        $("#shipmentDetailsdialog").html(data);
+                        var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+                        if (szInvoiceId != undefined) {
+                            loadInvoiceDetails(szInvoiceId);
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateDetailBox(boxDetails) {
+
+            $.ajax({
+                type: "POST",
+                dataType: 'html',
+                url: "/Shipment/UpdateDetail",
+                data: $('#detailboxForm').serialize(),
+                success: function(data) {
+                    $("#shipmentDetailsdialog").html(data);
+                }
+            });
+
+        }
+
+        function postDetailData(src, arg) {
+            src.preventDefault();
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Shipment/AddDetail",
+                data: $('#detailForm').serialize(),
+                datatype: "html",
+                success: function(data) {
+                    clickbtDialogCloseAddDetail();
+                    //debugger;
+                    $('#shipmentDetailsdialog').html(data);
+
+                },
+                fail: function() {
+                    alert("fail");
+                }
+            });
         }
 
         function clicklnkAddSalesOrderDetail(src, arg) {

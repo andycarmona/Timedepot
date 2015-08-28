@@ -71,23 +71,18 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <input class="btn btn-default" type="button" value="Get UPS rate list" onclick="GetRateList()">
+        
+    </div>
 
 </div>
 
-<div id="apiresultsid" style="width: 620px; margin: 10px auto;">
+<div id="apiresultsid" style="margin: 10px auto;">
     @*<textarea id="txtapiresultsid" cols="80" rows="5"></textarea>*@
 </div>
 <div id="shipmentContainerData" style="display:none;">
-    <table class="webgrid" style="width: 50%; margin: 0px auto;">
-        <tr class="webgrid-header">
-            <th style="text-align:left;">
-                TrackNumber
-            </th>
-            <th style="text-align:left;">
-                Label
-            </th>
-        </tr>
-        <tr id="shipmentResult"></tr>
+    <table id="shipmentResult" class="webgrid" style="width: 50%; margin: 0px auto;">
     </table>
 
 </div>

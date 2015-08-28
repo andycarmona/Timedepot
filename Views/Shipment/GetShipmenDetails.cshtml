@@ -1,124 +1,138 @@
-﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
+﻿@using System.Data.Entity.Validation
+@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
 @using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
 @model IEnumerable<TimelyDepotMVC.Models.Admin.ShipmentDetails>
 
-<div class="boxMb10" style="text-align:center; font-size:1.1em; font-weight:bold;">@ViewBag.ShipmentTitle</div>
-<table class="webgrid" style="width: 100%; margin: 0px auto;">
-    <tr class="webgrid-header">
-        <th>@Html.ActionLink("Add", "AddDetail", new { shipmenid = ViewBag.ShipmentId }, new { id = "lnkAddShipmentDetail" })</th>
-        <th style="display:none;">
-            @Html.DisplayNameFor(model => model.ShipmentId)
-        </th>
-        <th style="display:none;">
-            @Html.DisplayNameFor(model => model.DetailId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BoxNo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Sub_ItemID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UnitPrice)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UnitWeight)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DimensionH)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DimensionL)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DimensionD)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Reference1)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Reference2)
-        </th>
-    </tr>
+@if (Model == null)
+{
+}
+else
+{
 
-    @foreach (var item in Model)
+    <div class="boxMb10" style="text-align: center; font-size: 1.1em; font-weight: bold;">@ViewBag.ShipmentTitle</div>
+    using (Html.BeginForm("UpdateDetail", "Shipment", FormMethod.Post, new { id = "detailboxForm" }))
     {
-        <tr id="imageRow">
-            <td>
-                @*@Html.ActionLink("Edit", "EditShipDetail", new { id = item.ShipmentDetailID }) |*@
-                @if (!@item.Shipped)
-                {
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ShipmentDetailID }, new { onclick = "return confirm('Do you want to delete this detail?');" })
-                }
-            </td>
-            <td style="display:none;">
-                @Html.DisplayFor(modelItem => item.ShipmentId)
-            </td>
-            <td style="display:none;">
-                @Html.TextBoxFor(modelItem => item.DetailId)
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.BoxNo))
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Sub_ItemID))
-             
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Quantity))
-           
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitPrice))
-            
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitWeight, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitWeight))
-              
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionH, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionH))
-              
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionL, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionL))
-              
-            </td>
-            <td style="text-align:left;">
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionD, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionD))
-            
-            </td>
-            <td>
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference1, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference1))
-          
-            </td>
-            <td>
-                @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference2))
-          
-            </td>
-        </tr>
+
+        <table class="webgrid" style="width: 100%; margin: 0px auto;">
+            <tr class="webgrid-header">
+                <th>@Html.ActionLink("Add", "AddDetail", new { shipmenid = ViewBag.ShipmentId }, new { id = "lnkAddShipmentDetail" })</th>
+                <th style="display: none;">
+                    @Html.DisplayNameFor(model => model.ShipmentId)
+                </th>
+                <th style="display: none;">
+                    @Html.DisplayNameFor(model => model.DetailId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BoxNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sub_ItemID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UnitPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UnitWeight)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DimensionH)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DimensionL)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DimensionD)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Reference1)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Reference2)
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @*@Html.ActionLink("Edit", "EditShipDetail", new { id = item.ShipmentDetailID }) |*@
+
+                        @if (!@item.Shipped)
+                        {
+                            <button class="btn btn-default" type="button" id="deleteBoxbtn" onclick="deleteDetailBox(@item.ShipmentDetailID); "><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> </button>
+
+                            <button style="margin-right: 5px;" class="btn btn-default" type="button" id="updateDetail" value="Update" onclick="updateDetailBox();"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+
+                        }
+                    </td>
+                    <td style="display: none;">
+                        @Html.TextBoxFor(modelItem => item.ShipmentId)
+                    </td>
+                    <td style="display: none;">
+                        @Html.TextBoxFor(modelItem => item.ShipmentDetailID)
+                    </td>
+                    <td style="text-align: left;">
+                        @Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "true" } })
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Sub_ItemID))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Quantity))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitPrice))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitWeight, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitWeight))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionH, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionH))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionL, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionL))
+
+                    </td>
+                    <td style="text-align: left;">
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionD, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionD))
+
+                    </td>
+                    <td>
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference1, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference1))
+
+                    </td>
+                    <td>
+                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference2))
+
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4">
+                    <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+
+                </td>
+            </tr>
+
+        </table>
+        if (!string.IsNullOrEmpty((string)TempData["ErrorMessages"]))
+        {
+            <p style="color:red">@TempData["ErrorMessages"]</p>
+        }
     }
-    <tr>
-        <td colspan="4">
-            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
-            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
-
-        </td>
-    </tr>
-
-</table>
-<div id="shipmentLogDetailsid" style="display:none;">@ViewBag.ShipmentLogDetails</div>
-<div id="labelBoxPreview" style="width:500px;" title="Label Preview" style="display:none;">
-    <div id="labelBoxContent" style="
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              margin-top: 100px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              -webkit-transform: rotate(90deg);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              -moz-transform: rotate(90deg);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              -o-transform: rotate(90deg);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              -ms-transform: rotate(90deg);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              transform: rotate(90deg);">
-        <img src="" alt="" />
+    <div id="shipmentLogDetailsid" style="display: none;">@ViewBag.ShipmentLogDetails</div>
+    <div id="labelBoxPreview" style="width: 500px;" title="Label Preview" style="display: none;">
+        <div id="labelBoxContent" style="margin-top: 100px; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);">
+            <img src="" alt="" />
+        </div>
     </div>
-</div>
+}

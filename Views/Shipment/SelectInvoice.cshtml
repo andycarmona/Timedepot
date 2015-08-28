@@ -9,55 +9,7 @@
         CURSOR: pointer;
     }
 </style>
-@*<div style="margin: 0px auto; width: 900px; padding: 5px;">
-    @using (Html.BeginForm("SelectInvoice", "Shipment", FormMethod.Post, new { id = "searchsalesorderformid" }))
-    {
-        <div style="margin: 0 auto; width: 600px;">
-            <div class="cf">
-                <div class="left" style="width: 120px; padding: 5px;">
-                    <div style="margin-top: 5px;"><span>Open Only</span><input id="ckActive" type="checkbox" checked /></div>
-                </div>
-                <div class="cf right" style="margin: 5px;">
-                    <div class="left" style="margin-right: 5px; margin-top: 5px;">
-                        <input id="searchItem" name="searchItem" type="text" value="@ViewBag.SearchItem" />
-                    </div>
-                    <div>
-                        <input id="btnSubmitSearch" class="btnSubmitSearch btn btn-default" type="submit" value="Search" />*@
-@*@Html.ActionLink("Reset", "Index", "Inventory", null, new { id = "lnkResetId", @class = "btnSubmitSearch btn btn-default" })*@
-@*</div>
-                </div>
-            </div>
-            <div class="cf">
-                <div class="left" style="margin: 5px; width: 96px;">Search by:</div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
-                    <div><span>Invoice&nbsp; No.</span><input id="ckcust" style="margin-left: 39px;" type="checkbox" checked /></div>
-                </div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
-                    <div><span>Sales Order</span><input id="ckcomp" style="margin-left: 42px;" type="checkbox" /></div>
-                </div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px; display:none;">
-                    <div><span>Customer PO</span><input id="ckphon" style="margin-left: 32px;" type="checkbox" /></div>
-                </div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
-                    <div><span>Customer Name</span><input id="ckemai" style="margin-left: 10px;" type="checkbox" /></div>
-                </div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
-                    <div><span>Invoice Date</span><input id="ckcode" style="margin-left: 36px;" type="checkbox" /></div>
-                </div>
-                <div style="margin-left: 110px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; width: 260px;">
-                    <div><span>Item No</span><input id="ckstate" style="margin-left: 69px;" type="checkbox" /></div>
-                </div>
-            </div>
-        </div>
-        <div style="display: none">
-            <input id="ckActiveHlp" name="ckActive" type="text" value="@ViewBag.ckActiveHlp" />
-            <input id="ckCriteriaHlp" name="ckCriteria" type="text" value="@ViewBag.ckCriteriaHlp" />
-        </div>    
-      
-    }
-</div>*@
-
-<table class="webgrid" style="width: 900px; margin: 0px auto;">
+<table class="webgrid" style="margin: 0px auto;">
     <tr class="webgrid-header">
         @*<th></th>*@
         <th style="text-align: left;" class="sortingColumn" onclick="sortInvoiceData('@ViewBag.InvoiceNoSortOrder')">
