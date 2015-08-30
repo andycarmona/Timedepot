@@ -616,7 +616,7 @@
             //Display sales details
             jQuery("#getsalesdetailsId").trigger('click');
             //jQuery("#getsalesdetailsId").click();
-
+          
             //Set the datepicker
             jQuery("#InvoiceDateHlp01").datepicker({
                 dateFormat: "mm/dd/yy",
@@ -1203,7 +1203,10 @@
             jQuery("#lnkAddSalesOrderDetail").click(clicklnkAddSalesOrderDetail);
             jQuery(".lnkAddDetail a").each(eachlnkAddDetail);
             jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
-
+            $('.shipqty').each(function (i, obj) {
+                $(this).css("border", "none");
+                $(this).prop("disabled", true);
+            });
             jQuery(".imprintselectorclass").each(eachimprintselectorclass);
             jQuery(".imprintclass").each(eachimprintclass);
         }
@@ -1538,7 +1541,7 @@
         }
 
         function clicklnkUpdateDetail(src, arg) {
-            //debugger;
+            debugger;
 
             var hrefHlp = src.target.href;
             var szHlp = hrefHlp.split('/');
@@ -1630,7 +1633,7 @@
             jQuery(src).change(changesalesdetailQty);
         }
         function changesalesdetailQty(src, arg) {
-            //debugger;
+            debugger;
             var szMsg = src.target.parentNode.id;
             szMsg = szMsg.replace("qty_", "lkup_");
             var lkHlp = jQuery("#" + szMsg).attr("href");
@@ -1651,7 +1654,7 @@
                 szId = szMsg.substring(0, nPos);
             }
             if (szId != "0") {
-                szMsg = "#qty_" + szId + ' input';
+                szMsg = "#qty" + szId + ' input';
                 szQty = jQuery(szMsg).val();
                 szMsg = "#shipqty_" + szId + ' input';
                 szShipQty = jQuery(szMsg).val();

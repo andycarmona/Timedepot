@@ -161,13 +161,13 @@
                                     var divQuantityId = "divQuantity" + counter;
                                   
                                 }
-                                <div id='@divQuantityId' data-salesorder-id="@szShipQty" class="viosinput100">
+                                <div id='@szQty'  class="viosinput100">
 
-                                    @Html.TextBoxFor(modelItem => item.Quantity, new { @class = "shippingQuantity", @idAttr = counter,@originalQuantity=item.Quantity })
+                                    @Html.TextBoxFor(modelItem => item.Quantity, new { @class = "shippingQuantity", @idAttr = counter, @originalQuantity = item.Quantity, @id = "txtQuantity" + counter })
                                 </div>
                             </td>
                             <td>
-                                <div id="@szShipQty" class="viosinput100">
+                                <div id="@szShipQty" data-salesorder-id="@szShipQty" class="viosinput100">
                                     @Html.TextBoxFor(modelItem => item.ShipQuantity, new { @class = "shipqty", @id = "txtShipQuantity" + counter, @idAttr = counter, @max = item.Quantity, @min = 1 })
                                     @Html.ValidationMessageFor(model => item.ShipQuantity)
                                     <span style="display: none;" id="result_@szShipQty">@item.ShipQuantity</span>
@@ -221,7 +221,7 @@
 
                 </div>
                 <div id="@szLnkShiped" style="margin: 5px auto; width: 300px; display: block; text-align: center">
-                    <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId, qty = quantity }, new { id = szLnkUpdate, @class = "btn btn-default" })</span>
+                    <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId}, new { id = szLnkUpdate, @class = "btn btn-default" })</span>
                     <span style="float:left;" class="lnkShipItem">
                         <button class="btn btn-default" data-salesorder=@ViewBag.SalesOrderId data-itemid="@item.Id" data-shipquantity="@shippedQty" type="button" value="Ship item" id="@szLnkUpdate" style="display:none;">Ship item</button>
 
@@ -248,29 +248,44 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('.shippingQuantity').blur(function () {
-            debugger;
-            var chosenQty = $(this).val();
-            var originalQty = parseInt($(this).attr("originalquantity"));
-            var salesorderId = $(this).parent().attr("data-salesorder-id").split("_")[1];
             var id = $(this).attr('idAttr');
+            var originalQty = parseInt($('#txtQuantity' + id).val().trim());
             var shippingQuantity = parseInt($('#txtShipQuantity' + id).val().trim());
-            var remainingQty = chosenQty - shippingQuantity;
+            var remainingQty = originalQty - shippingQuantity;
+            if (originalQty > 0 && shippingQuantity <= originalQty) {
+                if (remainingQty >= 0) {
+                    //$(this).attr("originalquantity", chosen);
+                    $('#divRemainingQuantity' + id).html(remainingQty);
+                }
+            }
+            else {
+                alert('Quantity should be greater than 0 and less than or equals to quantity available.');
+                $('#txtQuantity' + id).val(shippingQuantity);
+                $('#divRemainingQuantity' + id).html(0);
+            }
+        });
+        $('.shipqty').blur(function () {
+            var id = $(this).attr('idAttr');
+            var originalQty = parseInt($('#txtQuantity' + id).val().trim());
+            var salesorderId = $(this).parent().attr("data-salesorder-id").split("_")[1];
+            var shippingQuantity = parseInt($('#txtShipQuantity' + id).val().trim());
+            var remainingQty = originalQty - shippingQuantity;
             var splitprice = $('#divUnitPrice' + id).text().trim().split(" ");
             var unitPrice = numeral().unformat(splitprice[0]);
             //parseFloat(splitprice[0].replace('.', ',').replace(' ', '')).toFixed(2);
             $("#result_shipqty_" + salesorderId).text(shippingQuantity);
 
-            if (chosenQty > 0 && shippingQuantity <= chosenQty) {
+            if (shippingQuantity > 0 && shippingQuantity <= originalQty) {
                 if (remainingQty >= 0) {
-                    $(this).attr("originalquantity", chosenQty);
+                    //$(this).attr("originalquantity", chosen);
                     $('#divRemainingQuantity' + id).html(remainingQty);
                     $('#divShippedAmount' + id).html((unitPrice * shippingQuantity));
                 }
             }
             else {
                     alert('Shipment quantity should be greater than 0 and less than or equals to quantity available.');
-                    $(this).val(originalQty);
-                    $('#divRemainingQuantity' + id).html(originalQty - shippingQuantity);
+                $('#txtShipQuantity' + id).val(1);
+                    $('#divRemainingQuantity' + id).html(originalQty-1);
                     $('#divShippedAmount' + id).html(unitPrice);
             }
         });
