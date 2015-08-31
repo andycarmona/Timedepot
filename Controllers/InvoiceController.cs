@@ -958,33 +958,6 @@ namespace TimelyDepotMVC.Controllers
                         db.Entry(setupcharge).State = EntityState.Modified;
                         db.SaveChanges();
                     }
-                    //else
-                    //{
-                    //    pricesc = pricesc.Replace("$", "");
-                    //    pricesc = pricesc.Replace(",", "");
-                    //    dcHlp = (decimal)this.ConvertParamToDouble(pricesc);
-                    //    //setupcharge.UnitPrice = dcHlp;
-
-                    //    qtysc = qtysc.Replace("$", "");
-                    //    qtysc = qtysc.Replace(",", "");
-                    //    dcHlp1 = (decimal)this.ConvertParamToDouble(qtysc); 
-
-                    //    setupcharge = new InvoiceDetail();
-                    //    setupcharge.InvoiceId = nSalesOrderId;
-                    //    setupcharge.ItemID = string.Empty;
-                    //    setupcharge.Sub_ItemID = string.Empty;
-                    //    setupcharge.Description = string.Format("Set up Charge {0} {1}", sodetail.InvoiceId.ToString(), sodetail.ItemID);
-                    //    setupcharge.Quantity = (int?)dcHlp1;
-                    //    setupcharge.ShipQuantity = 0;
-                    //    setupcharge.BackOrderQuantity = 0;
-                    //    setupcharge.Tax = 0;
-                    //    setupcharge.UnitPrice = dcHlp;
-                    //    setupcharge.ItemPosition = 0;
-                    //    setupcharge.ItemOrder = 0;
-                    //    setupcharge.Tax = dTaxRate;
-                    //    db.InvoiceDetails.Add(setupcharge);
-                    //    db.SaveChanges();
-                    //}
                 }
 
                 //Update Run Charge
@@ -1006,33 +979,6 @@ namespace TimelyDepotMVC.Controllers
                         db.Entry(runcharge).State = EntityState.Modified;
                         db.SaveChanges();
                     }
-                    //else
-                    //{
-                    //    pricerc = pricerc.Replace("$", "");
-                    //    pricerc = pricerc.Replace(",", "");
-                    //    dcHlp = (decimal)this.ConvertParamToDouble(pricerc);
-                    //    //runcharge.UnitPrice = dcHlp;
-
-                    //    qtyrc = qtyrc.Replace("$", "");
-                    //    qtyrc = qtyrc.Replace(",", "");
-                    //    dcHlp1 = (decimal)this.ConvertParamToDouble(qtyrc);
-
-                    //    runcharge = new InvoiceDetail();
-                    //    runcharge.InvoiceId = nSalesOrderId;
-                    //    runcharge.ItemID = string.Empty;
-                    //    runcharge.Sub_ItemID = string.Empty;
-                    //    runcharge.Description = string.Format("Run Charge {0} {1}", sodetail.InvoiceId.ToString(), sodetail.ItemID);
-                    //    runcharge.Quantity = (int?)dcHlp1;
-                    //    runcharge.ShipQuantity = 0;
-                    //    runcharge.BackOrderQuantity = 0;
-                    //    runcharge.Tax = 0;
-                    //    runcharge.UnitPrice = dcHlp;
-                    //    runcharge.ItemPosition = 0;
-                    //    runcharge.ItemOrder = 0;
-                    //    runcharge.Tax = dTaxRate;
-                    //    db.InvoiceDetails.Add(runcharge);
-                    //    db.SaveChanges();
-                    //}
                 }
             }
 

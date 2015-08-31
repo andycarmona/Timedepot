@@ -17,15 +17,13 @@
         </ul>
 
         <div id="tabs-1">
-
             <div>
                 <div class="cf">
-                    @*<div class="left telink">@Html.ActionLink("Select Invoice", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk" })</div>*@
                     <div class="left boxl5">Invoice #</div>
                     <div class="left boxl5">
                         <input style="width:60px;" id="invoiceNoid" type="text"/>
                     </div>
-                    @*<div class="left boxl5">Available default Address</div>*@
+              
                     <div class="left" style="margin-left: 20px; height: 30px;">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk",@class="btn btn-default"})</div>
                     <div id="tradeselector01id" class="left boxl5"></div>
                 </div>

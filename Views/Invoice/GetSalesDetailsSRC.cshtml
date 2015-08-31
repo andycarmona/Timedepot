@@ -221,9 +221,8 @@
 
                 </div>
                 <div id="@szLnkShiped" style="margin: 5px auto; width: 300px; display: block; text-align: center">
-                    <span class="lnkUpdateDetail detailShipmentUpdate">@Html.ActionLink("Update", "UpdateDetail", "Invoice", new { id = item.Id, salesorderid = ViewBag.SalesOrderId}, new { id = szLnkUpdate, @class = "btn btn-default" })</span>
                     <span style="float:left;" class="lnkShipItem">
-                        <button class="btn btn-default" data-salesorder=@ViewBag.SalesOrderId data-itemid="@item.Id" data-shipquantity="@shippedQty" type="button" value="Ship item" id="@szLnkUpdate" style="display:none;">Ship item</button>
+                        <button class="btn btn-default" data-salesorder=@ViewBag.SalesOrderId data-itemid="@item.Id" data-shipquantity="@shippedQty" type="button" disabled="disabled" value="Ship item" id="@szLnkUpdate" style="display:none;">Ship item</button>
 
                     </span>&nbsp;
                 </div>
@@ -236,10 +235,6 @@
         </div>
 
     }
-
-    <div style="margin: 5px auto; width: 40px; display: block;">
-        @Html.ActionLink("Add", "AddDetail", "Invoice", new { salesorderid = ViewBag.SalesOrderId }, new { id = "lnkAddSalesOrderDetail", @class = "btn btn-default" })
-    </div>
     <div id="shippeditemsdiv" style="display:none;">
         @ViewBag.ShippedItems
     </div>
@@ -265,6 +260,7 @@
             }
         });
         $('.shipqty').blur(function () {
+            debugger;
             var id = $(this).attr('idAttr');
             var originalQty = parseInt($('#txtQuantity' + id).val().trim());
             var salesorderId = $(this).parent().attr("data-salesorder-id").split("_")[1];
@@ -277,7 +273,11 @@
 
             if (shippingQuantity > 0 && shippingQuantity <= originalQty) {
                 if (remainingQty >= 0) {
-                    //$(this).attr("originalquantity", chosen);
+                    if (remainingQty == 0) {
+                        $('#lkup_' + salesorderId).prop('disabled', true);
+                    } else {
+                        $('#lkup_' + salesorderId).prop('disabled', false);
+                    }
                     $('#divRemainingQuantity' + id).html(remainingQty);
                     $('#divShippedAmount' + id).html((unitPrice * shippingQuantity));
                 }

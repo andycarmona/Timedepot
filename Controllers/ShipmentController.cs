@@ -359,15 +359,15 @@ namespace TimelyDepotMVC.Controllers
 
         public void UpdateInvoiceQuantity(Invoice selectedInvoice, int totalShipped, int id)
         {
-            var invoiceDetail = db.InvoiceDetails.SingleOrDefault(x => x.InvoiceId == selectedInvoice.InvoiceId && x.Id == id);
+            var invoiceDetail = db.InvoiceDetails.SingleOrDefault(x => x.InvoiceId == selectedInvoice.InvoiceId);
 
             if (invoiceDetail != null)
             {
-                var actualQuantity = (int)(invoiceDetail.Quantity - totalShipped);
+                var actualQuantity = (int)(invoiceDetail.ShipQuantity - totalShipped);
                 if (actualQuantity >= 0)
                 {
                     // invoiceDetail.Quantity = actualQuantity;
-                    invoiceDetail.ShipQuantity = invoiceDetail.ShipQuantity + totalShipped;
+                    invoiceDetail.ShipQuantity = actualQuantity;
                 }
             }
 
@@ -940,55 +940,6 @@ namespace TimelyDepotMVC.Controllers
         }
 
         //
-        // GET:/Shipment/ShipAll
-        public ActionResult ShipAll(int invoiceId)
-        {
-            string szError = string.Empty;
-
-            Shipment shipment = null;
-            ShipmentDetails details = null;
-            IQueryable<InvoiceDetail> qryInvDetail = null;
-            var existActiveShipments = this.CheckExistingShipments(invoiceId);
-            //Get the invoice
-            Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
-            if ((invoice != null))
-            {
-                if (!existActiveShipments)
-                {
-                    shipment = new Shipment();
-                    shipment.ShipmentDate = DateTime.Now;
-                    shipment.InvoiceId = invoice.InvoiceId;
-                    shipment.InvoiceNo = invoice.InvoiceNo;
-                    db.Shipments.Add(shipment);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    shipment = db.Shipments.SingleOrDefault(c => c.InvoiceId == invoiceId && c.Shipped != true);
-                }
-
-
-                qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
-                if (qryInvDetail.Count() > 0)
-                {
-                    //Ship all invoice details
-                    foreach (var item in qryInvDetail)
-                    {
-                        //Create the shipment detail
-                        details = CreateShipmentDetail(shipment, invoice, item, 0, ref szError);
-                    }
-                }
-            }
-
-            if (shipment != null)
-            {
-                this.ReorderBoxesNames(shipment.ShipmentId);
-            }
-
-            return RedirectToAction("Index", "Shipment", new { id = invoiceId });
-        }
-
-        //
         // GET: /Shipment/AddDetail
         public PartialViewResult AddDetail(string invoiceNoid, int shipmenid = 0)
         {
@@ -1150,7 +1101,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 invoiceId = Convert.ToInt32(shipment.InvoiceId);
                 var anInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
-                var minusQuantity = details.Quantity * -1;
+                var minusQuantity = details.Quantity;
                 if (details.DetailId != null)
                 {
                     this.UpdateInvoiceQuantity(anInvoice, (int)minusQuantity, (int)details.DetailId);
@@ -1244,51 +1195,64 @@ namespace TimelyDepotMVC.Controllers
         [HttpPost]
         public ActionResult ShipItem(string salesorderid, int shipqty, int id = 0)
         {
-            string szError = string.Empty;
-            var shippingQuantity = 0;
-            if (ViewBag.ShipQuantity != null)
-            {
-                shippingQuantity = ViewBag.ShipQuantity;
-            }
+            var szError = string.Empty;
             Invoice invoice = null;
-            InvoiceDetail invDetails = null;
-            Shipment shipment = null;
-            ShipmentDetails details = null;
+            InvoiceDetail invDetails;
+            var actualInvoiceId = Convert.ToInt32(salesorderid);
+            var shipment = this.ShipAll(actualInvoiceId, out invoice, out invDetails);
 
-            // Get Invoice details
-            invDetails = db.InvoiceDetails.Find(id);
-            if (invDetails != null)
+            if (invDetails == null)
             {
-                //Get the invoice
-                invoice = db.Invoices.Where(inv => inv.InvoiceId == invDetails.InvoiceId).FirstOrDefault<Invoice>();
-                if (invoice != null)
+                return this.RedirectToAction(
+                    "GetShipmenDetails",
+                    new { invoiceid = shipment != null ? shipment.InvoiceId : 0 });
+            }
+
+            var details = this.CreateShipmentDetail(shipment, invoice, invDetails, shipqty, ref szError);
+            if ((details != null) && string.IsNullOrEmpty(szError))
+            {
+                this.UpdateInvoiceQuantity(invoice, (shipqty * -1), id);
+            }
+          
+
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = shipment != null ? shipment.InvoiceId : 0 });
+        }
+
+
+        // GET:/Shipment/ShipAll
+        public Shipment ShipAll(int invoiceId, out Invoice invoice, out InvoiceDetail qryInvDetail)
+        {
+            Shipment shipment = null;
+            var existActiveShipments = this.CheckExistingShipments(invoiceId);
+            invoice = db.Invoices.FirstOrDefault(inv => inv.InvoiceId == invoiceId);
+            if (invoice != null)
+            {
+                if (!existActiveShipments)
                 {
-                    //Create the shimpent if it does not exit
-                    shipment =
-                        db.Shipments.FirstOrDefault(
-                            shpm => shpm.InvoiceId == invDetails.InvoiceId && shpm.Shipped != true);
-                    if (shipment == null)
+                    shipment = new Shipment
+                                   {
+                                       ShipmentDate = DateTime.Now,
+                                       InvoiceId = invoice.InvoiceId,
+                                       InvoiceNo = invoice.InvoiceNo
+                                   };
+
+                    db.Shipments.Add(shipment);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    shipment = db.Shipments.SingleOrDefault(c => c.InvoiceId == invoiceId && c.Shipped != true);
+                    if (shipment != null)
                     {
-                        shipment = new Shipment();
-                        shipment.ShipmentDate = DateTime.Now;
-                        shipment.InvoiceId = invDetails.InvoiceId;
-                        shipment.InvoiceNo = invoice.InvoiceNo;
-                        db.Shipments.Add(shipment);
-                        db.SaveChanges();
+                        this.ReorderBoxesNames(shipment.ShipmentId);
+                        qryInvDetail = db.InvoiceDetails.SingleOrDefault(invdtl => invdtl.InvoiceId == invoiceId);
+                        return shipment;
                     }
-
-                    //Create the shipment detail
-                    details = CreateShipmentDetail(shipment, invoice, invDetails, shipqty, ref szError);
-                    if ((details != null) && (!string.IsNullOrEmpty(szError)))
-                    {
-                        this.UpdateInvoiceQuantity(invoice, shipqty, id);
-                    }
-
-
                 }
             }
 
-            return RedirectToAction("GetShipmenDetails", new { invoiceid = shipment != null ? shipment.InvoiceId : 0 });
+            qryInvDetail = null;
+            return shipment;
         }
 
         private ShipmentDetails CreateShipmentDetail(Shipment shipment, Invoice invoice, InvoiceDetail invDetails, int quantityShipped, ref string szError)
