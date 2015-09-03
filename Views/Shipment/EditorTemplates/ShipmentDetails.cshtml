@@ -1,0 +1,52 @@
+﻿@model TimelyDepotMVC.Models.Admin.ShipmentDetails
+<tr>
+    <td>
+        <button class="btn btn-default" type="button" onclick="deleteDetailBox(@Model.ShipmentDetailID); "><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> </button>
+    </td>
+    <td style="display: none;">
+        @Html.TextBoxFor(modelModel => Model.ShipmentId)
+    </td>
+    <td style="display: none;">
+        @Html.TextBoxFor(modelModel => Model.ShipmentDetailID)
+    </td>
+    <td style="text-align: left;">
+        @Html.TextBoxFor(modelModel => Model.BoxNo, new Dictionary<string, object>() { { "disabled", "true" } })
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Sub_ItemID))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Quantity))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.UnitPrice))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.UnitWeight, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.UnitWeight))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.DimensionH, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.DimensionH))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.DimensionL, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.DimensionL))
+
+    </td>
+    <td style="text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.DimensionD, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.DimensionD))
+
+    </td>
+    <td>
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Reference1, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Reference1))
+
+    </td>
+    <td>
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Reference2))
+
+    </td>
+</tr>
+

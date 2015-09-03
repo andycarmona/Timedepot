@@ -53,68 +53,7 @@ else
                     @Html.DisplayNameFor(model => model.Reference2)
                 </th>
             </tr>
-
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @*@Html.ActionLink("Edit", "EditShipDetail", new { id = item.ShipmentDetailID }) |*@
-
-                        @if (!@item.Shipped)
-                        {
-                            <button class="btn btn-default" type="button" id="deleteBoxbtn" onclick="deleteDetailBox(@item.ShipmentDetailID); "><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> </button>
-
-                            <button style="margin-right: 5px;" class="btn btn-default" type="button" id="updateDetail" value="Update" onclick="updateDetailBox();"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-
-                        }
-                    </td>
-                    <td style="display: none;">
-                        @Html.TextBoxFor(modelItem => item.ShipmentId)
-                    </td>
-                    <td style="display: none;">
-                        @Html.TextBoxFor(modelItem => item.ShipmentDetailID)
-                    </td>
-                    <td style="text-align: left;">
-                        @Html.TextBoxFor(modelItem => item.BoxNo, new Dictionary<string, object>() { { "disabled", "true" } })
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Sub_ItemID))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Quantity))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitPrice))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.UnitWeight, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.UnitWeight))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionH, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionH))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionL, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionL))
-
-                    </td>
-                    <td style="text-align: left;">
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.DimensionD, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.DimensionD))
-
-                    </td>
-                    <td>
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference1, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference1))
-
-                    </td>
-                    <td>
-                        @(@item.Shipped ? Html.TextBoxFor(modelItem => item.Reference2, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelItem => item.Reference2))
-
-                    </td>
-                </tr>
-            }
+            @Html.EditorForModel()
             <tr>
                 <td colspan="4">
                     <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
@@ -124,6 +63,7 @@ else
             </tr>
 
         </table>
+    <button style="margin-right: 5px;" class="btn btn-default" type="button" id="updateDetail" value="Update" onclick="updateDetailBox();">Save for Shipment</button>
         if (!string.IsNullOrEmpty((string)TempData["ErrorMessages"]))
         {
             <p style="color:red">@TempData["ErrorMessages"]</p>

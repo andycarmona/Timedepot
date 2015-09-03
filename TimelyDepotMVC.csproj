@@ -712,6 +712,10 @@
     <Compile Include="Migrations\201508141521428_ShippedFlagtoShipment.Designer.cs">
       <DependentUpon>201508141521428_ShippedFlagtoShipment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201509021702581_changeprimarykeyofShipmetsDetails.cs" />
+    <Compile Include="Migrations\201509021702581_changeprimarykeyofShipmetsDetails.Designer.cs">
+      <DependentUpon>201509021702581_changeprimarykeyofShipmetsDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2080,6 +2084,7 @@
     <Content Include="Views\Payment\ViewRefund.cshtml" />
     <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
     <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
+    <Content Include="Views\Shipment\EditorTemplates\ShipmentDetails.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2293,6 +2298,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201508141521428_ShippedFlagtoShipment.resx">
       <DependentUpon>201508141521428_ShippedFlagtoShipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509021702581_changeprimarykeyofShipmetsDetails.resx">
+      <DependentUpon>201509021702581_changeprimarykeyofShipmetsDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

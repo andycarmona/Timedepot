@@ -360,7 +360,7 @@
     <div class="TEdiv" style="width: 376px; margin: 0.5em auto;">
         @*<input class="btnEditSO btn btn-default" type="submit" value="Save" />&nbsp;*@
       
-        @Html.ActionLink("Create Shipment", "ShipAll", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
+        
         @Html.ActionLink("Validate Address", "ValidateAddressTE", new { invoiceid = Model.InvoiceId }, new { @class = "btnEditSO btn btn-default" })&nbsp;
         @Html.ActionLink("Quit", "Index", null, new { @class = "btnEditSO btn btn-default" })
     </div>   

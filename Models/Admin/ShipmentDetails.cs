@@ -9,7 +9,7 @@ namespace TimelyDepotMVC.Models.Admin
 {
     public class ShipmentDetails
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "ShipmentId")]
         public int ShipmentDetailID { get; set; }
 

@@ -21,10 +21,10 @@
                 <div class="cf">
                     <div class="left boxl5">Invoice #</div>
                     <div class="left boxl5">
-                        <input style="width:60px;" id="invoiceNoid" type="text"/>
+                        <input style="width:60px;" id="invoiceNoid" type="text" />
                     </div>
-              
-                    <div class="left" style="margin-left: 20px; height: 30px;">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk",@class="btn btn-default"})</div>
+
+                    <div class="left" style="margin-left: 20px; height: 30px;">@Html.ActionLink("Search", "SelectInvoice", "Shipment", null, new { id = "selectInvoicelnk", @class = "btn btn-default" })</div>
                     <div id="tradeselector01id" class="left boxl5"></div>
                 </div>
                 <div id="editInvoicediv">
@@ -108,15 +108,15 @@
 
             //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
-           
-            jQuery("#updateDetail").click(updateDetailBox);
+            //jQuery("#updateDetail2").click(updateDetailBox2);
+            //jQuery("#updateDetail").click(updateDetailBox);
             jQuery("#lnkResetIdLog").click(clicklnkResetIdLog);
             jQuery("#ckcustLog").click(clickckcustLog);
             jQuery("#ckcompLog").click(clickckcompLog);
             jQuery("#ckcodeLog").click(clickckcodeLog);
             jQuery("#btnSubmitSearchLog").click(clickbtnSubmitSearchLog);
             jQuery("#upsRateListbtn").click(GetRateList);
-           
+
             //Create the tabs
             jQuery("#tabs").tabs({ load: loadTab });
             //jQuery("#logtabs").tabs();
@@ -138,7 +138,7 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $('#ddlBillTo').change(function() {
+            $('#ddlBillTo').change(function () {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper')
                     $('#txtUPSAccountNumber').val('');
@@ -162,7 +162,7 @@
         }
 
         function GetRateList() {
-         
+
             var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
             if (szInvoiceId != undefined) {
                 LoadUpsRateInformation(szInvoiceId);
@@ -409,23 +409,23 @@
 
             jQuery("#ckcustLog").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcustLog").prop("checked", true);
-                break;
-            case "shipmentrecord":
-                jQuery("#ckcompLog").prop("checked", true);
-                break;
-            case "shippementddate":
-                jQuery("#ckcodeLog").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItemLog';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItemLog").val(szDate)
-                }
-                break;
-            default:
-                jQuery("#ckstateLog").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcustLog").prop("checked", true);
+                    break;
+                case "shipmentrecord":
+                    jQuery("#ckcompLog").prop("checked", true);
+                    break;
+                case "shippementddate":
+                    jQuery("#ckcodeLog").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItemLog';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItemLog").val(szDate)
+                    }
+                    break;
+                default:
+                    jQuery("#ckstateLog").prop("checked", true);
+                    break;
             }
         }
 
@@ -495,64 +495,64 @@
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcust").prop("checked", true);
-                break;
-            case "salesorder":
-                jQuery("#ckcomp").prop("checked", true);
-                break;
-            case "customerpo":
-                jQuery("#ckphon").prop("checked", true);
-                break;
-            case "customername":
-                jQuery("#ckemai").prop("checked", true);
-                break;
-            case "shippeddate":
-                jQuery("#ckcode").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItem';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItem").val(szDate)
-                }
-                break;
-            case "itemno":
-                jQuery("#ckstate").prop("checked", true);
-                break;
-            default:
-                jQuery("#ckstate").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
             }
         }
 
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-            case "invoice":
-                jQuery("#ckcust").prop("checked", true);
-                break;
-            case "salesorder":
-                jQuery("#ckcomp").prop("checked", true);
-                break;
-            case "customerpo":
-                jQuery("#ckphon").prop("checked", true);
-                break;
-            case "customername":
-                jQuery("#ckemai").prop("checked", true);
-                break;
-            case "shippeddate":
-                jQuery("#ckcode").prop("checked", true);
-                var szSearch = '@ViewBag.SearchItem';
-                var szDate = '@ViewBag.CurrentDate';
-                if (szSearch == "") {
-                    jQuery("#searchItem").val(szDate)
-                }
-                break;
-            case "itemno":
-                jQuery("#ckstate").prop("checked", true);
-                break;
-            default:
-                jQuery("#ckstate").prop("checked", true);
-                break;
+                case "invoice":
+                    jQuery("#ckcust").prop("checked", true);
+                    break;
+                case "salesorder":
+                    jQuery("#ckcomp").prop("checked", true);
+                    break;
+                case "customerpo":
+                    jQuery("#ckphon").prop("checked", true);
+                    break;
+                case "customername":
+                    jQuery("#ckemai").prop("checked", true);
+                    break;
+                case "shippeddate":
+                    jQuery("#ckcode").prop("checked", true);
+                    var szSearch = '@ViewBag.SearchItem';
+                    var szDate = '@ViewBag.CurrentDate';
+                    if (szSearch == "") {
+                        jQuery("#searchItem").val(szDate)
+                    }
+                    break;
+                case "itemno":
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
+                default:
+                    jQuery("#ckstate").prop("checked", true);
+                    break;
             }
         }
 
@@ -672,7 +672,7 @@
             var szSealesOrderNo = $('#invoiceNoid').val(); //"0";//jQuery("#searchItem").val();
             var szCustomer = "false"; //jQuery("#ckActiveHlp").val();
             var szEmail = "invoice"; //jQuery("#ckCriteriaHlp").val();
-            
+
             //Get the partial view
             //var szUrl = jQuery("#lnkResetSelectSOId").attr("href");
             var szUrl = jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
@@ -773,7 +773,7 @@
             jQuery("#ckstate").click(clickckstate);
 
             jQuery(".editInvoicelnk a").each(eacheditInvoicelnk);
-         
+
         }
 
         function eacheditInvoicelnk(nPos, src) {
@@ -926,7 +926,7 @@
             //Set the buttons
             jQuery(".btn btn-default").button();
 
-           
+
             jQuery("#tradeeditselector01id").html($('#divCompanyName').text().trim());
 
             //Mark error message
@@ -941,7 +941,7 @@
             //Move address validation result
             jQuery("#addressresultdiv").appendTo(jQuery("#addressvalidationdiv"));
             jQuery("#upserrordiv").appendTo(jQuery("#addressvalidationdiv"));
-
+           
             //Enable Get UPS rate button
             var szAddressResult03 = jQuery("#addressresultdiv03").html();
             szAddressResult03 = jQuery.trim(szAddressResult03);
@@ -952,7 +952,7 @@
             }
             //debugger;
             jQuery("#invoiceNoid").prop("disabled", "true");
-          
+
             jQuery("#addressresultdiv03").show();
             var szInvoiceNo = jQuery("#editsalesorderid #InvoiceNo").val();
             if (szInvoiceNo != "") {
@@ -1015,11 +1015,11 @@
 
             //Display required fields
             jQuery(".lnkShipItem button").each(eachlnkShipItem);
-            jQuery(".lnkShipItem button").on('click',addShipmentItem);
+            jQuery(".lnkShipItem button").on('click', addShipmentItem);
             //Center other fields
             jQuery(".edititemhlpdiv").css("width", "600px");
             jQuery(".edititemhlpdiv").css("margin", "0px auto");
-
+            jQuery("#invoiceAddButton").hide();
             //Load Shipment Details
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
@@ -1110,7 +1110,7 @@
 
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
-         
+
         }
 
         function shipmentDetailSuccess(response, statusCode) {
@@ -1125,6 +1125,7 @@
                 $(this).css("border", "none");
                 $(this).prop("readonly", true);
             });
+           
             clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
@@ -1211,42 +1212,64 @@
 
         function eachlnkShipItem(nPos, src) {
             jQuery(src).css("display", "block");
-            
+
         }
 
-        function addShipmentItem(event) {
-         
+        function addShipmentItem() {
+
             var szUrl = "/Shipment/ShipItem?";
             var salesorderId = $(this).attr('data-salesorder');
             var invoiceId = $(this).attr('data-itemid');
-            var shippedQuantity = $("#result_shipqty_"+invoiceId).text();
-            szUrl = szUrl + "salesorderid="+salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
+            var shippedQuantity = $("#result_shipqty_" + invoiceId).text();
+            var remainQty = $("#result_remainingqty_" + invoiceId).text();
+            if (shippedQuantity == 0) {
+                alert("Can't make this request. Shipped quantity can not be 0");
+                return;
+            }
+            if (remainQty == 0) {
+                alert("Sorry. There are no more items to ship");
+                return;
+            }
+                szUrl = szUrl + "salesorderid=" + salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
 
+                jQuery.ajax({
+                    type: 'POST',
+                    url: szUrl,
+                    data: null,
+                    dataType: 'html',
+                    error: AjaxFailed
+                }).success(function (response) {
+                    var objRes = response;
+                    //debugger;
+                    //Display the response data
+                    jQuery("#shipmentDetailsdialog").html(objRes);
+
+                    //Hide load image and select invoice link
+                    HideLoadingDialog();
+                    changeInvoiceRemainingQty(invoiceId);
+                    clickChangeTab(1);
+                });
+         
+        }
+
+        function changeInvoiceRemainingQty(salesorderid) {
+            debugger;
+            var szUrl = "/Shipment/GetInvoiceRemainingQuantity?invDetailId=" + salesorderid;
             jQuery.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: szUrl,
                 data: null,
-                dataType: 'html',
-                error: AjaxFailed,
-                success: shipmentItemSuccess
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                error: AjaxFailed
+            }).success(function (response) {
+                $("#remainingqty_" + salesorderid + " span").text(response);
+                $("#shipqty_" + salesorderid + " input").val(0);
+                $("#result_shipqty_" + salesorderid).text(0);
             });
 
         }
 
-
-        function shipmentItemSuccess(response, statusCode) {
-            var objRes = response;
-            //debugger;
-            //Display the response data
-            jQuery("#shipmentDetailsdialog").html(objRes);
-
-            //Hide load image and select invoice link
-            HideLoadingDialog();
-
-            clickChangeTab(1);
-
-      
-        }
 
         function eachInvoicedetailservice(nPos, src) {
             //debugger;
@@ -1264,7 +1287,8 @@
             jQuery(src).click(clicklnkUpdateDetail);
         }
 
-        function deleteDetailBox(shipmentDetailId) {
+        function deleteDetailBox(shipmentDetailId, detailId) {
+            debugger;
             var r = confirm("Are you sure you want to delete this detail?");
             if (r == true) {
                 $.ajax({
@@ -1272,26 +1296,28 @@
                     dataType: 'text',
                     url: "/Shipment/Delete",
                     data: "shipmentDetailId=" + shipmentDetailId,
-                    success: function(data) {
+                    success: function (data) {
                         $("#shipmentDetailsdialog").html(data);
                         var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
                         if (szInvoiceId != undefined) {
                             loadInvoiceDetails(szInvoiceId);
                         }
+                        changeInvoiceRemainingQty(detailId);
                     }
                 });
             }
         }
-
+      
         function updateDetailBox(boxDetails) {
-
+            ShowLoadingDialog();
             $.ajax({
                 type: "POST",
                 dataType: 'html',
                 url: "/Shipment/UpdateDetail",
                 data: $('#detailboxForm').serialize(),
-                success: function(data) {
+                success: function (data) {
                     $("#shipmentDetailsdialog").html(data);
+                    HideLoadingDialog();
                 }
             });
 
@@ -1306,13 +1332,13 @@
                 url: "/Shipment/AddDetail",
                 data: $('#detailForm').serialize(),
                 datatype: "html",
-                success: function(data) {
+                success: function (data) {
                     clickbtDialogCloseAddDetail();
                     //debugger;
                     $('#shipmentDetailsdialog').html(data);
 
                 },
-                fail: function() {
+                fail: function () {
                     alert("fail");
                 }
             });
