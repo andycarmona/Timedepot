@@ -8,15 +8,16 @@
 }
 else
 {
-
+ 
     <div class="boxMb10" style="text-align: center; font-size: 1.1em; font-weight: bold;">@ViewBag.ShipmentTitle</div>
     using (Html.BeginForm("UpdateDetail", "Shipment", FormMethod.Post, new { id = "detailboxForm" }))
     {
 
-        <table class="webgrid" style="width: 100%; margin: 0px auto;">
+        <table class="webgrid">
             <tr class="webgrid-header">
                 <th>@Html.ActionLink("Add", "AddDetail", new { shipmenid = ViewBag.ShipmentId }, new { id = "lnkAddShipmentDetail" })</th>
                 <th style="display: none;">
+             
                     @Html.DisplayNameFor(model => model.ShipmentId)
                 </th>
                 <th style="display: none;">

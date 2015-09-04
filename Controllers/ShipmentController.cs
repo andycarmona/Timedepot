@@ -1201,9 +1201,8 @@ namespace TimelyDepotMVC.Controllers
                 ShipmentDetailsList.AddRange(from item in qryShipmentDetails where !item.dtl.Shipped select item.dtl);
             }
 
-
             shipment = db.Shipments.FirstOrDefault(shp => shp.InvoiceId == invoiceid && shp.Shipped == false);
-            if (shipment != null)
+            if ((shipment != null) && ShipmentDetailsList.Any())
             {
                 nShipmentId = shipment.ShipmentId;
                 szInvoiceNo = shipment.InvoiceNo;
@@ -1224,6 +1223,7 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.ShipmentTitle = " ";
             ViewBag.OnePageOfData = onePageOfData;
             ViewBag.ShipmentId = nShipmentId;
+            ViewBag.InvoiceId = invoiceid;
             return PartialView(onePageOfData);
         }
 
