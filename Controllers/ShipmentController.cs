@@ -22,7 +22,9 @@ namespace TimelyDepotMVC.Controllers
     using System.Data.Entity.Validation;
     using System.Globalization;
     using System.Reflection.Emit;
+    using System.Runtime.Serialization;
     using System.Threading.Tasks;
+    using System.Transactions;
     using System.Web.Routing;
 
     using AutoMapper;
@@ -941,6 +943,47 @@ namespace TimelyDepotMVC.Controllers
             return existShipment;
         }
 
+        public T Clone<T>(T source)
+        {
+            var dcs = new DataContractSerializer(typeof(T));
+            using (var ms = new System.IO.MemoryStream())
+            {
+                dcs.WriteObject(ms, source);
+                ms.Seek(0, System.IO.SeekOrigin.Begin);
+                return (T)dcs.ReadObject(ms);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DuplicateDetailBox(int invoiceNoId, string itemId)
+        {
+            try
+            {
+                var aShipmentDetail =
+                    this.db.ShipmentDetails.FirstOrDefault(shpDetail => shpDetail.Sub_ItemID == itemId);
+                var cloneShpDetail = Clone(aShipmentDetail);
+                var anInvoiceDetail = this.db.InvoiceDetails.SingleOrDefault(s => s.InvoiceId == invoiceNoId);
+                if (anInvoiceDetail != null)
+                {
+                    var availableItems = anInvoiceDetail.Quantity - anInvoiceDetail.ShipQuantity;
+                    if (availableItems > 1)
+                    {
+                        cloneShpDetail.Quantity = 1;
+                        anInvoiceDetail.ShipQuantity = anInvoiceDetail.ShipQuantity + 1;
+                        this.db.ShipmentDetails.Add(cloneShpDetail);
+                        this.db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
+            }
+            var invoiceNo = invoiceNoId.ToString(CultureInfo.InvariantCulture);
+            int invoceId = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo).InvoiceId;
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoceId });
+        }
+
         //
         // GET: /Shipment/AddDetail
         public PartialViewResult AddDetail(string invoiceNoid, int shipmenid = 0)
@@ -959,12 +1002,9 @@ namespace TimelyDepotMVC.Controllers
             {
                 invoice = new Invoice();
             }
-            else
-            {
+       
                 nInvoiceId = invoice.InvoiceId;
                 szInvoiceNo = invoice.InvoiceNo;
-
-            }
 
             shipment = db.Shipments.Find(shipmenid);
             if (shipment == null)
@@ -983,9 +1023,7 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(details);
         }
 
-        //
-        // POST: /Shipment/AddDetail/5
-
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddDetail(ShipmentDetails shipmentdetails)
@@ -1026,6 +1064,11 @@ namespace TimelyDepotMVC.Controllers
             Shipment aShipment = null;
             if (shipmentDetailForm.Any())
             {
+                var sumShipped = new
+                {
+                    totalQuantity = shipmentDetailForm.Sum(t => t.Quantity),
+                };
+
                 var detailShipmentId = shipmentDetailForm[0].ShipmentId;
              aShipment = this.db.Shipments.SingleOrDefault(x => x.ShipmentId ==  detailShipmentId);
             }
@@ -1199,6 +1242,8 @@ namespace TimelyDepotMVC.Controllers
             if (qryShipmentDetails.Any())
             {
                 ShipmentDetailsList.AddRange(from item in qryShipmentDetails where !item.dtl.Shipped select item.dtl);
+                var result = new List<string>(ShipmentDetailsList.Select(x => x.Sub_ItemID).ToList().Distinct());
+                ViewBag.AvailableDetailShipId = result;
             }
 
             shipment = db.Shipments.FirstOrDefault(shp => shp.InvoiceId == invoiceid && shp.Shipped == false);

@@ -1009,7 +1009,7 @@
             jQuery(".lksalesdetailQty input").each(eachlksalesdetailQty);
             jQuery(".imprintselectorclass").each(eachimprintselectorclass);
             jQuery(".imprintclass").each(eachimprintclass);
-            $(document).on("click", "#lnkAddShipmentDetail", clicklnkAddShipmentDetail);
+            //$(document).on("click", "#lnkAddShipmentDetail", clicklnkAddShipmentDetail);
             //Hide fields not used
             jQuery(".teshipment").css("display", "none");
 
@@ -1115,7 +1115,6 @@
 
         function shipmentDetailSuccess(response, statusCode) {
             var objRes = response;
-            //debugger;
             //Display the response data
             jQuery("#shipmentDetailsdialog").html(objRes);
 
@@ -1135,27 +1134,30 @@
             jQuery("#imageRow img").click(ShowBoxLabel);
         }
 
-        function clicklnkAddShipmentDetail(src, arg) {
-            src.preventDefault();
+        function AddShipmentDetail() {
 
-            var szHref = src.target.href;
-
+            debugger;
+            var szHref = "/Shipment/DuplicateDetailBox?";
             var szInvoiceNo = jQuery("#invoiceNoid").val();
-            szHref = szHref + '&invoiceNoid=' + szInvoiceNo;
+            var szItemId = $('#itemId').val();
+            szHref = szHref + 'invoiceNoId=' + szInvoiceNo + '&itemId=' + szItemId;
 
-            //Display load image
             ShowLoadingDialog();
 
             var szUrl = szHref;
 
             jQuery.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: szUrl,
                 data: null,
                 //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
-                success: addshipmentDetailSuccess
+                success: function (data) {
+                    $("#shipmentDetailsdialog").html(data);
+                    HideLoadingDialog();
+                    changeInvoiceRemainingQty(szInvoiceNo);
+                }
             });
         }
 
@@ -1307,7 +1309,7 @@
                 });
             }
         }
-      
+    
         function updateDetailBox(boxDetails) {
             ShowLoadingDialog();
             $.ajax({
@@ -1318,6 +1320,10 @@
                 success: function (data) {
                     $("#shipmentDetailsdialog").html(data);
                     HideLoadingDialog();
+                    var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+                    if (szInvoiceId != undefined) {
+                        loadInvoiceDetails(szInvoiceId);
+                    }
                 }
             });
 

@@ -8,72 +8,71 @@
 }
 else
 {
- 
     <div class="boxMb10" style="text-align: center; font-size: 1.1em; font-weight: bold;">@ViewBag.ShipmentTitle</div>
     using (Html.BeginForm("UpdateDetail", "Shipment", FormMethod.Post, new { id = "detailboxForm" }))
     {
+        <button class="btn btn-default" type="button" onclick="AddShipmentDetail(); ">Add a box for:</button>
+           
+            @Html.DropDownList("itemId", new SelectList(ViewBag.AvailableDetailShipId, Model), new { @style = "border: none;" })
 
-        <table class="webgrid">
-            <tr class="webgrid-header">
-                <th>@Html.ActionLink("Add", "AddDetail", new { shipmenid = ViewBag.ShipmentId }, new { id = "lnkAddShipmentDetail" })</th>
-                <th style="display: none;">
-             
-                    @Html.DisplayNameFor(model => model.ShipmentId)
-                </th>
-                <th style="display: none;">
-                    @Html.DisplayNameFor(model => model.DetailId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BoxNo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Sub_ItemID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Quantity)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UnitPrice)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UnitWeight)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DimensionH)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DimensionL)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DimensionD)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Reference1)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Reference2)
-                </th>
-            </tr>
-            @Html.EditorForModel()
-            <tr>
-                <td colspan="4">
-                    <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
-                    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
-
-                </td>
-            </tr>
-
-        </table>
-    <button style="margin-right: 5px;" class="btn btn-default" type="button" id="updateDetail" value="Update" onclick="updateDetailBox();">Save for Shipment</button>
-        if (!string.IsNullOrEmpty((string)TempData["ErrorMessages"]))
-        {
+            <table class="webgrid">
+                <tr class="webgrid-header">
+                    <th style="display: none;">
+                        @Html.DisplayNameFor(model => model.ShipmentId)
+                    </th>
+                    <th style="display: none;">
+                        @Html.DisplayNameFor(model => model.DetailId)
+                    </th>
+                    <th></th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BoxNo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Sub_ItemID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UnitPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UnitWeight)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DimensionH)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DimensionL)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DimensionD)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reference1)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reference2)
+                    </th>
+                </tr>
+                @Html.EditorForModel()
+                <tr>
+                    <td colspan="4">
+                        <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+                        @Html.PagedListPager((IPagedList)ViewBag.OnePageOfData, page => Url.Action("Index", new { page }))
+                    </td>
+                </tr>
+            </table>
+            <button style="margin-right: 5px;" class="btn btn-default" type="button" id="updateDetail" value="Update" onclick="updateDetailBox();">Save for Shipment</button>
+            if (!string.IsNullOrEmpty((string)TempData["ErrorMessages"]))
+            {
             <p style="color:red">@TempData["ErrorMessages"]</p>
-        }
-    }
-    <div id="shipmentLogDetailsid" style="display: none;">@ViewBag.ShipmentLogDetails</div>
-    <div id="labelBoxPreview" style="width: 500px;" title="Label Preview" style="display: none;">
-        <div id="labelBoxContent" style="margin-top: 100px; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);">
-            <img src="" alt="" />
-        </div>
-    </div>
-}
+            }
+            }
+            <div id="shipmentLogDetailsid" style="display: none;">@ViewBag.ShipmentLogDetails</div>
+            <div id="labelBoxPreview" style="width: 500px;" title="Label Preview" style="display: none;">
+                <div id="labelBoxContent" style="margin-top: 100px; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);">
+                    <img src="" alt="" />
+                </div>
+            </div>
+            }
