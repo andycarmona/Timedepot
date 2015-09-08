@@ -3,9 +3,9 @@
     <td>
         <button class="btn btn-default" type="button" onclick="deleteDetailBox(@Model.ShipmentDetailID,@ViewBag.InvoiceId); "><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> </button>
     </td>
-
     <td style="display: none;">
         @Html.TextBoxFor(modelModel => Model.ShipmentId)
+        @Html.TextBoxFor(modelModel => Model.DetailId)
     </td>
     <td style="display: none;">
         @Html.TextBoxFor(modelModel => Model.ShipmentDetailID)
@@ -15,7 +15,6 @@
     </td>
     <td style="text-align: left;">
         @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Sub_ItemID))
-
     </td>
     <td style="width: 49px;text-align: left;">
         @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Quantity))

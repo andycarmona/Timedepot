@@ -26,9 +26,11 @@ namespace TimelyDepotMVC.Controllers
     using System.Threading.Tasks;
     using System.Transactions;
     using System.Web.Routing;
+    using System.Web.Script.Serialization;
 
     using AutoMapper;
 
+    using iTextSharp.text;
     using iTextSharp.text.pdf;
 
     using PayPal.Platform.SDK;
@@ -312,6 +314,12 @@ namespace TimelyDepotMVC.Controllers
 
             return string.IsNullOrEmpty(szError) ? this.Json(rateResponse, JsonRequestBehavior.AllowGet) : this.Json(szError, JsonRequestBehavior.AllowGet);
 
+        }
+
+        public JsonResult GetShipmentDetailByInvoice(int invoiceId)
+        {
+            InvoiceDetail[] idArray = this.db.InvoiceDetails.Where(inv => inv.InvoiceId == invoiceId).ToArray();
+            return this.Json(idArray, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
@@ -957,12 +965,15 @@ namespace TimelyDepotMVC.Controllers
         [HttpPost]
         public ActionResult DuplicateDetailBox(int invoiceNoId, string itemId)
         {
+            var invoiceId = 0;
             try
             {
+                var invoiceNo = invoiceNoId.ToString(CultureInfo.InvariantCulture);
+                invoiceId = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo).InvoiceId;
                 var aShipmentDetail =
                     this.db.ShipmentDetails.FirstOrDefault(shpDetail => shpDetail.Sub_ItemID == itemId);
                 var cloneShpDetail = Clone(aShipmentDetail);
-                var anInvoiceDetail = this.db.InvoiceDetails.SingleOrDefault(s => s.InvoiceId == invoiceNoId);
+                var anInvoiceDetail = this.db.InvoiceDetails.SingleOrDefault(s => s.InvoiceId == invoiceId && s.ItemID == itemId);
                 if (anInvoiceDetail != null)
                 {
                     var availableItems = anInvoiceDetail.Quantity - anInvoiceDetail.ShipQuantity;
@@ -979,9 +990,8 @@ namespace TimelyDepotMVC.Controllers
             {
                 var message = e.Message;
             }
-            var invoiceNo = invoiceNoId.ToString(CultureInfo.InvariantCulture);
-            int invoceId = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo).InvoiceId;
-            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoceId });
+
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
         }
 
         //
@@ -1002,9 +1012,9 @@ namespace TimelyDepotMVC.Controllers
             {
                 invoice = new Invoice();
             }
-       
-                nInvoiceId = invoice.InvoiceId;
-                szInvoiceNo = invoice.InvoiceNo;
+
+            nInvoiceId = invoice.InvoiceId;
+            szInvoiceNo = invoice.InvoiceNo;
 
             shipment = db.Shipments.Find(shipmenid);
             if (shipment == null)
@@ -1023,7 +1033,7 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(details);
         }
 
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddDetail(ShipmentDetails shipmentdetails)
@@ -1055,29 +1065,59 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
         }
 
+        private static Dictionary<string, int> GetItemsTotalSum(List<ShipmentDetails> shipmentDetailForm)
+        {
+            var totalSumByItem = new Dictionary<string, int>();
+            foreach (var shpDetail in shipmentDetailForm)
+            {
+                if (totalSumByItem.ContainsKey(shpDetail.Sub_ItemID))
+                {
+                    continue;
+                }
 
+                var totalSum = shipmentDetailForm.Where(x => x.Sub_ItemID == shpDetail.Sub_ItemID).Sum(t => t.Quantity);
+                if (totalSum == null)
+                {
+                    continue;
+                }
+
+                totalSumByItem.Add(shpDetail.Sub_ItemID, (int)totalSum);
+            }
+
+            return totalSumByItem;
+        }
 
         [HttpPost]
         public ActionResult UpdateDetail(List<ShipmentDetails> shipmentDetailForm)
         {
             var fullErrorMessage = string.Empty;
-            Shipment aShipment = null;
+            Shipment actualShipment = null;
+            HashSet<string> errorItems = new HashSet<string>();
+
             if (shipmentDetailForm.Any())
             {
-                var sumShipped = new
-                {
-                    totalQuantity = shipmentDetailForm.Sum(t => t.Quantity),
-                };
-
-                var detailShipmentId = shipmentDetailForm[0].ShipmentId;
-             aShipment = this.db.Shipments.SingleOrDefault(x => x.ShipmentId ==  detailShipmentId);
+                var actualShipmentId = shipmentDetailForm[0].ShipmentId;
+                actualShipment = this.db.Shipments.SingleOrDefault(x => x.ShipmentId == actualShipmentId);
             }
 
             try
             {
+                var totalSum = GetItemsTotalSum(shipmentDetailForm);
                 foreach (var shipmentDetail in shipmentDetailForm)
                 {
+                    var actualInvoiceDetail =
+                        db.InvoiceDetails.FirstOrDefault(x => x.ItemID == shipmentDetail.Sub_ItemID);
+                    int qtyForItem;
+                    totalSum.TryGetValue(shipmentDetail.Sub_ItemID, out qtyForItem);
+                    if (actualInvoiceDetail == null || !(actualInvoiceDetail.Quantity >= qtyForItem))
+                    {
+                        errorItems.Add(shipmentDetail.Sub_ItemID); 
+                        continue;
+                    }
+
+                    actualInvoiceDetail.ShipQuantity = qtyForItem;
                     this.db.Entry(shipmentDetail).State = EntityState.Modified;
+                    this.db.Entry(actualInvoiceDetail).State = EntityState.Modified;
                 }
 
                 this.db.SaveChanges();
@@ -1089,17 +1129,22 @@ namespace TimelyDepotMVC.Controllers
                 foreach (var validationResult in errorMessage)
                 {
                     var entityName = validationResult.Entry.Entity.GetType().Name;
-                    foreach (DbValidationError error in validationResult.ValidationErrors)
+                    foreach (var error in validationResult.ValidationErrors)
                     {
                         fullErrorMessage += entityName + "." + error.PropertyName + ": " + error.ErrorMessage + Environment.NewLine;
                     }
                 }
-
-                TempData["ErrorMessages"] = fullErrorMessage;
             }
 
-            return RedirectToAction("GetShipmenDetails", new { invoiceid = aShipment == null ? 0 : aShipment.InvoiceId });
+            if (errorItems.Any())
+            {
+                fullErrorMessage = "Please.Choose less quantity for items: " + string.Join<string>(",", errorItems);
+            }
+
+            TempData["ErrorMessages"] = fullErrorMessage;
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = actualShipment == null ? 0 : actualShipment.InvoiceId });
         }
+
 
         [HttpPost]
         public ActionResult Delete(int shipmentDetailId = 0)
@@ -1137,13 +1182,56 @@ namespace TimelyDepotMVC.Controllers
         public JsonResult GetInvoiceRemainingQuantity(int invDetailId)
         {
             var remainingQuantity = -1;
-            var invDetail = db.InvoiceDetails.Find(invDetailId);
+            var invDetail = this.db.InvoiceDetails.FirstOrDefault(x => x.InvoiceId == invDetailId);
+
+            if (invDetail == null)
+            {
+                var invoiceNo = invDetailId.ToString(CultureInfo.InvariantCulture);
+                var firstOrDefaultInvoice = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo);
+                if (firstOrDefaultInvoice != null)
+                {
+                    var invoiceId = firstOrDefaultInvoice.InvoiceId;
+                    invDetail = db.InvoiceDetails.FirstOrDefault(inv => inv.InvoiceId == invoiceId);
+                }
+            }
+
+            if (invDetail == null)
+            {
+                invDetail = db.InvoiceDetails.FirstOrDefault(inv => inv.Id == invDetailId);
+            }
 
             if (invDetail != null)
             {
                 remainingQuantity = (int)(invDetail.Quantity - invDetail.ShipQuantity);
             }
+
             return this.Json(remainingQuantity, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetMultipleInvoiceRemainingQuantity(InvoiceDetail[] shipDetailIdList)
+        {
+            
+            var listRemainingQuantity = "-1";
+            var quantiyOfShpDetail = new Dictionary<int, string>();
+
+            //if (shipDetailIdList.Length != 0)
+            //{
+            //    for (var index = 0; index < shipDetailIdList.Length - 1; index++)
+            //    {
+            //        var invDetail = this.db.InvoiceDetails.FirstOrDefault(x => x.Id == shipDetailIdList[index].Id);
+
+            //        if (invDetail != null)
+            //        {
+            //            quantiyOfShpDetail.Add(shipDetailIdList[index].Id, invDetail.ShipQuantity.ToString());
+            //        }
+            //    }
+            //}
+
+            //var js = new JavaScriptSerializer();
+            // listRemainingQuantity = js.Serialize(quantiyOfShpDetail);
+          
+
+            return this.Json(listRemainingQuantity, JsonRequestBehavior.AllowGet);
         }
 
         private void ReorderBoxesNames(int shipmentId)
@@ -1338,6 +1426,7 @@ namespace TimelyDepotMVC.Controllers
             qryInvDetail = null;
             return shipment;
         }
+
 
         private ShipmentDetails CreateShipmentDetail(Shipment shipment, Invoice invoice, InvoiceDetail invDetails, int quantityShipped, ref string szError)
         {

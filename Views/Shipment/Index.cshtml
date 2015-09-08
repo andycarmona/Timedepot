@@ -941,7 +941,7 @@
             //Move address validation result
             jQuery("#addressresultdiv").appendTo(jQuery("#addressvalidationdiv"));
             jQuery("#upserrordiv").appendTo(jQuery("#addressvalidationdiv"));
-           
+
             //Enable Get UPS rate button
             var szAddressResult03 = jQuery("#addressresultdiv03").html();
             szAddressResult03 = jQuery.trim(szAddressResult03);
@@ -1124,7 +1124,7 @@
                 $(this).css("border", "none");
                 $(this).prop("readonly", true);
             });
-           
+
             clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
@@ -1134,7 +1134,7 @@
             jQuery("#imageRow img").click(ShowBoxLabel);
         }
 
-        function AddShipmentDetail() {
+        function AddShipmentDetail(detailId) {
 
             debugger;
             var szHref = "/Shipment/DuplicateDetailBox?";
@@ -1156,7 +1156,11 @@
                 success: function (data) {
                     $("#shipmentDetailsdialog").html(data);
                     HideLoadingDialog();
-                    changeInvoiceRemainingQty(szInvoiceNo);
+                    var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+                    if (szInvoiceId != undefined) {
+                        loadInvoiceDetails(szInvoiceId);
+                    }
+                    changeInvoiceRemainingQty(detailId);
                 }
             });
         }
@@ -1232,26 +1236,48 @@
                 alert("Sorry. There are no more items to ship");
                 return;
             }
-                szUrl = szUrl + "salesorderid=" + salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
+            szUrl = szUrl + "salesorderid=" + salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
 
-                jQuery.ajax({
-                    type: 'POST',
-                    url: szUrl,
-                    data: null,
-                    dataType: 'html',
-                    error: AjaxFailed
-                }).success(function (response) {
-                    var objRes = response;
-                    //debugger;
-                    //Display the response data
-                    jQuery("#shipmentDetailsdialog").html(objRes);
+            jQuery.ajax({
+                type: 'POST',
+                url: szUrl,
+                data: null,
+                dataType: 'html',
+                error: AjaxFailed
+            }).success(function (response) {
+                var objRes = response;
+                //debugger;
+                //Display the response data
+                jQuery("#shipmentDetailsdialog").html(objRes);
 
-                    //Hide load image and select invoice link
-                    HideLoadingDialog();
-                    changeInvoiceRemainingQty(invoiceId);
-                    clickChangeTab(1);
-                });
-         
+                //Hide load image and select invoice link
+                HideLoadingDialog();
+                changeInvoiceRemainingQty(invoiceId);
+                clickChangeTab(1);
+            });
+
+        }
+
+        function changeMultipleInvoiceRemainingQty(shpDetailId) {
+            debugger;
+            var szUrl = "/Shipment/GetMultipleInvoiceRemainingQuantity?shipDetailIdList=" + shpDetailId;
+            jQuery.ajax({
+                type: 'GET',
+                url: szUrl,
+                data: null,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                error: AjaxFailed
+            }).success(function (response) {
+                if ((response != "-1") && (response != 'undefined'))
+                    var obj = parseJSON(response);
+                for (var index = 0; index < obj.Length - 1; index++) {
+                    $("#remainingqty_" + obj[index] + " span").text(obj[index][0]);
+                    $("#shipqty_" + obj[index] + " input").val(0);
+                    $("#result_shipqty_" + obj[index]).text(0);
+                }
+            });
+
         }
 
         function changeInvoiceRemainingQty(salesorderid) {
@@ -1265,9 +1291,13 @@
                 dataType: 'json',
                 error: AjaxFailed
             }).success(function (response) {
-                $("#remainingqty_" + salesorderid + " span").text(response);
-                $("#shipqty_" + salesorderid + " input").val(0);
-                $("#result_shipqty_" + salesorderid).text(0);
+                if (response != "-1") {
+                    $("#remainingqty_" + salesorderid + " span").text(response);
+                    $("#shipqty_" + salesorderid + " input").val(0);
+                    $("#result_shipqty_" + salesorderid).text(0);
+                } else {
+                    alert("Could not update shipping values.");
+                }
             });
 
         }
@@ -1309,24 +1339,45 @@
                 });
             }
         }
-    
+
         function updateDetailBox(boxDetails) {
             ShowLoadingDialog();
+
             $.ajax({
                 type: "POST",
                 dataType: 'html',
                 url: "/Shipment/UpdateDetail",
                 data: $('#detailboxForm').serialize(),
-                success: function (data) {
-                    $("#shipmentDetailsdialog").html(data);
-                    HideLoadingDialog();
-                    var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
-                    if (szInvoiceId != undefined) {
-                        loadInvoiceDetails(szInvoiceId);
-                    }
-                }
+                success: updateDetailBoxSuccess
             });
 
+        }
+
+        function updateDetailBoxSuccess(data) {
+            $("#shipmentDetailsdialog").html(data);
+            HideLoadingDialog();
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+            if (szInvoiceId != undefined) {
+                var szUrl = "/Shipment/GetShipmentDetailByInvoice?invoiceId=" + szInvoiceId;
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    error: AjaxFailed,
+                    success: function (response) {
+                        debugger;
+                        if (response != undefined) {
+                            var arrayOfShipId = response;
+
+                            changeMultipleInvoiceRemainingQty(arrayOfShipId);
+
+                        }
+                    }
+                });
+
+            }
         }
 
         function postDetailData(src, arg) {
