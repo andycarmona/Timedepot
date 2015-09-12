@@ -5,7 +5,7 @@
     <input id="txtShipmentId" value="@ViewBag.ActualShipmentId" type="text" />
 
 </div>
-<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;display:none;">@(@ViewBag.AddressResult == null ? "Address not validated" : @ViewBag.AddressResult) </p></div>
+<div class="divh1 boxtb3">@ViewBag.Title <p id="addressresultdiv03" style="float: right;color:green;display:none;">@(@ViewBag.AddressResult == null ? "" : @ViewBag.AddressResult) </p></div>
 
 <div>
     <div id="tabs" style="margin: 0px auto;">
@@ -32,6 +32,7 @@
             </div>
             <br />
             <div id="shipmentDialog">
+               
             </div>
         </div>
         <div id="tabs-2">
@@ -138,7 +139,7 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $('#ddlBillTo').change(function () {
+            $('#ddlBillTo').change(function() {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper')
                     $('#txtUPSAccountNumber').val('');
@@ -146,7 +147,9 @@
                     $('#txtUPSAccountNumber').val($('#shipperNumber').val());
 
             });
-
+            if ($('#addressresultdiv03').text() != "") {
+                $("#shipmentDialog").show();
+            }
             if ($('#item_Quantity').val() == "") {
 
                 $('#processShipmentBtn').hide();
@@ -200,7 +203,7 @@
                 });
             } else {
                 alert("Please. Validate shipto address before validating this account");
-                
+
             }
         }
 
@@ -210,7 +213,7 @@
             var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             var obj = jQuery.parseJSON(response);
             if (obj.ShipmentResults !== undefined) {
-
+                $("#validateAccount").attr('data-validated', true);
                 jQuery("#shipperNumber").val(upsShipperNumber);
                 alert("You have a valid account number.");
 
@@ -225,7 +228,12 @@
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
             var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
-            //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
+            var validatedAccount = $("#validateAccount").attr('data-validated');
+
+            if (validatedAccount != "true") {
+                alert("Please!! Validate this account or check  if you have a valid UPS number.");
+                return;
+            }
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
@@ -290,7 +298,7 @@
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
                         jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
-                        $('.shippingQuantity').each(function (i, obj) {
+                        $('.shippingQuantity').each(function(i, obj) {
                             $(this).val(0);
                         });
 
@@ -415,23 +423,23 @@
 
             jQuery("#ckcustLog").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcustLog").prop("checked", true);
-                    break;
-                case "shipmentrecord":
-                    jQuery("#ckcompLog").prop("checked", true);
-                    break;
-                case "shippementddate":
-                    jQuery("#ckcodeLog").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItemLog';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItemLog").val(szDate)
-                    }
-                    break;
-                default:
-                    jQuery("#ckstateLog").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcustLog").prop("checked", true);
+                break;
+            case "shipmentrecord":
+                jQuery("#ckcompLog").prop("checked", true);
+                break;
+            case "shippementddate":
+                jQuery("#ckcodeLog").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItemLog';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItemLog").val(szDate)
+                }
+                break;
+            default:
+                jQuery("#ckstateLog").prop("checked", true);
+                break;
             }
         }
 
@@ -501,64 +509,64 @@
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
@@ -895,7 +903,7 @@
 
         //Load Invoice
         function loadInvoiceDetails(id) {
-            $("#shipmentDialog").hide();
+            //$("#shipmentDialog").hide();
 
             var szUrl = '@Url.Action("Edit", "Shipment")' + '?id=' + id;
 
@@ -1127,7 +1135,7 @@
 
             //Hide load image and select invoice link
             HideLoadingDialog();
-            $('.shippingQuantity').each(function (i, obj) {
+            $('.shippingQuantity').each(function(i, obj) {
                 $(this).css("border", "none");
                 $(this).prop("readonly", true);
             });
@@ -1160,7 +1168,7 @@
                 //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
-                success: function (data) {
+                success: function(data) {
                     $("#shipmentDetailsdialog").html(data);
                     HideLoadingDialog();
                     var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
@@ -1229,12 +1237,13 @@
         }
 
         function addShipmentItem() {
-
+            debugger;
             var szUrl = "/Shipment/ShipItem?";
             var salesorderId = $(this).attr('data-salesorder');
             var invoiceId = $(this).attr('data-itemid');
             var shippedQuantity = $("#result_shipqty_" + invoiceId).text();
             var remainQty = $("#result_remainingqty_" + invoiceId).text();
+
             if (shippedQuantity == 0) {
                 alert("Can't make this request. Shipped quantity can not be 0");
                 return;
@@ -1243,6 +1252,7 @@
                 alert("Sorry. There are no more items to ship");
                 return;
             }
+
             szUrl = szUrl + "salesorderid=" + salesorderId + "&shipqty=" + shippedQuantity + "&id=" + invoiceId;
 
             jQuery.ajax({
@@ -1251,12 +1261,12 @@
                 data: null,
                 dataType: 'html',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 var objRes = response;
                 //debugger;
                 //Display the response data
                 jQuery("#shipmentDetailsdialog").html(objRes);
-
+                jQuery("#shipmentDialog").show();
                 //Hide load image and select invoice link
                 HideLoadingDialog();
                 changeInvoiceRemainingQty(invoiceId);
@@ -1275,7 +1285,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 debugger;
                 if ((response != "-1") && (response != 'undefined')) {
                     var data = JSON.parse(response); // this will convert your json string to a javascript object
@@ -1304,7 +1314,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 if (response != "-1") {
                     $("#remainingqty_" + salesorderid + " span").text(response);
                     $("#shipqty_" + salesorderid + " input").val(0);
@@ -1342,7 +1352,7 @@
                     dataType: 'text',
                     url: "/Shipment/Delete",
                     data: "shipmentDetailId=" + shipmentDetailId,
-                    success: function (data) {
+                    success: function(data) {
                         $("#shipmentDetailsdialog").html(data);
                         var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
                         if (szInvoiceId != undefined) {
@@ -1380,7 +1390,7 @@
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     error: AjaxFailed,
-                    success: function (response) {
+                    success: function(response) {
                         debugger;
                         if (response != undefined) {
                             var arrayOfShipId = response;
@@ -1403,13 +1413,13 @@
                 url: "/Shipment/AddDetail",
                 data: $('#detailForm').serialize(),
                 datatype: "html",
-                success: function (data) {
+                success: function(data) {
                     clickbtDialogCloseAddDetail();
                     //debugger;
                     $('#shipmentDetailsdialog').html(data);
 
                 },
-                fail: function () {
+                fail: function() {
                     alert("fail");
                 }
             });

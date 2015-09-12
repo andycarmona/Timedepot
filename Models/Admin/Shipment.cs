@@ -28,6 +28,9 @@ namespace TimelyDepotMVC.Models.Admin
         [Display(Name = "Rate Results")]
         public string RateResults { get; set; }
 
+        [Display(Name = "Ups Number")]
+        public string UpsNumber { get; set; }
+
         public bool Shipped { get; set; }
     }
 }

@@ -423,7 +423,7 @@ namespace TimelyDepotMVC.UPSWrappers
                     AddPackage(
                         box.BoxNo,
                         box.UnitWeight.Value,
-                        Convert.ToInt32(box.UnitPrice),
+                        (int)box.DeclaredValue,
                         box.DimensionH.Value,
                         box.DimensionD.Value,
                         box.DimensionL.Value,

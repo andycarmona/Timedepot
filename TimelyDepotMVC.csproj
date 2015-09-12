@@ -724,6 +724,10 @@
     <Compile Include="Migrations\201509120925262_ChangeDeclaredValueToInt.Designer.cs">
       <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.cs" />
+    <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.Designer.cs">
+      <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2316,6 +2320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509120925262_ChangeDeclaredValueToInt.resx">
       <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.resx">
+      <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

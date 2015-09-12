@@ -331,12 +331,14 @@ namespace TimelyDepotMVC.Controllers
             ShipmentResponse rateResponse = null;
             string szError = null;
             var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
-
-            if (selectedInvoice == null)
+            var actualShipment = db.Shipments.FirstOrDefault(y => y.ShipmentId == shipmentId);
+           
+            if ((selectedInvoice == null) ||(actualShipment==null))
             {
                 return this.Json("Error.No invoice selected.", JsonRequestBehavior.AllowGet);
             }
 
+            actualShipment.UpsNumber = upsShipperNumber;
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
@@ -1098,15 +1100,7 @@ namespace TimelyDepotMVC.Controllers
 
                     totalSum.TryGetValue(shipmentDetail.Sub_ItemID, out qtyForItem);
 
-                    //if (actualInvoiceDetail != null)
-                    //{
-                    //   qtydiff = actualInvoiceDetail.Quantity - shipmentDetail.Quantity;
-                    //}
-
-                    //if (qtydiff < 0)
-                    //{
-                    //    continue;
-                    //}
+               
 
                     if (actualInvoiceDetail == null || !(actualInvoiceDetail.Quantity >= qtyForItem))
                     {
@@ -1415,6 +1409,7 @@ namespace TimelyDepotMVC.Controllers
                                        ShipmentDate = DateTime.Now,
                                        InvoiceId = invoice.InvoiceId,
                                        InvoiceNo = invoice.InvoiceNo
+
                                    };
 
                     db.Shipments.Add(shipment);
