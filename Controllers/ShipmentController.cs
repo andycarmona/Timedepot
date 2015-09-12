@@ -290,7 +290,7 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
-        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo,string upsShipperNumber)
+        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber)
         {
 
             ShipConfirmResponse rateResponse = null;
@@ -451,7 +451,7 @@ namespace TimelyDepotMVC.Controllers
 
                     if (anInvoiceList.ShipQuantity != null)
                     {
-                        
+
                         resultData = this.GetRateFromUPS(
                             (int)anInvoiceList.ShipQuantity,
                             nrBoxes,
@@ -627,7 +627,7 @@ namespace TimelyDepotMVC.Controllers
 
         private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency)
         {
-            
+
             try
             {
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
@@ -1486,15 +1486,14 @@ namespace TimelyDepotMVC.Controllers
                                               DimensionL = 1,
                                               BoxNo = "Box " + shDetailCount,
                                               Sub_ItemID = invDetails.ItemID,
-                                              Quantity = quantityShipped
+                                              Quantity = quantityShipped,
+                                              Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo),
+                                              Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, quantityShipped),
+                                              ShipmentId = shipment.ShipmentId,
+                                              UnitPrice = invDetails.UnitPrice,
+                                              UnitWeight = 1,
+                                              DeclaredValue = 1
                                           };
-
-                    shipmentDetails.DetailId = shipmentDetailList.Select(x => x.DetailId).FirstOrDefault();
-                    shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
-                    shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, quantityShipped);
-                    shipmentDetails.ShipmentId = shipment.ShipmentId;
-                    shipmentDetails.UnitPrice = invDetails.UnitPrice;
-                    shipmentDetails.UnitWeight = 1;
                 }
                 else
                 {
@@ -1627,9 +1626,11 @@ namespace TimelyDepotMVC.Controllers
                             shipmentDetails.Reference2 = string.Format(
                                 "{0} {1}",
                                 invDetails.Sub_ItemID,
-                                nUnitperCase.ToString());
+                                nUnitperCase);
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
+                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails, nUnitperCase);
+                           
 
                             try
                             {
@@ -1691,7 +1692,7 @@ namespace TimelyDepotMVC.Controllers
                                 itemsInLastBox.ToString());
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
-
+                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails,itemsInLastBox);
                             try
                             {
                                 shipmentDetails.UnitWeight = nPartialBoxWeight == 0
@@ -1724,6 +1725,15 @@ namespace TimelyDepotMVC.Controllers
             }
 
             return shipmentDetails;
+        }
+
+        private static int GetRoundedDeclaredValue(InvoiceDetail invDetails, int quantityShipped)
+        {
+            decimal? roundedDeclaredValue = (quantityShipped * invDetails.UnitPrice);
+            var roundedToHundred = Math.Ceiling((decimal)(roundedDeclaredValue / (decimal)100.0)) * 100;
+            var roundedResult = (int)roundedToHundred;
+
+            return roundedResult;
         }
 
         //

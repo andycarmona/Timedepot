@@ -20,8 +20,12 @@
         @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Quantity))
 
     </td>
-    <td style="width: 120px;text-align: left;">
+    <td style="display:none">
         @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.UnitPrice, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.UnitPrice))
+
+    </td>
+    <td style="width: 120px;text-align: left;">
+        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.DeclaredValue, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.DeclaredValue))
 
     </td>
     <td style="width: 80px;text-align: left;">

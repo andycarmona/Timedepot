@@ -35,6 +35,9 @@ namespace TimelyDepotMVC.Models.Admin
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal? UnitPrice { get; set; }
 
+        [Display(Name = "Declared Value")]
+        public int? DeclaredValue { get; set; }
+
         [Display(Name = "Weight")]
         [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int? UnitWeight { get; set; }

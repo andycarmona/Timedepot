@@ -716,6 +716,14 @@
     <Compile Include="Migrations\201509021702581_changeprimarykeyofShipmetsDetails.Designer.cs">
       <DependentUpon>201509021702581_changeprimarykeyofShipmetsDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201509120819506_AddDeclaredValueToShipmentDetil.cs" />
+    <Compile Include="Migrations\201509120819506_AddDeclaredValueToShipmentDetil.Designer.cs">
+      <DependentUpon>201509120819506_AddDeclaredValueToShipmentDetil.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201509120925262_ChangeDeclaredValueToInt.cs" />
+    <Compile Include="Migrations\201509120925262_ChangeDeclaredValueToInt.Designer.cs">
+      <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2302,6 +2310,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509021702581_changeprimarykeyofShipmetsDetails.resx">
       <DependentUpon>201509021702581_changeprimarykeyofShipmetsDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509120819506_AddDeclaredValueToShipmentDetil.resx">
+      <DependentUpon>201509120819506_AddDeclaredValueToShipmentDetil.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509120925262_ChangeDeclaredValueToInt.resx">
+      <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
