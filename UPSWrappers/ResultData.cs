@@ -9,9 +9,9 @@ namespace TimelyDepotMVC.UPSWrappers
     {
         public string code { get; set; }
         public string service { get; set; }
-        public string Publishedcost { get; set; }
-        public string cost { get; set; }
-        public string Negcost { get; set; }
+        public decimal Publishedcost { get; set; }
+        public decimal cost { get; set; }
+        public decimal Negcost { get; set; }
         public string time { get; set; }
         public string errorMessage { get; set; }
     }

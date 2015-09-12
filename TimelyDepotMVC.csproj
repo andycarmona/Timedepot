@@ -967,6 +967,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="UPSWrappers\ResultData.cs" />
+    <Compile Include="UPSWrappers\ResultDataView.cs" />
     <Compile Include="UPSWrappers\ShipmentModule.cs" />
     <Compile Include="UPSWrappers\UPSConstants.cs" />
     <Compile Include="UPSWrappers\UPSRateServiceWrapper.cs" />

@@ -172,44 +172,50 @@
         }
 
         function validateUPSAccount() {
-
+            debugger;
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
 
             szUrl = '@Url.Action("ProcessShipmentConfirmation", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
+                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber;
             }
+            if (actualShipmentId !== '') {
+                //Display load image
+                ShowLoadingDialog();
 
-            //Display load image
-            ShowLoadingDialog();
-
-            //Get the UPS Rate
-            jQuery.ajax({
-                type: 'GET',
-                url: szUrl,
-                data: null,
-                //contentType: 'application/json; charset=utf-8',
-                dataType: 'html',
-                error: AjaxFailed,
-                success: UPSAccountValidationResponse
-            });
+                //Get the UPS Rate
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: UPSAccountValidationResponse
+                });
+            } else {
+                alert("Please. Validate shipto address before validating this account");
+                
+            }
         }
 
         function UPSAccountValidationResponse(response, statusCode) {
             //Hide load image
             HideLoadingDialog();
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             var obj = jQuery.parseJSON(response);
             if (obj.ShipmentResults !== undefined) {
 
+                jQuery("#shipperNumber").val(upsShipperNumber);
                 alert("You have a valid account number.");
 
             } else {
-                alert("Invalid account number. Please contact your UPS provider.");
+                alert(response);
             }
         }
 
@@ -218,13 +224,13 @@
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
 
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber;
                 }
 
                 //Display load image
@@ -1049,10 +1055,11 @@
         }
 
         function LoadUpsRateInformation(invoiceId) {
+            debugger;
             var itemId = jQuery("#item_Sub_ItemID").val();
             var quantity = jQuery("#divQuantity1").text();
             var toZip = jQuery("#ToZip").val();
-            var szMsg = "=" + invoiceId + "&ItemId=" + itemId + "&quantity=" + quantity + "&shipToPostalCode=" + toZip;
+            var szMsg = "=" + invoiceId + "&shipToPostalCode=" + toZip;
 
             var szUrl = jQuery("#getUpsRateDetailsId").attr("href");
             szUrl = szUrl.replace("=0", szMsg);
@@ -1259,7 +1266,7 @@
         }
 
         function changeMultipleInvoiceRemainingQty(shpDetailId) {
-            debugger;
+
             var szUrl = "/Shipment/GetMultipleInvoiceRemainingQuantity?shipDetailIdList=" + shpDetailId;
             jQuery.ajax({
                 type: 'GET',
@@ -1269,13 +1276,20 @@
                 dataType: 'json',
                 error: AjaxFailed
             }).success(function (response) {
-                if ((response != "-1") && (response != 'undefined'))
-                    var obj = parseJSON(response);
-                for (var index = 0; index < obj.Length - 1; index++) {
-                    $("#remainingqty_" + obj[index] + " span").text(obj[index][0]);
-                    $("#shipqty_" + obj[index] + " input").val(0);
-                    $("#result_shipqty_" + obj[index]).text(0);
+                debugger;
+                if ((response != "-1") && (response != 'undefined')) {
+                    var data = JSON.parse(response); // this will convert your json string to a javascript object
+
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            $("#remainingqty_" + key + " span").text(data[key]);
+                            //$("#shipqty_" + key + " input").val(data[key]);
+                            //$("#shipqty_" + key + " input").val(0);
+                            //$("#result_shipqty_" + key).text(data[key]);
+                        }
+                    }
                 }
+
             });
 
         }
