@@ -14,7 +14,7 @@
         @Html.TextBoxFor(modelModel => Model.BoxNo, new Dictionary<string, object>() { { "disabled", "true" } })
     </td>
     <td style="text-align: left;">
-        @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Sub_ItemID))
+        @Html.TextBoxFor(modelModel => Model.Sub_ItemID, new Dictionary<string, object>() { { "disabled", "true" } }) 
     </td>
     <td style="width: 49px;text-align: left;">
         @(Model.Shipped ? Html.TextBoxFor(modelModel => Model.Quantity, new Dictionary<string, object>() { { "disabled", "false" } }) : Html.TextBoxFor(modelModel => Model.Quantity))

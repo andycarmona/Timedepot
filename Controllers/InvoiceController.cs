@@ -21,6 +21,7 @@ using TimelyDepotMVC.PDFReporting;
 namespace TimelyDepotMVC.Controllers
 {
     using System.Threading;
+    using System.Web.Routing;
 
     using Microsoft.Ajax.Utilities;
 
@@ -2400,7 +2401,7 @@ namespace TimelyDepotMVC.Controllers
 
                 db.Entry(invoice).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit",new {id=invoice.InvoiceId});
             }
             else
             {
@@ -2430,7 +2431,7 @@ namespace TimelyDepotMVC.Controllers
                     }
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Edit", new { id = invoice.InvoiceId });
                 }
                 nPos = -1;
                 nPos = szMsg.IndexOf("no es válido para Invoice Date.");
@@ -2446,7 +2447,7 @@ namespace TimelyDepotMVC.Controllers
                     }
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Edit", new { id = invoice.InvoiceId });
                 }
             }
 
