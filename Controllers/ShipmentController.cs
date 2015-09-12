@@ -509,11 +509,11 @@ namespace TimelyDepotMVC.Controllers
             out int valuePerPartialBox)
         {
             int unitPerCase = 1;
-
+            TimelyDepotContext dbAux = new TimelyDepotContext();
             int BOX_CASE = 0;
             decimal CASE_WI = 0;
             decimal UT_WT = 0;
-            var ds = this.db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
+            var ds = dbAux.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
 
             if (ds != null && ds.Count > 0)
             {
@@ -544,7 +544,7 @@ namespace TimelyDepotMVC.Controllers
             details.CASE_LEN = 0;
             details.CASE_WI = 0;
             details.CASE_WT = 0;
-            var itemList = this.db.ITEMs.Where(i => i.ItemID == ItemId).ToList();
+            var itemList = dbAux.ITEMs.Where(i => i.ItemID == ItemId).ToList();
             if (itemList.Count > 0)
             {
                 int j = 0;
