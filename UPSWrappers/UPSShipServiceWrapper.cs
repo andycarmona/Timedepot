@@ -263,6 +263,7 @@ namespace TimelyDepotMVC.UPSWrappers
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };
             paymentInfo.ShipmentCharge = shpmentChargeArray;
             shipment.PaymentInformation = paymentInfo;
+        
 
         }
 

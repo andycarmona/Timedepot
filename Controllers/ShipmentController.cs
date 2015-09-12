@@ -22,10 +22,18 @@ namespace TimelyDepotMVC.Controllers
     using System.Data.Entity.Validation;
     using System.Globalization;
     using System.Reflection.Emit;
+    using System.Runtime.Serialization;
     using System.Threading.Tasks;
+    using System.Transactions;
     using System.Web.Routing;
+    using System.Web.Script.Serialization;
 
     using AutoMapper;
+
+    using iTextSharp.text;
+    using iTextSharp.text.pdf;
+
+    using Newtonsoft.Json;
 
     using PayPal.Platform.SDK;
 
@@ -282,7 +290,7 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
-        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo)
+        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber)
         {
 
             ShipConfirmResponse rateResponse = null;
@@ -295,10 +303,10 @@ namespace TimelyDepotMVC.Controllers
                 shipmentRequestDto.userName = UPSConstants.UpsUserName;
                 shipmentRequestDto.password = UPSConstants.UpsPasword;
                 shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
-                shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+                shipmentRequestDto.shipperNumber = upsShipperNumber;
                 shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
                 shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
-                shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+                shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
 
@@ -310,7 +318,14 @@ namespace TimelyDepotMVC.Controllers
 
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo)
+        public JsonResult GetShipmentDetailByInvoice(int invoiceId)
+        {
+            List<int> idArray = this.db.InvoiceDetails.Select(inv => inv.Id).ToList();
+            var listOfShipId = JsonConvert.SerializeObject(idArray);
+            return this.Json(listOfShipId, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber)
         {
 
             ShipmentResponse rateResponse = null;
@@ -326,10 +341,10 @@ namespace TimelyDepotMVC.Controllers
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
             shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
-            shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
+            shipmentRequestDto.shipperNumber = upsShipperNumber;
             shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
             shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
-            shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
+            shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
 
             var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
 
@@ -363,11 +378,11 @@ namespace TimelyDepotMVC.Controllers
 
             if (invoiceDetail != null)
             {
-                var actualQuantity = (int)(invoiceDetail.Quantity - totalShipped);
+                var actualQuantity = (int)(invoiceDetail.ShipQuantity - totalShipped);
                 if (actualQuantity >= 0)
                 {
                     // invoiceDetail.Quantity = actualQuantity;
-                    invoiceDetail.ShipQuantity = invoiceDetail.ShipQuantity + totalShipped;
+                    invoiceDetail.ShipQuantity = actualQuantity;
                 }
             }
 
@@ -393,84 +408,82 @@ namespace TimelyDepotMVC.Controllers
 
         }
 
-        public JsonResult ValidateUPSAccount(string accountNumber, string invoiceNo, string ItemId, string quantity, string shipToPostalCode)
+
+        public PartialViewResult GetUPSRateTE(int? invoiceId, string shipToPostalCode)
         {
-            var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
-            string result = "Not a valid UPS Account.";
+            var resultData = new List<ResultData>();
+            var resultDataViewList = new List<ResultDataView>();
+            var currency = "US";
             try
             {
-                decimal unitPrice = 0;//TODO:// need to get from db unitprice
-                double Qty;
-                quantity = quantity.Trim();
-                double.TryParse(quantity, out Qty);
-                int nrBoxes;
-                int itemsInLastBox;
-                string fullBoxWeight;
-                string partialBoxWeight;
-                int valuePerFullBox;
-                int valuePerPartialBox;
-                var details = this.GetBoxInformationDetails(ItemId, Qty, ref unitPrice, out nrBoxes, out itemsInLastBox, out fullBoxWeight, out partialBoxWeight, out valuePerFullBox, out valuePerPartialBox);
+                decimal unitPrice = 0;
+                int nrBoxes = 0;
+                int itemsInLastBox = 0;
+                string fullBoxWeight = null;
+                string partialBoxWeight = null;
+                int valuePerFullBox = 0;
+                int valuePerPartialBox = 0;
+                UPSWrappers.inv_detl details = null;
 
 
-                if (selectedInvoice != null)
+
+                resultData.Add(new ResultData() { service = "UPS Ground", code = "03", cost = 0, Negcost = 0, Publishedcost = 0 });
+                resultData.Add(new ResultData() { service = "UPS Three-Day Select®", code = "12" });
+                resultData.Add(new ResultData() { service = "UPS Second Day Air®", code = "02" });
+                resultData.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
+
+                var invoiceDetailList = this.db.InvoiceDetails.Where(inv => inv.InvoiceId == invoiceId);
+                foreach (var anInvoiceList in invoiceDetailList)
                 {
-                    var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
-                    shipmentRequestDto.userName = UPSConstants.UpsUserName;
-                    shipmentRequestDto.password = UPSConstants.UpsPasword;
-                    shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
-                    shipmentRequestDto.shipperNumber = UPSConstants.UpsShipperNumber;
-                    shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
-                    shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
-                    shipmentRequestDto.billShipperAccountNumber = UPSConstants.UpsShipperNumber;
-                    var rateServiceWrapper = new UPSRateServiceWrapper(shipmentRequestDto);
+                    if (anInvoiceList.ShipQuantity != null)
+                    {
+                        details = this.GetBoxInformationDetails(
+                            anInvoiceList.ItemID,
+                            (double)anInvoiceList.ShipQuantity,
+                            ref unitPrice,
+                            out nrBoxes,
+                            out itemsInLastBox,
+                            out fullBoxWeight,
+                            out partialBoxWeight,
+                            out valuePerFullBox,
+                            out valuePerPartialBox);
+                    }
 
-                    //var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    //    UPSConstants.UpsAccessLicenseNumber,
-                    //    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, "94306", "US", null, null, null,
-                    //    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    //    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
+                    if (anInvoiceList.ShipQuantity != null)
+                    {
 
-
-                    var rateResponse = rateServiceWrapper.CallUPSRateRequest("03", (int)Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, true);//,out requestXML);
-
-                    result = "This is a valid UPS Account.";
+                        resultData = this.GetRateFromUPS(
+                            (int)anInvoiceList.ShipQuantity,
+                            nrBoxes,
+                            itemsInLastBox,
+                            fullBoxWeight,
+                            valuePerFullBox,
+                            valuePerPartialBox,
+                            partialBoxWeight,
+                            details,
+                            unitPrice,
+                            shipToPostalCode,
+                            resultData, out currency);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                var error = e.Message;
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
 
-        //
-        // GET:/Shipment/GetUPSRateTE
-        //public JsonResult GetUPSRateTE(int invoiceId, string ValidateAddresResult, string itemNo, string quantity, string unitPriceValue, string customerType, string serviceType, string packageType)
-        public PartialViewResult GetUPSRateTE(string ItemId, string quantity, string shipToPostalCode)
-        {
-
-            List<ResultData> resultData = new List<ResultData>();
-            try
-            {
-
-                decimal unitPrice = 0;//TODO:// need to get from db unitprice
-                double Qty;
-                quantity = quantity.Trim();
-                double.TryParse(quantity, out Qty);
-                int nrBoxes;
-                int itemsInLastBox;
-                string fullBoxWeight;
-                string partialBoxWeight;
-                int valuePerFullBox;
-                int valuePerPartialBox;
-                var details = this.GetBoxInformationDetails(ItemId, Qty, ref unitPrice, out nrBoxes, out itemsInLastBox, out fullBoxWeight, out partialBoxWeight, out valuePerFullBox, out valuePerPartialBox);
-
-                resultData = GetRateFromUPS((int)Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, shipToPostalCode);
                 foreach (var rateData in resultData)
                 {
-                    if (string.IsNullOrEmpty(rateData.cost))
+                    if (rateData.cost == 0)
                     {
                         rateData.errorMessage = "Missing data to be able to calculate price.";
+                    }
+                    else
+                    {
+                        var aresultData = new ResultDataView();
+                        aresultData.cost = rateData.cost.ToString(CultureInfo.InvariantCulture) + " " + currency;
+                        aresultData.Negcost = rateData.Negcost.ToString(CultureInfo.InvariantCulture) + " " + currency;
+                        aresultData.Publishedcost = rateData.Publishedcost.ToString(CultureInfo.InvariantCulture) + " " + currency;
+                        aresultData.code = rateData.code;
+                        aresultData.errorMessage = rateData.errorMessage;
+                        aresultData.service = rateData.service;
+                        aresultData.time = rateData.time;
+                        resultDataViewList.Add(aresultData);
                     }
                 }
             }
@@ -480,7 +493,7 @@ namespace TimelyDepotMVC.Controllers
 
             }
 
-            return PartialView(resultData);
+            return PartialView(resultDataViewList);
 
         }
 
@@ -496,22 +509,11 @@ namespace TimelyDepotMVC.Controllers
             out int valuePerPartialBox)
         {
             int unitPerCase = 1;
-
+            TimelyDepotContext dbAux = new TimelyDepotContext();
             int BOX_CASE = 0;
             decimal CASE_WI = 0;
             decimal UT_WT = 0;
-
-            if (ItemId.Contains("_"))
-            {
-                ItemId = ItemId.Split('_')[0];
-            }
-
-            if (ItemId.Contains("/"))
-            {
-                ItemId = ItemId.Split('/')[0];
-            }
-
-            var ds = this.db.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
+            var ds = dbAux.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
 
             if (ds != null && ds.Count > 0)
             {
@@ -542,7 +544,7 @@ namespace TimelyDepotMVC.Controllers
             details.CASE_LEN = 0;
             details.CASE_WI = 0;
             details.CASE_WT = 0;
-            var itemList = this.db.ITEMs.Where(i => i.ItemID == ItemId).ToList();
+            var itemList = dbAux.ITEMs.Where(i => i.ItemID == ItemId).ToList();
             if (itemList.Count > 0)
             {
                 int j = 0;
@@ -623,20 +625,11 @@ namespace TimelyDepotMVC.Controllers
 
         #region UPS RATE SERVICE API
 
-        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode)
+        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency)
         {
+
             try
             {
-                List<ResultData> lst = new List<ResultData>();
-
-
-                lst.Add(new ResultData() { service = "UPS Ground", code = "03" });
-                lst.Add(new ResultData() { service = "UPS Three-Day Select®", code = "12" });
-                lst.Add(new ResultData() { service = "UPS Second Day Air®", code = "02" });
-                lst.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
-
-
-
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
                     UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
                     UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, UPSConstants.UpsShipperAddressLine,
@@ -656,37 +649,33 @@ namespace TimelyDepotMVC.Controllers
                     try
                     {
                         var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, true);//,out requestXML);
-                        //var rateResponse = CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, upsService,true);
 
                         if (rateResponse.RatedShipment != null)
                         {
                             foreach (var rshipment in rateResponse.RatedShipment)
                             {
+                                currency = " " + rshipment.TotalCharges.CurrencyCode;
                                 var rate = Math.Round
                                     (decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture) + decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture) * 0.15m);
-                                r.cost = rate + " " + rshipment.TotalCharges.CurrencyCode;
+                                r.cost += rate;
 
-                                r.Publishedcost = rshipment.TotalCharges.MonetaryValue + " " + rshipment.TotalCharges.CurrencyCode;
-
-
-                                r.Negcost = rshipment.NegotiatedRateCharges.TotalCharge.MonetaryValue + " " + rshipment.NegotiatedRateCharges.TotalCharge.CurrencyCode;
+                                r.Publishedcost += decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture);
 
 
-                                //r.cost = string.Format("Total Charges:{0} {1} | Negociated Rate:{2} {3}", rshipment.TotalCharges.MonetaryValue, rshipment.TotalCharges.CurrencyCode, rshipment.TotalCharges.MonetaryValue, rshipment.TotalCharges.CurrencyCode);
-                                if (rshipment.GuaranteedDelivery != null && rshipment.GuaranteedDelivery.BusinessDaysInTransit != null)
+                                r.Negcost += decimal.Parse(rshipment.NegotiatedRateCharges.TotalCharge.MonetaryValue, CultureInfo.InvariantCulture);
+
+                                if (rshipment.GuaranteedDelivery != null
+                                    && rshipment.GuaranteedDelivery.BusinessDaysInTransit != null)
+                                {
                                     r.time = rshipment.GuaranteedDelivery.BusinessDaysInTransit + " days";
-                                //if (rshipment.GuaranteedDelivery != null && !String.IsNullOrEmpty(rshipment.GuaranteedDelivery.DeliveryByTime))
-                                //    r.time = r.time + " " + rshipment.GuaranteedDelivery.DeliveryByTime + "time";
+                                }
                             }
-
-
                         }
                     }
                     catch (System.Web.Services.Protocols.SoapException ex)
                     {
                     }
                 }
-
                 try
                 {
                     var titResponse = transitTimeWrapper.CallUPSTimeInTransitRequest(Qty, nrBoxes, fullBoxWeight, partialBoxWeight, "USD", unitPrice, true);
@@ -702,30 +691,34 @@ namespace TimelyDepotMVC.Controllers
 
                 foreach (ResultData r in lst)
                 {
-                    RateService upsService = new RateService();
+                    var upsService = new RateService();
                     try
                     {
-                        var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, false);//,out requestXML);
-                        //RateResponse rateResponse = CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, unitPrice, upsService,false);
+                        var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, false);
                         if (rateResponse.RatedShipment != null)
                         {
                             foreach (var rshipment in rateResponse.RatedShipment)
                             {
-                                var rate = Math.Round
-                                    (decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture) + decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture) * 0.15m);
-                                r.cost = rate + " " + rshipment.TotalCharges.CurrencyCode;
+                                currency = " " + rshipment.TotalCharges.CurrencyCode;
+                                var rate =
+                                    Math.Round(
+                                        decimal.Parse(
+                                            rshipment.TotalCharges.MonetaryValue,
+                                            CultureInfo.InvariantCulture)
+                                        + decimal.Parse(
+                                            rshipment.TotalCharges.MonetaryValue,
+                                            CultureInfo.InvariantCulture) * 0.15m);
+                                r.cost += rate;
 
+                                r.Publishedcost += decimal.Parse(rshipment.TotalCharges.MonetaryValue, CultureInfo.InvariantCulture);
 
-                                r.Publishedcost = rshipment.TotalCharges.MonetaryValue + " " + rshipment.TotalCharges.CurrencyCode;
+                                r.Negcost += decimal.Parse(rshipment.NegotiatedRateCharges.TotalCharge.MonetaryValue, CultureInfo.InvariantCulture);
 
-
-                                r.Negcost = rshipment.NegotiatedRateCharges.TotalCharge.MonetaryValue + " " + rshipment.NegotiatedRateCharges.TotalCharge.CurrencyCode;
-
-                                //r.cost = string.Format("Total Charges:{0} {1} | Negociated Rate:{2} {3}", rshipment.TotalCharges.MonetaryValue, rshipment.TotalCharges.CurrencyCode, rshipment.TotalCharges.MonetaryValue, rshipment.TotalCharges.CurrencyCode);
-                                if (rshipment.GuaranteedDelivery != null && rshipment.GuaranteedDelivery.BusinessDaysInTransit != null)
+                                if (rshipment.GuaranteedDelivery != null
+                                    && rshipment.GuaranteedDelivery.BusinessDaysInTransit != null)
+                                {
                                     r.time = rshipment.GuaranteedDelivery.BusinessDaysInTransit + " days";
-                                //if (rshipment.GuaranteedDelivery != null && !String.IsNullOrEmpty(rshipment.GuaranteedDelivery.DeliveryByTime))
-                                //    r.time = r.time + " " + rshipment.GuaranteedDelivery.DeliveryByTime + "time";
+                                }
                             }
                         }
                     }
@@ -740,21 +733,26 @@ namespace TimelyDepotMVC.Controllers
                        ((UPSTimeInTransit.TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
                            i => i.Service.Code == "GND");
                     var groundResult = lst.FirstOrDefault(i => i.code == "03");
-                    groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                    if (groundResult != null)
+                    {
+                        if (groundService != null)
+                        {
+                            groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                        }
+                    }
                 }
                 catch (System.Web.Services.Protocols.SoapException ex)
                 {
                 }
 
-
-
+                currency = "US";
                 return lst;
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
+                currency = "US";
                 return null;
             }
-
         }
 
 
@@ -939,53 +937,47 @@ namespace TimelyDepotMVC.Controllers
             return existShipment;
         }
 
-        //
-        // GET:/Shipment/ShipAll
-        public ActionResult ShipAll(int invoiceId)
+        public T Clone<T>(T source)
         {
-            string szError = string.Empty;
-
-            Shipment shipment = null;
-            ShipmentDetails details = null;
-            IQueryable<InvoiceDetail> qryInvDetail = null;
-            var existActiveShipments = this.CheckExistingShipments(invoiceId);
-            //Get the invoice
-            Invoice invoice = db.Invoices.Where(inv => inv.InvoiceId == invoiceId).FirstOrDefault<Invoice>();
-            if ((invoice != null))
+            var dcs = new DataContractSerializer(typeof(T));
+            using (var ms = new System.IO.MemoryStream())
             {
-                if (!existActiveShipments)
-                {
-                    shipment = new Shipment();
-                    shipment.ShipmentDate = DateTime.Now;
-                    shipment.InvoiceId = invoice.InvoiceId;
-                    shipment.InvoiceNo = invoice.InvoiceNo;
-                    db.Shipments.Add(shipment);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    shipment = db.Shipments.SingleOrDefault(c => c.InvoiceId == invoiceId && c.Shipped != true);
-                }
+                dcs.WriteObject(ms, source);
+                ms.Seek(0, System.IO.SeekOrigin.Begin);
+                return (T)dcs.ReadObject(ms);
+            }
+        }
 
-
-                qryInvDetail = db.InvoiceDetails.Where(invdtl => invdtl.InvoiceId == invoiceId);
-                if (qryInvDetail.Count() > 0)
+        [HttpPost]
+        public ActionResult DuplicateDetailBox(int invoiceNoId, string itemId)
+        {
+            var invoiceId = 0;
+            try
+            {
+                var invoiceNo = invoiceNoId.ToString(CultureInfo.InvariantCulture);
+                invoiceId = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo).InvoiceId;
+                var aShipmentDetail =
+                    this.db.ShipmentDetails.FirstOrDefault(shpDetail => shpDetail.Sub_ItemID == itemId);
+                var cloneShpDetail = Clone(aShipmentDetail);
+                var anInvoiceDetail = this.db.InvoiceDetails.SingleOrDefault(s => s.InvoiceId == invoiceId && s.ItemID == itemId);
+                if (anInvoiceDetail != null)
                 {
-                    //Ship all invoice details
-                    foreach (var item in qryInvDetail)
+                    var availableItems = anInvoiceDetail.Quantity - anInvoiceDetail.ShipQuantity;
+                    if (availableItems > 1)
                     {
-                        //Create the shipment detail
-                        details = CreateShipmentDetail(shipment, invoice, item, 0, ref szError);
+                        cloneShpDetail.Quantity = 1;
+                        anInvoiceDetail.ShipQuantity = anInvoiceDetail.ShipQuantity + 1;
+                        this.db.ShipmentDetails.Add(cloneShpDetail);
+                        this.db.SaveChanges();
                     }
                 }
             }
-
-            if (shipment != null)
+            catch (Exception e)
             {
-                this.ReorderBoxesNames(shipment.ShipmentId);
+                var message = e.Message;
             }
 
-            return RedirectToAction("Index", "Shipment", new { id = invoiceId });
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
         }
 
         //
@@ -1006,12 +998,9 @@ namespace TimelyDepotMVC.Controllers
             {
                 invoice = new Invoice();
             }
-            else
-            {
-                nInvoiceId = invoice.InvoiceId;
-                szInvoiceNo = invoice.InvoiceNo;
 
-            }
+            nInvoiceId = invoice.InvoiceId;
+            szInvoiceNo = invoice.InvoiceNo;
 
             shipment = db.Shipments.Find(shipmenid);
             if (shipment == null)
@@ -1030,8 +1019,6 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(details);
         }
 
-        //
-        // POST: /Shipment/AddDetail/5
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -1064,72 +1051,99 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
         }
 
-        [HttpPost]
-        public ActionResult UpdateDetail(FormCollection shipmentDetailForm)
+        private static Dictionary<string, int> GetItemsTotalSum(List<ShipmentDetails> shipmentDetailForm)
         {
-            var shipmentDetailId = int.Parse(shipmentDetailForm["item.ShipmentDetailID"]);
-            var shipmentId = int.Parse(shipmentDetailForm["item.ShipmentId"]);
-            var qty = int.Parse(shipmentDetailForm["item.Quantity"]);
-            var boxHeight = int.Parse(shipmentDetailForm["item.DimensionH"]);
-            var boxLength = int.Parse(shipmentDetailForm["item.DimensionL"]);
-            var boxDeep = int.Parse(shipmentDetailForm["item.DimensionD"]);
-            var boxWeigth = int.Parse(shipmentDetailForm["item.UnitWeight"]);
-            var fullErrorMessage = string.Empty;
-            var shipmentDetail = db.ShipmentDetails.FirstOrDefault(shp => shp.ShipmentDetailID == shipmentDetailId);
-            var invoiceId = 0;
-            var shipment = db.Shipments.FirstOrDefault(shp => shp.ShipmentId == shipmentId);
-
-            if (shipment == null)
+            var totalSumByItem = new Dictionary<string, int>();
+            foreach (var shpDetail in shipmentDetailForm)
             {
-                return this.RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
+                if (totalSumByItem.ContainsKey(shpDetail.Sub_ItemID))
+                {
+                    continue;
+                }
+
+                var totalSum = shipmentDetailForm.Where(x => x.Sub_ItemID == shpDetail.Sub_ItemID).Sum(t => t.Quantity);
+                if (totalSum == null)
+                {
+                    continue;
+                }
+
+                totalSumByItem.Add(shpDetail.Sub_ItemID, (int)totalSum);
             }
 
-            this.ViewBag.ShipmentId = shipment.ShipmentId;
-
-            invoiceId = Convert.ToInt32(shipment.InvoiceId);
-
-            if (shipmentDetail != null)
-            {
-                try
-                {
-                    var qtyDifference = shipmentDetail.Quantity - qty;
-                    if (qtyDifference > -1)
-                    {
-                        shipmentDetail.Quantity = qty;
-                    }
-                    else
-                    {
-                        fullErrorMessage += "Please, choose a lower quantity value." + Environment.NewLine;
-                        TempData["ErrorMessages"] = fullErrorMessage;
-                        return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
-                    }
-
-                    shipmentDetail.DimensionH = boxHeight;
-                    shipmentDetail.DimensionD = boxDeep;
-                    shipmentDetail.DimensionL = boxLength;
-                    shipmentDetail.UnitWeight = boxWeigth;
-                    this.db.Entry(shipmentDetail).State = EntityState.Modified;
-                    this.db.SaveChanges();
-                }
-                catch (DbEntityValidationException dbEx)
-                {
-                    var errorMessage = dbEx.EntityValidationErrors;
-
-                    foreach (var validationResult in errorMessage)
-                    {
-                        string entityName = validationResult.Entry.Entity.GetType().Name;
-                        foreach (DbValidationError error in validationResult.ValidationErrors)
-                        {
-                            fullErrorMessage += entityName + "." + error.PropertyName + ": " + error.ErrorMessage + Environment.NewLine;
-                        }
-                    }
-
-                    TempData["ErrorMessages"] = fullErrorMessage;
-                }
-            }
-
-            return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
+            return totalSumByItem;
         }
+
+        [HttpPost]
+        public ActionResult UpdateDetail(List<ShipmentDetails> shipmentDetailForm)
+        {
+            var fullErrorMessage = string.Empty;
+            Shipment actualShipment = null;
+            var errorItems = new HashSet<string>();
+
+            if (shipmentDetailForm.Any())
+            {
+                var actualShipmentId = shipmentDetailForm[0].ShipmentId;
+                actualShipment = this.db.Shipments.SingleOrDefault(x => x.ShipmentId == actualShipmentId);
+            }
+
+            try
+            {
+                var totalSum = GetItemsTotalSum(shipmentDetailForm);
+                foreach (var shipmentDetail in shipmentDetailForm)
+                {
+                    int qtyForItem;
+                    int? qtydiff = 0;
+                    var actualInvoiceDetail =
+                        db.InvoiceDetails.FirstOrDefault(x => x.ItemID == shipmentDetail.Sub_ItemID);
+
+                    totalSum.TryGetValue(shipmentDetail.Sub_ItemID, out qtyForItem);
+
+                    //if (actualInvoiceDetail != null)
+                    //{
+                    //   qtydiff = actualInvoiceDetail.Quantity - shipmentDetail.Quantity;
+                    //}
+
+                    //if (qtydiff < 0)
+                    //{
+                    //    continue;
+                    //}
+
+                    if (actualInvoiceDetail == null || !(actualInvoiceDetail.Quantity >= qtyForItem))
+                    {
+                        errorItems.Add(shipmentDetail.Sub_ItemID);
+                        continue;
+                    }
+
+                    actualInvoiceDetail.ShipQuantity = qtyForItem;
+                    this.db.Entry(shipmentDetail).State = EntityState.Modified;
+                    this.db.Entry(actualInvoiceDetail).State = EntityState.Modified;
+                }
+
+                this.db.SaveChanges();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                var errorMessage = dbEx.EntityValidationErrors;
+
+                foreach (var validationResult in errorMessage)
+                {
+                    var entityName = validationResult.Entry.Entity.GetType().Name;
+                    foreach (var error in validationResult.ValidationErrors)
+                    {
+                        fullErrorMessage += entityName + "." + error.PropertyName + ": " + error.ErrorMessage + Environment.NewLine;
+                    }
+                }
+            }
+
+            if (errorItems.Any())
+            {
+                fullErrorMessage = "Please.Choose less quantity for items: " + string.Join<string>(",", errorItems);
+            }
+
+            TempData["ErrorMessages"] = fullErrorMessage;
+            return RedirectToAction("GetShipmenDetails", new { invoiceid = actualShipment == null ? 0 : actualShipment.InvoiceId });
+        }
+
 
         [HttpPost]
         public ActionResult Delete(int shipmentDetailId = 0)
@@ -1150,7 +1164,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 invoiceId = Convert.ToInt32(shipment.InvoiceId);
                 var anInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
-                var minusQuantity = details.Quantity * -1;
+                var minusQuantity = details.Quantity;
                 if (details.DetailId != null)
                 {
                     this.UpdateInvoiceQuantity(anInvoice, (int)minusQuantity, (int)details.DetailId);
@@ -1164,9 +1178,76 @@ namespace TimelyDepotMVC.Controllers
             return RedirectToAction("GetShipmenDetails", new { invoiceid = invoiceId });
         }
 
+        public JsonResult GetInvoiceRemainingQuantity(int invDetailId)
+        {
+            var remainingQuantity = -1;
+            var invDetail = this.db.InvoiceDetails.FirstOrDefault(x => x.InvoiceId == invDetailId);
+
+            if (invDetail == null)
+            {
+                var invoiceNo = invDetailId.ToString(CultureInfo.InvariantCulture);
+                var firstOrDefaultInvoice = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo);
+                if (firstOrDefaultInvoice != null)
+                {
+                    var invoiceId = firstOrDefaultInvoice.InvoiceId;
+                    invDetail = db.InvoiceDetails.FirstOrDefault(inv => inv.InvoiceId == invoiceId);
+                }
+            }
+
+            if (invDetail == null)
+            {
+                invDetail = db.InvoiceDetails.FirstOrDefault(inv => inv.Id == invDetailId);
+            }
+
+            if (invDetail != null)
+            {
+                remainingQuantity = (int)(invDetail.Quantity - invDetail.ShipQuantity);
+            }
+
+            return this.Json(remainingQuantity, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetMultipleInvoiceRemainingQuantity(string shipDetailIdList)
+        {
+            var listRemainingQuantity = string.Empty;
+            var listShipId = JsonConvert.DeserializeObject<List<string>>(shipDetailIdList);
+            var quantiyOfShpDetail = new Dictionary<int, string>();
+            try
+            {
+                if (listShipId.Any())
+                {
+                    for (var index = 0; index < listShipId.Count(); index++)
+                    {
+                        var tempShipmenDetailId = int.Parse(listShipId[index]);
+
+                        var invDetail = this.db.InvoiceDetails.FirstOrDefault(x => x.Id == tempShipmenDetailId);
+
+                        if (invDetail != null)
+                        {
+                            if (invDetail.ShipQuantity != null)
+                            {
+                                int? remainingQty = invDetail.Quantity - (int)invDetail.ShipQuantity;
+                                quantiyOfShpDetail.Add(
+                                    tempShipmenDetailId,
+                                    remainingQty.ToString());
+                            }
+                        }
+                    }
+                }
+
+                listRemainingQuantity = JsonConvert.SerializeObject(quantiyOfShpDetail);
+            }
+            catch (Exception e)
+            {
+                var mssg = e.Message;
+            }
+
+            return this.Json(listRemainingQuantity, JsonRequestBehavior.AllowGet);
+        }
+
         private void ReorderBoxesNames(int shipmentId)
         {
-            int detailIndex = 1;
+            var detailIndex = 1;
 
             foreach (var aDetail in this.db.ShipmentDetails.Where(x => x.ShipmentId == shipmentId).ToList())
             {
@@ -1174,6 +1255,53 @@ namespace TimelyDepotMVC.Controllers
             }
 
             db.SaveChanges();
+        }
+
+        private void RedistributeBoxes(int shipmentId, string itemId)
+        {
+            try
+            {
+                var shipmentDetailList =
+                    db.ShipmentDetails.Where(
+                        shpDetail =>
+                        shpDetail.ShipmentId == shipmentId
+                        && shpDetail.Sub_ItemID == itemId).ToArray();
+                ITEM aItem = this.db.ITEMs.SingleOrDefault(aitem => aitem.ItemID == itemId);
+
+                if ((aItem == null) || (shipmentDetailList.Count() <= 1))
+                {
+                    return;
+                }
+
+                var itemsInABox = int.Parse(aItem.UnitPerCase);
+                for (var index = 0; index < shipmentDetailList.Count(); index++)
+                {
+                    if (shipmentDetailList[index].Quantity == 0)
+                    {
+                        continue;
+                    }
+
+                    for (var subindex = 0; subindex < index; subindex++)
+                    {
+                        var restTocomplete = itemsInABox - shipmentDetailList[index].Quantity;
+                        if (!(shipmentDetailList[subindex].Quantity <= restTocomplete))
+                        {
+                            continue;
+                        }
+
+                        shipmentDetailList[index].Quantity = shipmentDetailList[index].Quantity
+                                                             + shipmentDetailList[subindex].Quantity;
+                        shipmentDetailList[subindex].Quantity = 0;
+                        this.db.ShipmentDetails.Remove(shipmentDetailList[subindex]);
+                    }
+                }
+
+                this.db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                var errorMessage = e.Message;
+            }
         }
 
         //
@@ -1213,12 +1341,12 @@ namespace TimelyDepotMVC.Controllers
             if (qryShipmentDetails.Any())
             {
                 ShipmentDetailsList.AddRange(from item in qryShipmentDetails where !item.dtl.Shipped select item.dtl);
+                var result = new List<string>(ShipmentDetailsList.Select(x => x.Sub_ItemID).ToList().Distinct());
+                ViewBag.AvailableDetailShipId = result;
             }
 
-            ViewBag.ShipmentTitle = " ";
-
             shipment = db.Shipments.FirstOrDefault(shp => shp.InvoiceId == invoiceid && shp.Shipped == false);
-            if (shipment != null)
+            if ((shipment != null) && ShipmentDetailsList.Any())
             {
                 nShipmentId = shipment.ShipmentId;
                 szInvoiceNo = shipment.InvoiceNo;
@@ -1236,60 +1364,80 @@ namespace TimelyDepotMVC.Controllers
 
             }
 
+            ViewBag.ShipmentTitle = " ";
             ViewBag.OnePageOfData = onePageOfData;
             ViewBag.ShipmentId = nShipmentId;
+            ViewBag.InvoiceId = invoiceid;
             return PartialView(onePageOfData);
         }
 
         [HttpPost]
         public ActionResult ShipItem(string salesorderid, int shipqty, int id = 0)
         {
-            string szError = string.Empty;
-            var shippingQuantity = 0;
-            if (ViewBag.ShipQuantity != null)
-            {
-                shippingQuantity = ViewBag.ShipQuantity;
-            }
+            var szError = string.Empty;
             Invoice invoice = null;
-            InvoiceDetail invDetails = null;
-            Shipment shipment = null;
-            ShipmentDetails details = null;
+            InvoiceDetail invDetails;
+            var actualInvoiceId = Convert.ToInt32(salesorderid);
+            var shipment = this.ShipAll(actualInvoiceId, out invoice, out invDetails, id);
 
-            // Get Invoice details
-            invDetails = db.InvoiceDetails.Find(id);
-            if (invDetails != null)
+            if (invDetails == null)
             {
-                //Get the invoice
-                invoice = db.Invoices.Where(inv => inv.InvoiceId == invDetails.InvoiceId).FirstOrDefault<Invoice>();
-                if (invoice != null)
-                {
-                    //Create the shimpent if it does not exit
-                    shipment =
-                        db.Shipments.FirstOrDefault(
-                            shpm => shpm.InvoiceId == invDetails.InvoiceId && shpm.Shipped != true);
-                    if (shipment == null)
-                    {
-                        shipment = new Shipment();
-                        shipment.ShipmentDate = DateTime.Now;
-                        shipment.InvoiceId = invDetails.InvoiceId;
-                        shipment.InvoiceNo = invoice.InvoiceNo;
-                        db.Shipments.Add(shipment);
-                        db.SaveChanges();
-                    }
-
-                    //Create the shipment detail
-                    details = CreateShipmentDetail(shipment, invoice, invDetails, shipqty, ref szError);
-                    if ((details != null) && (!string.IsNullOrEmpty(szError)))
-                    {
-                        this.UpdateInvoiceQuantity(invoice, shipqty, id);
-                    }
-
-
-                }
+                return this.RedirectToAction(
+                    "GetShipmenDetails",
+                    new { invoiceid = shipment != null ? shipment.InvoiceId : 0 });
             }
+
+            var details = this.CreateShipmentDetail(shipment, invoice, invDetails, shipqty, ref szError);
+
+            if ((details != null) && string.IsNullOrEmpty(szError))
+            {
+                this.UpdateInvoiceQuantity(invoice, shipqty * -1, id);
+                RedistributeBoxes(shipment.ShipmentId, details.Sub_ItemID);
+            }
+
 
             return RedirectToAction("GetShipmenDetails", new { invoiceid = shipment != null ? shipment.InvoiceId : 0 });
         }
+
+
+        // GET:/Shipment/ShipAll
+        public Shipment ShipAll(int invoiceId, out Invoice invoice, out InvoiceDetail qryInvDetail, int id)
+        {
+            Shipment shipment = null;
+            var existActiveShipments = this.CheckExistingShipments(invoiceId);
+            invoice = db.Invoices.FirstOrDefault(inv => inv.InvoiceId == invoiceId);
+            if (invoice != null)
+            {
+                if (!existActiveShipments)
+                {
+                    shipment = new Shipment
+                                   {
+                                       ShipmentDate = DateTime.Now,
+                                       InvoiceId = invoice.InvoiceId,
+                                       InvoiceNo = invoice.InvoiceNo
+                                   };
+
+                    db.Shipments.Add(shipment);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    shipment = db.Shipments.SingleOrDefault(c => c.InvoiceId == invoiceId && c.Shipped != true);
+                    if (shipment != null)
+                    {
+                        this.ReorderBoxesNames(shipment.ShipmentId);
+                        qryInvDetail =
+                            db.InvoiceDetails.SingleOrDefault(
+                                invdtl => invdtl.InvoiceId == invoiceId && invdtl.Id == id);
+                        return shipment;
+                    }
+                }
+            }
+
+            qryInvDetail = null;
+            return shipment;
+        }
+
 
         private ShipmentDetails CreateShipmentDetail(Shipment shipment, Invoice invoice, InvoiceDetail invDetails, int quantityShipped, ref string szError)
         {
@@ -1325,38 +1473,27 @@ namespace TimelyDepotMVC.Controllers
                     szCustomerNo = customer.CustomerNo;
                 }
 
-                //Do not allow duplicates
-                shipmentDetails = db01.ShipmentDetails.Where(shpdtl => shpdtl.ShipmentId == shipment.ShipmentId && shpdtl.DetailId == invDetails.Id).FirstOrDefault<ShipmentDetails>();
-                if (shipmentDetails != null)
-                {
-                    szError = string.Format("Shipment Detail exist for item {0}", invDetails.Sub_ItemID);
-                    return shipmentDetails;
-                }
-
                 if (invDetails.Id == 0)
                 {
                     var shipmentDetailList =
                         db01.ShipmentDetails.Where(cf => cf.ShipmentId == shipment.ShipmentId);
                     var shDetailCount = shipmentDetailList.Count() + 1;
-                    //Create the shipment detail
-                    shipmentDetails = new ShipmentDetails();
-                    shipmentDetails.DetailId = invDetails.Id;
-
-                    shipmentDetails.DimensionD = 1;
-
-                    shipmentDetails.DimensionH = 1;
-
-                    shipmentDetails.DimensionL = 1;
-
-                    shipmentDetails.BoxNo = "Box " + shDetailCount;
-                    shipmentDetails.Sub_ItemID = invDetails.Sub_ItemID;
-                    shipmentDetails.Quantity = quantityShipped;
-                    shipmentDetails.DetailId = shipmentDetailList.Select(x => x.DetailId).FirstOrDefault();
-                    shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
-                    shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, quantityShipped);
-                    shipmentDetails.ShipmentId = shipment.ShipmentId;
-                    shipmentDetails.UnitPrice = invDetails.UnitPrice;
-                    shipmentDetails.UnitWeight = 1;
+                    shipmentDetails = new ShipmentDetails
+                                          {
+                                              DetailId = invDetails.Id,
+                                              DimensionD = 1,
+                                              DimensionH = 1,
+                                              DimensionL = 1,
+                                              BoxNo = "Box " + shDetailCount,
+                                              Sub_ItemID = invDetails.ItemID,
+                                              Quantity = quantityShipped,
+                                              Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo),
+                                              Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, quantityShipped),
+                                              ShipmentId = shipment.ShipmentId,
+                                              UnitPrice = invDetails.UnitPrice,
+                                              UnitWeight = 1,
+                                              DeclaredValue = 1
+                                          };
                 }
                 else
                 {
@@ -1478,17 +1615,22 @@ namespace TimelyDepotMVC.Controllers
                             }
                             else
                             {
-                                dHlp = Convert.ToDecimal(item.CaseDimensionL);
+                                dHlp = Convert.ToDecimal(item.CaseDimensionL, CultureInfo.InvariantCulture);
                                 shipmentDetails.DimensionL = dHlp == 0 ? 1 : Convert.ToInt32(dHlp);
                             }
 
                             shipmentDetails.BoxNo = string.Format("Box {0}", i + 1);
-                            shipmentDetails.Sub_ItemID = invDetails.Sub_ItemID;
+                            shipmentDetails.Sub_ItemID = invDetails.ItemID;
                             shipmentDetails.Quantity = nUnitperCase;
                             shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
-                            shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, nUnitperCase.ToString());
+                            shipmentDetails.Reference2 = string.Format(
+                                "{0} {1}",
+                                invDetails.Sub_ItemID,
+                                nUnitperCase);
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
+                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails, nUnitperCase);
+                           
 
                             try
                             {
@@ -1541,16 +1683,21 @@ namespace TimelyDepotMVC.Controllers
                             }
 
                             shipmentDetails.BoxNo = string.Format("Box {0}", (nrBoxes + 1).ToString());
-                            shipmentDetails.Sub_ItemID = invDetails.Sub_ItemID;
+                            shipmentDetails.Sub_ItemID = invDetails.ItemID;
                             shipmentDetails.Quantity = itemsInLastBox;
                             shipmentDetails.Reference1 = string.Format("{0} {1}", invoice.SalesOrderNo, szCustomerNo);
-                            shipmentDetails.Reference2 = string.Format("{0} {1}", invDetails.Sub_ItemID, itemsInLastBox.ToString());
+                            shipmentDetails.Reference2 = string.Format(
+                                "{0} {1}",
+                                invDetails.Sub_ItemID,
+                                itemsInLastBox.ToString());
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
-
+                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails,itemsInLastBox);
                             try
                             {
-                                shipmentDetails.UnitWeight = nPartialBoxWeight == 0 ? 1 : Convert.ToInt32(nPartialBoxWeight);
+                                shipmentDetails.UnitWeight = nPartialBoxWeight == 0
+                                                                 ? 1
+                                                                 : Convert.ToInt32(nPartialBoxWeight);
                             }
                             catch (Exception err01)
                             {
@@ -1565,6 +1712,10 @@ namespace TimelyDepotMVC.Controllers
 
                         db01.Dispose();
                     }
+                    else
+                    {
+                        szError += "Sorry, Couln't find that item on DB.";
+                    }
                 }
 
             }
@@ -1574,6 +1725,15 @@ namespace TimelyDepotMVC.Controllers
             }
 
             return shipmentDetails;
+        }
+
+        private static int GetRoundedDeclaredValue(InvoiceDetail invDetails, int quantityShipped)
+        {
+            decimal? roundedDeclaredValue = (quantityShipped * invDetails.UnitPrice);
+            var roundedToHundred = Math.Ceiling((decimal)(roundedDeclaredValue / (decimal)100.0)) * 100;
+            var roundedResult = (int)roundedToHundred;
+
+            return roundedResult;
         }
 
         //

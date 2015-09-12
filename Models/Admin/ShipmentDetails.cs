@@ -9,7 +9,7 @@ namespace TimelyDepotMVC.Models.Admin
 {
     public class ShipmentDetails
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "ShipmentId")]
         public int ShipmentDetailID { get; set; }
 
@@ -34,6 +34,9 @@ namespace TimelyDepotMVC.Models.Admin
         [Display(Name = "Unit Price")]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal? UnitPrice { get; set; }
+
+        [Display(Name = "Declared Value")]
+        public int? DeclaredValue { get; set; }
 
         [Display(Name = "Weight")]
         [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
