@@ -426,7 +426,7 @@ namespace TimelyDepotMVC.Controllers
                 int valuePerFullBox = 0;
                 int valuePerPartialBox = 0;
                 UPSWrappers.inv_detl details = null;
-
+                string errorMessage="";
 
 
                 resultData.Add(new ResultData() { service = "UPS Ground", code = "03", cost = 0, Negcost = 0, Publishedcost = 0 });
@@ -453,7 +453,7 @@ namespace TimelyDepotMVC.Controllers
 
                     if (anInvoiceList.ShipQuantity != null)
                     {
-
+                        
                         resultData = this.GetRateFromUPS(
                             (int)anInvoiceList.ShipQuantity,
                             nrBoxes,
@@ -465,7 +465,9 @@ namespace TimelyDepotMVC.Controllers
                             details,
                             unitPrice,
                             shipToPostalCode,
-                            resultData, out currency);
+                            resultData, 
+                            out currency,
+                            out errorMessage);
                     }
                 }
 
@@ -491,7 +493,7 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (Exception ex)
             {
-                resultData[0].errorMessage = ex.Message;
+                resultDataViewList[0].errorMessage = ex.Message;
 
             }
 
@@ -599,12 +601,12 @@ namespace TimelyDepotMVC.Controllers
                 nrBoxes = 1;
             }
             itemsInLastBox = (int)(qty % BOX_CASE);
-            fullBoxWeight = "0";
+            fullBoxWeight = "1";
             if ((qty / BOX_CASE) > 0)
             {
                 fullBoxWeight = Math.Ceiling(BOX_CASE * UT_WT).ToString();
             }
-            partialBoxWeight = "0";
+            partialBoxWeight = "1";
             if (itemsInLastBox > 0)
             {
                 partialBoxWeight = Math.Ceiling(itemsInLastBox * UT_WT).ToString();
@@ -627,9 +629,9 @@ namespace TimelyDepotMVC.Controllers
 
         #region UPS RATE SERVICE API
 
-        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency)
+        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage )
         {
-
+            errorMessage = string.Empty;
             try
             {
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
@@ -676,6 +678,8 @@ namespace TimelyDepotMVC.Controllers
                     }
                     catch (System.Web.Services.Protocols.SoapException ex)
                     {
+                        
+                        errorMessage += ex.Detail.InnerText;
                     }
                 }
                 try
@@ -689,6 +693,7 @@ namespace TimelyDepotMVC.Controllers
                 }
                 catch (System.Web.Services.Protocols.SoapException ex)
                 {
+                    errorMessage += ex.Detail.InnerText;
                 }
 
                 foreach (ResultData r in lst)
@@ -726,6 +731,7 @@ namespace TimelyDepotMVC.Controllers
                     }
                     catch (System.Web.Services.Protocols.SoapException ex)
                     {
+                        errorMessage += ex.Detail.InnerText;
                     }
                 }
                 try
