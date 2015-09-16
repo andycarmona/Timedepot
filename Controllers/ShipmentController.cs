@@ -165,7 +165,10 @@ namespace TimelyDepotMVC.Controllers
                     {
                         foreach (var item in qryShipment)
                         {
-                            ShipmentList.Add(item);
+                            if (item.Shipped)
+                            {
+                                ShipmentList.Add(item);
+                            }
                         }
                     }
 

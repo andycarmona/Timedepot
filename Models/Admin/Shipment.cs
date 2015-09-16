@@ -13,7 +13,7 @@ namespace TimelyDepotMVC.Models.Admin
         [Key]
         public int ShipmentId { get; set; }
 
-        [Display(Name = "Create Date")]
+        [Display(Name = "Shipment Date")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0: MM/dd/yyyy}", ApplyFormatInEditMode = false)]
         //[DisplayFormat(DataFormatString = "{0: g}", ApplyFormatInEditMode = true)]
