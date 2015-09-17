@@ -299,28 +299,28 @@
                         <h4>Ship From :</h4>
                     </div>
                     <div class="viosinput400 boxtb3 right">
-                        @Html.EditorFor(model => model.FromCompany)
+                        @Html.TextBoxFor(model => model.FromCompany, new { @readonly = "readonly" })
                         @Html.ValidationMessageFor(model => model.FromCompany)
                     </div>
                     <div class="labelClass">
                         @Html.Label("Company")
                     </div>
                     <div class="viosinput400 boxtb3 right">
-                        @Html.EditorFor(model => model.FromName)
+                        @Html.TextBoxFor(model => model.FromName, new { @readonly = "readonly" })
                         @Html.ValidationMessageFor(model => model.FromName)
                     </div>
                     <div class="labelClass">
                         @Html.Label("Name")
                     </div>
                     <div class="viosinput400 boxtb3 right">
-                        @Html.EditorFor(model => model.FromAddress1)
+                        @Html.TextBoxFor(model => model.FromAddress1, new { @readonly = "readonly" })
                         @Html.ValidationMessageFor(model => model.FromAddress1)
                     </div>
                     <div class="labelClass">
                         @Html.Label("Address 1")
                     </div>
                     <div class="viosinput400 boxtb3 right">
-                        @Html.EditorFor(model => model.FromAddress2)
+                        @Html.TextBoxFor(model => model.FromAddress2, new { @readonly = "readonly" })
                         @Html.ValidationMessageFor(model => model.FromAddress2)
                     </div>
                     <div class="labelClass">
@@ -328,15 +328,15 @@
                     </div>
                     <div class="cf right">
                         <div class="left viosinput120 boxtb3">
-                            @Html.TextBoxFor(model => model.FromCity, new { @placeholder = "City" })
+                            @Html.TextBoxFor(model => model.FromCity, new { @placeholder = "City", @readonly="readonly" })
                             @Html.ValidationMessageFor(model => model.FromCity)
                         </div>
                         <div class="left viosinput40 boxtb3">
-                            @Html.TextBoxFor(model => model.FromState, new { @placeholder = "State" })
+                            @Html.TextBoxFor(model => model.FromState, new { @placeholder = "State", @readonly = "readonly" })
                             @Html.ValidationMessageFor(model => model.FromState)
                         </div>
                         <div class="left viosinput60 boxtb3">
-                            @Html.TextBoxFor(model => model.FromZip, new { @placeholder = "Zip" })
+                            @Html.TextBoxFor(model => model.FromZip, new { @placeholder = "Zip", @readonly = "readonly" })
                             @Html.ValidationMessageFor(model => model.FromZip)
                         </div>
                     </div>
@@ -344,7 +344,7 @@
                         @Html.Label("City/State/Zip")
                     </div>
                     <div class="viosinput400 boxtb3 right">
-                        @Html.EditorFor(model => model.FromCountry)
+                        @Html.TextBoxFor(model => model.FromCountry, new { @readonly = "readonly" })
                         @Html.ValidationMessageFor(model => model.FromCountry)
                     </div>
                     <div class="labelClass">

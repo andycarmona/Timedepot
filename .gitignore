@@ -185,3 +185,6 @@ obj/
 obj/Debug/
 bin/
 obj/
+obj/Release/
+obj/Release/*
+obj/Release
