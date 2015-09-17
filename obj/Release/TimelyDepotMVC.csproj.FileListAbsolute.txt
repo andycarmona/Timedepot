@@ -421,3 +421,4 @@ C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\bin\es\WebMatrix
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.dll
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.pdb
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.XmlSerializers.dll
+C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache

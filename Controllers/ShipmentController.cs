@@ -116,10 +116,13 @@ namespace TimelyDepotMVC.Controllers
             int pageSize = PageSize;
             string[] szFecha = null;
             DateTime dFecha = DateTime.Now;
+            Mapper.CreateMap<Shipment, ShipmentLogView>();
 
             IQueryable<Shipment> qryShipment = null;
 
-            List<Shipment> ShipmentList = new List<Shipment>();
+            List<ShipmentLogView> ShipmentList = new List<ShipmentLogView>();
+            
+
             if (string.IsNullOrEmpty(searchItemLog) || searchItemLog == "0")
             {
                 //qryItem = db.ITEMs.OrderBy(it => it.ItemID);
@@ -163,9 +166,16 @@ namespace TimelyDepotMVC.Controllers
                 {
                     if (qryShipment.Count() > 0)
                     {
-                        foreach (var item in qryShipment)
+                        List<ShipmentLogView> shipmentLogList = Mapper.Map<IQueryable<Shipment>, List<ShipmentLogView>>(qryShipment);
+                        foreach (var item in shipmentLogList)
                         {
-                            ShipmentList.Add(item);
+                            if (item.Shipped)
+                            {
+                                var actualInvoice = db.Invoices.FirstOrDefault(x => x.InvoiceId == item.InvoiceId);
+                                var customer = db.CustomersContactAddresses.FirstOrDefault(c => c.Id == actualInvoice.CustomerId);
+                                item.CompanyName = customer.CompanyName;
+                                ShipmentList.Add(item);
+                            }
                         }
                     }
 

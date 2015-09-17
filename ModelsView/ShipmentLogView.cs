@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-namespace TimelyDepotMVC.Models.Admin
+namespace TimelyDepotMVC.ModelsView
 {
-    public class Shipment
+    public class ShipmentLogView
     {
-        [Key]
+  
         public int ShipmentId { get; set; }
 
         [Display(Name = "Shipment Date")]
@@ -21,12 +19,12 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "InvoiceId")]
         public int? InvoiceId { get; set; }
-        
+
+        [Display(Name ="Company Name")]
+        public string CompanyName { get; set; }
+
         [Display(Name = "Invoice No")]
         public string InvoiceNo { get; set; }
-
-        [Display(Name = "Rate Results")]
-        public string RateResults { get; set; }
 
         [Display(Name = "Ups Number")]
         public string UpsNumber { get; set; }

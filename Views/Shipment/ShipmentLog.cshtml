@@ -1,6 +1,6 @@
 ﻿@using PagedList.Mvc;   @*//import this so we get our HTML Helper*@
 @using PagedList;       @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
-@model IEnumerable<TimelyDepotMVC.Models.Admin.Shipment>
+@model IEnumerable<TimelyDepotMVC.ModelsView.ShipmentLogView>
 
 <table class="webgrid" style="width: 900px; margin: 0px auto;">
     <tr class="webgrid-header">
@@ -9,33 +9,33 @@
             @Html.DisplayNameFor(model => model.InvoiceNo)
         </th>
         <th style="text-align:left;">
-            @Html.DisplayNameFor(model => model.ShipmentId)
+           @Html.DisplayNameFor(model=>model.CompanyName)
         </th>
         <th style="text-align:left;">
             @Html.DisplayNameFor(model => model.ShipmentDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RateResults)
+           
         </th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.ActionLink("Details", "GetShipmenDetails", new { invoiceid = item.InvoiceId }, new { @class="shipmentdetailslnk" }) |
+            @Html.ActionLink("Details", "AddDetail", new { invoiceid = item.InvoiceId }, new { @class="shipmentdetailslnk" }) |
             @Html.ActionLink("Delete", "DeleteShipment", new { id=item.ShipmentId }, new{ onclick="return confirm('Do you want to delete this shipment?');"})
         </td>
         <td style="text-align:left;">
             @Html.DisplayFor(modelItem => item.InvoiceNo)
         </td>
         <td style="text-align:left;">
-            @Html.DisplayFor(modelItem => item.ShipmentId)
+           @Html.DisplayFor(modelItem=>item.CompanyName)
         </td>
         <td style="text-align:left;">
             @Html.DisplayFor(modelItem => item.ShipmentDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RateResults)
+          
         </td>
     </tr>
 }
