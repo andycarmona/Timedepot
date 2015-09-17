@@ -166,7 +166,7 @@
                                 }
                                 <div id='@szQty' class="viosinput100">
 
-                                    @Html.TextBoxFor(modelItem => item.Quantity, new { @class = "shippingQuantity", @idAttr = counter, @originalQuantity = item.Quantity, @id = "txtQuantity" + counter })
+                                    @Html.TextBoxFor(modelItem => item.Quantity, new { @class = "shippingQuantity", @idAttr = counter, @originalQuantity = item.Quantity, @id = "txtQuantity" + counter, @readonly="readonly" })
                                 </div>
                             </td>
                             <td>

@@ -298,9 +298,9 @@
                         jQuery("#shipmentResult img").click(clickBtnLabelView);
                         jQuery("#printLabel").click(clickBtnPrintLabel);
                         jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
-                        $('.shippingQuantity').each(function(i, obj) {
-                            $(this).val(0);
-                        });
+                        //$('.shippingQuantity').each(function(i, obj) {
+                        //    $(this).val(0);
+                        //});
 
                         var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
                         if (szInvoiceId != undefined) {
@@ -1266,7 +1266,7 @@
                 //debugger;
                 //Display the response data
                 jQuery("#shipmentDetailsdialog").html(objRes);
-                jQuery("#shipmentDialog").show();
+               // jQuery("#shipmentDialog").show();
                 //Hide load image and select invoice link
                 HideLoadingDialog();
                 changeInvoiceRemainingQty(invoiceId);
