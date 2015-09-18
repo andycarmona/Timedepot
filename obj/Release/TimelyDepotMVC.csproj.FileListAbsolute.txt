@@ -355,3 +355,6 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.pdb
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.XmlSerializers.dll
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\log4net.dll
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\log4net.xml

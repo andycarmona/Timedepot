@@ -66,6 +66,10 @@
     <Reference Include="itextsharp.xmlworker">
       <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\itextsharp.xmlworker.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -1083,6 +1087,7 @@
     <Content Include="Images\check_pasive.png" />
     <Content Include="Images\creditcard_active.png" />
     <Content Include="Images\creditcard_pasive.png" />
+    <Content Include="Logs\shipmentLog.txt" />
     <Content Include="PdfReportSamples\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.csprojResolveAssemblyReference.cache" />
     <Content Include="Pdf\fonts\arial.ttf" />

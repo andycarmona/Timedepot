@@ -10,6 +10,8 @@ using TimelyDepotMVC.Controllers;
 
 namespace TimelyDepotMVC
 {
+    using System.IO;
+
     using AutoMapper;
 
     using TimelyDepotMVC.Helpers;
@@ -26,6 +28,9 @@ namespace TimelyDepotMVC
     {
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~/Web.config")));
+            //string l4net = Server.MapPath("~/log4net.config");
+            //log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(l4net));
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
