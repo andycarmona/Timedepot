@@ -15,7 +15,7 @@
         <div class="form-control">
             @Html.DropDownList("billToOption", (IEnumerable<SelectListItem>)ViewBag.BillToOptionlist, null, new { id = "ddlBillTo" })
             <div style="display: none;">
-                <input id="txtbillTo" value="@ViewBag.ShipperNumber" type="text" />
+                <input id="txtbillTo" value="@((string)ViewBag.ShipperNumber)" type="text" />
                
             </div>
         </div>

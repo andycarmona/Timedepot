@@ -199,13 +199,13 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
-        public PartialViewResult ProcessShipmentInformation(string invoiceId)
+        public PartialViewResult ProcessShipmentInformation(string invoiceId,string upsNumber)
         {
 
-            string szShipperNumber = string.Empty;
+         
             List<ShipmentDetails> listShipmentDetails = null;
-            szShipperNumber = Settings.Default.UPSShipperNumber;
-            ViewBag.ShipperNumber = szShipperNumber;
+            
+            ViewBag.ShipperNumber = upsNumber;
             int parsedInvoiceId = Int16.Parse(invoiceId);
 
             var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
@@ -2061,7 +2061,7 @@ namespace TimelyDepotMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public RedirectToRouteResult Edit(Invoice invoice)
+        public PartialViewResult Edit(Invoice invoice)
         {
             var msgResult = "Success";
 
@@ -2080,7 +2080,7 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Shipment", new { id = invoice.InvoiceId });
+            return PartialView(invoice);
         }
         //
         // GET: /Invoice/Edit0

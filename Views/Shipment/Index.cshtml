@@ -216,7 +216,7 @@
                 $("#validateAccount").attr('data-validated', true);
                 jQuery("#shipperNumber").val(upsShipperNumber);
                 alert("You have a valid account number.");
-
+                var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             } else {
                 alert(response);
             }
@@ -778,6 +778,7 @@
             jQuery("#btDialogClose").click(clickbtDialogClose);
             jQuery("#lnkResetSelectSOId").click(clicklnkResetSelectSOId);
             jQuery("#searchsalesorderformid").submit(submitsearchsalesorderformid);
+           // jQuery("#btnSaveInvoiceData").click(postInvoiceData);
             jQuery("#ckActive").click(clickckActive);
             jQuery("#ckcust").click(clickckcust);
             jQuery("#ckcomp").click(clickckcomp);
@@ -900,7 +901,16 @@
                 success: selectEditInvoiceSuccess
             });
         }
-
+        function postInvoiceData() {
+            alert("poted");
+            $.ajax({
+                type: "POST",
+                dataType: 'html',
+                url: "/Shipment/Edit",
+                data: $('#editsalesorderid').serialize(),
+                success: selectEditInvoiceSuccess
+            });
+        }
         //Load Invoice
         function loadInvoiceDetails(id) {
             //$("#shipmentDialog").hide();
@@ -1046,7 +1056,8 @@
         }
 
         function LoadProcessInformation(invoiceId) {
-            var szMsg = "=" + invoiceId;
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var szMsg = "=" + invoiceId + "&upsNumber="+upsShipperNumber;
 
             var szUrl = jQuery("#getprocessdetailsId").attr("href");
             szUrl = szUrl.replace("=0", szMsg);
