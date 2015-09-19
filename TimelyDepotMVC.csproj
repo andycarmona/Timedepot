@@ -1095,7 +1095,6 @@
     <Content Include="Images\check_pasive.png" />
     <Content Include="Images\creditcard_active.png" />
     <Content Include="Images\creditcard_pasive.png" />
-    <Content Include="Logs\shipmentLog.txt" />
     <Content Include="PdfReportSamples\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="PdfReportSamples\obj\Release\PdfReportSamples.csprojResolveAssemblyReference.cache" />
     <Content Include="Pdf\fonts\arial.ttf" />
@@ -1122,6 +1121,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Logs\app.log" />
+    <Content Include="Logs\appView.log" />
     <None Include="Properties\PublishProfiles\AdminLive.pubxml" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

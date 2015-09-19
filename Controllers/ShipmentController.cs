@@ -723,6 +723,7 @@ namespace TimelyDepotMVC.Controllers
                     var upsService = new RateService();
                     try
                     {
+                        
                         var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, false);
                         if (rateResponse.RatedShipment != null)
                         {
