@@ -201,13 +201,18 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
+        public ActionResult OpenShipmentLogFile()
+        {
+            return View();
+        }
+
         public PartialViewResult ProcessShipmentInformation(string invoiceId,string upsNumber)
         {
 
          
             List<ShipmentDetails> listShipmentDetails = null;
             
-            ViewBag.ShipperNumber = upsNumber;
+            ViewBag.ShipperNumber = upsNumber.Equals("undefined")? Settings.Default.UPSShipperNumber:upsNumber ;
             int parsedInvoiceId = Int16.Parse(invoiceId);
 
             var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
