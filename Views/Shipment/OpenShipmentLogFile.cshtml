@@ -30,11 +30,11 @@
 
 <html>
 <head>
-    <title>Reading Data from a File</title>
+    <title>Shipment Log</title>
 </head>
 <body>
     <div>
-        <h1>Reading Data from a File</h1>
+        <h1>Shipment Log</h1>
         @result
         @if (result == "")
         {
@@ -42,17 +42,19 @@
                 @foreach (string dataLine in userData)
                 {
                     <li>
-                        User
+                        --------------------------------------------------
                         <ul>
                             @foreach (string dataItem in dataLine.Split(delimiterChar))
                             {
                                 <li>@dataItem</li>
                             }
                         </ul>
+
                     </li>
                 }
             </ol>
         }
     </div>
+
 </body>
 </html>

@@ -2113,7 +2113,6 @@
     <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
     <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <Content Include="Views\Shipment\EditorTemplates\ShipmentDetails.cshtml" />
-    <Content Include="Views\Shipment\ProcessShipment.cshtml" />
     <Content Include="Views\Shipment\OpenShipmentLogFile.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>

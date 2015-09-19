@@ -207,10 +207,8 @@ namespace TimelyDepotMVC.UPSWrappers
            
             var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
-            log.Debug("-------------------");
-            log.Debug("Shipper information");
-            log.Debug("-------------------");
-            log.Debug("shipper Number: "+ ShipperNumber);
+            log.Debug("<<<Shipper information>>>");
+            log.Debug("shipper Number: " + ShipperNumber);
             shipper.Name = ShipperName;
             log.Debug("shipper Name:" + ShipperName);
             AddShipperAddress(shipper);
@@ -221,9 +219,9 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var shipperAddress = new ShipAddressType();
             shipperAddress.AddressLine = new[] { ShipperAddressLine };
-            log.Debug("shipper address: "+ shipperAddress.AddressLine[0]);
+            log.Debug("shipper address: " + shipperAddress.AddressLine[0]);
             shipperAddress.City = ShipperCity;
-            log.Debug("shipper city: "+ ShipperCity);
+            log.Debug("shipper city: " + ShipperCity);
             shipperAddress.PostalCode = ShipperPostalCode;
             log.Debug("shipper postal code: " + ShipperPostalCode);
             shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
@@ -231,7 +229,7 @@ namespace TimelyDepotMVC.UPSWrappers
             shipperAddress.CountryCode = ShipperCountryCode;
             log.Debug("shipper country code: " + ShipperCountryCode);
             shipper.Name = ShipperName;
-            log.Debug("shipper Name: "+ ShipperName);
+            log.Debug("shipper Name: " + ShipperName);
             shipper.Address = shipperAddress; 
         }
 
@@ -239,13 +237,12 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var shipTo = new ShipToType();
             var shipToAddress = new ShipToAddressType();
-            log.Debug("-------------------");
-            log.Debug("ShipTo information");
-            log.Debug("-------------------");
+          
+            log.Debug("<<<ShipTo information>>>");
 
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
             shipToAddress.City = ShipToCity;
-            log.Debug("ShipTo City: "+ ShipToCity);
+            log.Debug("ShipTo City: " + ShipToCity);
             shipToAddress.PostalCode = ShipToPostalCode;
             log.Debug("ShipTo postal code: " + ShipToPostalCode);
             shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
@@ -282,9 +279,7 @@ namespace TimelyDepotMVC.UPSWrappers
             var paymentInfo = new PaymentInfoType();
             var shpmentCharge = new ShipmentChargeType();
             var billShipper = new BillShipperType();
-            log.Debug("-------------------");
-            log.Debug("Billshipper payment information");
-            log.Debug("-------------------");
+            log.Debug("<<<Billshipper payment information>>>");
             billShipper.AccountNumber = BillShipperAccountNumber;
             log.Debug("Bill shipper: " + BillShipperAccountNumber);
             shpmentCharge.BillShipper = billShipper;
@@ -316,9 +311,7 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var package = new PackageType();
             var packageWeight = new PackageWeightType();
-            log.Debug("-------------------");
-            log.Debug("Package info for " + boxNo);
-            log.Debug("-------------------");
+            log.Debug("<<<Package info for " + boxNo + ">>>");
             packageWeight.Weight = boxWeight.ToString(CultureInfo.InvariantCulture);
             log.Debug("Box weight: " + packageWeight.Weight);
             var uom = new ShipUnitOfMeasurementType();
@@ -410,12 +403,10 @@ namespace TimelyDepotMVC.UPSWrappers
 
                 var labelSpec = new LabelSpecificationType();
                 var labelStockSize = new LabelStockSizeType();
-                log.Debug("-------------------");
-                log.Debug("Package label info");
-                log.Debug("-------------------");
-
+             
+                log.Debug("<<<Package label info>>>");
                 labelStockSize.Height = "3";
-                log.Debug("Package label heigth: "+ labelStockSize.Height);
+                log.Debug("Package label heigth: " + labelStockSize.Height);
                 labelStockSize.Width = "2";
                 log.Debug("Package label width: " + labelStockSize.Width);
                 labelSpec.LabelStockSize = labelStockSize;
