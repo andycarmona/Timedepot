@@ -53,7 +53,8 @@ namespace TimelyDepotMVC.Controllers
     public class ShipmentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger
+    (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         int _pageIndex = 0;
         public int PageIndex
         {
@@ -186,7 +187,7 @@ namespace TimelyDepotMVC.Controllers
                 }
 
             }
-
+            
             //Set the page
             if (page == null)
             {
@@ -205,13 +206,18 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
+        public ActionResult OpenShipmentLogFile()
+        {
+            return View();
+        }
+
         public PartialViewResult ProcessShipmentInformation(string invoiceId, string upsNumber)
         {
 
 
             List<ShipmentDetails> listShipmentDetails = null;
 
-            ViewBag.ShipperNumber = upsNumber;
+            ViewBag.ShipperNumber = upsNumber.Equals("undefined")? Settings.Default.UPSShipperNumber:upsNumber ;
             int parsedInvoiceId = Int16.Parse(invoiceId);
 
             var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
@@ -325,7 +331,7 @@ namespace TimelyDepotMVC.Controllers
                 shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-
+                log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " +invoiceNo);                
                 rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
 
             }

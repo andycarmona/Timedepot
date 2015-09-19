@@ -1121,6 +1121,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Logs\app.log" />
     <None Include="Properties\PublishProfiles\AdminLive.pubxml" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -2113,6 +2114,7 @@
     <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <Content Include="Views\Shipment\EditorTemplates\ShipmentDetails.cshtml" />
     <Content Include="Views\Shipment\ProcessShipment.cshtml" />
+    <Content Include="Views\Shipment\OpenShipmentLogFile.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>

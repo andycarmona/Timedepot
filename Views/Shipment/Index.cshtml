@@ -1124,7 +1124,9 @@
         function upsRateDetailSuccess(response) {
             var objRes = response;
             //Display the response data
+            
             jQuery("#apiresultsid").html(objRes);
+            jQuery("#apiresultsid").show();
             HideLoadingDialog();
         }
 
@@ -1390,6 +1392,7 @@
 
         function updateDetailBoxSuccess(data) {
             $("#shipmentDetailsdialog").html(data);
+            $("#apiresultsid").hide();
             HideLoadingDialog();
             var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
             if (szInvoiceId != undefined) {
