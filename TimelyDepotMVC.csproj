@@ -20,6 +20,13 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +72,10 @@
     </Reference>
     <Reference Include="itextsharp.xmlworker">
       <HintPath>..\..\TimelyDepotMVC_Xxx\TimelyDepotMVC\bin\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
@@ -724,6 +735,10 @@
     <Compile Include="Migrations\201509120925262_ChangeDeclaredValueToInt.Designer.cs">
       <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.cs" />
+    <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.Designer.cs">
+      <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -742,6 +757,7 @@
     <Compile Include="ModelsView\SalesOrderDetailSRC.cs" />
     <Compile Include="ModelsView\SalesOrderList.cs" />
     <Compile Include="ModelsView\SelectCustomer.cs" />
+    <Compile Include="ModelsView\ShipmentLogView.cs" />
     <Compile Include="ModelsView\ShipmentRequestView.cs" />
     <Compile Include="ModelsView\VendorList.cs" />
     <Compile Include="ModelsView\VendorView.cs" />
@@ -1104,12 +1120,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Logs\app.log" />
+    <Content Include="Logs\appView.log" />
     <None Include="Properties\PublishProfiles\AdminLive.pubxml" />
     <Content Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
     <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <None Include="Properties\PublishProfiles\localTimely.pubxml" />
     <None Include="Properties\PublishProfiles\tst.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\01.png" />
@@ -2094,6 +2113,7 @@
     <Content Include="Views\Shipment\GetUPSRateTE.cshtml" />
     <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <Content Include="Views\Shipment\EditorTemplates\ShipmentDetails.cshtml" />
+    <Content Include="Views\Shipment\OpenShipmentLogFile.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2316,6 +2336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509120925262_ChangeDeclaredValueToInt.resx">
       <DependentUpon>201509120925262_ChangeDeclaredValueToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.resx">
+      <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

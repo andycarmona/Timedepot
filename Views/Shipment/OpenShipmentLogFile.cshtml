@@ -1,0 +1,60 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    var result = "";
+    Array userData = null;
+    char[] delimiterChar = { ',' };
+
+    var dataOrigFile = Server.MapPath("~/Logs/app.log");
+    var dataDestinationFile = Server.MapPath("~/Logs/appView.log");
+
+    if (File.Exists(dataOrigFile))
+    {
+        File.Copy(dataOrigFile, dataDestinationFile,true);
+        userData = File.ReadAllLines(dataDestinationFile);
+        if (userData == null)
+        {
+            // Empty file.
+            result = "The file is empty.";
+        }
+    }
+    else
+    {
+        // File does not exist.
+        result = "The file does not exist.";
+    }
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Shipment Log</title>
+</head>
+<body>
+    <div>
+        <h1>Shipment Log</h1>
+        @result
+        @if (result == "")
+        {
+            <ol>
+                @foreach (string dataLine in userData)
+                {
+                    <li>
+                        --------------------------------------------------
+                        <ul>
+                            @foreach (string dataItem in dataLine.Split(delimiterChar))
+                            {
+                                <li>@dataItem</li>
+                            }
+                        </ul>
+
+                    </li>
+                }
+            </ol>
+        }
+    </div>
+
+</body>
+</html>

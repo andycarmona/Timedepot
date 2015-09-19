@@ -185,3 +185,6 @@ obj/
 obj/Debug/
 bin/
 obj/
+Web.config
+bin/TimelyDepotMVC.dll
+*.dll

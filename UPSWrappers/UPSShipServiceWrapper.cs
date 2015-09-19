@@ -173,6 +173,9 @@ namespace TimelyDepotMVC.UPSWrappers
         public string FreightBillingOption { get; set; }
 
         #region Private
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger
+    (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private void AddUpsSecurity(ShipService upsShipService)
         {
@@ -191,6 +194,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         private void AddUserNameToken(UPSSecurity upss)
         {
+         
             var upssUsrNameToken = new UPSSecurityUsernameToken();
             upssUsrNameToken.Username = UserName;
             upssUsrNameToken.Password = Pasword;
@@ -199,9 +203,14 @@ namespace TimelyDepotMVC.UPSWrappers
 
         private void AddShipper(ShipmentType shipment)
         {
+            
+           
             var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
+            log.Debug("<<<Shipper information>>>");
+            log.Debug("shipper Number: " + ShipperNumber);
             shipper.Name = ShipperName;
+            log.Debug("shipper Name:" + ShipperName);
             AddShipperAddress(shipper);
             shipment.Shipper = shipper;
         }
@@ -210,29 +219,42 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var shipperAddress = new ShipAddressType();
             shipperAddress.AddressLine = new[] { ShipperAddressLine };
+            log.Debug("shipper address: " + shipperAddress.AddressLine[0]);
             shipperAddress.City = ShipperCity;
+            log.Debug("shipper city: " + ShipperCity);
             shipperAddress.PostalCode = ShipperPostalCode;
+            log.Debug("shipper postal code: " + ShipperPostalCode);
             shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
+            log.Debug("shipper state province code: " + ShipperStateProvinceCode);
             shipperAddress.CountryCode = ShipperCountryCode;
+            log.Debug("shipper country code: " + ShipperCountryCode);
             shipper.Name = ShipperName;
-            shipper.Address = shipperAddress;
-            
+            log.Debug("shipper Name: " + ShipperName);
+            shipper.Address = shipperAddress; 
         }
 
         private void AddShipToAddress(ShipmentType shipment)
         {
             var shipTo = new ShipToType();
             var shipToAddress = new ShipToAddressType();
-
+          
+            log.Debug("<<<ShipTo information>>>");
 
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
             shipToAddress.City = ShipToCity;
+            log.Debug("ShipTo City: " + ShipToCity);
             shipToAddress.PostalCode = ShipToPostalCode;
+            log.Debug("ShipTo postal code: " + ShipToPostalCode);
             shipToAddress.StateProvinceCode = ShipToStateProvinceCode;
+            log.Debug("ShipTo tate province code: " + ShipToStateProvinceCode);
             shipToAddress.CountryCode = ShipToCountryCode;
+            log.Debug("ShipTo Country code: " + ShipToCountryCode);
             shipTo.Address = shipToAddress;
+            log.Debug("ShipTo address: " + shipToAddress.AddressLine[0]);
             shipTo.Name = ShipToName;
+            log.Debug("ShipTo name: " + ShipToName);
             shipTo.CompanyDisplayableName = ShipToCompany;
+            log.Debug("ShipTo Company: " + ShipToCompany);
             shipment.ShipTo = shipTo;
 
         }
@@ -257,9 +279,13 @@ namespace TimelyDepotMVC.UPSWrappers
             var paymentInfo = new PaymentInfoType();
             var shpmentCharge = new ShipmentChargeType();
             var billShipper = new BillShipperType();
+            log.Debug("<<<Billshipper payment information>>>");
             billShipper.AccountNumber = BillShipperAccountNumber;
+            log.Debug("Bill shipper: " + BillShipperAccountNumber);
             shpmentCharge.BillShipper = billShipper;
+          
             shpmentCharge.Type = ShipmentChargeType;
+            log.Debug("Shipment charge type: " + ShipmentChargeType);
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };
             paymentInfo.ShipmentCharge = shpmentChargeArray;
             shipment.PaymentInformation = paymentInfo;
@@ -285,27 +311,39 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var package = new PackageType();
             var packageWeight = new PackageWeightType();
-            packageWeight.Weight = boxWeight.ToString();
+            log.Debug("<<<Package info for " + boxNo + ">>>");
+            packageWeight.Weight = boxWeight.ToString(CultureInfo.InvariantCulture);
+            log.Debug("Box weight: " + packageWeight.Weight);
             var uom = new ShipUnitOfMeasurementType();
             uom.Code = "LBS";
+            log.Debug("Box weight unit: " + uom.Code);
             uom.Description = "pounds";
             packageWeight.UnitOfMeasurement = uom;
+            log.Debug("Package unit of measurement: " + uom.Description);
             package.PackageWeight = packageWeight;
 
             var packageDimensions = new DimensionsType();
-            packageDimensions.Height = boxHeight.ToString();
-            packageDimensions.Length = boxLength.ToString();
-            packageDimensions.Width = boxWidth.ToString();
+            packageDimensions.Height = boxHeight.ToString(CultureInfo.InvariantCulture);
+            log.Debug("Package height: " + packageDimensions.Height);
+            packageDimensions.Length = boxLength.ToString(CultureInfo.InvariantCulture);
+            log.Debug("Package length: " + packageDimensions.Length);
+            packageDimensions.Width = boxWidth.ToString(CultureInfo.InvariantCulture);
+            log.Debug("Package width: " + packageDimensions.Width);
             var packDimType = new ShipUnitOfMeasurementType();
             packDimType.Code = "IN";
+
             packDimType.Description = "Inches";
+            log.Debug("Package dimension type: " + packDimType.Description + " (" + packDimType.Code + ")");
             packageDimensions.UnitOfMeasurement = packDimType;
             package.Dimensions = packageDimensions;
 
             var packageServiceOptions = new PackageServiceOptionsType();
             var declaredValue = new PackageDeclaredValueType();
+
             declaredValue.CurrencyCode = currencyCode;
+            log.Debug("Package declared value: " + declaredValue.CurrencyCode);
             declaredValue.MonetaryValue = declaredVal.ToString(CultureInfo.InvariantCulture);
+            log.Debug("Package monetary value: " + declaredValue.MonetaryValue);
             packageServiceOptions.DeclaredValue = declaredValue;
             package.PackageServiceOptions = packageServiceOptions;
 
@@ -350,12 +388,12 @@ namespace TimelyDepotMVC.UPSWrappers
                 {
                     AddPackage(
                         box.BoxNo,
-                        1,
-                        20,
-                        1,
-                        1,
-                        1,
-                        "02",
+                        box.UnitWeight.Value,
+                        (int)box.DeclaredValue,
+                        box.DimensionH.Value,
+                        box.DimensionD.Value,
+                        box.DimensionL.Value,
+                        PackagingTypeCode,
                         "USD",
                         pkgArray,
                         i);
@@ -365,11 +403,16 @@ namespace TimelyDepotMVC.UPSWrappers
 
                 var labelSpec = new LabelSpecificationType();
                 var labelStockSize = new LabelStockSizeType();
+             
+                log.Debug("<<<Package label info>>>");
                 labelStockSize.Height = "3";
+                log.Debug("Package label heigth: " + labelStockSize.Height);
                 labelStockSize.Width = "2";
+                log.Debug("Package label width: " + labelStockSize.Width);
                 labelSpec.LabelStockSize = labelStockSize;
                 var labelImageFormat = new LabelImageFormatType();
                 labelImageFormat.Code = "GIF"; //"SPL";
+                log.Debug("Package label image format: " + labelImageFormat.Code);
                 labelSpec.LabelImageFormat = labelImageFormat;
                 shipmentRequest.LabelSpecification = labelSpec;
                 shipmentRequest.Shipment = shipment;
@@ -423,7 +466,7 @@ namespace TimelyDepotMVC.UPSWrappers
                     AddPackage(
                         box.BoxNo,
                         box.UnitWeight.Value,
-                        Convert.ToInt32(box.UnitPrice),
+                        (int)box.DeclaredValue,
                         box.DimensionH.Value,
                         box.DimensionD.Value,
                         box.DimensionL.Value,

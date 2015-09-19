@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+
+using AutoMapper;
+
 using TimelyDepotMVC.DAL;
 using TimelyDepotMVC.Models.Admin;
 using PagedList;
 using TimelyDepotMVC.CommonCode;
 using System.Data;
 
+using TimelyDepotMVC.ModelsView;
+using TimelyDepotMVC.UPSShipService;
 using TimelyDepotMVC.XAVService;
 using TimelyDepotMVC.UPSWrappers;
 using TimelyDepotMVC.Properties;
@@ -48,7 +53,8 @@ namespace TimelyDepotMVC.Controllers
     public class ShipmentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger
+    (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         int _pageIndex = 0;
         public int PageIndex
         {
@@ -116,10 +122,13 @@ namespace TimelyDepotMVC.Controllers
             int pageSize = PageSize;
             string[] szFecha = null;
             DateTime dFecha = DateTime.Now;
+            Mapper.CreateMap<Shipment, ShipmentLogView>();
 
             IQueryable<Shipment> qryShipment = null;
 
-            List<Shipment> ShipmentList = new List<Shipment>();
+            List<ShipmentLogView> ShipmentList = new List<ShipmentLogView>();
+
+
             if (string.IsNullOrEmpty(searchItemLog) || searchItemLog == "0")
             {
                 //qryItem = db.ITEMs.OrderBy(it => it.ItemID);
@@ -163,14 +172,22 @@ namespace TimelyDepotMVC.Controllers
                 {
                     if (qryShipment.Count() > 0)
                     {
-                        foreach (var item in qryShipment)
+                        List<ShipmentLogView> shipmentLogList = Mapper.Map<IQueryable<Shipment>, List<ShipmentLogView>>(qryShipment);
+                        foreach (var item in shipmentLogList)
                         {
-                            ShipmentList.Add(item);
+                            if (item.Shipped)
+                            {
+                                var actualInvoice = db.Invoices.FirstOrDefault(x => x.InvoiceId == item.InvoiceId);
+                                var customer = db.CustomersContactAddresses.FirstOrDefault(c => c.Id == actualInvoice.CustomerId);
+                                item.CompanyName = customer.CompanyName;
+                                ShipmentList.Add(item);
+                            }
                         }
                     }
-
                 }
+
             }
+            
             //Set the page
             if (page == null)
             {
@@ -189,13 +206,18 @@ namespace TimelyDepotMVC.Controllers
             //return PartialView();
         }
 
-        public PartialViewResult ProcessShipmentInformation(string invoiceId)
+        public ActionResult OpenShipmentLogFile()
+        {
+            return View();
+        }
+
+        public PartialViewResult ProcessShipmentInformation(string invoiceId, string upsNumber)
         {
 
-            string szShipperNumber = string.Empty;
+
             List<ShipmentDetails> listShipmentDetails = null;
-            szShipperNumber = Settings.Default.UPSShipperNumber;
-            ViewBag.ShipperNumber = szShipperNumber;
+
+            ViewBag.ShipperNumber = upsNumber.Equals("undefined")? Settings.Default.UPSShipperNumber:upsNumber ;
             int parsedInvoiceId = Int16.Parse(invoiceId);
 
             var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
@@ -309,7 +331,7 @@ namespace TimelyDepotMVC.Controllers
                 shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-
+                log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " +invoiceNo);                
                 rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
 
             }
@@ -331,12 +353,14 @@ namespace TimelyDepotMVC.Controllers
             ShipmentResponse rateResponse = null;
             string szError = null;
             var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
+            var actualShipment = db.Shipments.FirstOrDefault(y => y.ShipmentId == shipmentId);
 
-            if (selectedInvoice == null)
+            if ((selectedInvoice == null) || (actualShipment == null))
             {
                 return this.Json("Error.No invoice selected.", JsonRequestBehavior.AllowGet);
             }
 
+            actualShipment.UpsNumber = upsShipperNumber;
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
@@ -424,7 +448,7 @@ namespace TimelyDepotMVC.Controllers
                 int valuePerFullBox = 0;
                 int valuePerPartialBox = 0;
                 UPSWrappers.inv_detl details = null;
-
+                string errorMessage = "";
 
 
                 resultData.Add(new ResultData() { service = "UPS Ground", code = "03", cost = 0, Negcost = 0, Publishedcost = 0 });
@@ -463,7 +487,9 @@ namespace TimelyDepotMVC.Controllers
                             details,
                             unitPrice,
                             shipToPostalCode,
-                            resultData, out currency);
+                            resultData,
+                            out currency,
+                            out errorMessage);
                     }
                 }
 
@@ -489,7 +515,7 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (Exception ex)
             {
-                resultData[0].errorMessage = ex.Message;
+                resultDataViewList[0].errorMessage = ex.Message;
 
             }
 
@@ -597,12 +623,12 @@ namespace TimelyDepotMVC.Controllers
                 nrBoxes = 1;
             }
             itemsInLastBox = (int)(qty % BOX_CASE);
-            fullBoxWeight = "0";
+            fullBoxWeight = "1";
             if ((qty / BOX_CASE) > 0)
             {
                 fullBoxWeight = Math.Ceiling(BOX_CASE * UT_WT).ToString();
             }
-            partialBoxWeight = "0";
+            partialBoxWeight = "1";
             if (itemsInLastBox > 0)
             {
                 partialBoxWeight = Math.Ceiling(itemsInLastBox * UT_WT).ToString();
@@ -625,9 +651,9 @@ namespace TimelyDepotMVC.Controllers
 
         #region UPS RATE SERVICE API
 
-        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency)
+        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
         {
-
+            errorMessage = string.Empty;
             try
             {
                 var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
@@ -674,6 +700,8 @@ namespace TimelyDepotMVC.Controllers
                     }
                     catch (System.Web.Services.Protocols.SoapException ex)
                     {
+
+                        errorMessage += ex.Detail.InnerText;
                     }
                 }
                 try
@@ -687,6 +715,7 @@ namespace TimelyDepotMVC.Controllers
                 }
                 catch (System.Web.Services.Protocols.SoapException ex)
                 {
+                    errorMessage += ex.Detail.InnerText;
                 }
 
                 foreach (ResultData r in lst)
@@ -694,6 +723,7 @@ namespace TimelyDepotMVC.Controllers
                     var upsService = new RateService();
                     try
                     {
+                        
                         var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, false);
                         if (rateResponse.RatedShipment != null)
                         {
@@ -724,6 +754,7 @@ namespace TimelyDepotMVC.Controllers
                     }
                     catch (System.Web.Services.Protocols.SoapException ex)
                     {
+                        errorMessage += ex.Detail.InnerText;
                     }
                 }
                 try
@@ -1098,15 +1129,7 @@ namespace TimelyDepotMVC.Controllers
 
                     totalSum.TryGetValue(shipmentDetail.Sub_ItemID, out qtyForItem);
 
-                    //if (actualInvoiceDetail != null)
-                    //{
-                    //   qtydiff = actualInvoiceDetail.Quantity - shipmentDetail.Quantity;
-                    //}
 
-                    //if (qtydiff < 0)
-                    //{
-                    //    continue;
-                    //}
 
                     if (actualInvoiceDetail == null || !(actualInvoiceDetail.Quantity >= qtyForItem))
                     {
@@ -1415,6 +1438,7 @@ namespace TimelyDepotMVC.Controllers
                                        ShipmentDate = DateTime.Now,
                                        InvoiceId = invoice.InvoiceId,
                                        InvoiceNo = invoice.InvoiceNo
+
                                    };
 
                     db.Shipments.Add(shipment);
@@ -1630,7 +1654,7 @@ namespace TimelyDepotMVC.Controllers
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
                             shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails, nUnitperCase);
-                           
+
 
                             try
                             {
@@ -1692,7 +1716,7 @@ namespace TimelyDepotMVC.Controllers
                                 itemsInLastBox.ToString());
                             shipmentDetails.ShipmentId = shipment.ShipmentId;
                             shipmentDetails.UnitPrice = invDetails.UnitPrice;
-                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails,itemsInLastBox);
+                            shipmentDetails.DeclaredValue = GetRoundedDeclaredValue(invDetails, itemsInLastBox);
                             try
                             {
                                 shipmentDetails.UnitWeight = nPartialBoxWeight == 0
@@ -2050,7 +2074,7 @@ namespace TimelyDepotMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public RedirectToRouteResult Edit(Invoice invoice)
+        public PartialViewResult Edit(Invoice invoice)
         {
             var msgResult = "Success";
 
@@ -2069,7 +2093,7 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Shipment", new { id = invoice.InvoiceId });
+            return PartialView(invoice);
         }
         //
         // GET: /Invoice/Edit0

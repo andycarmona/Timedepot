@@ -220,7 +220,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         public static List<ShipmentDetails> GetShipmentShipmentDetails(int shipmentId)
         {
-            var shipment = ent.ShipmentDetails.Where(i => i.ShipmentId == shipmentId).ToList();
+            var shipment = ent.ShipmentDetails.Where(i => i.ShipmentId == shipmentId && i.Shipped==false).ToList();
             return
                 shipment.OrderBy(i => i.Sub_ItemID)
                    .ThenBy(i => i.BoxNo)
