@@ -48,7 +48,8 @@ namespace TimelyDepotMVC.Controllers
     public class ShipmentController : Controller
     {
         private TimelyDepotContext db = new TimelyDepotContext();
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger
+    (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         int _pageIndex = 0;
         public int PageIndex
         {
@@ -181,7 +182,7 @@ namespace TimelyDepotMVC.Controllers
                     }
 
                 }
-            }
+            
             //Set the page
             if (page == null)
             {
@@ -320,7 +321,7 @@ namespace TimelyDepotMVC.Controllers
                 shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-
+                log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " +invoiceNo);                
                 rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
 
             }

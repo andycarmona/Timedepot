@@ -360,7 +360,6 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\log4net.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\log4net.xml
 =======
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddUpsNumberToShipmentTable.resources
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.Migrations.AddTransactionListforRefundsAndPayments.resources
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.Migrations.AddTranslationCodesTable.resources
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.Migrations.UpdateTheWayTransactionListHandlesdata.resources
@@ -428,3 +427,5 @@ C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\Time
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.XmlSerializers.dll
 C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
 >>>>>>> 6e03a5870d985eb5c389a8bbb03df664392c7397
+C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\bin\log4net.dll
+C:\Users\ancar2\Documents\Visual Studio 2015\Projects\Timedepot\bin\log4net.xml

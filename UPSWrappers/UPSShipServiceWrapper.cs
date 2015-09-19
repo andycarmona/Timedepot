@@ -395,12 +395,12 @@ namespace TimelyDepotMVC.UPSWrappers
                 {
                     AddPackage(
                         box.BoxNo,
-                        1,
-                        20,
-                        1,
-                        1,
-                        1,
-                        "02",
+                        box.UnitWeight.Value,
+                        (int)box.DeclaredValue,
+                        box.DimensionH.Value,
+                        box.DimensionD.Value,
+                        box.DimensionL.Value,
+                        PackagingTypeCode,
                         "USD",
                         pkgArray,
                         i);
