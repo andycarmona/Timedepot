@@ -203,9 +203,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         private void AddShipper(ShipmentType shipment)
         {
-            
-           
-            var shipper = new ShipperType();
+          var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
             log.Debug("<<<Shipper information>>>");
             log.Debug("shipper Number: " + ShipperNumber);

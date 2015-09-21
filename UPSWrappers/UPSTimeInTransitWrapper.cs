@@ -6,6 +6,8 @@ using TimelyDepotMVC.UPSTimeInTransit;
 
 namespace TimelyDepotMVC.UPSWrappers
 {
+    using TimelyDepotMVC.ModelsView;
+
     public class UPSTimeInTransitWrapper
     {
         public string UserName { get; set; }
@@ -48,6 +50,25 @@ namespace TimelyDepotMVC.UPSWrappers
             ShipFromStateProvinceCode = shipFromStateProvinceCode;
             ShipFromCountryCode = shipFromCountryCode;
             ShipFromName = shipFromName;
+        }
+
+        public UPSTimeInTransitWrapper(ShipmentRequestView shipmentRequestModel)
+        {
+            UserName = shipmentRequestModel.userName;
+            Pasword = shipmentRequestModel.password;
+            AccessLicenseNumber = shipmentRequestModel.accessLicenseNumber;
+            CustomerTypeCode = shipmentRequestModel.UpsCustomerTypeCode;
+            CustomerTypeDescription = shipmentRequestModel.UpsCustomerTypeDescription;
+            ShipToPostalCode = shipmentRequestModel.ToZip;
+            ShipToCountryCode = shipmentRequestModel.ToCountry;
+            ShipToName = shipmentRequestModel.ToName;
+            ShipToCity = shipmentRequestModel.ToCity;
+            ShipToStateProvinceCode = shipmentRequestModel.ToState;
+            ShipFromCity = shipmentRequestModel.FromCity;
+            ShipFromPostalCode = shipmentRequestModel.FromZip;
+            ShipFromStateProvinceCode = shipmentRequestModel.Fromstate;
+            ShipFromCountryCode = shipmentRequestModel.FromCountry;
+            ShipFromName = shipmentRequestModel.FromName;
         }
 
         #region Private

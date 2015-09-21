@@ -433,7 +433,7 @@ namespace TimelyDepotMVC.Controllers
         }
 
 
-        public PartialViewResult GetUPSRateTE(int? invoiceId, string shipToPostalCode)
+        public PartialViewResult GetUPSRateTE(int? invoiceId, string shipToPostalCode, string upsShipperNumber)
         {
             var resultData = new List<ResultData>();
             var resultDataViewList = new List<ResultDataView>();
@@ -477,6 +477,8 @@ namespace TimelyDepotMVC.Controllers
                     {
 
                         resultData = this.GetRateFromUPS(
+                            invoiceId,
+                            upsShipperNumber,
                             (int)anInvoiceList.ShipQuantity,
                             nrBoxes,
                             itemsInLastBox,
@@ -651,24 +653,30 @@ namespace TimelyDepotMVC.Controllers
 
         #region UPS RATE SERVICE API
 
-        private List<ResultData> GetRateFromUPS(int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
+        private List<ResultData> GetRateFromUPS(int? invoiceId,string upsShipperNumber,int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
         {
             errorMessage = string.Empty;
             try
             {
-                var rateServiceWrapper = new UPSRateServiceWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber, UPSConstants.UpsShipperNumber, UPSConstants.UpsShipperName,
-                    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, UPSConstants.UpsShipperAddressLine,
-                    UPSConstants.UpsShipperCity, UPSConstants.UpsShipperPostalCode, UPSConstants.UpsShipperStateProvinceCode,
-                    UPSConstants.UpsShipperCountryCode, shipToPostalCode, "US", null, null, null, null, UPSConstants.UpsShipFromAddressLine,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName,
-                    UPSConstants.UpsShipperNumber, UPSConstants.UpsPackagingType);
-                var transitTimeWrapper = new UPSTimeInTransitWrapper(UPSConstants.UpsUserName, UPSConstants.UpsPasword,
-                    UPSConstants.UpsAccessLicenseNumber,
-                    UPSConstants.UpsCustomerTypeCode, UPSConstants.UpsCustomerTypeDescription, shipToPostalCode, "US", null, null, null,
-                    UPSConstants.UpsShipFromCity, UPSConstants.UpsShipFromPostalCode, UPSConstants.UpsShipFromStateProvinceCode,
-                    UPSConstants.UpsShipFromCountryCode, UPSConstants.UpsShipFromName);
+                var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+                var shipmentRequestDto = new ShipmentRequestView();
+                if (selectedInvoice != null)
+                {
+                    shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+                    shipmentRequestDto.userName = UPSConstants.UpsUserName;
+                    shipmentRequestDto.password = UPSConstants.UpsPasword;
+                    shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
+                    shipmentRequestDto.shipperNumber = upsShipperNumber;
+                    shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
+                    shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+                    shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
+                    shipmentRequestDto.UpsCustomerTypeCode = "53";
+                    shipmentRequestDto.UpsCustomerTypeDescription = "";
+                }
+
+                var rateServiceWrapper = new UPSRateServiceWrapper(shipmentRequestDto);
+
+                var transitTimeWrapper = new UPSTimeInTransitWrapper(shipmentRequestDto);
 
                 foreach (ResultData r in lst)
                 {

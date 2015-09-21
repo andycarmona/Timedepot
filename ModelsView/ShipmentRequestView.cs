@@ -15,6 +15,11 @@ namespace TimelyDepotMVC.ModelsView
 
         public string password { get; set; }
 
+        public string UpsCustomerTypeCode { get; set; }
+
+        public string UpsCustomerTypeDescription { get; set; }
+
+
         public string accessLicenseNumber { get; set; }
 
         public string shipperNumber { get; set; }

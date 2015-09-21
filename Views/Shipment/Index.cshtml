@@ -1077,8 +1077,9 @@
             debugger;
             var itemId = jQuery("#item_Sub_ItemID").val();
             var quantity = jQuery("#divQuantity1").text();
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             var toZip = jQuery("#ToZip").val();
-            var szMsg = "=" + invoiceId + "&shipToPostalCode=" + toZip;
+            var szMsg = "=" + invoiceId + "&shipToPostalCode=" + toZip + "&upsShipperNumber="+upsShipperNumber;
 
             var szUrl = jQuery("#getUpsRateDetailsId").attr("href");
             szUrl = szUrl.replace("=0", szMsg);

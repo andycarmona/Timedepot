@@ -112,7 +112,8 @@ namespace TimelyDepotMVC.UPSWrappers
             ShipToStateProvinceCode = shipmentRequestModel.ToState;
             BillShipperAccountNumber = shipmentRequestModel.billShipperAccountNumber;
             PackagingTypeCode = shipmentRequestModel.packagingTypeCode;
-            
+            CustomerTypeCode = shipmentRequestModel.UpsCustomerTypeCode;
+            CustomerTypeDescription = shipmentRequestModel.UpsCustomerTypeDescription;
         }
         #region Private
 
