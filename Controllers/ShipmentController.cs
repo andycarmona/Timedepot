@@ -437,6 +437,8 @@ namespace TimelyDepotMVC.Controllers
         {
             var resultData = new List<ResultData>();
             var resultDataViewList = new List<ResultDataView>();
+       
+
             var currency = "US";
             try
             {
@@ -457,8 +459,10 @@ namespace TimelyDepotMVC.Controllers
                 resultData.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
 
                 var invoiceDetailList = this.db.InvoiceDetails.Where(inv => inv.InvoiceId == invoiceId);
+              
                 foreach (var anInvoiceList in invoiceDetailList)
                 {
+                  
                     if (anInvoiceList.ShipQuantity != null)
                     {
                         details = this.GetBoxInformationDetails(
@@ -472,7 +476,7 @@ namespace TimelyDepotMVC.Controllers
                             out valuePerFullBox,
                             out valuePerPartialBox);
                     }
-
+                 
                     if (anInvoiceList.ShipQuantity != null)
                     {
 
@@ -541,6 +545,7 @@ namespace TimelyDepotMVC.Controllers
             int BOX_CASE = 0;
             decimal CASE_WI = 0;
             decimal UT_WT = 0;
+            var actualShipmentDetail = db.ShipmentDetails.Where(c => c.Sub_ItemID == ItemId).Distinct();
             var ds = dbAux.PRICEs.Where(i => i.Item == ItemId).OrderByDescending(i => i.thePrice).ToList();
 
             if (ds != null && ds.Count > 0)
@@ -590,7 +595,11 @@ namespace TimelyDepotMVC.Controllers
                     }
                     if (item.UnitWeight != null)
                     {
-                        UT_WT = Convert.ToDecimal(item.UnitWeight, CultureInfo.InvariantCulture);
+                        var actualBoxWeight = Convert.ToDecimal(item.UnitWeight, CultureInfo.InvariantCulture);
+                        var originalItemWeight = Convert.ToDecimal(item.UnitWeight, CultureInfo.InvariantCulture);
+                        UT_WT = actualBoxWeight == originalItemWeight
+                                    ? originalItemWeight
+                                    : actualBoxWeight;
                     }
                     if (item.DimensionH != null)
                     {
@@ -1766,6 +1775,13 @@ namespace TimelyDepotMVC.Controllers
             var roundedResult = (int)roundedToHundred;
 
             return roundedResult;
+        }
+
+        [NoCache]
+        public PartialViewResult DisplayInvoice(int id = 0)
+        {
+            Invoice invoice = db.Invoices.Find(id);
+            return PartialView(invoice);
         }
 
         //

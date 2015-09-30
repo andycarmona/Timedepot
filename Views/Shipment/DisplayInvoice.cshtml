@@ -1,0 +1,97 @@
+﻿@model TimelyDepotMVC.Models.Admin.Invoice
+
+<div class="darkerline cf" style="margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 0.5em; padding-right: 0.5em; padding-bottom: 0.5em;">
+    <div style="text-align: center;">Shipment Information</div>
+    <div class="cf">
+        <div class="darkerline right" style="width: 40%; padding: 5px;">
+            <b>Ship to:</b>
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Company: ")
+                @Html.DisplayFor(model => model.ToCompany)
+                @Html.ValidationMessageFor(model => model.ToCompany)
+            </div>
+        <div class="viosinput400 boxtb3">
+            @Html.Label("Name: ")
+            @Html.DisplayFor(model => model.ToName)
+            @Html.ValidationMessageFor(model => model.ToName)
+        </div>
+        <div class="viosinput400 boxtb3">
+            @Html.Label("Address 1: ")
+            @Html.DisplayFor(model => model.ToAddress1)
+            @Html.ValidationMessageFor(model => model.ToAddress1)
+        </div>
+        <div class="viosinput400 boxtb3">
+            @Html.Label("Address 2: ")
+            @Html.DisplayFor(model => model.ToAddress2)
+            @Html.ValidationMessageFor(model => model.ToAddress2)
+        </div>
+            <div>
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("City: ")
+                    @Html.DisplayFor(model => model.ToCity)
+                    @Html.ValidationMessageFor(model => model.ToCity)
+                </div>
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("State: ")
+                    @Html.DisplayFor(model => model.ToState)
+                    @Html.ValidationMessageFor(model => model.ToState)
+                </div>
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("Zip: ")
+                    @Html.DisplayFor(model => model.ToZip)
+                    @Html.ValidationMessageFor(model => model.ToZip)
+                </div>
+            </div>
+        <div class="viosinput400 boxtb3">
+            @Html.Label("Country: ")
+            @Html.DisplayFor(model => model.ToCountry)
+            @Html.ValidationMessageFor(model => model.ToCountry)
+        </div>
+        </div>
+        <div class="darkerline left" style="width: 40%; padding: 5px;">
+            <b>Ship From:</b>
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Company: ")
+                @Html.DisplayFor(model => model.FromCompany)
+                @Html.ValidationMessageFor(model => model.FromCompany)
+            </div>
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Name: ")
+                @Html.DisplayFor(model => model.FromName)
+                @Html.ValidationMessageFor(model => model.FromName)
+            </div>
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Address 1: ")
+                @Html.DisplayFor(model => model.FromAddress1)
+                @Html.ValidationMessageFor(model => model.FromAddress1)
+            </div>
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Address 2: ")
+                @Html.DisplayFor(model => model.FromAddress2)
+                @Html.ValidationMessageFor(model => model.FromAddress2)
+            </div>
+        
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("City: ")
+                    @Html.DisplayFor(model => model.FromCity)
+                    @Html.ValidationMessageFor(model => model.FromCity)
+                </div>
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("State: ")
+                    @Html.DisplayFor(model => model.FromState)
+                    @Html.ValidationMessageFor(model => model.FromState)
+                </div>
+                <div class="viosinput400 boxtb3">
+                    @Html.Label("Zip: ")
+                    @Html.DisplayFor(model => model.FromZip)
+                    @Html.ValidationMessageFor(model => model.FromZip)
+                </div>
+        
+            <div class="viosinput400 boxtb3">
+                @Html.Label("Country: ")
+                @Html.DisplayFor(model => model.FromCountry)
+                @Html.ValidationMessageFor(model => model.FromCountry)
+            </div>
+        </div>
+    </div>
+</div>

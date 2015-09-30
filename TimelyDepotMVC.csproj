@@ -2114,6 +2114,7 @@
     <Content Include="Views\Shipment\ProcessShipmentInformation.cshtml" />
     <Content Include="Views\Shipment\EditorTemplates\ShipmentDetails.cshtml" />
     <Content Include="Views\Shipment\OpenShipmentLogFile.cshtml" />
+    <Content Include="Views\Shipment\DisplayInvoice.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
