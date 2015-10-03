@@ -49,6 +49,7 @@ namespace TimelyDepotMVC.Controllers
     using TimelyDepotMVC.ModelsView;
     using TimelyDepotMVC.UPSRateService;
     using TimelyDepotMVC.UPSShipService;
+    using TimelyDepotMVC.UPSTimeInTransit;
 
     public class ShipmentController : Controller
     {
@@ -724,11 +725,19 @@ namespace TimelyDepotMVC.Controllers
                 try
                 {
                     var titResponse = transitTimeWrapper.CallUPSTimeInTransitRequest(Qty, nrBoxes, fullBoxWeight, partialBoxWeight, "USD", unitPrice, true);
-                    var groundService =
-                       ((UPSTimeInTransit.TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
-                           i => i.Service.Code == "GND");
-                    var groundResult = lst.FirstOrDefault(i => i.code == "03");
-                    groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                    if (titResponse.GetType() == typeof(TimeInTransitResponse))
+                    {
+                        var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipFromList;
+                         errorMessage += "Address is not valid. Did you mean this for receiver: "+ candidateAddress[0];
+                    }
+                    else
+                    {
+                        var groundService =
+                            ((TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
+                                i => i.Service.Code == "GND");
+                        var groundResult = lst.FirstOrDefault(i => i.code == "03");
+                        groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                    }
                 }
                 catch (System.Web.Services.Protocols.SoapException ex)
                 {
@@ -777,20 +786,29 @@ namespace TimelyDepotMVC.Controllers
                 try
                 {
                     var titResponse = transitTimeWrapper.CallUPSTimeInTransitRequest(Qty, nrBoxes, fullBoxWeight, partialBoxWeight, "USD", unitPrice, false);
-                    var groundService =
-                       ((UPSTimeInTransit.TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
-                           i => i.Service.Code == "GND");
-                    var groundResult = lst.FirstOrDefault(i => i.code == "03");
-                    if (groundResult != null)
+                    if (titResponse.GetType() == typeof(TimeInTransitResponse))
                     {
-                        if (groundService != null)
+                        var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipToList;
+                        errorMessage += "Address is not valid. Did you mean this addres for sender: " + candidateAddress[0];
+                    }
+                    else
+                    {
+                        var groundService =
+                            ((UPSTimeInTransit.TransitResponseType)titResponse.Item).ServiceSummary.FirstOrDefault(
+                                i => i.Service.Code == "GND");
+                        var groundResult = lst.FirstOrDefault(i => i.code == "03");
+                        if (groundResult != null)
                         {
-                            groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                            if (groundService != null)
+                            {
+                                groundResult.time = groundService.EstimatedArrival.BusinessDaysInTransit + " days";
+                            }
                         }
                     }
                 }
                 catch (System.Web.Services.Protocols.SoapException ex)
                 {
+                    errorMessage += ex.Detail.InnerText;
                 }
 
                 currency = "US";
@@ -798,11 +816,24 @@ namespace TimelyDepotMVC.Controllers
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
+                errorMessage += ex.Detail.InnerText;
                 currency = "US";
                 return null;
             }
         }
 
+        public PartialViewResult GetBillerCustomerInformation(int invoiceId)
+        {
+            
+        
+            CustomersSalesContact aCustomer = null;
+            var actualInvoice = db.Invoices.FirstOrDefault(invoi => invoi.InvoiceId == invoiceId);
+            if (actualInvoice != null)
+            {
+                aCustomer = db.CustomersSalesContacts.FirstOrDefault(invid => invid.Id == actualInvoice.CustomerId);
+            }
+            return this.PartialView(aCustomer);
+        }
 
 
         #endregion
@@ -1784,12 +1815,7 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(invoice);
         }
 
-        [NoCache]
-        public PartialViewResult DisplayShipmentDetail(int id = 0)
-        {
-            Invoice invoice = db.Invoices.Find(id);
-            return PartialView(invoice);
-        }
+     
 
         //
         // GET: /Invoice/Edit/5

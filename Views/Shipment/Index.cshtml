@@ -46,7 +46,7 @@
             <div id="shipmentDetailsDisplay">
             </div>
             <div id="processShipmentInfo"></div>
-         
+
         </div>
         <div id="tabs-4">
             <div id="searchlogtabs">
@@ -144,12 +144,16 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $('#ddlBillTo').change(function () {
+            $(document).on('change', '#ddlBillTo', function () {
                 var selectedValue = $('#ddlBillTo :selected').text();
-                if (selectedValue != 'Shipper')
+                if (selectedValue != 'Shipper') {
                     $('#txtUPSAccountNumber').val('');
-                else
-                    $('#txtUPSAccountNumber').val($('#shipperNumber').val());
+                    $('#billerInformation input').val('');
+                } else {
+                    showBillerInformation();
+                     $('#txtUPSAccountNumber').val($('#shipperNumber').val());
+                }
+
 
             });
             if ($('#addressresultdiv03').text() != "") {
@@ -906,6 +910,7 @@
                 success: selectEditInvoiceSuccess
             });
         }
+
         function postInvoiceData() {
             alert("poted");
             $.ajax({
@@ -939,6 +944,7 @@
                 success: DisplayInvoiceSuccess
             });
         }
+
         function DisplayInvoiceSuccess(response, statusCode) {
 
             var objRes = response;
@@ -948,7 +954,6 @@
 
             //Hide load image
             HideLoadingDialog();
-
 
 
         }
@@ -1183,7 +1188,7 @@
             var objRes = response;
             //Display the response data
             jQuery("#processShipmentInfo").html(objRes);
-
+            showBillerInformation();
 
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
@@ -1196,11 +1201,13 @@
             jQuery("#shipmentDetailsdialog").html(objRes);
 
             //Readonly Data
-   
+
             jQuery("#shipmentDetailsDisplay").html(objRes);
             jQuery("#shipmentDetailsDisplay .btn").hide();
             jQuery("#shipmentDetailsDisplay #itemId").hide();
             $("#shipmentDetailsDisplay input").prop('disabled', true);
+
+
             //Hide load image and select invoice link
             HideLoadingDialog();
             $('.shippingQuantity').each(function (i, obj) {
@@ -1215,6 +1222,27 @@
                 LoadProcessInformation(szHayShipment);
             }
             jQuery("#imageRow img").click(ShowBoxLabel);
+        }
+
+        function showBillerInformation() {
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+            if (szInvoiceId != undefined) {
+                var szUrl = "/Shipment/GetBillerCustomerInformation?invoiceId=" + szInvoiceId;
+
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: function (data) {
+                        $("#billerInformation").html(data);
+                        HideLoadingDialog();
+
+                    }
+                });
+            }
         }
 
         function AddShipmentDetail(detailId) {
