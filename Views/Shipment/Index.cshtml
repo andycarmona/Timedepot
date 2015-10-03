@@ -43,10 +43,10 @@
         <div id="tabs-3">
             <div id="displayInvoicediv">
             </div>
-         
-            <div id="processShipmentInfo"></div>
-            <div id="shipmentDetailsdialog">
+            <div id="shipmentDetailsDisplay">
             </div>
+            <div id="processShipmentInfo"></div>
+         
         </div>
         <div id="tabs-4">
             <div id="searchlogtabs">
@@ -1025,6 +1025,12 @@
                 jQuery("#invoiceNoid").val(szInvoiceNo);
             }
 
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+            if (szInvoiceId != undefined) {
+                DisplayInvoice(szInvoiceId);
+                LoadShipmentDetails(szInvoiceId);
+            }
+
             ShowLoadingDialog();
 
             var szUrl = jQuery("#getsalesdetailsId").attr("href");
@@ -1189,6 +1195,12 @@
             //Display the response data
             jQuery("#shipmentDetailsdialog").html(objRes);
 
+            //Readonly Data
+   
+            jQuery("#shipmentDetailsDisplay").html(objRes);
+            jQuery("#shipmentDetailsDisplay .btn").hide();
+            jQuery("#shipmentDetailsDisplay #itemId").hide();
+            $("#shipmentDetailsDisplay input").prop('disabled', true);
             //Hide load image and select invoice link
             HideLoadingDialog();
             $('.shippingQuantity').each(function (i, obj) {

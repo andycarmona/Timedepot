@@ -1784,6 +1784,13 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(invoice);
         }
 
+        [NoCache]
+        public PartialViewResult DisplayShipmentDetail(int id = 0)
+        {
+            Invoice invoice = db.Invoices.Find(id);
+            return PartialView(invoice);
+        }
+
         //
         // GET: /Invoice/Edit/5
         [NoCache]
