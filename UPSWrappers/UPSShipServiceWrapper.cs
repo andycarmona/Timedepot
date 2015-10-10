@@ -281,7 +281,7 @@ namespace TimelyDepotMVC.UPSWrappers
             billShipper.AccountNumber = BillShipperAccountNumber;
             log.Debug("Bill shipper: " + BillShipperAccountNumber);
             shpmentCharge.BillShipper = billShipper;
-          
+            
             shpmentCharge.Type = ShipmentChargeType;
             log.Debug("Shipment charge type: " + ShipmentChargeType);
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };

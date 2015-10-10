@@ -23,6 +23,7 @@ using System.Net.Security;
 
 namespace TimelyDepotMVC.Controllers
 {
+    using System.Collections;
     using System.Data.Entity;
     using System.Data.Entity.Validation;
     using System.Globalization;
@@ -39,6 +40,7 @@ namespace TimelyDepotMVC.Controllers
     using iTextSharp.text.pdf;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     using PayPal.Platform.SDK;
 
@@ -348,8 +350,10 @@ namespace TimelyDepotMVC.Controllers
             return this.Json(listOfShipId, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber)
+        public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber, string billerData)
         {
+            var billerList = JsonConvert.DeserializeObject<Dictionary<string, string>>(billerData);
+           
 
             ShipmentResponse rateResponse = null;
             string szError = null;
@@ -361,15 +365,46 @@ namespace TimelyDepotMVC.Controllers
                 return this.Json("Error.No invoice selected.", JsonRequestBehavior.AllowGet);
             }
 
+            string packageType;
+            string customerType;
+            string billerName;
+            string billerAddress;
+            string billerCity;
+            string billerState;
+            string billerZip;
+            string billerTel;
+            string billerCountry;
+            string serviceType;
+
+            billerList.TryGetValue("packageType", out packageType);
+           
+            billerList.TryGetValue("serviceType", out serviceType);
+            billerList.TryGetValue("billerName", out billerName);
+            billerList.TryGetValue("billerAddress", out billerAddress);
+            billerList.TryGetValue("billerCity", out billerCity);
+            billerList.TryGetValue("billerState", out billerState);
+            billerList.TryGetValue("billerZip", out billerZip);
+            billerList.TryGetValue("billerTel", out billerTel);
+              billerList.TryGetValue("billerCountry", out billerCountry);
+
             actualShipment.UpsNumber = upsShipperNumber;
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
+            shipmentRequestDto.FromName = billerName;
+            shipmentRequestDto.FromAddress1 = billerAddress;
+            shipmentRequestDto.FromCity = billerCity;
+            shipmentRequestDto.FromCompany = string.Empty;
+            shipmentRequestDto.FromCountry = billerCountry;
+            shipmentRequestDto.FromTel = billerTel;
+            shipmentRequestDto.FromZip = billerZip;
+            shipmentRequestDto.Fromstate = billerState;
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
             shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
             shipmentRequestDto.shipperNumber = upsShipperNumber;
-            shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
-            shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
+            shipmentRequestDto.packagingTypeCode = packageType;
+            shipmentRequestDto.shipmentChargeType = serviceType;
             shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
+
 
             var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
 
@@ -451,7 +486,7 @@ namespace TimelyDepotMVC.Controllers
                 int valuePerFullBox = 0;
                 int valuePerPartialBox = 0;
                 UPSWrappers.inv_detl details = null;
-                string errorMessage = "";
+                string errorMessage = string.Empty;
 
 
                 resultData.Add(new ResultData() { service = "UPS Ground", code = "03", cost = 0, Negcost = 0, Publishedcost = 0 });
@@ -515,7 +550,7 @@ namespace TimelyDepotMVC.Controllers
                         aresultData.code = rateData.code;
                         aresultData.errorMessage = rateData.errorMessage;
                         aresultData.service = rateData.service;
-                        aresultData.time = rateData.time;
+                        aresultData.time = rateData.time ==null ? "No time" : rateData.time;
                         resultDataViewList.Add(aresultData);
                     }
                 }
@@ -681,7 +716,7 @@ namespace TimelyDepotMVC.Controllers
                     shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
                     shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
                     shipmentRequestDto.UpsCustomerTypeCode = "53";
-                    shipmentRequestDto.UpsCustomerTypeDescription = "";
+                    shipmentRequestDto.UpsCustomerTypeDescription = string.Empty;
                 }
 
                 var rateServiceWrapper = new UPSRateServiceWrapper(shipmentRequestDto);
@@ -728,7 +763,7 @@ namespace TimelyDepotMVC.Controllers
                     if (titResponse.GetType() == typeof(TimeInTransitResponse))
                     {
                         var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipFromList;
-                         errorMessage += "Address is not valid. Did you mean this for receiver: "+ candidateAddress[0];
+                         errorMessage += "Shipfrom address is not valid. ";
                     }
                     else
                     {
@@ -789,7 +824,7 @@ namespace TimelyDepotMVC.Controllers
                     if (titResponse.GetType() == typeof(TimeInTransitResponse))
                     {
                         var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipToList;
-                        errorMessage += "Address is not valid. Did you mean this addres for sender: " + candidateAddress[0];
+                        errorMessage += "ShipTo Address is not valid.  " ;
                     }
                     else
                     {

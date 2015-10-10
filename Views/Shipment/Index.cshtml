@@ -144,14 +144,14 @@
 
             $('#ddlBillTo').val('Shipper');
 
-            $(document).on('change', '#ddlBillTo', function () {
+            $(document).on('change', '#ddlBillTo', function() {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper') {
                     $('#txtUPSAccountNumber').val('');
                     $('#billerInformation input').val('');
                 } else {
                     showBillerInformation();
-                     $('#txtUPSAccountNumber').val($('#shipperNumber').val());
+                    $('#txtUPSAccountNumber').val($('#shipperNumber').val());
                 }
 
 
@@ -238,6 +238,27 @@
             var actualShipmentId = jQuery("#txtShipmentId").val();
             var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             var validatedAccount = $("#validateAccount").attr('data-validated');
+            var billerName = jQuery("#billerName").val();
+            var billerAddress = jQuery("#billerAddress").val();
+            var billerTelephone = jQuery("#billerTel").val();
+            var billerCity = jQuery("#billerCity").val();
+            var billerState = jQuery("#billerState").val();
+            var billerZipCode = jQuery("#billerZip").val();
+            var billerCountry = jQuery("#billerCountry").val();
+            var customerType = jQuery("#selectcustomertypeid").val();
+            var serviceType = jQuery("#selectupsServiceTypeid").val();
+            var packageType = jQuery("#selectpacakePackTypeid").val();
+
+            var billerData = "{'billerName':'" + billerName + "'," +
+                                      "'billerAddress':'" + billerAddress + "'," +
+                                      "'billerCity':'" + billerCity + "'," +
+                                      "'billerCountry':'" + billerCountry + "'," +
+                                      "'billerState':'" + billerState + "'," +
+                                      "'billerZip':'" + billerZipCode + "'," +
+                                      "'customerType':'" + customerType + "'," +
+                                      "'serviceType':'" + serviceType + "'," +
+                                      "'packageType':'" + packageType + "'," +
+                                      "'billerTel':'" + billerTelephone + "'}";
 
             if (validatedAccount != "true") {
                 alert("Please!! Validate this account or check  if you have a valid UPS number.");
@@ -247,7 +268,7 @@
             if (chosenServiceCode !== undefined) {
                 szUrl = '@Url.Action("ProcessShipment", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
                 if (szUrl != "") {
-                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber;
+                    szUrl = szUrl + '?serviceCode=' + chosenServiceCode + '&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber + '&billerData=' + billerData;
                 }
 
                 //Display load image
@@ -316,7 +337,7 @@
                             loadInvoiceDetails(szInvoiceId);
                         }
                     } else {
-                        alert("Error. Missing data. Please contact administrator.");
+                        alert("Error. "+response+" Please contact administrator.");
                     }
                 } else {
                     alert("Error. Missing data in shipped box. Please fill upp data for all boxes.");
@@ -432,23 +453,23 @@
 
             jQuery("#ckcustLog").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcustLog").prop("checked", true);
-                    break;
-                case "shipmentrecord":
-                    jQuery("#ckcompLog").prop("checked", true);
-                    break;
-                case "shippementddate":
-                    jQuery("#ckcodeLog").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItemLog';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItemLog").val(szDate)
-                    }
-                    break;
-                default:
-                    jQuery("#ckstateLog").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcustLog").prop("checked", true);
+                break;
+            case "shipmentrecord":
+                jQuery("#ckcompLog").prop("checked", true);
+                break;
+            case "shippementddate":
+                jQuery("#ckcodeLog").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItemLog';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItemLog").val(szDate)
+                }
+                break;
+            default:
+                jQuery("#ckstateLog").prop("checked", true);
+                break;
             }
         }
 
@@ -518,64 +539,64 @@
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
         function SetDefaultCheckBox(szckCriteria) {
             jQuery("#ckcust").prop("checked", false);
             switch (szckCriteria) {
-                case "invoice":
-                    jQuery("#ckcust").prop("checked", true);
-                    break;
-                case "salesorder":
-                    jQuery("#ckcomp").prop("checked", true);
-                    break;
-                case "customerpo":
-                    jQuery("#ckphon").prop("checked", true);
-                    break;
-                case "customername":
-                    jQuery("#ckemai").prop("checked", true);
-                    break;
-                case "shippeddate":
-                    jQuery("#ckcode").prop("checked", true);
-                    var szSearch = '@ViewBag.SearchItem';
-                    var szDate = '@ViewBag.CurrentDate';
-                    if (szSearch == "") {
-                        jQuery("#searchItem").val(szDate)
-                    }
-                    break;
-                case "itemno":
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
-                default:
-                    jQuery("#ckstate").prop("checked", true);
-                    break;
+            case "invoice":
+                jQuery("#ckcust").prop("checked", true);
+                break;
+            case "salesorder":
+                jQuery("#ckcomp").prop("checked", true);
+                break;
+            case "customerpo":
+                jQuery("#ckphon").prop("checked", true);
+                break;
+            case "customername":
+                jQuery("#ckemai").prop("checked", true);
+                break;
+            case "shippeddate":
+                jQuery("#ckcode").prop("checked", true);
+                var szSearch = '@ViewBag.SearchItem';
+                var szDate = '@ViewBag.CurrentDate';
+                if (szSearch == "") {
+                    jQuery("#searchItem").val(szDate)
+                }
+                break;
+            case "itemno":
+                jQuery("#ckstate").prop("checked", true);
+                break;
+            default:
+                jQuery("#ckstate").prop("checked", true);
+                break;
             }
         }
 
@@ -1210,7 +1231,7 @@
 
             //Hide load image and select invoice link
             HideLoadingDialog();
-            $('.shippingQuantity').each(function (i, obj) {
+            $('.shippingQuantity').each(function(i, obj) {
                 $(this).css("border", "none");
                 $(this).prop("readonly", true);
             });
@@ -1236,7 +1257,7 @@
                     //contentType: 'application/json; charset=utf-8',
                     dataType: 'html',
                     error: AjaxFailed,
-                    success: function (data) {
+                    success: function(data) {
                         $("#billerInformation").html(data);
                         HideLoadingDialog();
 
@@ -1264,7 +1285,7 @@
                 //contentType: 'application/json; charset=utf-8',
                 dataType: 'html',
                 error: AjaxFailed,
-                success: function (data) {
+                success: function(data) {
                     $("#shipmentDetailsdialog").html(data);
                     HideLoadingDialog();
                     var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
@@ -1357,7 +1378,7 @@
                 data: null,
                 dataType: 'html',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 var objRes = response;
                 //debugger;
                 //Display the response data
@@ -1381,7 +1402,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 debugger;
                 if ((response != "-1") && (response != 'undefined')) {
                     var data = JSON.parse(response); // this will convert your json string to a javascript object
@@ -1410,7 +1431,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: AjaxFailed
-            }).success(function (response) {
+            }).success(function(response) {
                 if (response != "-1") {
                     $("#remainingqty_" + salesorderid + " span").text(response);
                     $("#shipqty_" + salesorderid + " input").val(0);
@@ -1448,7 +1469,7 @@
                     dataType: 'text',
                     url: "/Shipment/Delete",
                     data: "shipmentDetailId=" + shipmentDetailId,
-                    success: function (data) {
+                    success: function(data) {
                         $("#shipmentDetailsdialog").html(data);
                         var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
                         if (szInvoiceId != undefined) {
@@ -1487,7 +1508,7 @@
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     error: AjaxFailed,
-                    success: function (response) {
+                    success: function(response) {
                         debugger;
                         if (response != undefined) {
                             var arrayOfShipId = response;
@@ -1510,13 +1531,13 @@
                 url: "/Shipment/AddDetail",
                 data: $('#detailForm').serialize(),
                 datatype: "html",
-                success: function (data) {
+                success: function(data) {
                     clickbtDialogCloseAddDetail();
                     //debugger;
                     $('#shipmentDetailsdialog').html(data);
 
                 },
-                fail: function () {
+                fail: function() {
                     alert("fail");
                 }
             });
