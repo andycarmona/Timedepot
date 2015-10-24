@@ -10,6 +10,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
     using PayPal.AdaptivePayments;
 
+    using TimelyDepotMVC.Models.Admin;
     using TimelyDepotMVC.ModelsView;
     using TimelyDepotMVC.UPSRateService;
 
@@ -107,7 +108,11 @@ namespace TimelyDepotMVC.UPSWrappers
             BillShipperAccountNumber = shipmentRequestModel.billShipperAccountNumber;
             PackagingTypeCode = shipmentRequestModel.packagingTypeCode;
             ShipmentChargeType = shipmentRequestModel.shipmentChargeType;
+            BillerType = shipmentRequestModel.billShipperType;
+
         }
+
+
 
         public UPSShipServiceWrapper(string userName, string password, string accessLicenseNumber)
         {
@@ -115,6 +120,8 @@ namespace TimelyDepotMVC.UPSWrappers
             Pasword = password;
             AccessLicenseNumber = accessLicenseNumber;
         }
+
+        public string BillerType { get; set; }
 
         public string UserName { get; set; }
 
@@ -173,7 +180,7 @@ namespace TimelyDepotMVC.UPSWrappers
         public string FreightBillingOption { get; set; }
 
         #region Private
-        
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger
     (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -194,7 +201,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         private void AddUserNameToken(UPSSecurity upss)
         {
-         
+
             var upssUsrNameToken = new UPSSecurityUsernameToken();
             upssUsrNameToken.Username = UserName;
             upssUsrNameToken.Password = Pasword;
@@ -203,7 +210,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
         private void AddShipper(ShipmentType shipment)
         {
-          var shipper = new ShipperType();
+            var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
             log.Debug("<<<Shipper information>>>");
             log.Debug("shipper Number: " + ShipperNumber);
@@ -228,14 +235,14 @@ namespace TimelyDepotMVC.UPSWrappers
             log.Debug("shipper country code: " + ShipperCountryCode);
             shipper.Name = ShipperName;
             log.Debug("shipper Name: " + ShipperName);
-            shipper.Address = shipperAddress; 
+            shipper.Address = shipperAddress;
         }
 
         private void AddShipToAddress(ShipmentType shipment)
         {
             var shipTo = new ShipToType();
             var shipToAddress = new ShipToAddressType();
-          
+
             log.Debug("<<<ShipTo information>>>");
 
             shipToAddress.AddressLine = new[] { ShipToAddressLine };
@@ -276,28 +283,38 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var paymentInfo = new PaymentInfoType();
             var shpmentCharge = new ShipmentChargeType();
-            var billShipper = new BillShipperType();
             log.Debug("<<<Billshipper payment information>>>");
-            billShipper.AccountNumber = BillShipperAccountNumber;
             log.Debug("Bill shipper: " + BillShipperAccountNumber);
-            shpmentCharge.BillShipper = billShipper;
-            
+            if (BillerType != "Shipper")
+            {
+                log.Debug("Bill shipper type: billshipper");
+                var billShipper = new BillShipperType();
+                shpmentCharge.BillShipper = billShipper;
+                billShipper.AccountNumber = BillShipperAccountNumber;
+            }
+            else
+            {
+                log.Debug("Bill shipper type: ThirdPartyShipper");
+                var thirdPartyShipper = new BillThirdPartyChargeType();
+                shpmentCharge.BillThirdParty = thirdPartyShipper;
+                thirdPartyShipper.AccountNumber = BillShipperAccountNumber;
+            }
+
             shpmentCharge.Type = ShipmentChargeType;
             log.Debug("Shipment charge type: " + ShipmentChargeType);
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };
             paymentInfo.ShipmentCharge = shpmentChargeArray;
             shipment.PaymentInformation = paymentInfo;
-        
-
         }
+
 
         private void AddPaymentInformation(ShipmentType shipment)
         {
             var paymentInfo = new PaymentInfoType();
 
             var paymentInfoType = new PaymentType();
-
             paymentInfoType.Code = "06";
+
             var shipper = new ShipperType();
             shipper.ShipperNumber = ShipperNumber;
             shipper.Name = ShipperName;
@@ -401,7 +418,7 @@ namespace TimelyDepotMVC.UPSWrappers
 
                 var labelSpec = new LabelSpecificationType();
                 var labelStockSize = new LabelStockSizeType();
-             
+
                 log.Debug("<<<Package label info>>>");
                 labelStockSize.Height = "3";
                 log.Debug("Package label heigth: " + labelStockSize.Height);
@@ -425,7 +442,7 @@ namespace TimelyDepotMVC.UPSWrappers
                 message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
                 message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
                 message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
-                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Message, ex.Detail.LastChild.InnerText);
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", message, ex.Detail.LastChild.InnerText);
                 return null;
             }
         }
@@ -436,7 +453,7 @@ namespace TimelyDepotMVC.UPSWrappers
             try
             {
                 var shipmentDetails = ShipmentModule.GetShipmentShipmentDetails(shipmentID);
-               
+
                 var shpSvc = new ShipService();
                 var shipmentRequest = new ShipmentRequest();
                 AddUpsSecurity(shpSvc);
@@ -486,18 +503,18 @@ namespace TimelyDepotMVC.UPSWrappers
                 labelSpec.LabelImageFormat = labelImageFormat;
                 shipmentRequest.LabelSpecification = labelSpec;
                 shipmentRequest.Shipment = shipment;
-              
+
                 var shipmentResponse = shpSvc.ProcessShipment(shipmentRequest);
                 return shipmentResponse;
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                string message = string.Empty;
+                var message = string.Empty;
                 message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
                 message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
                 message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
                 message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
-                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Message, ex.Detail.LastChild.InnerText);
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", message, ex.Detail.LastChild.InnerText);
                 return null;
             }
         }

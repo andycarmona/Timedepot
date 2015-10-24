@@ -190,11 +190,12 @@
             var actualShipmentId = jQuery("#txtShipmentId").val();
             var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
-
+            var billerData = this.prepareShipmentRequest();
+           
 
             szUrl = '@Url.Action("ProcessShipmentConfirmation", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
             if (szUrl != "") {
-                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber;
+                szUrl = szUrl + '?serviceCode=03&shipmentId=' + actualShipmentId + '&InvoiceNo=' + szInvoiceNo + '&upsShipperNumber=' + upsShipperNumber + '&billerData=' + billerData;
             }
             if (actualShipmentId !== '') {
                 //Display load image
@@ -229,15 +230,11 @@
             } else {
                 alert(response);
             }
-        }
+        } +
+ 
 
-        function processShipment() {
-            var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
-            //var toZipCode = $('#ToZip').val();
-            var szInvoiceNo = jQuery("#invoiceNoid").val();
-            var actualShipmentId = jQuery("#txtShipmentId").val();
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
-            var validatedAccount = $("#validateAccount").attr('data-validated');
+        function prepareShipmentRequest() {
+
             var billerName = jQuery("#billerName").val();
             var billerAddress = jQuery("#billerAddress").val();
             var billerTelephone = jQuery("#billerTel").val();
@@ -248,6 +245,7 @@
             var customerType = jQuery("#selectcustomertypeid").val();
             var serviceType = jQuery("#selectupsServiceTypeid").val();
             var packageType = jQuery("#selectpacakePackTypeid").val();
+            var billerType = jQuery("#ddlBillTo").val();
 
             var billerData = "{'billerName':'" + billerName + "'," +
                                       "'billerAddress':'" + billerAddress + "'," +
@@ -258,7 +256,20 @@
                                       "'customerType':'" + customerType + "'," +
                                       "'serviceType':'" + serviceType + "'," +
                                       "'packageType':'" + packageType + "'," +
+                                      "'billerType':'" + billerType + "'," +
                                       "'billerTel':'" + billerTelephone + "'}";
+
+            return billerData;
+        }
+
+        function processShipment() {
+            var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
+            var szInvoiceNo = jQuery("#invoiceNoid").val();
+            var actualShipmentId = jQuery("#txtShipmentId").val();
+            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var validatedAccount = $("#validateAccount").attr('data-validated');
+            var billerData = this.prepareShipmentRequest();
+         
 
             if (validatedAccount != "true") {
                 alert("Please!! Validate this account or check  if you have a valid UPS number.");

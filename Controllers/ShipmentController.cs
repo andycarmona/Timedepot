@@ -258,7 +258,7 @@ namespace TimelyDepotMVC.Controllers
             listSelector = new List<KeyValuePair<string, string>>();
             listSelector.Add(new KeyValuePair<string, string>("Shipper", "Shipper"));
             listSelector.Add(new KeyValuePair<string, string>("Sender", "Sender"));
-            listSelector.Add(new KeyValuePair<string, string>("Third Party", "Third Party"));
+            listSelector.Add(new KeyValuePair<string, string>("ThirdParty", "Third Party"));
             SelectList billToOptionlist = new SelectList(listSelector, "Key", "Value");
             ViewBag.BillToOptionlist = billToOptionlist;
 
@@ -315,7 +315,7 @@ namespace TimelyDepotMVC.Controllers
             return this.PartialView();
         }
 
-        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber)
+        public ActionResult ProcessShipmentConfirmation(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber, string billerData)
         {
 
             ShipConfirmResponse rateResponse = null;
@@ -324,14 +324,7 @@ namespace TimelyDepotMVC.Controllers
 
             if (selectedInvoice != null)
             {
-                var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
-                shipmentRequestDto.userName = UPSConstants.UpsUserName;
-                shipmentRequestDto.password = UPSConstants.UpsPasword;
-                shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
-                shipmentRequestDto.shipperNumber = upsShipperNumber;
-                shipmentRequestDto.packagingTypeCode = UPSConstants.UpsPackagingType;
-                shipmentRequestDto.shipmentChargeType = UPSConstants.UpsShipmentChargeType;
-                shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
+                var shipmentRequestDto = PrepareShipmentRequest(billerData, selectedInvoice, upsShipperNumber);
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
                 log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " +invoiceNo);                
@@ -352,19 +345,38 @@ namespace TimelyDepotMVC.Controllers
 
         public JsonResult ProcessShipment(string serviceCode, int shipmentId, string invoiceNo, string upsShipperNumber, string billerData)
         {
-            var billerList = JsonConvert.DeserializeObject<Dictionary<string, string>>(billerData);
-           
-
             ShipmentResponse rateResponse = null;
             string szError = null;
             var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceNo == invoiceNo);
             var actualShipment = db.Shipments.FirstOrDefault(y => y.ShipmentId == shipmentId);
-
-            if ((selectedInvoice == null) || (actualShipment == null))
+            if (actualShipment != null)
             {
-                return this.Json("Error.No invoice selected.", JsonRequestBehavior.AllowGet);
+                actualShipment.UpsNumber = upsShipperNumber;
+
+                if (selectedInvoice == null)
+                {
+                    return this.Json("Error.No invoice selected.", JsonRequestBehavior.AllowGet);
+                }
             }
 
+            var shipmentRequestDto = PrepareShipmentRequest(billerData, selectedInvoice, upsShipperNumber);
+
+            var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
+
+            rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
+            if (!string.IsNullOrEmpty(szError))
+            {
+                return this.Json(szError, JsonRequestBehavior.AllowGet);
+            }
+
+            this.AddUpsDataToShipmentDetail(shipmentId, rateResponse.ShipmentResults.PackageResults);
+            this.ResetQuantityOfInvoiceDetails(selectedInvoice);
+            return this.Json(rateResponse, JsonRequestBehavior.AllowGet);
+        }
+
+        private static ShipmentRequestView PrepareShipmentRequest(string billerData, Invoice selectedInvoice, string upsShipperNumber)
+        {
+            var billerList = JsonConvert.DeserializeObject<Dictionary<string, string>>(billerData);
             string packageType;
             string customerType;
             string billerName;
@@ -375,9 +387,9 @@ namespace TimelyDepotMVC.Controllers
             string billerTel;
             string billerCountry;
             string serviceType;
+            string billerType;
 
             billerList.TryGetValue("packageType", out packageType);
-           
             billerList.TryGetValue("serviceType", out serviceType);
             billerList.TryGetValue("billerName", out billerName);
             billerList.TryGetValue("billerAddress", out billerAddress);
@@ -385,9 +397,10 @@ namespace TimelyDepotMVC.Controllers
             billerList.TryGetValue("billerState", out billerState);
             billerList.TryGetValue("billerZip", out billerZip);
             billerList.TryGetValue("billerTel", out billerTel);
-              billerList.TryGetValue("billerCountry", out billerCountry);
+            billerList.TryGetValue("billerCountry", out billerCountry);
+            billerList.TryGetValue("billerType", out billerType);
 
-            actualShipment.UpsNumber = upsShipperNumber;
+      
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
             shipmentRequestDto.FromName = billerName;
             shipmentRequestDto.FromAddress1 = billerAddress;
@@ -402,21 +415,11 @@ namespace TimelyDepotMVC.Controllers
             shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
             shipmentRequestDto.shipperNumber = upsShipperNumber;
             shipmentRequestDto.packagingTypeCode = packageType;
-            shipmentRequestDto.shipmentChargeType = serviceType;
+            shipmentRequestDto.shipmentChargeType = "01";
+            shipmentRequestDto.shipmentServiceType = serviceType;
+            shipmentRequestDto.billShipperType = billerType;
             shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
-
-
-            var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-
-            rateResponse = shipServiceWrapper.CallUPSShipmentRequest(serviceCode, shipmentId, ref szError);
-            if (!string.IsNullOrEmpty(szError))
-            {
-                return this.Json(szError, JsonRequestBehavior.AllowGet);
-            }
-
-            this.AddUpsDataToShipmentDetail(shipmentId, rateResponse.ShipmentResults.PackageResults);
-            this.ResetQuantityOfInvoiceDetails(selectedInvoice);
-            return this.Json(rateResponse, JsonRequestBehavior.AllowGet);
+            return shipmentRequestDto;
         }
 
         public void ResetQuantityOfInvoiceDetails(Invoice selectedInvoice)
@@ -701,9 +704,10 @@ namespace TimelyDepotMVC.Controllers
         private List<ResultData> GetRateFromUPS(int? invoiceId,string upsShipperNumber,int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
         {
             errorMessage = string.Empty;
+            TimelyDepotContext dbAux = new TimelyDepotContext();
             try
             {
-                var selectedInvoice = db.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
+                var selectedInvoice = dbAux.Invoices.SingleOrDefault(x => x.InvoiceId == invoiceId);
                 var shipmentRequestDto = new ShipmentRequestView();
                 if (selectedInvoice != null)
                 {

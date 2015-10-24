@@ -58,8 +58,12 @@ namespace TimelyDepotMVC.ModelsView
 
         public string billShipperAccountNumber { get; set; }
 
+        public string billShipperType { get; set; }
+
         public string packagingTypeCode { get; set; }
 
         public string shipmentChargeType { get; set; }
+
+        public string shipmentServiceType { get; set; }
     }
 }
