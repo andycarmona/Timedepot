@@ -402,14 +402,14 @@ namespace TimelyDepotMVC.Controllers
 
       
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
-            shipmentRequestDto.FromName = billerName;
-            shipmentRequestDto.FromAddress1 = billerAddress;
-            shipmentRequestDto.FromCity = billerCity;
-            shipmentRequestDto.FromCompany = string.Empty;
-            shipmentRequestDto.FromCountry = billerCountry;
-            shipmentRequestDto.FromTel = billerTel;
-            shipmentRequestDto.FromZip = billerZip;
-            shipmentRequestDto.Fromstate = billerState;
+            shipmentRequestDto.ToName = billerName;
+            shipmentRequestDto.ToAddress1 = billerAddress;
+            shipmentRequestDto.ToCity= billerCity;
+            shipmentRequestDto.ToCompany = string.Empty;
+            shipmentRequestDto.ToCountry = billerCountry;
+            shipmentRequestDto.ToTel = billerTel;
+            shipmentRequestDto.ToZip = billerZip;
+            shipmentRequestDto.ToState = billerState;
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
             shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;

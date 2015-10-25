@@ -283,30 +283,46 @@ namespace TimelyDepotMVC.UPSWrappers
         {
             var paymentInfo = new PaymentInfoType();
             var shpmentCharge = new ShipmentChargeType();
+
             log.Debug("<<<Billshipper payment information>>>");
+            log.Debug("Bill shipper Name: " + ShipToName);
             log.Debug("Bill shipper: " + BillShipperAccountNumber);
-            if (BillerType != "Shipper")
+
+            if (BillerType == "Shipper")
             {
                 log.Debug("Bill shipper type: billshipper");
-                var billShipper = new BillShipperType();
-                shpmentCharge.BillShipper = billShipper;
+
+                var billReceiverAddress = new BillReceiverAddressType();
+                var billShipper = new BillReceiverType();
+                billReceiverAddress.PostalCode = ShipToPostalCode;
+                shpmentCharge.BillReceiver = billShipper;
                 billShipper.AccountNumber = BillShipperAccountNumber;
+
+                shpmentCharge.BillReceiver.Address = billReceiverAddress;
             }
             else
             {
                 log.Debug("Bill shipper type: ThirdPartyShipper");
+
                 var thirdPartyShipper = new BillThirdPartyChargeType();
+                var thirdpartyAddress = new AccountAddressType
+                                            {
+                                                PostalCode = this.ShipToPostalCode,
+                                                CountryCode = this.ShipToCountryCode
+                                            };
+                log.Debug("Bill shipped country code: " + this.ShipToCountryCode);
                 shpmentCharge.BillThirdParty = thirdPartyShipper;
                 thirdPartyShipper.AccountNumber = BillShipperAccountNumber;
+                shpmentCharge.BillThirdParty.Address = thirdpartyAddress;
             }
 
+            log.Debug("Bill shipped postalcode: " + this.ShipToPostalCode);
             shpmentCharge.Type = ShipmentChargeType;
             log.Debug("Shipment charge type: " + ShipmentChargeType);
             ShipmentChargeType[] shpmentChargeArray = { shpmentCharge };
             paymentInfo.ShipmentCharge = shpmentChargeArray;
             shipment.PaymentInformation = paymentInfo;
         }
-
 
         private void AddPaymentInformation(ShipmentType shipment)
         {

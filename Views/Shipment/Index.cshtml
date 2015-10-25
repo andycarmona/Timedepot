@@ -190,7 +190,7 @@
             var actualShipmentId = jQuery("#txtShipmentId").val();
             var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
-            var billerData = this.prepareShipmentRequest();
+            var billerData = prepareShipmentRequest();
            
 
             szUrl = '@Url.Action("ProcessShipmentConfirmation", "Shipment")'; // jQuery(src.target).attr("href"); //jQuery("#searchsalesorderformid").attr("action");
@@ -230,7 +230,7 @@
             } else {
                 alert(response);
             }
-        } +
+        } 
  
 
         function prepareShipmentRequest() {
