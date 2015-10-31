@@ -458,7 +458,12 @@ namespace TimelyDepotMVC.UPSWrappers
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Detail.LastChild.InnerText);
+                string message = string.Empty;
+                message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
+                message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
+                message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
+                message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", message, ex.Detail.LastChild.InnerText);
                 return null;
             }
         }

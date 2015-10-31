@@ -976,7 +976,7 @@ namespace TimelyDepotMVC.Controllers
             var addressKeyFormat = new AddressKeyFormatType();
 
             var address = invoice.ToAddress1;
-            addressKeyFormat.AddressLine = new String[] { "78 Insley Way" };
+            addressKeyFormat.AddressLine = new String[] { address};
 
             addressKeyFormat.PoliticalDivision2 = invoice.ToCity;
 
