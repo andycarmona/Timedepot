@@ -388,6 +388,7 @@ namespace TimelyDepotMVC.Controllers
             string billerCountry;
             string serviceType;
             string billerType;
+            string accountNumber;
 
             billerList.TryGetValue("packageType", out packageType);
             billerList.TryGetValue("serviceType", out serviceType);
@@ -399,6 +400,7 @@ namespace TimelyDepotMVC.Controllers
             billerList.TryGetValue("billerTel", out billerTel);
             billerList.TryGetValue("billerCountry", out billerCountry);
             billerList.TryGetValue("billerType", out billerType);
+            billerList.TryGetValue("accountNumber", out accountNumber);
 
       
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
@@ -418,7 +420,7 @@ namespace TimelyDepotMVC.Controllers
             shipmentRequestDto.shipmentChargeType = "01";
             shipmentRequestDto.shipmentServiceType = serviceType;
             shipmentRequestDto.billShipperType = billerType;
-            shipmentRequestDto.billShipperAccountNumber = upsShipperNumber;
+            shipmentRequestDto.billShipperAccountNumber = accountNumber;
             return shipmentRequestDto;
         }
 
@@ -863,14 +865,13 @@ namespace TimelyDepotMVC.Controllers
 
         public PartialViewResult GetBillerCustomerInformation(int invoiceId)
         {
-            
-        
             CustomersSalesContact aCustomer = null;
             var actualInvoice = db.Invoices.FirstOrDefault(invoi => invoi.InvoiceId == invoiceId);
             if (actualInvoice != null)
             {
                 aCustomer = db.CustomersSalesContacts.FirstOrDefault(invid => invid.Id == actualInvoice.CustomerId);
             }
+
             return this.PartialView(aCustomer);
         }
 
@@ -962,44 +963,36 @@ namespace TimelyDepotMVC.Controllers
 
         private XAVResponse CallUPSXAVRequest(XAVService.XAVService xavService, Invoice invoice)
         {
-            string szToCountry = string.Empty;
-
-            XAVRequest xavRequest = new XAVRequest();
+            var xavRequest = new XAVRequest();
 
             AddUPSSecurity(xavService);
 
-            XAVService.RequestType request = new XAVService.RequestType();
+            var request = new XAVService.RequestType();
             String[] requestOption = { "3" };
+
             request.RequestOption = requestOption;
             xavRequest.Request = request;
 
-            AddressKeyFormatType addressKeyFormat = new AddressKeyFormatType();
+            var addressKeyFormat = new AddressKeyFormatType();
 
-            //String[] addressKeyFormatItems = { "CA", "Cumming", "95827" };
-            //addressKeyFormat.Items = addressKeyFormatItems;
+            var address = invoice.ToAddress1;
+            addressKeyFormat.AddressLine = new String[] { "78 Insley Way" };
 
-            //addressKeyFormat.AddressLine = new String[] { txtPShipToAddress.Text };
-            //addressKeyFormat.PoliticalDivision1 = txtPShipToStateCode.Text;
-            //addressKeyFormat.PoliticalDivision2 = txtPShipToCity.Text;
-            //addressKeyFormat.PostcodePrimaryLow = txtPShipToPostalCode.Text;
-
-            addressKeyFormat.AddressLine = new String[] { invoice.ToAddress1 };
-            addressKeyFormat.PoliticalDivision1 = invoice.ToState;
             addressKeyFormat.PoliticalDivision2 = invoice.ToCity;
+
+            addressKeyFormat.PoliticalDivision1 = invoice.ToState;
+
             addressKeyFormat.PostcodePrimaryLow = invoice.ToZip;
-            szToCountry = invoice.ToCountry;
-            szToCountry = szToCountry.Replace("USA", "US");
-            addressKeyFormat.CountryCode = szToCountry;
 
-
-            //addressKeyFormat.Urbanization = txtPShipToCity.Text + " , " + txtPShipToStateCode.Text + " , " + txtPShipToPostalCode.Text;
             addressKeyFormat.ConsigneeName = "Some Consignee";
-            //addressKeyFormat.CountryCode = txtPShipFromCountryCode.Text;
-            //addressKeyFormat.CountryCode = invoice.FromCountry;
+
+            addressKeyFormat.CountryCode = "US";
+
             xavRequest.AddressKeyFormat = addressKeyFormat;
 
             ServicePointManager.ServerCertificateValidationCallback = ValidateRemoteCertificate;
-
+            var xmlDebugResult = DebugHelper.TransformXAVRequestToXml(typeof(XAVRequest), xavRequest);
+            log.Debug("XML for XAVrequest :" + xmlDebugResult); 
             XAVResponse xavResponse = xavService.ProcessXAV(xavRequest);
             return xavResponse;
         }

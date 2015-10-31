@@ -1,7 +1,7 @@
 ﻿@model TimelyDepotMVC.Models.Admin.CustomersSalesContact
 
 <div class="input-group">
-    <label for="billerName">@Html.DisplayNameFor(model => model.FirstName)</label>
+    <label for="billerName">Contact</label>
     <input class="form-control" id="billerName" type="text" value="@Model.FirstName" />
 </div>
 <div class="input-group">
@@ -27,5 +27,9 @@
 <div class="input-group">
     <label for="billerCountry">@Html.DisplayNameFor(model => model.Country)</label>
     <input class="form-control" id="billerCountry" type="text" value="@Model.Country" />
+</div>
+<div class="input-group">
+    <label for="txtUPSAccountNumber">@Html.DisplayNameFor(model => model.AccountInformation)</label>
+    <input class="form-control" id="txtUPSAccountNumber" type="text" value="@Model.AccountInformation" />
 </div>
  

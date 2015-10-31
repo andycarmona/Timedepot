@@ -41,5 +41,8 @@ namespace TimelyDepotMVC.Models.Admin
         public string Email { get; set; }
 
         public string Note { get; set; }
+
+        [Display(Name = "Account number")]
+        public string AccountInformation { get; set; }
     }
 }

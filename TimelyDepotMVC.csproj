@@ -627,6 +627,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CustomErrorHandlerAttribute.cs" />
+    <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DecimalModelBinder.cs" />
     <Compile Include="Helpers\HttpParamActionAttribute.cs" />
     <Compile Include="Helpers\SalesOrderAmountValidatorAttribute.cs" />
@@ -738,6 +739,10 @@
     <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.cs" />
     <Compile Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.Designer.cs">
       <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510311337132_AccountInfoToSalesContacts.cs" />
+    <Compile Include="Migrations\201510311337132_AccountInfoToSalesContacts.Designer.cs">
+      <DependentUpon>201510311337132_AccountInfoToSalesContacts.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
@@ -2341,6 +2346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509121548270_AddUpsNumberToShipmentTable.resx">
       <DependentUpon>201509121548270_AddUpsNumberToShipmentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510311337132_AccountInfoToSalesContacts.resx">
+      <DependentUpon>201510311337132_AccountInfoToSalesContacts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

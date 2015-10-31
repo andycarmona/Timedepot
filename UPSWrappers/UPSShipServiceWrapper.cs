@@ -7,6 +7,9 @@ using TimelyDepotMVC.UPSShipService;
 namespace TimelyDepotMVC.UPSWrappers
 {
     using System.Globalization;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.Serialization;
 
     using PayPal.AdaptivePayments;
 
@@ -138,7 +141,7 @@ namespace TimelyDepotMVC.UPSWrappers
         public string ShipperCity { get; set; }
 
         public string ShipperCompany { get; set; }
-
+      
         public string ShipperPostalCode { get; set; }
 
         public string ShipperStateProvinceCode { get; set; }
@@ -217,24 +220,24 @@ namespace TimelyDepotMVC.UPSWrappers
             shipper.Name = ShipperName;
             log.Debug("shipper Name:" + ShipperName);
             AddShipperAddress(shipper);
+            shipper.ShipperNumber = ShipperNumber;
             shipment.Shipper = shipper;
         }
 
         private void AddShipperAddress(ShipperType shipper)
         {
-            var shipperAddress = new ShipAddressType();
-            shipperAddress.AddressLine = new[] { ShipperAddressLine };
+            var shipperAddress = new ShipAddressType { AddressLine = new[] { UPSConstants.UpsShipperAddressLine } };
             log.Debug("shipper address: " + shipperAddress.AddressLine[0]);
-            shipperAddress.City = ShipperCity;
-            log.Debug("shipper city: " + ShipperCity);
-            shipperAddress.PostalCode = ShipperPostalCode;
-            log.Debug("shipper postal code: " + ShipperPostalCode);
-            shipperAddress.StateProvinceCode = ShipperStateProvinceCode;
-            log.Debug("shipper state province code: " + ShipperStateProvinceCode);
-            shipperAddress.CountryCode = ShipperCountryCode;
-            log.Debug("shipper country code: " + ShipperCountryCode);
-            shipper.Name = ShipperName;
-            log.Debug("shipper Name: " + ShipperName);
+            shipperAddress.City = UPSConstants.UpsShipperCity;
+            log.Debug("shipper city: " + UPSConstants.UpsShipperCity);
+            shipperAddress.PostalCode = UPSConstants.UpsShipperPostalCode;
+            log.Debug("shipper postal code: " + UPSConstants.UpsShipperPostalCode);
+            shipperAddress.StateProvinceCode = UPSConstants.UpsShipperStateProvinceCode;
+            log.Debug("shipper state province code: " + UPSConstants.UpsShipperStateProvinceCode);
+            shipperAddress.CountryCode = UPSConstants.UpsShipperCountryCode;
+            log.Debug("shipper country code: " + UPSConstants.UpsShipperCountryCode);
+            shipper.Name = UPSConstants.UpsShipperName;
+            log.Debug("shipper Name: " + UPSConstants.UpsShipperName);
             shipper.Address = shipperAddress;
         }
 
@@ -312,7 +315,7 @@ namespace TimelyDepotMVC.UPSWrappers
                                             };
                 log.Debug("Bill shipped country code: " + this.ShipToCountryCode);
                 shpmentCharge.BillThirdParty = thirdPartyShipper;
-                thirdPartyShipper.AccountNumber = BillShipperAccountNumber;
+                thirdPartyShipper.AccountNumber = BillShipperAccountNumber;// "E77A29"
                 shpmentCharge.BillThirdParty.Address = thirdpartyAddress;
             }
 
@@ -447,21 +450,20 @@ namespace TimelyDepotMVC.UPSWrappers
                 labelSpec.LabelImageFormat = labelImageFormat;
                 shipmentRequest.LabelSpecification = labelSpec;
                 shipmentRequest.Shipment = shipment;
-
+                Type ShipRequestType = typeof(ShipConfirmRequest);
+                var xmlDebugResult = Helpers.DebugHelper.TransformShipmentRequestToXml(ShipRequestType, shipmentRequest);
+                log.Debug("XML for Shipment request :" + xmlDebugResult); 
                 var shipmentResponse = shpSvc.ProcessShipConfirm(shipmentRequest);
                 return shipmentResponse;
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                string message = string.Empty;
-                message = message + Environment.NewLine + "SoapException Message= " + ex.Message;
-                message = message + Environment.NewLine + "SoapException Category:Code:Message= " + ex.Detail.LastChild.InnerText;
-                message = message + Environment.NewLine + "SoapException XML String for all= " + ex.Detail.LastChild.OuterXml;
-                message = message + Environment.NewLine + "SoapException StackTrace= " + ex.StackTrace;
-                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", message, ex.Detail.LastChild.InnerText);
+                szError = string.Format("Error processing API Validate Address call (webservice error): {0} UPS API Error: {1}", ex.Detail.LastChild.InnerText);
                 return null;
             }
         }
+
+     
 
         public ShipmentResponse CallUPSShipmentRequest(string serviceCode, int shipmentID, ref string szError)
         {

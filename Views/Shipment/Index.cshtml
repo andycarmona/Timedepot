@@ -151,7 +151,7 @@
                     $('#billerInformation input').val('');
                 } else {
                     showBillerInformation();
-                    $('#txtUPSAccountNumber').val($('#shipperNumber').val());
+          
                 }
 
 
@@ -188,7 +188,8 @@
             //var toZipCode = $('#ToZip').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var upsShipperNumber = jQuery("#shipperNumber").val();
+          
             //var shipmentDetailId = jQuery("#txtShipmentDetail").val();
             var billerData = prepareShipmentRequest();
            
@@ -220,13 +221,13 @@
         function UPSAccountValidationResponse(response, statusCode) {
             //Hide load image
             HideLoadingDialog();
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+     
             var obj = jQuery.parseJSON(response);
             if (obj.ShipmentResults !== undefined) {
                 $("#validateAccount").attr('data-validated', true);
-                jQuery("#shipperNumber").val(upsShipperNumber);
+          
                 alert("You have a valid account number.");
-                var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+           
             } else {
                 alert(response);
             }
@@ -246,6 +247,7 @@
             var serviceType = jQuery("#selectupsServiceTypeid").val();
             var packageType = jQuery("#selectpacakePackTypeid").val();
             var billerType = jQuery("#ddlBillTo").val();
+            var accountNumber = jQuery("#txtUPSAccountNumber").val();
 
             var billerData = "{'billerName':'" + billerName + "'," +
                                       "'billerAddress':'" + billerAddress + "'," +
@@ -257,6 +259,7 @@
                                       "'serviceType':'" + serviceType + "'," +
                                       "'packageType':'" + packageType + "'," +
                                       "'billerType':'" + billerType + "'," +
+                                       "'accountNumber':'" + accountNumber + "'," +
                                       "'billerTel':'" + billerTelephone + "'}";
 
             return billerData;
@@ -266,7 +269,7 @@
             var chosenServiceCode = $('input:radio[name=chosenUpsRate]:checked').val();
             var szInvoiceNo = jQuery("#invoiceNoid").val();
             var actualShipmentId = jQuery("#txtShipmentId").val();
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var upsShipperNumber = jQuery("#shipperNumber").val();
             var validatedAccount = $("#validateAccount").attr('data-validated');
             var billerData = this.prepareShipmentRequest();
          
@@ -1141,7 +1144,7 @@
         }
 
         function LoadProcessInformation(invoiceId) {
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var upsShipperNumber = jQuery("#shipperNumber").val();
             var szMsg = "=" + invoiceId + "&upsNumber=" + upsShipperNumber;
 
             var szUrl = jQuery("#getprocessdetailsId").attr("href");
@@ -1162,7 +1165,7 @@
             debugger;
             var itemId = jQuery("#item_Sub_ItemID").val();
             var quantity = jQuery("#divQuantity1").text();
-            var upsShipperNumber = jQuery("#txtUPSAccountNumber").val();
+            var upsShipperNumber = jQuery("#shipperNumber").val();
             var toZip = jQuery("#ToZip").val();
             var szMsg = "=" + invoiceId + "&shipToPostalCode=" + toZip + "&upsShipperNumber=" + upsShipperNumber;
 
