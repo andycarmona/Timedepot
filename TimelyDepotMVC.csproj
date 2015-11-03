@@ -744,6 +744,10 @@
     <Compile Include="Migrations\201510311337132_AccountInfoToSalesContacts.Designer.cs">
       <DependentUpon>201510311337132_AccountInfoToSalesContacts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511030931326_ConverValueBoolToString.cs" />
+    <Compile Include="Migrations\201511030931326_ConverValueBoolToString.Designer.cs">
+      <DependentUpon>201511030931326_ConverValueBoolToString.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -2349,6 +2353,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510311337132_AccountInfoToSalesContacts.resx">
       <DependentUpon>201510311337132_AccountInfoToSalesContacts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511030931326_ConverValueBoolToString.resx">
+      <DependentUpon>201511030931326_ConverValueBoolToString.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

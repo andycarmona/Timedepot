@@ -6,6 +6,7 @@
         padding-top: 10px;
     }
 </style>
+
 @using (Html.BeginForm(null, null, null, FormMethod.Post, new { id = "editsalesorderid" }))
 { 
     @Html.AntiForgeryToken()
@@ -18,7 +19,7 @@
     @Html.HiddenFor(model => model.SalesOrderNo)
     @Html.HiddenFor(model => model.InvoiceDate)
     @Html.HiddenFor(model => model.PaymentAmount)
-    @Html.HiddenFor(model => model.PaymentDate)    
+    @Html.HiddenFor(model => model.PaymentDate)
 
     TimelyDepotMVC.DAL.TimelyDepotContext db01 = new TimelyDepotMVC.DAL.TimelyDepotContext();
     string szAsi = "";
@@ -377,6 +378,8 @@
 
 <script>
     $(document).ready(function() {
+        $("#addressresultdiv03").text("@ViewBag.AddressResult");
+        $("#txtShipmentId").val("@ViewBag.ActualShipmentId");
         var token = $('input[name="__RequestVerificationToken"]').val();
         var headers = {};
         headers['__RequestVerificationToken'] = token;

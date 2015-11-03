@@ -190,7 +190,7 @@ namespace TimelyDepotMVC.Controllers
                 }
 
             }
-            
+
             //Set the page
             if (page == null)
             {
@@ -220,7 +220,7 @@ namespace TimelyDepotMVC.Controllers
 
             List<ShipmentDetails> listShipmentDetails = null;
 
-            ViewBag.ShipperNumber = upsNumber.Equals("undefined")? Settings.Default.UPSShipperNumber:upsNumber ;
+            ViewBag.ShipperNumber = upsNumber.Equals("undefined") ? Settings.Default.UPSShipperNumber : upsNumber;
             int parsedInvoiceId = Int16.Parse(invoiceId);
 
             var shipmentByInvoice = db.Shipments.FirstOrDefault(z => z.InvoiceId == parsedInvoiceId);
@@ -327,7 +327,7 @@ namespace TimelyDepotMVC.Controllers
                 var shipmentRequestDto = PrepareShipmentRequest(billerData, selectedInvoice, upsShipperNumber);
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
-                log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " +invoiceNo);                
+                log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " + invoiceNo);
                 rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
 
             }
@@ -402,11 +402,11 @@ namespace TimelyDepotMVC.Controllers
             billerList.TryGetValue("billerType", out billerType);
             billerList.TryGetValue("accountNumber", out accountNumber);
 
-      
+
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
             shipmentRequestDto.ToName = billerName;
             shipmentRequestDto.ToAddress1 = billerAddress;
-            shipmentRequestDto.ToCity= billerCity;
+            shipmentRequestDto.ToCity = billerCity;
             shipmentRequestDto.ToCompany = string.Empty;
             shipmentRequestDto.ToCountry = billerCountry;
             shipmentRequestDto.ToTel = billerTel;
@@ -478,7 +478,7 @@ namespace TimelyDepotMVC.Controllers
         {
             var resultData = new List<ResultData>();
             var resultDataViewList = new List<ResultDataView>();
-       
+
 
             var currency = "US";
             try
@@ -500,10 +500,10 @@ namespace TimelyDepotMVC.Controllers
                 resultData.Add(new ResultData() { service = "UPS Next Day Air®", code = "01" });
 
                 var invoiceDetailList = this.db.InvoiceDetails.Where(inv => inv.InvoiceId == invoiceId);
-              
+
                 foreach (var anInvoiceList in invoiceDetailList)
                 {
-                  
+
                     if (anInvoiceList.ShipQuantity != null)
                     {
                         details = this.GetBoxInformationDetails(
@@ -517,7 +517,7 @@ namespace TimelyDepotMVC.Controllers
                             out valuePerFullBox,
                             out valuePerPartialBox);
                     }
-                 
+
                     if (anInvoiceList.ShipQuantity != null)
                     {
 
@@ -555,7 +555,7 @@ namespace TimelyDepotMVC.Controllers
                         aresultData.code = rateData.code;
                         aresultData.errorMessage = rateData.errorMessage;
                         aresultData.service = rateData.service;
-                        aresultData.time = rateData.time ==null ? "No time" : rateData.time;
+                        aresultData.time = rateData.time == null ? "No time" : rateData.time;
                         resultDataViewList.Add(aresultData);
                     }
                 }
@@ -703,7 +703,7 @@ namespace TimelyDepotMVC.Controllers
 
         #region UPS RATE SERVICE API
 
-        private List<ResultData> GetRateFromUPS(int? invoiceId,string upsShipperNumber,int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
+        private List<ResultData> GetRateFromUPS(int? invoiceId, string upsShipperNumber, int Qty, int nrBoxes, int itemsInLastBox, string fullBoxWeight, int valuePerFullBox, int valuePerPartialBox, string partialBoxWeight, UPSWrappers.inv_detl details, decimal unitPrice, string shipToPostalCode, List<ResultData> lst, out string currency, out string errorMessage)
         {
             errorMessage = string.Empty;
             TimelyDepotContext dbAux = new TimelyDepotContext();
@@ -769,7 +769,7 @@ namespace TimelyDepotMVC.Controllers
                     if (titResponse.GetType() == typeof(TimeInTransitResponse))
                     {
                         var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipFromList;
-                         errorMessage += "Shipfrom address is not valid. ";
+                        errorMessage += "Shipfrom address is not valid. ";
                     }
                     else
                     {
@@ -790,7 +790,7 @@ namespace TimelyDepotMVC.Controllers
                     var upsService = new RateService();
                     try
                     {
-                        
+
                         var rateResponse = rateServiceWrapper.CallUPSRateRequest(r.code, Qty, nrBoxes, itemsInLastBox, fullBoxWeight, valuePerFullBox, valuePerPartialBox, partialBoxWeight, details, "02", "USD", unitPrice, false);
                         if (rateResponse.RatedShipment != null)
                         {
@@ -830,7 +830,7 @@ namespace TimelyDepotMVC.Controllers
                     if (titResponse.GetType() == typeof(TimeInTransitResponse))
                     {
                         var candidateAddress = ((CandidateResponseType)titResponse.Item).ShipToList;
-                        errorMessage += "ShipTo Address is not valid.  " ;
+                        errorMessage += "ShipTo Address is not valid.  ";
                     }
                     else
                     {
@@ -976,7 +976,7 @@ namespace TimelyDepotMVC.Controllers
             var addressKeyFormat = new AddressKeyFormatType();
 
             var address = invoice.ToAddress1;
-            addressKeyFormat.AddressLine = new String[] { address};
+            addressKeyFormat.AddressLine = new String[] { address };
 
             addressKeyFormat.PoliticalDivision2 = invoice.ToCity;
 
@@ -992,7 +992,7 @@ namespace TimelyDepotMVC.Controllers
 
             ServicePointManager.ServerCertificateValidationCallback = ValidateRemoteCertificate;
             var xmlDebugResult = DebugHelper.TransformXAVRequestToXml(typeof(XAVRequest), xavRequest);
-            log.Debug("XML for XAVrequest :" + xmlDebugResult); 
+            log.Debug("XML for XAVrequest :" + xmlDebugResult);
             XAVResponse xavResponse = xavService.ProcessXAV(xavRequest);
             return xavResponse;
         }
@@ -1007,38 +1007,44 @@ namespace TimelyDepotMVC.Controllers
         // GET: //ValidateAddress
         public ActionResult ValidateAddressTE(int invoiceId)
         {
-            string ValidateAddresResult = string.Empty;
-            string txtPShipToCountryCode = string.Empty;
-            string txtPShipToStateCode = string.Empty;
-            string txtPShipToCity = string.Empty;
-            string szError = string.Empty;
+            var validateAddresResult = string.Empty;
+            var txtPShipToCountryCode = string.Empty;
+            var txtPShipToStateCode = string.Empty;
+            var txtPShipToCity = string.Empty;
+            var szError = string.Empty;
 
-            Invoice invoice = db.Invoices.Find(invoiceId);
-            if (invoice != null)
+            var invoice = db.Invoices.Find(invoiceId);
+            if (!string.IsNullOrEmpty(invoice.AddressValidatedResult))
             {
-                //Validate the address
-                //Verify empty fields
-                if (string.IsNullOrEmpty(invoice.ToAddress1) || string.IsNullOrEmpty(invoice.ToCity) || string.IsNullOrEmpty(invoice.ToState) || string.IsNullOrEmpty(invoice.ToZip) || string.IsNullOrEmpty(invoice.ToCountry))
+                return this.RedirectToAction(
+                    "Index",
+                    "Shipment",
+                    new { id = invoiceId, addressresult = invoice.AddressValidatedResult });
+            }
+
+            if (string.IsNullOrEmpty(invoice.ToAddress1) || string.IsNullOrEmpty(invoice.ToCity) || string.IsNullOrEmpty(invoice.ToState) || string.IsNullOrEmpty(invoice.ToZip) || string.IsNullOrEmpty(invoice.ToCountry))
+            {
+                validateAddresResult = string.Format("Error: Address data is missing.");
+            }
+            else
+            {
+                this.ValidateAddress(invoice, ref szError, ref validateAddresResult, ref txtPShipToCountryCode, ref txtPShipToStateCode, ref txtPShipToCity);
+
+                if (!string.IsNullOrEmpty(szError))
                 {
-                    ValidateAddresResult = string.Format("Error: Address data is missing.");
+                    invoice.AddressValidatedResult = string.Empty;
+                    validateAddresResult = string.Format("Error: ");
+                    this.TempData["UPSError"] = szError;
                 }
                 else
                 {
-                    //ValidateAddresResult = "Valid Address";
-                    //ValidateAddress(ref szError, ref ValidateAddresResult, ref txtPShipToCountryCode, ref txtPShipToStateCode, ref txtPShipToCity);
-                    ValidateAddress(invoice, ref szError, ref ValidateAddresResult, ref txtPShipToCountryCode, ref txtPShipToStateCode, ref txtPShipToCity);
-
-                    if (!string.IsNullOrEmpty(szError))
-                    {
-                        ValidateAddresResult = string.Format("Error: ");
-                        TempData["UPSError"] = szError;
-                    }
+                    invoice.AddressValidatedResult = validateAddresResult;
+                    this.db.Entry(invoice).State = EntityState.Modified;
+                    this.db.SaveChanges();
                 }
-
-
             }
 
-            return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = ValidateAddresResult });
+            return RedirectToAction("Index", "Shipment", new { id = invoiceId, addressresult = validateAddresResult });
         }
 
         public bool CheckExistingShipments(int invoiceId)
@@ -1847,7 +1853,7 @@ namespace TimelyDepotMVC.Controllers
             return PartialView(invoice);
         }
 
-     
+
 
         //
         // GET: /Invoice/Edit/5
@@ -2004,11 +2010,7 @@ namespace TimelyDepotMVC.Controllers
             qryBill = db.CustomersBillingDepts.Where(ctbi => ctbi.CustomerId == invoice.CustomerId);
             if (qryBill.Count() > 0)
             {
-                //billto = qryBill.FirstOrDefault<CustomersBillingDept>();
-                //if (billto != null)
-                //{
-                //    ViewBag.BillTo = billto;
-                //}
+              
                 foreach (var item in qryBill)
                 {
                     if (billto == null)
@@ -2030,11 +2032,6 @@ namespace TimelyDepotMVC.Controllers
             qryshipto = db.CustomersShipAddresses.Where(ctsp => ctsp.Id == invoice.CustomerId);
             if (qryshipto.Count() > 0)
             {
-                //shipto = qryshipto.FirstOrDefault<CustomersShipAddress>();
-                //if (shipto != null)
-                //{
-                //    ViewBag.ShipTo = shipto;
-                //}
                 foreach (var item in qryshipto)
                 {
                     if (shipto == null)
@@ -2122,13 +2119,12 @@ namespace TimelyDepotMVC.Controllers
                 ViewBag.SalesOrderDate = string.Empty;
             }
 
-            //Get the totals
-            //GetInvoiceTotals(invoice.InvoiceId, ref dSalesAmount, ref dTotalTax, ref dTax, ref dTotalAmount, ref dBalanceDue);
             ViewBag.SalesAmount = dSalesAmount.ToString("C");
             ViewBag.TotalTax = dTotalTax.ToString("C");
             ViewBag.Tax = dTax.ToString("F2");
             ViewBag.TotalAmount = dTotalAmount.ToString("C");
             ViewBag.BalanceDue = dBalanceDue.ToString("C");
+            ViewBag.AddressResult = invoice.AddressValidatedResult;
 
             //Get the terms data
             listSelector = new List<KeyValuePair<string, string>>();
@@ -2152,6 +2148,14 @@ namespace TimelyDepotMVC.Controllers
                 ViewBag.HayShipments = id;
             }
 
+                var aShipmentDetail = this.db.ShipmentDetails.Join(this.db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp) => new { dtl, shp }).Where(NData => NData.shp.InvoiceId ==id && NData.dtl.Shipped == false).ToList();
+
+                if (aShipmentDetail.Any())
+                {
+                    this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
+                }
+         
+
             invoice.CustomerShipLocation = ViewBag.SoldTo.CompanyName;
 
             return PartialView(invoice);
@@ -2171,7 +2175,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 try
                 {
-
+                    invoice.AddressValidatedResult = string.Empty;
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
 

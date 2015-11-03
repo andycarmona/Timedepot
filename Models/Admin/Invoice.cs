@@ -168,5 +168,7 @@ namespace TimelyDepotMVC.Models.Admin
 
         [Display(Name = "Fax")]
         public string ToFax { get; set; }
+
+        public string AddressValidatedResult { get; set; }
     }
 }

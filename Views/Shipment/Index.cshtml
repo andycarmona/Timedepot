@@ -947,14 +947,25 @@
         }
 
         function postInvoiceData() {
-            alert("poted");
+            ShowLoadingDialog();
             $.ajax({
                 type: "POST",
                 dataType: 'html',
                 url: "/Shipment/Edit",
                 data: $('#editsalesorderid').serialize(),
-                success: selectEditInvoiceSuccess
+                success: loadEditInvoiceSuccess
             });
+        }
+
+        function loadEditInvoiceSuccess(response, statusCode) {
+
+            var objRes = response;
+            //jQuery("#displayInvoicediv").html(objRes);
+            //Display the response data
+            jQuery("#editInvoicediv").html(objRes);
+
+            //Hide load image
+            HideLoadingDialog();
         }
 
         function DisplayInvoice(id) {
@@ -1021,7 +1032,7 @@
 
         function selectEditInvoiceSuccess(response, statusCode) {
 
-            var objRes = response;
+            var objRes = response;                                    
             //jQuery("#displayInvoicediv").html(objRes);
             //Display the response data
             jQuery("#editInvoicediv").html(objRes);

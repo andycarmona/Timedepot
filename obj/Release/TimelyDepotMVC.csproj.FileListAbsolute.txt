@@ -66,5 +66,6 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.pdb
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.XmlSerializers.dll
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AccountInfoToSalesContacts.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ConverValueBoolToString.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
