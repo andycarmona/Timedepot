@@ -147,8 +147,7 @@
             $(document).on('change', '#ddlBillTo', function() {
                 var selectedValue = $('#ddlBillTo :selected').text();
                 if (selectedValue != 'Shipper') {
-                    $('#txtUPSAccountNumber').val('');
-                    $('#billerInformation input').val('');
+                    showThirdPartyInformation();
                 } else {
                     showBillerInformation();
           
@@ -1268,6 +1267,28 @@
                 LoadProcessInformation(szHayShipment);
             }
             jQuery("#imageRow img").click(ShowBoxLabel);
+        }
+
+        function showThirdPartyInformation() {
+            var shipmentId = jQuery("#txtShipmentId").val();
+            var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
+            if (szInvoiceId != undefined) {
+                var szUrl = "/Shipment/GetThirdPartyCustomerInformation?shipmentId=" + shipmentId;
+
+                jQuery.ajax({
+                    type: 'GET',
+                    url: szUrl,
+                    data: null,
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    error: AjaxFailed,
+                    success: function (data) {
+                        $("#billerInformation").html(data);
+                        HideLoadingDialog();
+
+                    }
+                });
+            }
         }
 
         function showBillerInformation() {

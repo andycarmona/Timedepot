@@ -748,6 +748,10 @@
     <Compile Include="Migrations\201511030931326_ConverValueBoolToString.Designer.cs">
       <DependentUpon>201511030931326_ConverValueBoolToString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511040909229_AddThirdpartyinfo.cs" />
+    <Compile Include="Migrations\201511040909229_AddThirdpartyinfo.Designer.cs">
+      <DependentUpon>201511040909229_AddThirdpartyinfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsView\CreditCardPayment.cs" />
     <Compile Include="ModelsView\CashPayment.cs" />
@@ -848,6 +852,7 @@
     <Compile Include="Models\Admin\SUB_ITEM.cs" />
     <Compile Include="Models\Admin\SUB_SPECIALITEM.cs" />
     <Compile Include="Models\Admin\Terms.cs" />
+    <Compile Include="Models\Admin\BillerContactData.cs" />
     <Compile Include="Models\Admin\timelydepot_log.cs" />
     <Compile Include="Models\Admin\Trade.cs" />
     <Compile Include="Models\Admin\TransactionsCodes.cs" />
@@ -2125,6 +2130,7 @@
     <Content Include="Views\Shipment\OpenShipmentLogFile.cshtml" />
     <Content Include="Views\Shipment\DisplayInvoice.cshtml" />
     <Content Include="Views\Shipment\GetBillerCustomerInformation.cshtml" />
+    <Content Include="Views\Shipment\GetThirdPartyCustomerInformation.cshtml" />
     <None Include="Web References\UPSRateService\common.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2356,6 +2362,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511030931326_ConverValueBoolToString.resx">
       <DependentUpon>201511030931326_ConverValueBoolToString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511040909229_AddThirdpartyinfo.resx">
+      <DependentUpon>201511040909229_AddThirdpartyinfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

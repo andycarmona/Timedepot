@@ -1,0 +1,35 @@
+﻿@model TimelyDepotMVC.Models.Admin.BillerContactData
+
+<div class="input-group">
+    <label for="billerName">Contact</label>
+    <input class="form-control" id="billerName" type="text" value="@Model.Contact" />
+</div>
+<div class="input-group">
+    <label for="billerAddress">@Html.DisplayNameFor(model => model.Address)</label>
+    <input class="form-control" id="billerAddress" type="text" value="@Model.Address" />
+</div>
+<div class="input-group">
+    <label for="billerTel">@Html.DisplayNameFor(model => model.Phone)</label>
+    <input class="form-control" id="billerTel" type="text" value="@Model.Phone" />
+</div>
+<div class="input-group">
+    <label for="billerCity">@Html.DisplayNameFor(model => model.City)</label>
+    <input class="form-control" id="billerCity" type="text" value="@Model.City" />
+</div>
+<div class="input-group">
+    <label for="billerState">@Html.DisplayNameFor(model => model.State)</label>
+    <input class="form-control" id="billerState" type="text" value="@Model.State" />
+</div>
+<div class="input-group">
+    <label for="billerZip">@Html.DisplayNameFor(model => model.ZipCode)</label>
+    <input class="form-control" id="billerZip" type="text" value="@Model.ZipCode" />
+</div>
+<div class="input-group">
+    <label for="billerCountry">@Html.DisplayNameFor(model => model.Country)</label>
+    <input class="form-control" id="billerCountry" type="text" value="@Model.Country" />
+</div>
+<div class="input-group">
+    <label for="txtUPSAccountNumber">@Html.DisplayNameFor(model => model.AccountNumber)</label>
+    <input class="form-control" id="txtUPSAccountNumber" type="text" value="@Model.AccountNumber" />
+</div>
+

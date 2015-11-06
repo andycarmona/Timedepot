@@ -60,6 +60,23 @@ namespace TimelyDepotMVC.ModelsView
 
         public string billShipperType { get; set; }
 
+
+        public string BillerContact { get; set; }
+
+        public string BillerAddress { get; set; }
+
+        public string BillerPhone { get; set; }
+
+        public string BillerCity { get; set; }
+
+        public string BillerState { get; set; }
+
+        public string BillerZipCode { get; set; }
+
+        public string BillerCountry { get; set; }
+
+        public string BillerAccountNumber { get; set; }
+
         public string packagingTypeCode { get; set; }
 
         public string shipmentChargeType { get; set; }

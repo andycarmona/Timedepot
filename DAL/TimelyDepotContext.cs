@@ -245,5 +245,7 @@ namespace TimelyDepotMVC.DAL
         public DbSet<TransactionsCodes> TransactionCodes { get; set; }
 
         public DbSet<EnvironmentParameters> EnvironmentParameters { get; set; }
+
+        public DbSet<BillerContactData> BillerContactData { get; set; } 
     }
 }

@@ -324,7 +324,7 @@ namespace TimelyDepotMVC.Controllers
 
             if (selectedInvoice != null)
             {
-                var shipmentRequestDto = PrepareShipmentRequest(billerData, selectedInvoice, upsShipperNumber);
+                var shipmentRequestDto = PrepareShipmentRequest(shipmentId, billerData, selectedInvoice, upsShipperNumber);
 
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
                 log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " + invoiceNo);
@@ -359,7 +359,7 @@ namespace TimelyDepotMVC.Controllers
                 }
             }
 
-            var shipmentRequestDto = PrepareShipmentRequest(billerData, selectedInvoice, upsShipperNumber);
+            var shipmentRequestDto = PrepareShipmentRequest(shipmentId, billerData, selectedInvoice, upsShipperNumber);
 
             var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
 
@@ -374,7 +374,7 @@ namespace TimelyDepotMVC.Controllers
             return this.Json(rateResponse, JsonRequestBehavior.AllowGet);
         }
 
-        private static ShipmentRequestView PrepareShipmentRequest(string billerData, Invoice selectedInvoice, string upsShipperNumber)
+        private ShipmentRequestView PrepareShipmentRequest(int shipmentId, string billerData, Invoice selectedInvoice, string upsShipperNumber)
         {
             var billerList = JsonConvert.DeserializeObject<Dictionary<string, string>>(billerData);
             string packageType;
@@ -404,14 +404,13 @@ namespace TimelyDepotMVC.Controllers
 
 
             var shipmentRequestDto = Mapper.Map<ShipmentRequestView>(selectedInvoice);
-            shipmentRequestDto.ToName = billerName;
-            shipmentRequestDto.ToAddress1 = billerAddress;
-            shipmentRequestDto.ToCity = billerCity;
-            shipmentRequestDto.ToCompany = string.Empty;
-            shipmentRequestDto.ToCountry = billerCountry;
-            shipmentRequestDto.ToTel = billerTel;
-            shipmentRequestDto.ToZip = billerZip;
-            shipmentRequestDto.ToState = billerState;
+            shipmentRequestDto.BillerContact = billerName;
+            shipmentRequestDto.BillerAddress = billerAddress;
+            shipmentRequestDto.BillerCity = billerCity;
+            shipmentRequestDto.BillerCountry = billerCountry;
+            shipmentRequestDto.BillerPhone = billerTel;
+            shipmentRequestDto.BillerZipCode = billerZip;
+            shipmentRequestDto.BillerState = billerState;
             shipmentRequestDto.userName = UPSConstants.UpsUserName;
             shipmentRequestDto.password = UPSConstants.UpsPasword;
             shipmentRequestDto.accessLicenseNumber = UPSConstants.UpsAccessLicenseNumber;
@@ -421,7 +420,46 @@ namespace TimelyDepotMVC.Controllers
             shipmentRequestDto.shipmentServiceType = serviceType;
             shipmentRequestDto.billShipperType = billerType;
             shipmentRequestDto.billShipperAccountNumber = accountNumber;
+            UpdateThirdParty(shipmentRequestDto, shipmentId);
             return shipmentRequestDto;
+        }
+
+        public void UpdateThirdParty(ShipmentRequestView shipmentRequest, int shipmentId)
+        {
+            var billerContactData = db.BillerContactData.FirstOrDefault(shipment => shipment.ShipmentId == shipmentId);
+            if (billerContactData != null)
+            {
+                billerContactData.Contact = shipmentRequest.BillerContact;
+                billerContactData.Address = shipmentRequest.BillerAddress;
+                billerContactData.City = shipmentRequest.BillerCity;
+                billerContactData.Country = shipmentRequest.BillerCountry;
+                billerContactData.Phone = shipmentRequest.BillerPhone;
+                billerContactData.ShipmentId = shipmentId;
+                billerContactData.State = shipmentRequest.BillerState;
+                billerContactData.ZipCode = shipmentRequest.BillerZipCode;
+                billerContactData.AccountNumber = shipmentRequest.billShipperAccountNumber;
+                this.db.Entry(billerContactData).State = EntityState.Modified;
+            }
+
+            if (billerContactData == null)
+            {
+                billerContactData = new BillerContactData
+                                        {
+                                            Contact = shipmentRequest.BillerContact,
+                                            Address = shipmentRequest.BillerAddress,
+                                            City = shipmentRequest.BillerCity,
+                                            Country = shipmentRequest.BillerCountry,
+                                            Phone = shipmentRequest.BillerPhone,
+                                            ShipmentId = shipmentId,
+                                            State = shipmentRequest.BillerState,
+                                            ZipCode = shipmentRequest.BillerZipCode,
+                                            AccountNumber = shipmentRequest.billShipperAccountNumber
+                                        };
+                billerContactData.ShipmentId = shipmentId;
+                this.db.BillerContactData.Add(billerContactData);
+            }
+
+            db.SaveChanges();
         }
 
         public void ResetQuantityOfInvoiceDetails(Invoice selectedInvoice)
@@ -470,7 +508,7 @@ namespace TimelyDepotMVC.Controllers
             var actualShipment = db.Shipments.SingleOrDefault(x => x.ShipmentId == shipmentId);
             actualShipment.Shipped = true;
             this.db.Entry(actualShipment).State = EntityState.Modified;
-
+            db.SaveChanges();
         }
 
 
@@ -501,9 +539,8 @@ namespace TimelyDepotMVC.Controllers
 
                 var invoiceDetailList = this.db.InvoiceDetails.Where(inv => inv.InvoiceId == invoiceId);
 
-                foreach (var anInvoiceList in invoiceDetailList)
+                foreach (var anInvoiceList in invoiceDetailList.Where(anInvoiceList => anInvoiceList.ShipQuantity != null))
                 {
-
                     if (anInvoiceList.ShipQuantity != null)
                     {
                         details = this.GetBoxInformationDetails(
@@ -516,10 +553,6 @@ namespace TimelyDepotMVC.Controllers
                             out partialBoxWeight,
                             out valuePerFullBox,
                             out valuePerPartialBox);
-                    }
-
-                    if (anInvoiceList.ShipQuantity != null)
-                    {
 
                         resultData = this.GetRateFromUPS(
                             invoiceId,
@@ -548,14 +581,22 @@ namespace TimelyDepotMVC.Controllers
                     }
                     else
                     {
-                        var aresultData = new ResultDataView();
-                        aresultData.cost = rateData.cost.ToString(CultureInfo.InvariantCulture) + " " + currency;
-                        aresultData.Negcost = rateData.Negcost.ToString(CultureInfo.InvariantCulture) + " " + currency;
-                        aresultData.Publishedcost = rateData.Publishedcost.ToString(CultureInfo.InvariantCulture) + " " + currency;
-                        aresultData.code = rateData.code;
-                        aresultData.errorMessage = rateData.errorMessage;
-                        aresultData.service = rateData.service;
-                        aresultData.time = rateData.time == null ? "No time" : rateData.time;
+                        var aresultData = new ResultDataView
+                                              {
+                                                  cost =
+                                                      rateData.cost.ToString(
+                                                          CultureInfo.InvariantCulture) + " " + currency,
+                                                  Negcost =
+                                                      rateData.Negcost.ToString(
+                                                          CultureInfo.InvariantCulture) + " " + currency,
+                                                  Publishedcost =
+                                                      rateData.Publishedcost.ToString(
+                                                          CultureInfo.InvariantCulture) + " " + currency,
+                                                  code = rateData.code,
+                                                  errorMessage = rateData.errorMessage,
+                                                  service = rateData.service,
+                                                  time = rateData.time ?? "No time"
+                                              };
                         resultDataViewList.Add(aresultData);
                     }
                 }
@@ -861,6 +902,13 @@ namespace TimelyDepotMVC.Controllers
                 currency = "US";
                 return null;
             }
+        }
+
+        public PartialViewResult GetThirdPartyCustomerInformation(int shipmentId)
+        {
+            var billerData = db.BillerContactData.FirstOrDefault(shipment => shipment.ShipmentId == shipmentId);
+
+            return this.PartialView(billerData);
         }
 
         public PartialViewResult GetBillerCustomerInformation(int invoiceId)
@@ -2010,7 +2058,7 @@ namespace TimelyDepotMVC.Controllers
             qryBill = db.CustomersBillingDepts.Where(ctbi => ctbi.CustomerId == invoice.CustomerId);
             if (qryBill.Count() > 0)
             {
-              
+
                 foreach (var item in qryBill)
                 {
                     if (billto == null)
@@ -2148,13 +2196,13 @@ namespace TimelyDepotMVC.Controllers
                 ViewBag.HayShipments = id;
             }
 
-                var aShipmentDetail = this.db.ShipmentDetails.Join(this.db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp) => new { dtl, shp }).Where(NData => NData.shp.InvoiceId ==id && NData.dtl.Shipped == false).ToList();
+            var aShipmentDetail = this.db.ShipmentDetails.Join(this.db.Shipments, dtl => dtl.ShipmentId, shp => shp.ShipmentId, (dtl, shp) => new { dtl, shp }).Where(NData => NData.shp.InvoiceId == id && NData.dtl.Shipped == false).ToList();
 
-                if (aShipmentDetail.Any())
-                {
-                    this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
-                }
-         
+            if (aShipmentDetail.Any())
+            {
+                this.ViewBag.ActualShipmentId = aShipmentDetail[0].dtl.ShipmentId;
+            }
+
 
             invoice.CustomerShipLocation = ViewBag.SoldTo.CompanyName;
 

@@ -34,6 +34,7 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\Micro
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\WebMatrix.WebData.xml
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\es\EntityFramework.resources.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\bin\es\EntityFramework.SqlServer.resources.dll
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddTransactionListforRefundsAndPayments.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddTranslationCodesTable.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.UpdateTheWayTransactionListHandlesdata.resources
@@ -62,10 +63,10 @@ C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Relea
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddDeclaredValueToShipmentDetil.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ChangeDeclaredValueToInt.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddUpsNumberToShipmentTable.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AccountInfoToSalesContacts.resources
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ConverValueBoolToString.resources
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csproj.GenerateResource.Cache
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.dll
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.pdb
 C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.XmlSerializers.dll
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AccountInfoToSalesContacts.resources
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.ConverValueBoolToString.resources
-C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.csprojResolveAssemblyReference.cache
+C:\Users\Zerratar\Documents\Visual Studio 2013\Projects\TimelyDepotMVC\obj\Release\TimelyDepotMVC.Migrations.AddThirdpartyinfo.resources
