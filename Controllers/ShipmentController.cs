@@ -906,8 +906,8 @@ namespace TimelyDepotMVC.Controllers
 
         public PartialViewResult GetThirdPartyCustomerInformation(int shipmentId)
         {
-            var billerData = db.BillerContactData.FirstOrDefault(shipment => shipment.ShipmentId == shipmentId);
-
+            var billerData = this.db.BillerContactData.FirstOrDefault(shipment => shipment.ShipmentId == shipmentId)
+                             ?? new BillerContactData { ShipmentId = shipmentId };
             return this.PartialView(billerData);
         }
 
