@@ -9,6 +9,8 @@
 
 namespace TimelyDepotMVC.Models.Admin
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class BillerContactData
     {
         public int Id { get; set; }
@@ -25,11 +27,15 @@ namespace TimelyDepotMVC.Models.Admin
 
         public string State { get; set; }
 
+        [Display(Name = "Zip code")]
         public string ZipCode { get; set; }
 
         public string Country { get; set; }
 
+        [Display(Name = "Account Number")]
         public string AccountNumber { get; set; }
+
+       
 
     }
 }

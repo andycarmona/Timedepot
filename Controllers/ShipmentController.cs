@@ -214,7 +214,7 @@ namespace TimelyDepotMVC.Controllers
             return View();
         }
 
-        public PartialViewResult ProcessShipmentInformation(string invoiceId, string upsNumber)
+        public PartialViewResult ProcessShipmentInformation(string invoiceId, string upsNumber, string shipmentId)
         {
 
 
@@ -228,7 +228,7 @@ namespace TimelyDepotMVC.Controllers
             {
                 listShipmentDetails =
                     db.ShipmentDetails.Where(x => x.ShipmentId == shipmentByInvoice.ShipmentId).ToList();
-                ViewBag.ActualShipmentId = shipmentByInvoice.ShipmentId;
+                
             }
             // Shipment boxes
             List<KeyValuePair<string, string>> listSelector = new List<KeyValuePair<string, string>>();
@@ -311,7 +311,7 @@ namespace TimelyDepotMVC.Controllers
             listSelector.Add(new KeyValuePair<string, string>("2c", "Large Express Box"));
             SelectList packageTypelist = new SelectList(listSelector, "Key", "Value");
             ViewBag.packageTypelist = packageTypelist;
-
+            ViewBag.ActualShipmentId = shipmentId;
             return this.PartialView();
         }
 
@@ -329,9 +329,10 @@ namespace TimelyDepotMVC.Controllers
                 var shipServiceWrapper = new UPSShipServiceWrapper(shipmentRequestDto);
                 log.Debug("ShipmentId: " + shipmentId.ToString() + " for invoiceNo: " + invoiceNo);
                 rateResponse = shipServiceWrapper.CallUPSShipmentConfirmationRequest(serviceCode, shipmentId, ref szError);
-
+                ViewBag.AddressResult = selectedInvoice.AddressValidatedResult;
+                ViewBag.ActualShipmentId = shipmentId;
             }
-
+          
             return string.IsNullOrEmpty(szError) ? this.Json(rateResponse, JsonRequestBehavior.AllowGet) : this.Json(szError, JsonRequestBehavior.AllowGet);
 
         }
@@ -438,6 +439,7 @@ namespace TimelyDepotMVC.Controllers
                 billerContactData.State = shipmentRequest.BillerState;
                 billerContactData.ZipCode = shipmentRequest.BillerZipCode;
                 billerContactData.AccountNumber = shipmentRequest.billShipperAccountNumber;
+           
                 this.db.Entry(billerContactData).State = EntityState.Modified;
             }
 
@@ -2172,7 +2174,7 @@ namespace TimelyDepotMVC.Controllers
             ViewBag.Tax = dTax.ToString("F2");
             ViewBag.TotalAmount = dTotalAmount.ToString("C");
             ViewBag.BalanceDue = dBalanceDue.ToString("C");
-            ViewBag.AddressResult = invoice.AddressValidatedResult;
+            ViewBag.AddressResult = invoice.AddressValidatedResult ;
 
             //Get the terms data
             listSelector = new List<KeyValuePair<string, string>>();
@@ -2223,7 +2225,6 @@ namespace TimelyDepotMVC.Controllers
             {
                 try
                 {
-                    invoice.AddressValidatedResult = string.Empty;
                     db.Entry(invoice).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -2233,7 +2234,7 @@ namespace TimelyDepotMVC.Controllers
                     msgResult = e.Message;
                 }
             }
-
+         
             return PartialView(invoice);
         }
         //
