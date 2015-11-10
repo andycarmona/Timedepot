@@ -106,31 +106,24 @@
         var w;
         var selectedShipmentDetailValue;
         var szId;
+        var firstTime = true;
         jQuery(document).ready(initializeShipment);
 
         function initializeShipment() {
             //Set the buttons
             jQuery(".btn btn-default").button();
-
             //Attach handlers
             jQuery("#selectInvoicelnk").click(clickselectInvoicelnk);
-            //jQuery("#updateDetail2").click(updateDetailBox2);
-            //jQuery("#updateDetail").click(updateDetailBox);
             jQuery("#lnkResetIdLog").click(clicklnkResetIdLog);
             jQuery("#ckcustLog").click(clickckcustLog);
             jQuery("#ckcompLog").click(clickckcompLog);
             jQuery("#ckcodeLog").click(clickckcodeLog);
             jQuery("#btnSubmitSearchLog").click(clickbtnSubmitSearchLog);
             jQuery("#upsRateListbtn").click(GetRateList);
-
             //Create the tabs
             jQuery("#tabs").tabs({ load: loadTab });
-            //jQuery("#logtabs").tabs();
-
             //Prepare the dialogs
             jQuery("#loadingHlpDialogid").dialog({ autoOpen: false, modal: true });
-
-
             SetDefaultRateSelectors();
 
             szId = '@ViewBag.LoadInvoiceNo';
@@ -150,20 +143,24 @@
                     showThirdPartyInformation();
                 } else {
                     showBillerInformation();
-
                 }
-
-
             });
+
             if ($('#addressresultdiv03').text() != "") {
                 $("#shipmentDialog").show();
             }
+
             if ($('#item_Quantity').val() == "") {
 
                 $('#processShipmentBtn').hide();
             }
-
+      
         }
+
+        function SetNotFirstLoad() {
+            firstTime = false;
+        }
+
 
         function clickChangeTab(tabIndex) {
             //debugger;
@@ -201,7 +198,7 @@
 
                 //Display load image
                 ShowLoadingDialog();
-             
+
                 //Get the UPS Rate
                 jQuery.ajax({
                     type: 'GET',
@@ -947,7 +944,7 @@
         }
 
         function postInvoiceData(invoiceId) {
-      
+
             $.ajax({
                 type: "POST",
                 dataType: 'html',
@@ -964,7 +961,7 @@
                     $("#txtShipmentId").val(actualShipmentId);
                     jQuery("#addressresultdiv03").text(addressValidated);
                     LoadInvoice(invoiceId);
-                          }
+                }
             });
         }
 
@@ -1080,7 +1077,7 @@
             var szInvoiceId = jQuery("#editsalesorderid #InvoiceId").val();
             if (szInvoiceId != undefined) {
                 DisplayInvoice(szInvoiceId);
-                LoadShipmentDetails(szInvoiceId);
+                //LoadShipmentDetails(szInvoiceId);
             }
 
             ShowLoadingDialog();
@@ -1153,6 +1150,7 @@
             } else {
                 jQuery("#shipmentDetailsdialog").html("<p>No shipments available.</p>");
             }
+         
         }
 
         function LoadProcessInformation(invoiceId) {
@@ -1160,6 +1158,10 @@
             var actualShipmentId = jQuery("#txtShipmentId").val();
             if (invoiceId === "") {
                 invoiceId = szId;
+            }
+
+            if ($('#shipmentDetailsdialog:not(:empty)') && firstTime ) {
+                clickChangeTab(1);
             }
 
             var szMsg = "=" + invoiceId + "&upsNumber=" + upsShipperNumber + "&shipmentId=" + actualShipmentId;
@@ -1266,7 +1268,7 @@
                 $(this).prop("readonly", true);
             });
 
-            clickChangeTab(1);
+            //clickChangeTab(1);
             var szHayShipment = jQuery("#hasShipmentDiv").html();
             szHayShipment = jQuery.trim(szHayShipment);
             if (szHayShipment != "0") {

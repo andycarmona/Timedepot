@@ -388,7 +388,8 @@
         $("#toInformationForm input").on("focusout", function () {
             $("#addressresultdiv03").text("");
             postInvoiceData('@Model.InvoiceId');
-           
+            SetNotFirstLoad();
+
         });
       //$('#editsalesorderid').submit(publishInvoiceData);
 

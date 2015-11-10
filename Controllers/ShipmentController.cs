@@ -1124,7 +1124,7 @@ namespace TimelyDepotMVC.Controllers
                 var invoiceNo = invoiceNoId.ToString(CultureInfo.InvariantCulture);
                 invoiceId = this.db.Invoices.FirstOrDefault(inv => inv.InvoiceNo == invoiceNo).InvoiceId;
                 var aShipmentDetail =
-                    this.db.ShipmentDetails.FirstOrDefault(shpDetail => shpDetail.Sub_ItemID == itemId);
+                    this.db.ShipmentDetails.FirstOrDefault(shpDetail => shpDetail.Sub_ItemID == itemId && shpDetail.Shipped == false);
                 var cloneShpDetail = Clone(aShipmentDetail);
                 var anInvoiceDetail = this.db.InvoiceDetails.SingleOrDefault(s => s.InvoiceId == invoiceId && s.ItemID == itemId);
                 if (anInvoiceDetail != null)
